@@ -1,0 +1,47 @@
+{
+  "capsule_component_solids": {
+    "strap_a": 11,
+    "strap_b": 1
+  },
+  "six_electrode_tip_z_mm": [
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256
+  ],
+  "aux_square_blocks_size_mm": [
+    [
+      3.0,
+      3.0,
+      2.0
+    ],
+    [
+      3.0,
+      3.0,
+      2.0
+    ]
+  ],
+  "cap_outer_bottom_z_mm": -1.056,
+  "protrusion_mm": [
+    1.2,
+    1.2,
+    1.2,
+    1.2,
+    1.2,
+    1.2
+  ],
+  "nominal_interference_mm3": {
+    "ab_vs_tray_d2": 0.0,
+    "ab_vs_cap_d2": 0.0,
+    "strap_a_vs_strap_b": 0.0
+  },
+  "negative_controls_interference_mm3": {
+    "eb1_wrong_round_d6_vs_cap_d2": 12.819467,
+    "eb2_block_on_b_vs_strap_a": 17.014237,
+    "mirror_x_asymmetric_r33_vs_tray_d2": 0.340369,
+    "strap_b_shift_up_0p20mm_vs_tray_d2": 0.216209
+  },
+  "ok": true
+}

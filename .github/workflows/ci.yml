@@ -41,6 +41,11 @@ jobs:
           python scripts/check_3d_completeness.py --selftest
           python scripts/check_3d_completeness.py .
 
+      - name: JLCPCB 11-pack manufacturing gate (5/5 selftest + SHA-256 & BOM/CPL parity)
+        run: |
+          python scripts/check_fab_packs.py --selftest
+          python scripts/check_fab_packs.py .
+
       - name: Hardware schematic parity & 8ch single-sided BOM verification
         run: |
           python hardware/common-mainboard/schematics/check_all.py

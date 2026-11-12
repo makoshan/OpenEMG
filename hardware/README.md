@@ -1,6 +1,6 @@
 # OpenEMG 模块化硬件家族总览（2ch / 8ch / 16ch 共用主控与壳体）
 
-本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
+本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL，全系 11 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
 
 ### 三维光追渲染预览（`renders/`，哑光黑阻焊 + 沉金焊盘，非实物照片）
 

@@ -55,7 +55,7 @@
 | **旗舰 16 通道叠板** | `hardware/16ch-c08b-round/` | `43.1 × 36.5 mm` / 4 层（圆孔 `D20` / 缺口 `D20N`） | KiCad 10 + 嘉立创 `C08B-全套汇总(R4U6/R4U6N).epro2` + 双面 `-3d.step` + `pod-d1` | 双 `ADS1298` 同步采样 + 34P 四层柔性表带软板（`D2` / `R15`）+ 独立电极豆 `Pod D1` |
 | **圆润外壳家族** | `hardware/enclosure-46x40/` | `46.0 × 40.0 mm` 外廓 | `build123d` Python + Fusion `.f3d` + STEP + STL + 3MF + GLB | 四角螺丝壳 `R12`（配 `R4U6+D20`）、无螺丝缺口抱柱壳 `R13`（配 `R4U6N+D20N`，附 `.f3d`）、外扣底盖 `D2` 与 2ch 外壳 `R7` |
 
-> **机械对位细节提示**：`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可（详见 [hardware/README.md](hardware/README.md)）。
+> **机械对位与嘉立创下单总表**：`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可。架构细节见 [hardware/README.md](hardware/README.md)，**全家族 11 套直接上传 Gerber/BOM/CPL 制造包与 SHA-256 核对表见 [hardware/ORDER-MATRIX.md](hardware/ORDER-MATRIX.md)**。
 
 ---
 
@@ -87,6 +87,8 @@ uv pip install --python .venv/bin/python -r requirements.txt jsonschema scipy sc
 .venv/bin/python scripts/check_public_hygiene.py .
 .venv/bin/python scripts/check_3d_completeness.py --selftest
 .venv/bin/python scripts/check_3d_completeness.py .
+.venv/bin/python scripts/check_fab_packs.py --selftest
+.venv/bin/python scripts/check_fab_packs.py .
 .venv/bin/python hardware/common-mainboard/schematics/check_all.py
 .venv/bin/python hardware/16ch-c08b-round/schematics-afe/check_all.py
 .venv/bin/python hardware/8ch-ads1298/stacked-d20-8ch/verify_8ch_dnp.py

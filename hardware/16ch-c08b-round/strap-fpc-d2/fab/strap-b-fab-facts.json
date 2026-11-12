@@ -1,0 +1,58 @@
+{
+ "source": "hardware/16ch-c08b-round/strap-fpc-d2/fab/strap-b-gerber.zip",
+ "copper_layers": 4,
+ "copper_files": [
+  "strap-b-B_Cu.gbl（X2）",
+  "strap-b-F_Cu.gtl（X2）",
+  "strap-b-In1_Cu.g1（X2）",
+  "strap-b-In2_Cu.g2（X2）"
+ ],
+ "outline": {
+  "width_mm": 150.51,
+  "height_mm": 26.2,
+  "x_min": 31.09,
+  "y_min": -63.1,
+  "x_max": 181.6,
+  "y_max": -36.9
+ },
+ "outline_files": [
+  "strap-b-Edge_Cuts.gm1"
+ ],
+ "drill": {
+  "pth_holes": 44,
+  "npth_holes": 0,
+  "pth_slots": 0,
+  "npth_slots": 0,
+  "min_pth_mm": 0.25,
+  "min_plated_incl_slots_mm": 0.25,
+  "min_npth_mm": null,
+  "duplicates_removed": 0,
+  "pth_by_dia": {
+   "0.250": 44
+  }
+ },
+ "drill_files": [
+  "strap-b-NPTH.drl",
+  "strap-b-PTH.drl"
+ ],
+ "paste_pads": {
+  "top": 49,
+  "bottom": 2
+ },
+ "paste_files": [
+  "strap-b-B_Paste.gbp",
+  "strap-b-F_Paste.gtp"
+ ],
+ "refs": {
+  "bom_dnp_lines": 0,
+  "bom_lines": 2,
+  "bom_refs": 17,
+  "cpl_refs": 17,
+  "bom_not_in_cpl": [],
+  "cpl_not_in_bom": [],
+  "bom_dups": [],
+  "cpl_dups": []
+ },
+ "problems": [],
+ "warnings": []
+}

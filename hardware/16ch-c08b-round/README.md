@@ -12,7 +12,7 @@
 - `afe-d20n/`：**四角缺口版（配 `R13` 无螺丝壳）** KiCad 10 原生工程（BOM/CPL 与 `afe-d20` 逐字节一致，仅四角改为无螺丝抱柱缺口）、满载 127 颗器件的整板三维模型 **`c08b-afe-d20n-3d.step`**、邮票孔拼板 `panel/c08b-afe-d20n-panel-gerber.zip`。
 - `schematics-afe/`：采集板 4 页 SVG 原理图及 529 脚逐脚对板校验脚本 `check_all.py`。
 - `jlc-eda/`：**嘉立创 EDA 专业版完整工程**（圆孔版 `C08B-全套汇总-主控R4U6-采集D20.epro2` / `C08B-AFE采集板-D20-原理图+PCB+3D.epro2`，以及四角缺口版 `C08B-全套汇总-主控R4U6N-采集D20N.epro2` / `C08B-AFE采集板-D20N-缺口-原理图+PCB+3D.epro2`）。
-- `strap-fpc-d2/`：配合现成 `25 mm` 表带贴装的 12+2+2 四层 34P 双片表带电极软板（含 `strap-{a,b}-3d.step`）及 `0.8 mm` TPU 开孔定位层（`tpu-layer-d2/`，含 `.step`/`.stl`/`.3mf`）。
+- `strap-fpc-d2/`：配合现成 `25 mm` 表带贴装的 12+2+2 四层 34P 双片表带电极软板（含满载 `strap-{a,b}-3d.step` 与 `fit_3d_check.py` 叠层 `0.0 mm³` 零干涉证明、`fab/` 嘉立创 FPC+SMT 直传包 `strap-a-gerber.zip` `b7aa2a09` / `strap-b-gerber.zip` `43175156`）及 `0.8 mm` TPU 开孔定位层（`tpu-layer-d2/`，含 `.step`/`.stl`/`.3mf`）。
 - `strap-fpc-r15/`：配合一体成型 TPU 表带入口（`c08b-shell-r12` / `c08b-shell-r13-notch`）的 34P 四层双片软板（含 `strap-{a,b}-3d.step`）。
 - `pod-d1/`：穿在现成 `25 mm` 魔术贴表带上的独立 TPU95A 电极豆方案（`pod_d1.step`、7 连条 `pod_strip_d1.{step,stl}` 与 Bambu X2D 切片包 `.3mf`）。
 - `firmware-guide.md`：双片 `ADS1298` 同源 `2.048 MHz` 同步采样状态机与寄存器配置手册。

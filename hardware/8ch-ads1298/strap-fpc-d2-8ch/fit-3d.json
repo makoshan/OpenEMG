@@ -1,0 +1,44 @@
+{
+  "capsule_component_solids": 12,
+  "six_electrode_tip_z_mm": [
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256,
+    -2.256
+  ],
+  "cap_outer_bottom_z_mm": -1.056,
+  "protrusion_mm": [
+    1.2,
+    1.2,
+    1.2,
+    1.2,
+    1.2,
+    1.2
+  ],
+  "r0603_centers_and_top_z_in_box_mm": [
+    [
+      0.0,
+      12.5,
+      0.417
+    ],
+    [
+      8.6,
+      -1.4,
+      0.417
+    ]
+  ],
+  "nominal_interference_mm3": {
+    "vs_tray_d2": 0.0,
+    "vs_cap_d2": 0.0,
+    "resistors_vs_spacer_windows": 0.0
+  },
+  "negative_controls_interference_mm3": {
+    "no_spacer_shift_up_0p203mm_vs_tray_d2": 0.563946,
+    "mirror_x_asymmetric_r33_vs_tray_d2": 0.340369,
+    "cap_shift_x_0p40mm_vs_electrodes": 2.484074,
+    "spacer_missing_r34_window_vs_r34": 0.193009
+  },
+  "ok": true
+}

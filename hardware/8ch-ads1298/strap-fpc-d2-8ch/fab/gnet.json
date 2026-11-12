@@ -1,0 +1,34 @@
+{
+  "mode": "8ch",
+  "neg": "nominal",
+  "pth_holes": 69,
+  "four_layer_holes": 69,
+  "checked_pads": 88,
+  "nets": 37,
+  "stiffener_gerber_bounds": {
+    "0p10mm": [
+      [
+        28.86,
+        -58.75
+      ],
+      [
+        31.36,
+        -41.25
+      ]
+    ],
+    "0p20mm": [
+      [
+        12.4,
+        -62.6
+      ],
+      [
+        117.6,
+        -37.3
+      ]
+    ]
+  },
+  "nocu": [],
+  "opens": {},
+  "shorts": [],
+  "ok": true
+}

@@ -1,0 +1,79 @@
+{
+  "kicad": "10.0.6",
+  "pieces": {
+    "a": {
+      "board": "hardware/16ch-c08b-round/strap-fpc-d2/strap-a.kicad_pcb",
+      "source_sha256": "3656028295ee5df66a6f9ee198d6b1b87e2abab06f9c93f2d8d537d11f2b83a1",
+      "source_blob": "d26a4f51199ef48919bf56db481154c680976c54",
+      "smt_counts": {
+        "r100k_0402": 16,
+        "r200k_0603": 1,
+        "total_smt": 17
+      },
+      "outputs": {
+        "strap-a-gerber.zip": {
+          "sha256": "b7aa2a0929347eff62514fe4079e079649b750955a6199f48fbff409b0ebced8",
+          "bytes": 112311
+        },
+        "strap-a.d356": {
+          "sha256": "2a6397379717b406606b108a8ad72f7e08c91c644492792cb16be9063e3e8d26",
+          "bytes": 11443
+        },
+        "strap-a-jlc-bom.csv": {
+          "sha256": "8f02ec3046a201c5da45391360805dee20ee7bdc71a791fa78658501794d0b5e",
+          "bytes": 198
+        },
+        "strap-a-jlc-cpl.csv": {
+          "sha256": "d61ce0af6d76d47669a003dbd8e8b7ad19b981eb1df7e7538fde11d486ee6e53",
+          "bytes": 609
+        },
+        "strap-a-pads.tsv": {
+          "sha256": "e0477cde5c572b3a7e16f3a3108a8a3738bb2a410276f167397178d2e6205acf",
+          "bytes": 3066
+        },
+        "stiffener-map-a.png": {
+          "sha256": "6ca49ff715aff5d5ec15637debf05ae4de309488584db0cdeb1cae5724f3a090",
+          "bytes": 203952
+        }
+      }
+    },
+    "b": {
+      "board": "hardware/16ch-c08b-round/strap-fpc-d2/strap-b.kicad_pcb",
+      "source_sha256": "7c229f21ac1b0005cbcd1b2eac82f34a28684d30a4a32c95617ebcfb08a5f640",
+      "source_blob": "585d19ba4daeb62930db7c63a07ed1678fbd631e",
+      "smt_counts": {
+        "r100k_0402": 16,
+        "r200k_0603": 1,
+        "total_smt": 17
+      },
+      "outputs": {
+        "strap-b-gerber.zip": {
+          "sha256": "431751560e692bbd4a05a4797ab01ee9e06582358488e45b75b5bd0a427c3574",
+          "bytes": 128383
+        },
+        "strap-b.d356": {
+          "sha256": "b91204df384c8f79246b52b137b489a7952e2860ae87759d3f9980f20f883af4",
+          "bytes": 9593
+        },
+        "strap-b-jlc-bom.csv": {
+          "sha256": "cffbbd762a43c68c92aa908c7455c7db8f2ecd0cf9efbdb7f4808e37969d7219",
+          "bytes": 207
+        },
+        "strap-b-jlc-cpl.csv": {
+          "sha256": "a45ef4a26777a4a46aef732023e254672bf5d380d69344206743f13168beeed5",
+          "bytes": 618
+        },
+        "strap-b-pads.tsv": {
+          "sha256": "94dd0467a678c538c7fa6db8c262abcb9b9221a415c7c06ccf0775857cc68aaa",
+          "bytes": 3079
+        },
+        "stiffener-map-b.png": {
+          "sha256": "79ce8a2d0e84133ef3b888a886d440c76db3b2a28553c3a9b526fa80a609943d",
+          "bytes": 208439
+        }
+      }
+    }
+  },
+  "production_released": false,
+  "platform_verified": false
+}

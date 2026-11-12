@@ -1,5 +1,5 @@
 {
- "board": "/private/tmp/openemg-public/hardware/8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch.kicad_pcb",
+ "board": "hardware/8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch.kicad_pcb",
  "summary": {
   "odd_angle": 0,
   "sharp": 0,

@@ -1,0 +1,39 @@
+{
+  "board": "hardware/8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch.kicad_pcb",
+  "source_sha256": "17c3693a3dbe7b1cedf0568637dd54fd8c443e4a9a18febe2f06f845b9f25b03",
+  "source_blob": "c71d93b4c372093ae164770ad6cb30abfb96520a",
+  "kicad": "10.0.6",
+  "smt_counts": {
+    "r100k_0402": 16,
+    "r200k_0603": 2,
+    "total_smt": 18
+  },
+  "outputs": {
+    "strap-d2-8ch-gerber.zip": {
+      "sha256": "7ed551d45673be103c0e38796229d91567e8518711a3e672112675dae899c39d",
+      "bytes": 111855
+    },
+    "strap-d2-8ch.d356": {
+      "sha256": "86a917c5c54d3c8390153ac3f5bb85a17e776b81479f5daa66d5e55ac89aa219",
+      "bytes": 11665
+    },
+    "jlc_smt_bom.csv": {
+      "sha256": "5ec689fdd81b3efc480c4266bef3735183d522bffd23b8c4a469c055588fc8a0",
+      "bytes": 204
+    },
+    "jlc_smt_cpl.csv": {
+      "sha256": "5c1213bdb81f06321495342b028dfd4c9fe0d7c4acea8aec2d12accf420974ee",
+      "bytes": 645
+    },
+    "pads.tsv": {
+      "sha256": "6d9507b222009d860c9af55cac12520ea9c4eb4f5badb173614e7ef9069323f7",
+      "bytes": 3114
+    },
+    "stiffener-map.png": {
+      "sha256": "3b8c781faf04e977f5865b3eab17a626d66f50387c5e5e9115cbb00f90df3b99",
+      "bytes": 233898
+    }
+  },
+  "production_released": false,
+  "platform_verified": false
+}
