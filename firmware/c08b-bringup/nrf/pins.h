@@ -1,7 +1,7 @@
-/* 由 tools/pins.py 生成，别手改。核对源：r4u6-readback.json */
+/* 由 tools/pins.py 生成，别手改。核对源：C08B-main-R4U6.epcb2 */
 #pragma once
 #define BENCH_EN_PIN (0 * 32 + 0)  /* P0.00 脚2 MCU_BENCH_EN：台架解互锁，本固件保持低 */
-#define VBUS_SENSE_PIN (0 * 32 + 1)  /* P0.01 脚3 VBUS_SENSE：VBUS/2，数字读 */
+#define VBUS_SENSE_PIN (0 * 32 + 1)  /* P0.01 脚3 VBUS_SENSE：VBUS 68k/100k 分压（0.595×VBUS），数字读 */
 #define VBAT_SENSE_PIN (0 * 32 + 4)  /* P0.04 脚4 VBAT_SENSE：VBAT/2，SAADC AIN2 */
 #define PWR_HOLD_PIN (0 * 32 + 5)  /* P0.05 脚5 PWR_HOLD：高 = 保持供电 */
 #define LINK_RDY_PIN (0 * 32 + 7)  /* P0.07 脚6 LINK_RDY：拉高 = SPIS 已准备好 */

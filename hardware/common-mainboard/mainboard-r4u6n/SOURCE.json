@@ -1,0 +1,77 @@
+{
+ "name": "C08B-main-R4U6N",
+ "export": {
+  "input": "r4u6n-pre.epcb2",
+  "input_sha256": "381da4e5094a1e1b7230e38b199850c449e3ee76646a13d8e0cc80fa186f3862",
+  "pours": 4,
+  "saved": true,
+  "ratlines": 0,
+  "components": 119,
+  "files": {
+   "gerber": {
+    "file": "C08B-main-R4U6N-gerber.zip",
+    "client_name": "C08B-main-R4U6N",
+    "bytes": 236995,
+    "sha256": "d09a14382a0ecab53ba94fbb079c7d87d7adc77bece77cb2423f84193859d69c"
+   },
+   "bom": {
+    "file": "C08B-main-R4U6N-bom.csv",
+    "client_name": "C08B-main-R4U6N-bom.csv",
+    "bytes": 12206,
+    "sha256": "d4c8f2561eecd2140a6ad9cec9cf19df036158214cc894c43f7a9fd137d622cb"
+   },
+   "cpl": {
+    "file": "C08B-main-R4U6N-cpl.csv",
+    "client_name": "C08B-main-R4U6N-cpl",
+    "bytes": 34162,
+    "sha256": "3c3a49d72fdc8d42f2b3ad937ca17650083e40d760fd5d82ae31d93db0a766ed"
+   }
+  },
+  "repoured_sha256": "faec4e34c61976ca74c7dc80f3540a7eed2517b0d64973e73c0a5b848c453bf7"
+ },
+ "geometry": "r4u5-readback.json",
+ "geometry_sha256": "32c9a9bfb5b37f3a986fc30849c4b0c1a097a1f9d9ce7c9139413ccc5f736c32",
+ "bom_source": "bom-r4u6-src.csv",
+ "files": {
+  "C08B-main-R4U6N-gerber.zip": "68ef0932d104c68fabf1a92b2ee52325c71265df88ecbc9f43bd772ab18f79cd",
+  "jlc_smt_bom.csv": "038dde47ae949409684a107d3203dfea37e8545fdb5c21673719e837d3323158",
+  "jlc_smt_cpl.csv": "ac566c41c54efdceb0be2312256e1ae46faf4625f923abff74f6933bbd0584e7"
+ },
+ "placed": 109,
+ "not_placed": {
+  "J301": "焊盘",
+  "J302": "焊盘",
+  "J401": "电池焊盘",
+  "JP701": "不贴（BENCH_0R_DNP）",
+  "TP701": "测试点",
+  "TP702": "测试点",
+  "TP703": "测试点",
+  "TP704": "测试点",
+  "TP705": "测试点",
+  "R211": "不贴（BOOT0 改接 VBUS 分压点，不要 10k 下拉）"
+ },
+ "paste_removed": {
+  "GTP": [
+   "J301.1",
+   "J301.2",
+   "J301.3",
+   "J301.4",
+   "J301.5",
+   "J301.6",
+   "J401.1",
+   "J401.2",
+   "J401.3",
+   "JP701.1",
+   "JP701.2"
+  ]
+ },
+ "checks": {
+  "BOM 位号 = 坐标位号": true,
+  "板上件 = 贴片件 + 不贴件": true,
+  "BOM 每行有 LCSC": true,
+  "坐标都在板框内": true,
+  "拟合残差 < 0.5 mm": true,
+  "四层铜 + 阻焊 + 丝印 + 钢网 + 板框 + 钻孔": true
+ },
+ "production_released": false
+}

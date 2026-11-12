@@ -1,0 +1,19 @@
+{
+ "base": "base-NM2-meta.epcb2",
+ "new": "C08B-main-R4U6N.epcb2",
+ "allowed": {
+  "net_del": 2,
+  "line": 2,
+  "teardrop": 2,
+  "pad_net": 2,
+  "new_line": 2,
+  "poured": 4
+ },
+ "unexpected": [],
+ "negatives": {
+  "C53网名对调": 2,
+  "挪GND孔": 1,
+  "新线终点挪5mil": 1,
+  "新线拐点挪2mil": 2
+ }
+}

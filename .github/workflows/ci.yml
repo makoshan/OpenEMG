@@ -49,9 +49,11 @@ jobs:
           python hardware/2ch-ads1292/schematics/page1.py
           python hardware/8ch-ads1298/stacked-d20-8ch/verify_8ch_dnp.py
 
-      - name: Firmware pin table & host unit tests
+      - name: Firmware pin table & host unit tests (R4U6 + R4U6N + 16/8/2ch auto-detect)
         run: |
+          python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/r4u6-readback.json
+          python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2
           cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host
           /tmp/test_c08b_host
 

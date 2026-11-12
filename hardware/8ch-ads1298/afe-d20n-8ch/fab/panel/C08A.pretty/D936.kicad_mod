@@ -1,0 +1,209 @@
+(footprint "D936"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "X1SON 2 pin 0.6x1mm 0.375mm height package, https://www.ti.com/lit/ml/mpss034c/mpss034c.pdf, https://www.ti.com/lit/ds/symlink/tpd6e05u06.pdf")
+	(tags "X1SON")
+	(property "Reference" "D936"
+		(at 0 -1.25 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "a41e46fe-4af3-494e-877f-004ffb1b42a8")
+		(effects
+			(font
+				(size 0.89 0.89)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "ESD401DPYR"
+		(at 0 1.25 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "48d2b267-1570-4c18-bede-39f92caa7146")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bff527ff-0f3b-4eff-9d7c-8da807643166")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4ab087d2-147d-4558-b4be-39bcc180b87f")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "MPN" "ESD401DPYR"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "700aaf89-a0d1-4c6f-86df-b49d84459933")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(property "LCSC" "C1974752"
+		(at 0 0 180)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6b218bfd-9cdb-429d-a69c-afc3ebdd7ece")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+			(justify mirror)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_circle
+		(center -0.825 0)
+		(end -0.715 0)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill yes)
+		(layer "F.SilkS")
+		(uuid "639f3b15-aa7f-429a-8c51-7c8b94cbc83f")
+	)
+	(fp_rect
+		(start -0.65 -0.45)
+		(end 0.65 0.45)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "4b323a28-fc3c-4980-a1da-c7cd4ad02172")
+	)
+	(fp_line
+		(start -0.4 0.3)
+		(end -0.4 -0.3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "985d72a9-a053-4a9b-ab5a-a8fd9b075db8")
+	)
+	(fp_line
+		(start -0.3 0.3)
+		(end -0.3 -0.3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "51bbf88a-ae16-4667-a3d8-db59996b9c5a")
+	)
+	(fp_line
+		(start -0.2 0.3)
+		(end -0.2 -0.3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "6158089b-d3a7-47b7-a642-60c387282f79")
+	)
+	(fp_rect
+		(start -0.5 -0.3)
+		(end 0.5 0.3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "6e541f29-3619-4e20-b014-9066f6a4e40c")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "2f674775-558d-40c7-a040-a4b53bbd2701")
+		(effects
+			(font
+				(size 0.310921 0.310921)
+				(thickness 0.046638)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -0.35 0)
+		(size 0.3 0.5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.25)
+		(teardrops
+			(best_length_ratio 0.5)
+			(max_length 1)
+			(best_width_ratio 1)
+			(max_width 2)
+			(curved_edges no)
+			(filter_ratio 0.9)
+			(enabled yes)
+			(allow_two_segments yes)
+			(prefer_zone_connections yes)
+		)
+		(uuid "e9bb8129-3d83-4b51-80bd-c1c2fdf852c2")
+	)
+	(pad "2" smd roundrect
+		(at 0.35 0)
+		(size 0.3 0.5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.25)
+		(teardrops
+			(best_length_ratio 0.5)
+			(max_length 1)
+			(best_width_ratio 1)
+			(max_width 2)
+			(curved_edges no)
+			(filter_ratio 0.9)
+			(enabled yes)
+			(allow_two_segments yes)
+			(prefer_zone_connections yes)
+		)
+		(uuid "975aad57-415e-4a62-9678-1de313172ba4")
+	)
+	(embedded_fonts no)
+	(model "${KICAD10_3DMODEL_DIR}/Package_SON.3dshapes/Texas_DPY0002A_0.6x1mm_P0.65mm.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

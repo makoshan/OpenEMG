@@ -18,7 +18,7 @@
 
 ## A · 为什么 2 / 8 / 16 通道能共用同一个主控板与外壳家族？
 
-三档穿戴采集板均采用完全相同的 **`43.10 × 36.50 mm`（四角 `R4.6 mm` 圆角）** 四层板框与四角 `Ø1.7 mm` 安装孔 `(±19.05, ±15.75) mm`，并统一使用东南角的 **20P `0.5 mm` 下接 FPC 座（`FH34SRJ-20S-0.5SH(50)`，立创 `C2802370`，开口均朝南）** 进行上下叠板互联：
+三档穿戴采集板均采用完全相同的 **`43.10 × 36.50 mm`** 四层板框包络（同时提供配四角螺丝柱外壳 `R12` 的**圆孔版 `R4U6 / D20 / D20-8CH`**，以及配无螺丝抱柱外壳 `R13` 的**四角缺口版 `R4U6N / D20N / D20N-8CH`**，同档位两版 BOM/CPL 与走线 100% 一致），并统一使用东南角的 **20P `0.5 mm` 下接 FPC 座（`FH34SRJ-20S-0.5SH(50)`，立创 `C2802370`，开口均朝南）** 进行上下叠板互联，由 `firmware/c08b-bringup` 上电免跳线自动识别 `2ch / 8ch / 16ch`：
 
 | 主控 `J_AFE` 脚号 | 共用主控 `R4U6` 网名 | 对应采集端脚号 (`21-k`) | `16ch D20` 网名 | `8ch D20` 单面贴网名 | `2ch ADS1292` 网名 | 兼容性结论 |
 |---:|---|---:|---|---|---|---|
@@ -52,11 +52,14 @@
 
 | 档位与用途 | 工程文件路径 | 说明 |
 |---|---|---|
-| **16ch 上下板全套汇总** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
-| **16ch 采集板独立工程** | `16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20-原理图+PCB+3D.epro2` | 16ch 双面采集板单板工程 |
-| **8ch 纯单面上下板全套汇总** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6-采集D20-8CH单面.epro2` | 同时包含 `R4U6` 主控板、纯单面 `D20-8CH` 采集板与单侧 34P 软板原理图 + PCB |
-| **8ch 纯单面采集板独立工程** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-AFE采集板-D20-8CH-单面8路-原理图+PCB+3D.epro2` | 纯单面 8 路采集板（正面 76 颗贴片，背面 0 器件绿油绝缘） |
-| **共用主控 `R4U6` 源板** | `common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2` | 主控板定稿四层 PCB 源文件 |
+| **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
+| **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |
+| **16ch 采集板独立工程（圆孔 / 缺口）** | `16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20-原理图+PCB+3D.epro2`<br>`16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20N-缺口-原理图+PCB+3D.epro2` | 16ch 双面采集板单板工程（圆孔版与四角缺口版） |
+| **8ch 纯单面圆孔全套汇总（配 `R12` 壳）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6-采集D20-8CH单面.epro2` | 同时包含 `R4U6` 主控、纯单面 `D20-8CH` 采集板与单片 4 层软板 `D2-8CH` + 9 页原理图 |
+| **8ch 纯单面缺口全套汇总（配 `R13` 壳）** | `8ch-ads1298/afe-d20n-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6N-采集D20N-8CH单面.epro2` | 同时包含 `R4U6N` 缺口主控、纯单面缺口 `D20N-8CH` 采集板与单片软板 `D2-8CH` + 9 页原理图 |
+| **8ch 纯单面采集板独立工程（圆孔 / 缺口）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-AFE采集板-D20-8CH-单面8路-原理图+PCB+3D.epro2`<br>`8ch-ads1298/afe-d20n-8ch/jlc-eda/C08B-AFE采集板-D20N-8CH-缺口单面8路-原理图+PCB+3D.epro2` | 纯单面 8 路采集板（正面 76 颗贴片，背面 0 器件绿油绝缘） |
+| **8ch 单片 4 层表带软板 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/jlc-eda/C08B-表带软板-D2-8CH单片.epro2` | 单片 4 层 34P 软板（胶囊底双辅助 `200k` 串阻 + 6 窗 `0.20 mm` PI 垫片复用现成底盖） |
+| **共用主控 `R4U6` / `R4U6N` 源板** | `common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2`<br>`common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2` | 主控板定稿四层 `0.6 mm` PCB 源文件（圆孔版与四角缺口版） |
 | **入门上层 `P44e` XIAO 转接板** | `common-mainboard/adapter-p44e-xiao/jlc-eda/P44e-XIAO转接板-0.8mm-PCB+3D.epro2` | `17.78 × 21.00 mm` 双层（2 层）`0.8 mm` XIAO 转接主控工程 |
 | **入门 2ch `ADS1292` 六触点载板** | `2ch-ads1292/jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2` | 原理图 R9 + 四层 `0.8 mm` 底面六触点 PCB + 47 颗贴片 3D |
 | **8ch 柔性电极软板 `F04`** | `8ch-ads1298/jlc-eda/F04-八通道软板-原理图+PCB.epro2` | 八通道双层（2 层）FPC 柔性电极软板嘉立创工程参考 |
@@ -67,18 +70,22 @@
 
 ## C · 全系 3D 模型、参数化 CAD 源码与打印切片包索引
 
-### 1. 满载器件整板三维模型（`-3d.step`，已通过缺件零容忍门禁导出）
+### 1. 满载器件整板三维模型（16 块 `-3d.step`，已通过缺件零容忍门禁导出）
 
 | 模块 | 整板 STEP 路径 | 说明 |
 |---|---|---|
-| **共用双核主控 `R4U6`** | `common-mainboard/mainboard-r4u6/c08b-mainboard-r4u6-3d.step` | 含 `STM32L432`、`nRF52840`、沉板 `USB-C`、20P 座等全部 111 颗贴装件 |
+| **共用双核主控 `R4U6`（圆孔）** | `common-mainboard/mainboard-r4u6/c08b-mainboard-r4u6-3d.step` | 配螺丝壳 `R12`，含 `STM32L432`、`nRF52840`、沉板 `USB-C`、20P 座等全器件 |
+| **共用双核主控 `R4U6N`（四角缺口）** | `common-mainboard/mainboard-r4u6n/c08b-mainboard-r4u6n-3d.step` | 配无螺丝抱柱壳 `R13`，精确四角缺口轮廓 + 全器件 3D 实体 |
 | **入门 `XIAO` 转接板 `P44e`** | `common-mainboard/adapter-p44e-xiao/p44e-3d.step` | 含官方 `Seeed XIAO nRF52840` 模块、底面 `J1` 20P 座与互锁阻容二极管 |
 | **入门 2ch `ADS1292` 一体板** | `2ch-ads1292/board/ads1292-2ch-3d.step` | 含 `ADS1292`、`J2` 20P 座、ESD 阵列及底面两排 6 颗镀金电极铜片 |
-| **8ch 纯单面专属叠板 `D20-8CH`** | `8ch-ads1298/afe-d20-8ch/afe-d20-8ch-3d.step` | 纯单面 8 路专属 PCB，顶面 76 颗贴装件满载，背面 0 器件绿油绝缘 |
+| **8ch 纯单面专属叠板 `D20-8CH`（圆孔）** | `8ch-ads1298/afe-d20-8ch/afe-d20-8ch-3d.step` | 配 `R12` 壳，顶面 76 颗贴装件满载，背面 0 器件绿油绝缘 |
+| **8ch 纯单面专属叠板 `D20N-8CH`（缺口）** | `8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch-3d.step` | 配无螺丝壳 `R13`，四角缺口板框 + 顶面 76 颗贴装件满载 |
+| **8ch 单片 4 层表带软板 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch-3d.step` | 单片直插 `V4_FPC1`，含 16+2 镀金电极铜片与 100k/200k 保护串阻 |
 | **8ch 共板单面贴兼容版** | `8ch-ads1298/stacked-d20-8ch/c08b-afe-d20-8ch-single-3d.step` | 16ch 裸板顶面 76 颗满贴、底面 51 颗从片支路空贴（`--no-dnp` 构型） |
 | **8ch 台架开发板 `V12-R01`** | `8ch-ads1298/r01-bench/v12-r01-3d.step` | 含 `ADS1298`、`J1` 2×8 排针座、`J3` Micro-Fit 3.0 电极座及全部 198 颗实物器件 |
 | **8ch 柔性表带软板 `F04`** | `8ch-ads1298/f04-strap-fpc/fpc-f04-3d.step` | 含 17 处 `Harwin S7231` 弹片名义包络 |
-| **16ch 旗舰双面采集板 `D20`** | `16ch-c08b-round/afe-d20/c08b-afe-d20-3d.step` | 正反双面双 `ADS1298` + 双 34P 座 + 20P 座共 127 颗器件满贴（`FPC2-fh34.step` 已随附于 `assembly/models/`） |
+| **16ch 旗舰双面采集板 `D20`（圆孔）** | `16ch-c08b-round/afe-d20/c08b-afe-d20-3d.step` | 配 `R12` 壳，正反双面双 `ADS1298` + 双 34P 座 + 20P 座共 127 颗器件满贴 |
+| **16ch 旗舰双面采集板 `D20N`（缺口）** | `16ch-c08b-round/afe-d20n/c08b-afe-d20n-3d.step` | 配无螺丝壳 `R13`，四角缺口板框 + 正反双面 127 颗器件满贴 |
 | **16ch 表带软板 `D2`（A/B 片）** | `16ch-c08b-round/strap-fpc-d2/strap-{a,b}-3d.step` | 含 100k/200k 保护串阻与皮肤面镀金电极铜片 |
 | **16ch 表带软板 `R15`（A/B 片）** | `16ch-c08b-round/strap-fpc-r15/strap-{a,b}-3d.step` | 适配一体成型 TPU 表带入口的 34P 四层双片软板 |
 

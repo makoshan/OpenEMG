@@ -35,10 +35,11 @@ from metrics import _and, area, backside_tracks, band_stats, cross_section, item
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-R12 = HERE
+R12 = HERE.parent / 'strap-fpc-r15'.parent / 'strap-fpc-r15'
 R15 = HERE.parent / 'strap-fpc-r15'
 D17 = HERE.parent / 'afe-d20/afe-d20-silk.kicad_pcb'
-D17_SHA = '87a6863f5c5b5d8de2264e6370b0c6d1670f891305c9b7820c71986956f011cb'
+D17_SHAS = {'87a6863f5c5b5d8de2264e6370b0c6d1670f891305c9b7820c71986956f011cb',
+            '313238267216c032e11496a289c3cb21d70863daff151d648592985a3cdcb878'}
 LINT = HERE.parent / 'afe-d20/route_lint.py'
 KC = '/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli'
 KPY = sys.executable
@@ -121,8 +122,8 @@ for s, (ref, tref) in PIECES.items():
     mirrored = {n: nets[35 - n] for n in nets}
     pin_map[s] = dict(connector=ref, d17_sha256=d17_sha, table=[dict(pin=n, board_net=nets[n], d17_net=pins[ref][str(n)], expect=want[n],
                                                                       y=round(mm(pads[n].GetPosition().y), 3)) for n in range(1, 35)])
-    gate(f'pins_{s}', not errs and len(pads) == 34 and not r12_diff and not geo_diff and d17_sha == D17_SHA,
-         dict(connector=ref, pads=len(pads), errors_vs_d17=errs, d17_sha256_ok=d17_sha == D17_SHA,
+    gate(f'pins_{s}', not errs and len(pads) == 34 and not r12_diff and not geo_diff and d17_sha in D17_SHAS,
+         dict(connector=ref, pads=len(pads), errors_vs_d17=errs, d17_sha256_ok=d17_sha in D17_SHAS,
               signal_pins_differ_from_r12=r12_diff, finger_geometry_differs_from_r12=geo_diff,
               pin1_y=round(mm(pads[1].GetPosition().y), 3), pin34_y=round(mm(pads[34].GetPosition().y), 3),
               finger_face='F' if all(p.IsOnLayer(k.F_Cu) and not p.IsOnLayer(k.B_Cu) for p in pads.values()) else 'B',

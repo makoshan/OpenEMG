@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "C08A")(type "KiCad")(uri "${KIPRJMOD}/libs/C08A.pretty")(options "")(descr "C08B 采集板本地封装库"))
+)

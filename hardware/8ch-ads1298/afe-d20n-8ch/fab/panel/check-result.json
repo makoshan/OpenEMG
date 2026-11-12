@@ -1,0 +1,115 @@
+{
+  "board_sha256": "b9814a94adf28d28efac66f10b5a198649feeaa2c407add76dfe2555a3c6bd62",
+  "source_sha256": "1d5dd19ae77378b8bb4e1ebcf8e4ea27b224799f766247868c5bf966470d44e3",
+  "original_footprints_pads_tracks_zones_equal": true,
+  "panel_mm": [
+    70.2,
+    70.2
+  ],
+  "connected_pieces": 1,
+  "negative_without_tabs_pieces": 2,
+  "pth": 249,
+  "npth": 35,
+  "marks_per_side": 3,
+  "missing_drill_control_caught": true,
+  "gerber_fill_equal_board": true,
+  "thermal": {
+    "order": [
+      "V4_C33",
+      "V4_C34",
+      "V4_C81",
+      "V4_C82",
+      "V4_C84",
+      "V4_C32",
+      "V4_C37",
+      "V4_C123",
+      "C901"
+    ],
+    "pads": {
+      "V4_C33": {
+        "connections": 2,
+        "coverage": 0.136,
+        "mid_gap": {
+          "connections": 2,
+          "coverage": 0.1
+        }
+      },
+      "V4_C34": {
+        "connections": 2,
+        "coverage": 0.143,
+        "mid_gap": {
+          "connections": 3,
+          "coverage": 0.146
+        }
+      },
+      "V4_C81": {
+        "connections": 2,
+        "coverage": 0.177,
+        "mid_gap": {
+          "connections": 2,
+          "coverage": 0.154
+        }
+      },
+      "V4_C82": {
+        "connections": 2,
+        "coverage": 0.14,
+        "mid_gap": {
+          "connections": 3,
+          "coverage": 0.322
+        }
+      },
+      "V4_C84": {
+        "connections": 2,
+        "coverage": 0.134,
+        "mid_gap": {
+          "connections": 2,
+          "coverage": 0.099
+        }
+      },
+      "V4_C32": {
+        "connections": 3,
+        "coverage": 0.21,
+        "mid_gap": {
+          "connections": 3,
+          "coverage": 0.179
+        }
+      },
+      "V4_C37": {
+        "connections": 3,
+        "coverage": 0.201,
+        "mid_gap": {
+          "connections": 3,
+          "coverage": 0.148
+        }
+      },
+      "V4_C123": {
+        "connections": 3,
+        "coverage": 0.262,
+        "mid_gap": {
+          "connections": 3,
+          "coverage": 0.211
+        }
+      },
+      "C901": {
+        "connections": 1,
+        "coverage": 1.0
+      }
+    }
+  },
+  "thermal_lost_control": [
+    "V4_C33 连接数 1 ≠ 2",
+    "V4_C33 铜把焊盘围住了（1.0/0.988），thermal 丢失"
+  ],
+  "stale_d18_panel_control": true,
+  "openings": {
+    "F_Paste.gtp": 305,
+    "B_Paste.gbp": 0,
+    "F_Mask.gts": 345,
+    "B_Mask.gbs": 35
+  },
+  "mouse_bite_edge_to_copper_min_mm": 0.36,
+  "moved_parts_to_tab_min_mm": 4.71,
+  "drc_errors": 0,
+  "drc_warnings_except_lib_table": 0,
+  "drc_unconnected": 0
+}

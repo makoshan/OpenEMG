@@ -1,0 +1,41 @@
+{
+ "file": "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch.kicad_pcb",
+ "holes_removed": [
+  "H901",
+  "H902",
+  "H903",
+  "H904"
+ ],
+ "single_sided": true,
+ "sha256": "1d5dd19ae77378b8bb4e1ebcf8e4ea27b224799f766247868c5bf966470d44e3",
+ "files": {
+  "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch.kicad_pcb": {
+   "blob": "178bf64d9648c375531afc36974f50a2f3cdfb52",
+   "sha256": "1d5dd19ae77378b8bb4e1ebcf8e4ea27b224799f766247868c5bf966470d44e3",
+   "bytes": 1909611
+  },
+  "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch.kicad_pro": {
+   "blob": "b05d26338836b28ec334e185f9d3e820459d31d1",
+   "sha256": "b2c6c9fa323696130c1641ae46d929bb353b4d20cb180d605b6f49fcf83b5e7a",
+   "bytes": 11248
+  },
+  "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch.kicad_dru": {
+   "blob": "6b40f1003d7a5254a47d2e25ece5a03712b2a9ec",
+   "sha256": "02f8f03a8c790e0ed7e25c71cb1e18a9e2c73ad6ffd39b35ec37759fc927e2c8",
+   "bytes": 701
+  },
+  "hardware/8ch-ads1298/afe-d20n-8ch/jlc_smt_bom.csv": {
+   "blob": "65cf0a8f03037f1c226ec419cacd33a5f912b25c",
+   "sha256": "4d330ad0a38bb4f6aa841c5816197186d79cf4f3f8f225c8c3658d878c26cbc6",
+   "bytes": 1396
+  },
+  "hardware/8ch-ads1298/afe-d20n-8ch/jlc_smt_cpl.csv": {
+   "blob": "28c56631e7212796a93a072f8e78770c114b90f4",
+   "sha256": "ba082820fd36bf744c6b823600771f8ab9a879f8558236ff6d9d9599ecee9fac",
+   "bytes": 2773
+  }
+ },
+ "kicad": "10.0.6",
+ "production_released": false,
+ "platform_verified": false
+}

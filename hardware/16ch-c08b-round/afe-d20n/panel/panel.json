@@ -1,0 +1,59 @@
+{
+ "source_sha256": "e37f97340f85ed9715cbae572220c9d819f1a2d29e1882eb2de4b455b3691985",
+ "panel_mm": [
+  70.2,
+  70.2
+ ],
+ "outline": {
+  "pieces": 1,
+  "holes": [
+   7
+  ],
+  "negative_without_tabs": 2
+ },
+ "tabs": {
+  "W": [
+   [
+    10,
+    14
+   ],
+   [
+    24,
+    28
+   ]
+  ],
+  "N": [
+   [
+    5.5,
+    8.5
+   ],
+   [
+    34.5,
+    37.5
+   ]
+  ],
+  "S": [
+   [
+    10,
+    14
+   ],
+   [
+    22,
+    26
+   ]
+  ],
+  "E": [
+   [
+    6,
+    10
+   ]
+  ]
+ },
+ "bites": 31,
+ "tooling": 4,
+ "marks_per_side": 3,
+ "no_paste": [],
+ "zip": "c08b-afe-d20n-panel-gerber.zip",
+ "zip_sha256": "511283a66f59d04a12ed84d3c0415c7d53e8028efed83631dd238030e898dfc7",
+ "kicad": "10.0.6"
+}

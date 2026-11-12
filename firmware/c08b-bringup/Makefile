@@ -3,6 +3,7 @@
 #   framework-cmsis（Cortex-M 内核头）、framework-cmsis-stm32l4@1.7.4（L432 器件头和启动文件）、
 #   framework-arduinoadafruitnrf52-seeed（其中 nordic/nrfx/mdk：nRF52840 器件头、启动文件、system 文件）。
 PIO_PKG ?= $(HOME)/.platformio/packages
+PY      ?= python3
 CORE    := $(PIO_PKG)/framework-cmsis/CMSIS/Core/Include
 L4      := $(PIO_PKG)/framework-cmsis-stm32l4
 MDK     := $(PIO_PKG)/framework-arduinoadafruitnrf52-seeed/cores/nRF5/nordic/nrfx/mdk
@@ -22,7 +23,7 @@ build:
 	mkdir -p build
 
 l432/pins.h nrf/pins.h: tools/pins.py
-	python3 tools/pins.py $(BOARD_JSON)
+	$(PY) tools/pins.py $(BOARD_JSON)
 
 build/l432.elf: l432/main.c l432/l432.ld l432/pins.h common/report.h common/rtt.h | build
 	$(CC) $(CFLAGS) -DSTM32L432xx -I l432 -I $(CORE) -I $(L4)/Include \

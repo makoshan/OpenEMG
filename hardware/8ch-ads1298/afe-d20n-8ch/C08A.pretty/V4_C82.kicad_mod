@@ -1,0 +1,128 @@
+(footprint "V4_C82"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(property "Reference" "V4_C82"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "39b376b2-cd2b-40e8-a9c4-90bb128f4878")
+		(effects
+			(font
+				(size 0.89 0.89)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "100nF"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "19e89330-62fe-4f72-be76-b2b07cef4225")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "4869b0f6-1668-4812-b3cb-30daa2ad8cc6")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "616d9f56-499d-45ce-81b9-f4fdff2768ee")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "MPN" "CL05B104KO5NNNC"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0758bd4a-83c9-485f-aaae-b8d314df378b")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "LCSC" "C1525"
+		(at 0 0 90)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9b0ff681-2b6d-44ca-bb8e-6a14b2caf1b6")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_poly
+		(pts
+			(xy -0.730114 -0.330002) (xy 0.730114 -0.330002) (xy 0.730114 0.330002) (xy -0.730114 0.330002)
+		)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "3809d5ac-fdf2-4c79-8928-3c7dfc37e47f")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "4c70972d-c97c-4477-b501-4b8fcda54a40")
+		(effects
+			(font
+				(size 0.20135 0.20135)
+				(thickness 0.030202)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -0.420115 0)
+		(size 0.499999 0.540004)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(zone_connect 1)
+		(thermal_bridge_width 0.15)
+		(thermal_bridge_angle 0)
+		(thermal_gap 0.3)
+		(uuid "8f29cfad-045a-4bfa-830f-35ce5a6d4669")
+	)
+	(pad "2" smd rect
+		(at 0.420115 0)
+		(size 0.499999 0.540004)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(thermal_bridge_angle 45)
+		(teardrops
+			(best_length_ratio 0.5)
+			(max_length 1)
+			(best_width_ratio 1)
+			(max_width 2)
+			(curved_edges no)
+			(filter_ratio 0.9)
+			(enabled yes)
+			(allow_two_segments yes)
+			(prefer_zone_connections yes)
+		)
+		(uuid "c12721a7-de90-4ae1-8184-deec61bbbe6e")
+	)
+	(embedded_fonts no)
+)

@@ -1,17 +1,17 @@
-/* 由 tools/pins.py 生成，别手改。核对源：r4u6-readback.json */
+/* 由 tools/pins.py 生成，别手改。核对源：C08B-main-R4U6.epcb2 */
 #pragma once
 #define ANA_EN_PORT GPIOC
 #define ANA_EN_PIN 14  /* PC14 脚2 ANA_EN：高 = 打开 AFE 缓冲（U10 反相出 OE_N） */
 #define AFE_GPIO3_PORT GPIOA
 #define AFE_GPIO3_PIN 0  /* PA0 脚6 AFE_GPIO3：ADS GPIO3，只读 */
 #define ADS_PWDN_PORT GPIOA
-#define ADS_PWDN_PIN 1  /* PA1 脚7 XIAO_PWDN：高 = ADS 工作 */
+#define ADS_PWDN_PIN 1  /* PA1 脚7 XIAO_PWDN：高 = ADS 工作（2CH 下兼作 ADS1292 PWDN/RESET） */
 #define DRDY_A_PORT GPIOA
 #define DRDY_A_PIN 2  /* PA2 脚8 XIAO_DRDY：U1 DRDY，低有效 */
 #define ADS_START_PORT GPIOA
-#define ADS_START_PIN 3  /* PA3 脚9 AFE_START：两片同沿启动 */
+#define ADS_START_PIN 3  /* PA3 脚9 AFE_START：同步启动转换 */
 #define DRDY_B_PORT GPIOA
-#define DRDY_B_PIN 4  /* PA4 脚10 AFE_DRDY_B：U2 DRDY，低有效 */
+#define DRDY_B_PIN 4  /* PA4 脚10 AFE_DRDY_B：16CH 为 U2 DRDY；2CH 为 AVDD_SENSE（3.0V 监测） */
 #define SPI1_SCK_PORT GPIOA
 #define SPI1_SCK_PIN 5  /* PA5 脚11 XIAO_SCLK：SPI1 AF5 */
 #define SPI1_MISO_PORT GPIOA
@@ -23,7 +23,7 @@
 #define CS_B_PORT GPIOB
 #define CS_B_PIN 1  /* PB1 脚15 MCU_CS_B：U2 片选，低有效 */
 #define ADS_RESET_PORT GPIOA
-#define ADS_RESET_PIN 8  /* PA8 脚18 XIAO_RESET：低脉冲复位 */
+#define ADS_RESET_PIN 8  /* PA8 脚18 XIAO_RESET：低脉冲复位（ADS1298） */
 #define IMU_SCL_PORT GPIOA
 #define IMU_SCL_PIN 9  /* PA9 脚19 IMU_SCL：I2C1 AF4，外部上拉 R198 */
 #define IMU_SDA_PORT GPIOA
@@ -45,4 +45,4 @@
 #define IMU_INT1_PORT GPIOB
 #define IMU_INT1_PIN 7  /* PB7 脚30 IMU_INT1：本固件只读 */
 #define BOOT0_PORT GPIOH
-#define BOOT0_PIN 3  /* PH3 脚31 VBUS_SENSE：R4U6 接 VBUS 分压，插 USB 上电直进 DFU */
+#define BOOT0_PIN 3  /* PH3 脚31 VBUS_SENSE：R4U6 起并入 VBUS 分压（68k/100k）：插 USB 上电进 ROM DFU，运行态只读不驱动 */

@@ -1,0 +1,720 @@
+{
+ "status": "已实现未验收：本机 DRC/几何/脚序/对孔/双辅助串阻检查见各项；未打样、未焊铜片、未插实物、未贴肤",
+ "board_sha256": "17c3693a3dbe7b1cedf0568637dd54fd8c443e4a9a18febe2f06f845b9f25b03",
+ "pins_8ch": {
+  "connector": "V4_FPC1",
+  "pads": 34,
+  "errors_vs_d17": [],
+  "errors_vs_d20_8ch": [],
+  "errors_vs_d20n_8ch": [],
+  "d17_sha256_ok": true,
+  "signal_pins_differ_from_r12": [],
+  "finger_geometry_differs_from_r12": [],
+  "pin1_y": 41.75,
+  "pin34_y": 58.25,
+  "finger_face": "F",
+  "negative_mirror_errors": 22,
+  "ok": true
+ },
+ "pin_order_negative": {
+  "swap_19_20_errors": 2,
+  "swap_pins": [
+   19,
+   20
+  ],
+  "mirror_errors": 22,
+  "ok": true
+ },
+ "contacts_d2_8ch": {
+  "strap_contacts": 12,
+  "total_resistors": 18,
+  "bad_pads": {},
+  "topology_errors": [],
+  "pair_spacing_mm": {
+   "3": 18.0,
+   "4": 18.0,
+   "5": 18.0,
+   "6": 18.0,
+   "7": 18.0,
+   "8": 18.0
+  },
+  "board_mask_margin": 0.0,
+  "ok": true
+ },
+ "tpu_hole_alignment_8ch": {
+  "tpu_build": "hardware/16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/build.py",
+  "holes_8ch": 12,
+  "matched": 12,
+  "worst_err_mm": 0.0,
+  "table": [
+   {
+    "ref": "E3N",
+    "strap_xy": [
+     9.0,
+     34.0
+    ],
+    "hole": [
+     9.0,
+     34.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E3P",
+    "strap_xy": [
+     -9.0,
+     34.0
+    ],
+    "hole": [
+     -9.0,
+     34.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E4N",
+    "strap_xy": [
+     9.0,
+     42.0
+    ],
+    "hole": [
+     9.0,
+     42.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E4P",
+    "strap_xy": [
+     -9.0,
+     42.0
+    ],
+    "hole": [
+     -9.0,
+     42.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E5N",
+    "strap_xy": [
+     9.0,
+     -32.0
+    ],
+    "hole": [
+     9.0,
+     -32.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E5P",
+    "strap_xy": [
+     -9.0,
+     -32.0
+    ],
+    "hole": [
+     -9.0,
+     -32.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E6N",
+    "strap_xy": [
+     9.0,
+     -40.0
+    ],
+    "hole": [
+     9.0,
+     -40.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E6P",
+    "strap_xy": [
+     -9.0,
+     -40.0
+    ],
+    "hole": [
+     -9.0,
+     -40.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E7N",
+    "strap_xy": [
+     9.0,
+     -48.0
+    ],
+    "hole": [
+     9.0,
+     -48.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E7P",
+    "strap_xy": [
+     -9.0,
+     -48.0
+    ],
+    "hole": [
+     -9.0,
+     -48.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E8N",
+    "strap_xy": [
+     9.0,
+     -56.0
+    ],
+    "hole": [
+     9.0,
+     -56.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E8P",
+    "strap_xy": [
+     -9.0,
+     -56.0
+    ],
+    "hole": [
+     -9.0,
+     -56.0
+    ],
+    "err_mm": 0.0
+   }
+  ],
+  "ok": true
+ },
+ "box_capsule_6pads_dual_bias": {
+  "ok": true,
+  "bad": [],
+  "contacts": [
+   {
+    "ref": "E1N",
+    "net": "CH1_N_E",
+    "board": [
+     50.5,
+     42.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "ref": "E1P",
+    "net": "CH1_P_E",
+    "board": [
+     50.5,
+     58.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "ref": "E2N",
+    "net": "CH2_N_E",
+    "board": [
+     65.5,
+     42.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "ref": "E2P",
+    "net": "CH2_P_E",
+    "board": [
+     65.5,
+     58.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "ref": "EB1",
+    "net": "BIAS_DRV1_E",
+    "board": [
+     65.5,
+     50.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 4.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "ref": "EB2",
+    "net": "BIAS_DRV1_EB2_E",
+    "board": [
+     50.5,
+     50.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 4.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   }
+  ],
+  "resistors": {
+   "R1": {
+    "value": "100k",
+    "nets": [
+     "CH1_P",
+     "CH1_P_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     50.5,
+     60.5
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     50.5,
+     56.2
+    ]
+   },
+   "R2": {
+    "value": "100k",
+    "nets": [
+     "CH1_N",
+     "CH1_N_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     50.5,
+     39.5
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     50.5,
+     43.6
+    ]
+   },
+   "R3": {
+    "value": "100k",
+    "nets": [
+     "CH2_P",
+     "CH2_P_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     65.5,
+     60.5
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     65.5,
+     56.2
+    ]
+   },
+   "R4": {
+    "value": "100k",
+    "nets": [
+     "CH2_N",
+     "CH2_N_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     65.5,
+     39.5
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     65.5,
+     43.6
+    ]
+   },
+   "R33": {
+    "value": "200k",
+    "nets": [
+     "BIAS_DRV1",
+     "BIAS_DRV1_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     59.4,
+     58.6
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     69.0,
+     54.8
+    ]
+   },
+   "R34": {
+    "value": "200k",
+    "nets": [
+     "BIAS_DRV1",
+     "BIAS_DRV1_EB2_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     45.5,
+     50.0
+    ],
+    "angle_deg": 0.0,
+    "r15_at": [
+     53.5,
+     50.0
+    ]
+   }
+  },
+  "negatives_red": {
+   "EB2 改回 Φ0.8 通孔": true,
+   "R34 阻值改 100k": true,
+   "R34 尾侧改接 AGND": true,
+   "E1N 右移 0.05": true,
+   "R34 右移 0.20": true
+  }
+ },
+ "tail_vs_r12": {
+  "tip_x": 28.86,
+  "tip_x_r12": 30.16,
+  "extension_mm": 1.3,
+  "width_mm": 17.5,
+  "stiffener_len": 2.5,
+  "ok": true
+ },
+ "drc_8ch": {
+  "violations": 0,
+  "unconnected": 0,
+  "kicad": "10.0.6",
+  "after_refill_zones": {
+   "violations": 0,
+   "unconnected": 0
+  },
+  "ok": true
+ },
+ "drc_negative_controls": {
+  "short_CH5_N_to_CH5_P": [
+   "tracks_crossing"
+  ],
+  "center_0.40_CH5_N_vs_CH6_P": [
+   "clearance :D2 不同网走线中心距0.47"
+  ],
+  "positive_center_0.47_same_place": [],
+  "via_in_dynamic_A_bridge1": [
+   "clearance :D2 铜间距",
+   "items_not_allowed :动态区禁孔-A桥1"
+  ],
+  "ok": true
+ },
+ "route_lint_8ch": {
+  "hard": 0,
+  "hard_items": {
+   "odd_angle": 0,
+   "sharp": 0,
+   "tee_acute": 0,
+   "width_jump": 0,
+   "dangling": 0,
+   "pad_exit": 0,
+   "multi_width": 0
+  },
+  "report_only": {
+   "pad_exit_side": 15,
+   "tee_90": 0,
+   "pad_exit_rotated": 0
+  },
+  "ok": true
+ },
+ "length_match": {
+  "segments": 16,
+  "worst_diff_mil": 0.0,
+  "worst_at": "CH1 尾→串阻",
+  "limit_mil": 10,
+  "ok": true
+ },
+ "geometry_8ch": {
+  "min_center_between_different_nets_mm": 0.495,
+  "at": {
+   "nets": [
+    "AGND",
+    "BIAS_DRV1"
+   ],
+   "layer": "F.Cu",
+   "at": [
+    35.205,
+    58.25
+   ]
+  },
+  "min_center_within_pair_mm": 0.3,
+  "within_pair_at": {
+   "nets": [
+    "CH1_N",
+    "CH1_P"
+   ],
+   "layer": "B.Cu",
+   "at": [
+    47.994,
+    44.15
+   ]
+  },
+  "min_track_copper_to_outline_mm": 0.315,
+  "min_track_copper_to_hole_edge_mm": null,
+  "min_via_copper_to_outline_mm": 0.5278,
+  "vias": 69,
+  "vias_in_dynamic_zones": 0,
+  "dyn_via_list": [],
+  "track_widths": [
+   0.15
+  ],
+  "ok": true
+ },
+ "tail_vias_8ch": {
+  "finger_face": "F",
+  "via_copper_to_finger_copper_mm": 3.82,
+  "via_hole_edge_to_finger_pad_mm": 3.945,
+  "nearest": {
+   "via": [
+    24.99,
+    53.56
+   ],
+   "via_net": "CH3_P",
+   "finger": "TAIL_A.25"
+  },
+  "finger_end_x": 30.56,
+  "ok": true
+ },
+ "stiffener_8ch": {
+  "layers": {
+   "User.2": {
+    "pieces": 14,
+    "area_mm2": 1341.26,
+    "island_contacts_backed": 18,
+    "min_contact_coverage": 0.9195,
+    "res_pads_covered": 0
+   }
+  },
+  "fingers_backed_on_opposite_face": true,
+  "outside_outline_mm2": 0.0,
+  "ok": true
+ },
+ "gnd_planes_8ch": {
+  "In1.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "A桥1",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.595
+    },
+    {
+     "zone": "A桥3",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A带根",
+     "copper_vs_board": 0.439,
+     "copper_vs_copperable": 0.529
+    },
+    {
+     "zone": "A尾折弯",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.552
+    },
+    {
+     "zone": "A桥2",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A北支",
+     "copper_vs_board": 0.437,
+     "copper_vs_copperable": 0.517
+    },
+    {
+     "zone": "A岛间20",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    }
+   ],
+   "max_copper_vs_copperable": 0.595,
+   "min_copper_vs_copperable": 0.517,
+   "mean_copper_vs_copperable": 0.566,
+   "holes_in_copper": 996,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  },
+  "In2.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "A桥1",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.595
+    },
+    {
+     "zone": "A桥3",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A带根",
+     "copper_vs_board": 0.439,
+     "copper_vs_copperable": 0.529
+    },
+    {
+     "zone": "A尾折弯",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.552
+    },
+    {
+     "zone": "A桥2",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A北支",
+     "copper_vs_board": 0.437,
+     "copper_vs_copperable": 0.517
+    },
+    {
+     "zone": "A岛间20",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    }
+   ],
+   "max_copper_vs_copperable": 0.595,
+   "min_copper_vs_copperable": 0.517,
+   "mean_copper_vs_copperable": 0.566,
+   "holes_in_copper": 996,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  },
+  "ok": true
+ },
+ "pad_edge_and_no_via_in_pad_8ch": {
+  "contact_pad_to_outline_min_mm": 0.35,
+  "via_to_contact_pad_min_mm": 0.2483,
+  "nearest_contact": "E1P",
+  "via_to_rect_pad_min_mm": 0.17,
+  "nearest_rect": "R5.1",
+  "ok": true
+ },
+ "strapside_flat_8ch": {
+  "islands": 6,
+  "spread_mm": 0.0,
+  "top_mm": 0.2,
+  "comps": [],
+  "negative_flip_r10_caught": true,
+  "ok": true
+ },
+ "skinside_res_envelope_8ch": {
+  "pockets": 12,
+  "worst_gap_mm": 0.8516,
+  "worst_at": "R11->E6P",
+  "negative_move_r10_gap_mm": 0.0568,
+  "ok": true
+ },
+ "tray_tail_slot_8ch": {
+  "slot_box": {
+   "x0": -8.95,
+   "x1": 8.95,
+   "y0": 17.99,
+   "y1": 18.996
+  },
+  "negative_bridge_slit_red": true,
+  "ok": true
+ },
+ "capsule_z_stack_vs_tray_d2": {
+  "ok": true,
+  "spacer_area_mm2": 809.28,
+  "fpc_back_pressed_z": -0.05,
+  "res_body_pad_overlap_mm2": 0.0,
+  "worst_clearance_mm": 0.047,
+  "resistors": [
+   {
+    "ref": "R1",
+    "part_top_z_pressed": 0.3,
+    "tray_d2_pocket_z": 0.347,
+    "clearance_mm": 0.047
+   },
+   {
+    "ref": "R2",
+    "part_top_z_pressed": 0.3,
+    "tray_d2_pocket_z": 0.347,
+    "clearance_mm": 0.047
+   },
+   {
+    "ref": "R3",
+    "part_top_z_pressed": 0.3,
+    "tray_d2_pocket_z": 0.347,
+    "clearance_mm": 0.047
+   },
+   {
+    "ref": "R4",
+    "part_top_z_pressed": 0.3,
+    "tray_d2_pocket_z": 0.347,
+    "clearance_mm": 0.047
+   },
+   {
+    "ref": "R33",
+    "part_top_z_pressed": 0.4,
+    "tray_d2_pocket_z": 0.447,
+    "clearance_mm": 0.047
+   },
+   {
+    "ref": "R34",
+    "part_top_z_pressed": 0.4,
+    "tray_d2_pocket_z": 0.65,
+    "clearance_mm": 0.25
+   }
+  ],
+  "negative_without_spacer_worst_clearance_mm": -0.153,
+  "negative_caught": true
+ },
+ "board_unchanged_by_check": {
+  "sha256": "17c3693a3dbe7b1cedf0568637dd54fd8c443e4a9a18febe2f06f845b9f25b03",
+  "ok": true
+ },
+ "fails": []
+}

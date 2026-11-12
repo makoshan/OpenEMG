@@ -1,0 +1,22 @@
+(version 1)
+(rule "J400_notch_edge"
+  (condition "A.Parent == 'J400'")
+  (constraint edge_clearance (min 0.20mm))
+)
+(rule "JLCPCB_4L_Ordinary_Via_0p30_0p40"
+  (constraint hole_size (min 0.30mm))
+  (constraint via_diameter (min 0.40mm))
+  (constraint annular_width (min 0.05mm))
+  (constraint track_width (min 0.10mm))
+  (constraint clearance (min 0.10mm))
+)
+
+(rule "Silk_to_exposed_pad_0p15"
+ (condition "A.Type == 'Pad' || B.Type == 'Pad'")
+ (constraint silk_clearance (min 0.15mm))
+)
+
+(rule "GND_AGND_moat_0p25"
+ (condition "A.Type == 'Zone' && B.Type == 'Zone' && ((A.NetName == 'GND' && B.NetName == 'AGND') || (A.NetName == 'AGND' && B.NetName == 'GND'))")
+ (constraint clearance (min 0.25mm))
+)

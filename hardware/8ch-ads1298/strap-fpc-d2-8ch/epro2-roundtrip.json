@@ -1,0 +1,133 @@
+{
+ "standalone_strap_epro2": {
+  "file": "C08B-表带软板-D2-8CH单片-20261112.epro2",
+  "sha256": "ef2a1e598a3c6992adb575b429c17f395d35e82ad087d0e55e917f451ac8db71",
+  "bytes": 214502
+ },
+ "C08B-8ch全套汇总-主控R4U6-采集D20-8CH单面-20261112.epro2": {
+  "schs": [
+   {
+    "name": "主控板-原理图",
+    "uuid": "13ca003f9a968eec"
+   },
+   {
+    "name": "采集板-原理图",
+    "uuid": "929483f04cb7c94a"
+   }
+  ],
+  "pcbs": [
+   {
+    "name": "主控板-PCB",
+    "comps": 119,
+    "lines": 1149,
+    "vias": 218,
+    "pours": 4,
+    "pads": 429,
+    "ratlines": 0,
+    "has_EB2": false,
+    "has_R34": true,
+    "has_EB2A": false
+   },
+   {
+    "name": "表带软板D2-8CH-PCB",
+    "comps": 37,
+    "lines": 354,
+    "vias": 69,
+    "pours": 2,
+    "pads": 88,
+    "ratlines": 0,
+    "has_EB2": true,
+    "has_R34": true,
+    "has_EB2A": false
+   },
+   {
+    "name": "采集板-PCB",
+    "comps": 82,
+    "lines": 653,
+    "vias": 249,
+    "pours": 9,
+    "pads": 311,
+    "ratlines": 0,
+    "has_EB2": false,
+    "has_R34": false,
+    "has_EB2A": false
+   }
+  ],
+  "epru_sch_pages": [
+   "AFE 板间接口",
+   "USB 与板间接口",
+   "电源",
+   "蓝牙",
+   "采样主控",
+   "1 单 ADS1298 采集",
+   "2 电极输入",
+   "3 模拟电源",
+   "4 J_AFE 接口"
+  ],
+  "sha256": "36499023adb9e6a04c018ff7478c7d53422702c72c5a2e332385219f1505869c",
+  "bytes": 1560298
+ },
+ "C08B-8ch全套汇总-主控R4U6N-采集D20N-8CH单面-20261112.epro2": {
+  "schs": [
+   {
+    "name": "主控板-原理图",
+    "uuid": "1175ffbaf3b29ae2"
+   },
+   {
+    "name": "采集板-原理图",
+    "uuid": "b01bf8b165254516"
+   }
+  ],
+  "pcbs": [
+   {
+    "name": "主控板-PCB",
+    "comps": 119,
+    "lines": 1149,
+    "vias": 218,
+    "pours": 4,
+    "pads": 425,
+    "ratlines": 0,
+    "has_EB2": false,
+    "has_R34": true,
+    "has_EB2A": false
+   },
+   {
+    "name": "表带软板D2-8CH-PCB",
+    "comps": 37,
+    "lines": 354,
+    "vias": 69,
+    "pours": 2,
+    "pads": 88,
+    "ratlines": 0,
+    "has_EB2": true,
+    "has_R34": true,
+    "has_EB2A": false
+   },
+   {
+    "name": "采集板-PCB",
+    "comps": 78,
+    "lines": 653,
+    "vias": 249,
+    "pours": 9,
+    "pads": 307,
+    "ratlines": 0,
+    "has_EB2": false,
+    "has_R34": false,
+    "has_EB2A": false
+   }
+  ],
+  "epru_sch_pages": [
+   "AFE 板间接口",
+   "USB 与板间接口",
+   "电源",
+   "蓝牙",
+   "采样主控",
+   "1 单 ADS1298 采集",
+   "2 电极输入",
+   "3 模拟电源",
+   "4 J_AFE 接口"
+  ],
+  "sha256": "49f2578eaf5a3178cb9d0b3506048ff0434c7ef697be280db111eee45a6296e9",
+  "bytes": 1523696
+ }
+}

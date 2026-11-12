@@ -167,12 +167,15 @@ enum { NF_HFXO = 1, NF_LINK = 2, NF_VBUS = 4, NF_CHRG = 8, NF_BTN = 16, NF_OE_OF
 
 static void print_report(const c08b_report_t *r)
 {
-    logf_("—— 收到 L432 报告 #%lu：done 0x%04X fail 0x%04X ——\n", (unsigned long)r->seq, r->done_mask, r->fail_mask);
+    afe_mode_t m = afe_detect(r->id_a, r->id_b);
+    int nch = m ? (int)m : 16;
+    logf_("—— 收到 L432 报告 #%lu（%s）：done 0x%04X fail 0x%04X ——\n",
+          (unsigned long)r->seq, afe_mode_name(m), r->done_mask, r->fail_mask);
     for (int t = 0; t < T_COUNT; t++)
-        logf_("  %-9s %s\n", TEST_NAME[t], !(r->done_mask >> t & 1) ? "没做" : (r->fail_mask >> t & 1) ? "不过" : "过");
+        logf_("  %-9s %s\n", TEST_NAME[t], !(r->done_mask >> t & 1) ? "跳过/没做" : (r->fail_mask >> t & 1) ? "不过" : "过");
     logf_("  ADS ID A=0x%02X B=0x%02X，回读错 A=%u B=%u，采样率 %u.%u Hz，不同步 %u，状态字错 %u，帧 %u\n", r->id_a, r->id_b,
           r->reg_bad_a, r->reg_bad_b, r->rate_hz_x10 / 10, r->rate_hz_x10 % 10, r->drdy_desync, r->bad_status, r->frames);
-    for (int c = 0; c < 16; c++) logf_("  CH%-2d 方波 %5u µV  底噪 %5u nV\n", c + 1, r->sig_pp_uv[c], r->noise_rms_nv[c]);
+    for (int c = 0; c < nch; c++) logf_("  CH%-2d 方波 %5u µV  底噪 %5u nV\n", c + 1, r->sig_pp_uv[c], r->noise_rms_nv[c]);
     logf_("  IMU 0x%02X  %d %d %d mg\n", r->imu_id, r->imu_mg[0], r->imu_mg[1], r->imu_mg[2]);
 }
 
@@ -238,7 +241,7 @@ int main(void)
         /* LED 闪码（低 = 亮） */
         int on;
         if (!have) on = (now / 100) & 1;
-        else if (!cur.fail_mask && cur.done_mask == (1u << T_COUNT) - 1) on = (now / 500) & 1;
+        else if (!cur.fail_mask && cur.done_mask == report_expected_done(cur.id_a, cur.id_b)) on = (now / 500) & 1;
         else {
             int k = 0; while (k < T_COUNT && !(cur.fail_mask >> k & 1)) k++;
             if (k == T_COUNT) k = 0;                      /* 只是没做全：闪 1 下 */

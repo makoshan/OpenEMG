@@ -3,7 +3,7 @@
 
 校验范围：
 1. 核心 3D 资产清单存在且几何格式真实有效：
-   - 11 块整板满载 -3d.step（2ch / 8ch单面 / 8ch台架 / 8ch软板 / 16ch双面 / 16ch两套双软板 / R4U6主控 / P44e转接板）
+   - 16 块整板满载 -3d.step（圆孔版与配 R13 无螺丝壳的四角缺口版：2ch / 8ch单面 / 8ch台架 / 8ch双路线软板 / 16ch双面 / 16ch双路线软板 / R4U6与R4U6N主控 / P44e转接板）
    - 3 套 46×40mm 外壳家族（ads1292-shell-r7、c08b-shell-r12、c08b-shell-r13-notch 含 Fusion .f3d 源档）
    - 4 套表带/电极豆套件（tpu-layer-d2、capsule-cap-d2、pod-d1、f04-openback-tpu）
    - 关键连接器与模块参考 3D 源（FPC2-fh34.step、GT-USB-7014D.step、XIAO-nRF52840-v15.step）
@@ -23,23 +23,30 @@ import zipfile
 from pathlib import Path
 
 REQUIRED_3D_ASSETS: tuple[str, ...] = (
-    # 12 块满载整板 -3d.step
+    # 16 块满载整板 -3d.step（含圆孔版与配 R13 无螺丝壳的四角缺口版）
     "hardware/common-mainboard/mainboard-r4u6/c08b-mainboard-r4u6-3d.step",
+    "hardware/common-mainboard/mainboard-r4u6n/c08b-mainboard-r4u6n-3d.step",
     "hardware/common-mainboard/adapter-p44e-xiao/p44e-3d.step",
     "hardware/2ch-ads1292/board/ads1292-2ch-3d.step",
     "hardware/8ch-ads1298/afe-d20-8ch/afe-d20-8ch-3d.step",
+    "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch-3d.step",
     "hardware/8ch-ads1298/stacked-d20-8ch/c08b-afe-d20-8ch-single-3d.step",
     "hardware/8ch-ads1298/r01-bench/v12-r01-3d.step",
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch-3d.step",
     "hardware/8ch-ads1298/f04-strap-fpc/fpc-f04-3d.step",
     "hardware/16ch-c08b-round/afe-d20/c08b-afe-d20-3d.step",
+    "hardware/16ch-c08b-round/afe-d20n/c08b-afe-d20n-3d.step",
     "hardware/16ch-c08b-round/strap-fpc-d2/strap-a-3d.step",
     "hardware/16ch-c08b-round/strap-fpc-d2/strap-b-3d.step",
     "hardware/16ch-c08b-round/strap-fpc-r15/strap-a-3d.step",
     "hardware/16ch-c08b-round/strap-fpc-r15/strap-b-3d.step",
     # 连接器与模块 3D 参考源
     "hardware/8ch-ads1298/afe-d20-8ch/assembly/models/FPC2-fh34.step",
+    "hardware/8ch-ads1298/afe-d20n-8ch/assembly/models/FPC2-fh34.step",
     "hardware/16ch-c08b-round/afe-d20/assembly/models/FPC2-fh34.step",
     "hardware/16ch-c08b-round/afe-d20/panel/assembly/models/FPC2-fh34.step",
+    "hardware/16ch-c08b-round/afe-d20n/assembly/models/FPC2-fh34.step",
+    "hardware/16ch-c08b-round/afe-d20n/panel/assembly/models/FPC2-fh34.step",
     "hardware/enclosure-46x40/c08b-shell-r12/GT-USB-7014D.step",
     "hardware/enclosure-46x40/ads1292-shell-r7/sources/XIAO-nRF52840-v15.step",
     # 2ch 外壳 R7
@@ -109,6 +116,9 @@ STALE_LEGACY_DIRS_RE = re.compile(
     r"c08b-d17-fpc34-4l-r15-meta18-20261108|"
     r"c08b-d17-fpc34-r12-20261107|"
     r"c08b-strap-fpc-d2-20261111|"
+    r"c08b-strap-fpc-d2-8ch-20261112|"
+    r"c08b-strap-layer-d2-20261111|"
+    r"mainboard-r4u6-boot0-20261111|"
     r"c08b-afe-relayout-20261102|"
     r"fpc-f04-budget|"
     r"f04-row-fixed|"
