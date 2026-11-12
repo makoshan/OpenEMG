@@ -6,9 +6,19 @@
 
 本项目用于算法研究、黑客松原型与硬件工程探索，**不是商业产品，也不是医疗器械**。
 
+![OpenEMG 成品整表与双通道一体盒正反三维光追渲染预览（斜视）](hardware/renders/openemg-finished-iso-dark.png)
+
+| 模块化开源复刻套件防静电 EVA 收纳示意（斜视） | 16ch / 8ch / 2ch 三档共用壳体叠板立体爆炸图（斜视） |
+|---|---|
+| ![套件收纳包装光追渲染预览](hardware/renders/openemg-kit-packaging-iso-dark.png) | ![三档叠板立体爆炸组装图光追渲染预览](hardware/renders/openemg-assembly-exploded-iso-dark.png) |
+
+| 多档位 34P 柔性电极软板、TPU 定位层与连续表带系统 | 板底直焊六触点、外扣六孔底盖与 Pod D1 干电极微距 |
+|---|---|
+| ![表带系统三维光追渲染预览](hardware/renders/openemg-strap-system-iso-dark.png) | ![镀金干电极微距三维光追渲染预览](hardware/renders/openemg-electrodes-iso-dark.png) |
+
 ![C08B 采集板 D20、共用主控 R4U6 与整机叠装三维光追渲染预览（斜视）](hardware/renders/c08b-overall-iso-dark.png)
 
-> *上图为 C08B 圆角双板（左：下层采集板 `D20`；中：共用上层主控 `R4U6`；右：透明外壳内双板与锂电池叠装空间示意）的哑光黑阻焊 + 沉金焊盘三维光追渲染预览，非实物照片。单板正交俯视与透视斜视高清渲染图见 [`hardware/renders/`](hardware/renders/)。*
+> *以上均为基于本仓原生 KiCad PCB（`.kicad_pcb`）与参数化三维结构（`.step` / `.glb`）生成的 Blender Cycles 影棚三维光追设计预览，**非实物照片，不代表制造或人体佩戴验收通过**；其中套件收纳图为模块化开源复刻防静电 EVA 收纳示意，非商业零售包装。全套 8 组 16 张正交俯视与透视斜视 `2400 × 1350` 高清渲染图及一键复现脚本见 [`hardware/renders/`](hardware/renders/)。*
 
 ---
 

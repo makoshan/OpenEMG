@@ -1,0 +1,62 @@
+{
+  "finished": [
+    {
+      "file": "openemg-finished-top-dark.png",
+      "clipped": 0.0,
+      "mean": 0.1559
+    },
+    {
+      "file": "openemg-finished-iso-dark.png",
+      "clipped": 0.0,
+      "mean": 0.071
+    }
+  ],
+  "packaging": [
+    {
+      "file": "openemg-kit-packaging-top-dark.png",
+      "clipped": 0.0,
+      "mean": 0.1338
+    },
+    {
+      "file": "openemg-kit-packaging-iso-dark.png",
+      "clipped": 0.0,
+      "mean": 0.0614
+    }
+  ],
+  "assembly": [
+    {
+      "file": "openemg-assembly-exploded-top-dark.png",
+      "clipped": 0.0,
+      "mean": 0.159
+    },
+    {
+      "file": "openemg-assembly-exploded-iso-dark.png",
+      "clipped": 0.0,
+      "mean": 0.0531
+    }
+  ],
+  "strap": [
+    {
+      "file": "openemg-strap-system-top-dark.png",
+      "clipped": 0.0,
+      "mean": 0.1402
+    },
+    {
+      "file": "openemg-strap-system-iso-dark.png",
+      "clipped": 0.0,
+      "mean": 0.0652
+    }
+  ],
+  "electrodes": [
+    {
+      "file": "openemg-electrodes-top-dark.png",
+      "clipped": 0.0,
+      "mean": 0.1503
+    },
+    {
+      "file": "openemg-electrodes-iso-dark.png",
+      "clipped": 0.0,
+      "mean": 0.0639
+    }
+  ]
+}

@@ -2,17 +2,20 @@
 
 本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL，全系 11 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
 
-### 三维光追渲染预览（`renders/`，哑光黑阻焊 + 沉金焊盘，非实物照片）
+### 三维光追渲染预览（[`renders/`](renders/)，基于源工程一键复现，非实物照片）
 
-| 视图 | 整体效果（左：采集板 `D20` · 中：共用主控 `R4U6` · 右：透明壳内双板与电池叠装示意） |
-|---|---|
-| **正交俯视** | ![C08B 整体三联正交俯视渲染](renders/c08b-overall-top-dark.png) |
-| **透视斜视** | ![C08B 整体三联透视斜视渲染](renders/c08b-overall-iso-dark.png) |
+> **边界说明**：以下 8 组 16 张图片均为 Blender Cycles 光追设计预览（哑光黑阻焊 + `#c8964a` 沉金焊盘 + 工程高透壳示意），不代表制造或人体佩戴验收；套件收纳图为模块化开源复刻防静电 EVA 收纳示意，非商业零售包装。复现脚本见 [`renders/README.md`](renders/README.md)。
 
-| 板卡 | 正交俯视（Top） | 透视斜视（Iso） |
+| 类别 | 正交俯视（Top） | 透视斜视（Iso） |
 |---|---|---|
-| **下板：采集板 `D20`** | ![采集板 D20 俯视渲染](renders/c08b-afe-d20-top-dark.png) | ![采集板 D20 斜视渲染](renders/c08b-afe-d20-iso-dark.png) |
-| **上板：主控板 `R4U6`** | ![主控板 R4U6 俯视渲染](renders/c08b-mainboard-top-dark.png) | ![主控板 R4U6 斜视渲染](renders/c08b-mainboard-iso-dark.png) |
+| **1 · 成品总览**<br>左：16ch `C08B R13` 整表正反双姿态<br>右：2ch `ADS1292 R7` 一体盒正反双姿态 | ![成品正交俯视渲染](renders/openemg-finished-top-dark.png) | ![成品透视斜视渲染](renders/openemg-finished-iso-dark.png) |
+| **2 · 开源复刻套件收纳示意**<br>`C08B` 胶囊 + `8ch/2ch` 可换采集板 + `P44e` + `34P` 软板 + `Pod D1` | ![套件收纳俯视渲染](renders/openemg-kit-packaging-top-dark.png) | ![套件收纳斜视渲染](renders/openemg-kit-packaging-iso-dark.png) |
+| **3 · 三档叠板立体爆炸组装图**<br>左 `16ch R13` · 中 `8ch D20-8CH` · 右 `2ch R7` | ![组装爆炸俯视渲染](renders/openemg-assembly-exploded-top-dark.png) | ![组装爆炸斜视渲染](renders/openemg-assembly-exploded-iso-dark.png) |
+| **4 · 柔性电极表带系统**<br>`16ch D2` A/B 软板 + `8ch D2-8CH` 单片软板 + `0.8 mm` TPU 定位层 + `F04` 连续表带 | ![表带系统俯视渲染](renders/openemg-strap-system-top-dark.png) | ![表带系统斜视渲染](renders/openemg-strap-system-iso-dark.png) |
+| **5 · 贴肤镀金干电极微距**<br>`2ch` 板底六触点 + 外扣六孔底盖 `Cap D2` + `Pod D1` 单豆分解与 16 节织带阵列 | ![电极微距俯视渲染](renders/openemg-electrodes-top-dark.png) | ![电极微距斜视渲染](renders/openemg-electrodes-iso-dark.png) |
+| **6 · C08B 双板与胶囊叠装总览**<br>左：采集板 `D20` · 中：主控 `R4U6` · 右：叠装透视 | ![C08B 整体三联正交俯视渲染](renders/c08b-overall-top-dark.png) | ![C08B 整体三联透视斜视渲染](renders/c08b-overall-iso-dark.png) |
+| **7 · 下板：采集板 `D20`** | ![采集板 D20 俯视渲染](renders/c08b-afe-d20-top-dark.png) | ![采集板 D20 斜视渲染](renders/c08b-afe-d20-iso-dark.png) |
+| **8 · 上板：共用主控 `R4U6`** | ![主控板 R4U6 俯视渲染](renders/c08b-mainboard-top-dark.png) | ![主控板 R4U6 斜视渲染](renders/c08b-mainboard-iso-dark.png) |
 
 ---
 
@@ -98,5 +101,5 @@
 | **2ch 六触点叠板壳 `R7`** | `enclosure-46x40/ads1292-shell-r7/` | `model.py`（自包含读取 `sources/XIAO-nRF52840-v15.step`）+ 总装 `host.step` + 单件可打印 `shell.step` / `lid.step` / `ads1292-r7-{shell,lid}.stl` + 1:1 纸样 PDF |
 | **16ch 表带 `0.8 mm` TPU 定位层 `D2`** | `16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/` | `build.py` / `check.py` + 南北段 `layer_d2_{north,south}.{step,stl}` + `layer_d2-X2D-TPU95A.3mf` + 1:1 纸样 PDF |
 | **8ch 表带 `0.8 mm` 短版 TPU 定位层 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/` | 南片缩短 `64.0 mm` 消除悬空盲孔：`layer_d2_8ch_{north,south}.{step,stl}` + `layer_d2_8ch-X2D-TPU95A.3mf` + 1:1 装配与 9448A / PI 垫片裁切纸样 PDF |
-| **16ch 独立电极豆 `Pod D1`** | `16ch-c08b-round/pod-d1/` | 穿在现成 `25 mm` 魔术贴表带上的独立 TPU95A 电极豆：`pod_d1.step`、7 连条 `pod_strip_d1.{step,stl}` 与 `pod_strip_d1-X2D-TPU95A.3mf` |
+| **16ch 独立电极豆 `Pod D1`** | `16ch-c08b-round/pod-d1/` | 穿在现成 `25 mm` 魔术贴表带上的独立 TPU95A 电极豆：`pod_d1.step`、16 连条 `pod_strip_d1.{step,stl}` 与 `pod_strip_d1-X2D-TPU95A.3mf` |
 | **8ch 背开口连续 TPU 表带 `F04`** | `8ch-ads1298/f04-openback-tpu/` | 自包含 `build.py` + 单排 `shell.step` / `shell-print.stl` + 9 排连续内衬 `liner.step` / `liner-print.stl` + 背装示意 `loading.step` + 总装 `assembled.step` |

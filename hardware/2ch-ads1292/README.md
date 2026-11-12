@@ -2,6 +2,12 @@
 
 状态：**已实现未验收**：DRC、走线规矩、贴肤门、制造包自检都过，门没有放宽；未打样、未上电、未贴肤，Mako 说过先不下。原理图和 `board/` 都是候选。方案 `ads1292-2ch-plan`（电极和主控接法以本文为准）；开源对照 `ads1292-open-schematics`；单故障 [`SINGLE-FAULT.md`](SINGLE-FAULT.md)；结构 [`../enclosure-46x40/ads1292-shell-r7/`](../enclosure-46x40/ads1292-shell-r7/README.md)。
 
+| `R7` 成品一体盒正反预览（右侧上下两枚） | 板底直焊六触点「大—辅—大」镀金干电极微距（左上） |
+|---|---|
+| ![2ch R7 成品预览](../renders/openemg-finished-top-dark.png) | ![2ch 板底六触点微距预览](../renders/openemg-electrodes-top-dark.png) |
+
+> *上图为三维光追设计预览，非实物照片，不代表制造或人体佩戴验收通过。*
+
 ## A 看什么
 
 | 文件 | 用途 |

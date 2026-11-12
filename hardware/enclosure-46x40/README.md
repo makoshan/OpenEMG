@@ -1,6 +1,10 @@
 # 通用 `46 × 40 mm` 圆润外壳结构家族（`enclosure-46x40`）
 
-> **验证状态**：CAD 参数化建模、跨目录自包含重算与布尔干涉/反例检查已通过，当前处于 3D 打印首件试配迭代阶段（名义尺寸，量产前请先打单件试配公差）。
+> **验证状态**：CAD 参数化建模、跨目录自包含重算与布尔干涉/反例检查已通过，当前处于 3D 打印首件试配迭代阶段（名义尺寸，量产前请先打单件试配公差）。下图为三维光追设计预览，非实物照片，不代表制造或人体佩戴验收通过。
+
+| 16ch 整表（`R13`）与 2ch 一体盒（`R7`）正反成品预览 | 16ch / 8ch / 2ch 三档共用壳体分层爆炸组装预览 |
+|---|---|
+| ![成品外观三维光追预览](../renders/openemg-finished-iso-dark.png) | ![三档叠板爆炸组装三维光追预览](../renders/openemg-assembly-exploded-iso-dark.png) |
 
 - **`c08b-shell-r12/`（8/16ch 四角螺丝柱圆角壳，配圆孔板 `R4U6 + D20 / D20-8CH`）**：适配圆孔上下叠板的 `46 × 40 mm` 光固化透明圆角螺丝壳，含单实体可打印 `tray`、`cover`、`switch_plunger`、东北角专用绝缘支柱 `pcb_standoff_ne` 与标准支柱（`.step`/`.stl`）、总装与爆炸图（`.step`/`.glb`）、外扣式六孔电极平底盖 `capsule-cap-d2/`（含 `.3mf` 切片工程）及一体成型表带切片 `slice-tpu-x2d-20261109/`。
 - **`c08b-shell-r13-notch/`（8/16ch 四角缺口无螺丝抱柱壳 + Fusion `.f3d`，配缺口板 `R4U6N + D20N / D20N-8CH`）**：将四角穿板圆孔柱改为抱进上下缺口版 PCB（[`mainboard-r4u6n`](../common-mainboard/mainboard-r4u6n/) + [`afe-d20n`](../16ch-c08b-round/afe-d20n/) / [`afe-d20n-8ch`](../8ch-ads1298/afe-d20n-8ch/)）四角方缺口的无螺丝抱柱结构（含上盖四根定位销与开关顶杆东西向导向脚），同时提供 **`build123d` 参数化源码（`build.py` / `check.py`）**、**Fusion 360 原生源档（`.f3d`）** 以及全部单件/总装/爆炸 `.step`、`.stl`、`.glb`。
