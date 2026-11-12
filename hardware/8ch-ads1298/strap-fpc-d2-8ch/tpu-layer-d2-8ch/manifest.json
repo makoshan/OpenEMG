@@ -1,0 +1,54 @@
+{
+  "variant": "D2-8CH",
+  "source_fpc_pcb": "hardware/8ch-ads1298/strap-fpc-d2-8ch/strap-d2-8ch.kicad_pcb",
+  "source_fpc_pcb_sha256": "17c3693a3dbe7b1cedf0568637dd54fd8c443e4a9a18febe2f06f845b9f25b03",
+  "pitch": 8.0,
+  "strap_channels": 6,
+  "total_system_channels": 8,
+  "hole_d": 6.5,
+  "disc_proud_flush_mm": 1.2,
+  "disc_proud_with_9448a_mm": 1.1,
+  "wall_to_edge": 0.85,
+  "wall_between_ch": 1.5,
+  "wall_to_end": 0.85,
+  "disc_inside_strap": 0.5,
+  "stack_t_fpc_tpu_mm": 1.003,
+  "stack_t_with_pi_and_9448a_mm": 1.303,
+  "pocket_floor": 0.35,
+  "pockets": {
+    "north": 4,
+    "south": 8
+  },
+  "north_to_loop": 6.35,
+  "north_to_ring": 29.05,
+  "south_to_loop": 4.8,
+  "south_saved_vs_16ch_mm": 64.0,
+  "north_y": [
+    29.9,
+    46.1
+  ],
+  "south_y": [
+    -60.1,
+    -27.9
+  ],
+  "north": {
+    "bbox": [
+      26.2,
+      16.2,
+      0.8
+    ],
+    "volume_mm3": 227.6,
+    "solids": 1,
+    "valid": true
+  },
+  "south": {
+    "bbox": [
+      26.2,
+      32.2,
+      0.8
+    ],
+    "volume_mm3": 452.0,
+    "solids": 1,
+    "valid": true
+  }
+}

@@ -96,6 +96,7 @@
 | **8/16ch 四角螺丝柱透明壳 `R12`** | `enclosure-46x40/c08b-shell-r12/` | `build.py` / `check.py` + 单件 `tray` / `cover` / `switch_plunger` / `standoff` (`.step`/`.stl`) + `assembly`/`exploded` (`.step`/`.glb`) + 外扣六孔底盖 `capsule-cap-d2/` (`.step`/`.stl`/`.3mf`) + 一体表带切片 `slice-tpu-x2d-20261109/` (`.3mf`) |
 | **8/16ch 无螺丝缺口抱柱壳 `R13`** | `enclosure-46x40/c08b-shell-r13-notch/` | `build.py` / `check.py` + **Fusion 360 原生源档 `.f3d`** + 单件 `tray` / `cover`（带定位销）/ `switch_plunger`（带导向脚）/ `lug_test_22mm` / 军绿表带 (`.step`/`.stl`) + 总装/爆炸 (`.step`/`.glb`) |
 | **2ch 六触点叠板壳 `R7`** | `enclosure-46x40/ads1292-shell-r7/` | `model.py`（自包含读取 `sources/XIAO-nRF52840-v15.step`）+ 总装 `host.step` + 单件可打印 `shell.step` / `lid.step` / `ads1292-r7-{shell,lid}.stl` + 1:1 纸样 PDF |
-| **16ch 表带 `0.8 mm` TPU 定位层 `D2`** | `16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/` | `build.py` / `check.py` + 南北段 `layer_d2_{north,south}.{step,stl}` + `layer_d2-X2D-TPU95A.3mf` |
+| **16ch 表带 `0.8 mm` TPU 定位层 `D2`** | `16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/` | `build.py` / `check.py` + 南北段 `layer_d2_{north,south}.{step,stl}` + `layer_d2-X2D-TPU95A.3mf` + 1:1 纸样 PDF |
+| **8ch 表带 `0.8 mm` 短版 TPU 定位层 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/` | 南片缩短 `64.0 mm` 消除悬空盲孔：`layer_d2_8ch_{north,south}.{step,stl}` + `layer_d2_8ch-X2D-TPU95A.3mf` + 1:1 装配与 9448A / PI 垫片裁切纸样 PDF |
 | **16ch 独立电极豆 `Pod D1`** | `16ch-c08b-round/pod-d1/` | 穿在现成 `25 mm` 魔术贴表带上的独立 TPU95A 电极豆：`pod_d1.step`、7 连条 `pod_strip_d1.{step,stl}` 与 `pod_strip_d1-X2D-TPU95A.3mf` |
 | **8ch 背开口连续 TPU 表带 `F04`** | `8ch-ads1298/f04-openback-tpu/` | 自包含 `build.py` + 单排 `shell.step` / `shell-print.stl` + 9 排连续内衬 `liner.step` / `liner-print.stl` + 背装示意 `loading.step` + 总装 `assembled.step` |

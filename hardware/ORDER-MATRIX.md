@@ -47,13 +47,31 @@
 
 ---
 
-## C · 首板烧录与十步硬件自检（`firmware/c08b-bringup/`）
+## C · 配套 3D 打印结构件与 1:1 装配裁胶纸样
 
-1. **引脚与主机单测门禁**：
+| 适用版本 | 零件 / 纸样 | 规格与打印工艺 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
+|---|---|---|---|---|
+| **8ch + 16ch 共用** | 胶囊电极底盖切片包 `cap_d2` | Bambu X2D `TPU 95A HF` 一盘两件（4 圆孔 `Φ6.5` + 2 方孔 `3.5×3.5`） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/cap_d2_x2-X2D-TPU95A.3mf` | `b49b121d` |
+| **8ch + 16ch 共用** | 胶囊底壳外发 STEP `tray_d2` | 3D 打印树脂外发件（8ch 靠胶囊背 6 窗 `0.20 mm` PI 垫片零改模复用） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/tray_d2.step` | `b76c2a66` |
+| **8 通道专属** | 表带 TPU 电极层切片包 `layer_d2_8ch` | Bambu X2D `TPU 95A HF` `0.16mm`（北 `26.2×16.2` + 南 **`26.2×32.2`**，5 层、`10m 2s`、`0.86 g`） | `hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch-X2D-TPU95A.3mf` | `6189e957` |
+| **8 通道专属** | 1:1 装配与 9448A / PI 垫片裁切纸样 | A4 横版 `100%` 打印（含北/南 9448A 与胶囊 PI 垫片独立 1:1 裁切模板 + 横纵双轴校准尺） | `hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/paper_pattern_d2_8ch_1to1_A4.pdf` | `5f69d2c3` |
+| **16 通道专属** | 表带 TPU 电极层切片包 `layer_d2` | Bambu X2D `TPU 95A HF` `0.16mm`（北 `26.2×16.2` + 南 `26.2×96.2`，`17.5m`、`2.30 g`） | `hardware/16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/layer_d2-X2D-TPU95A.3mf` | `06d8448b` |
+| **16 通道专属** | 1:1 表带对位纸样 | A4 横版 `100%` 打印（14 路表带 + 胶囊 6 点） | `hardware/16ch-c08b-round/strap-fpc-d2/tpu-layer-d2/paper_pattern_d2_1to1_A4.pdf` | `701e7d65` |
+
+---
+
+## D · 首板烧录、十步硬件自检与主机解码（`firmware/c08b-bringup/`）
+
+1. **引脚、主机单测与解码器自检门禁**：
    ```bash
    python3 firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2
+   python3 -B firmware/c08b-bringup/tools/decode_bringup.py --self-test
    cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host && /tmp/test_c08b_host
    ```
 2. **固件刷写路径**：
-   - `nRF52840`（`U13`）：经 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`。
-   - `STM32L432KC`（`U18`）：`R4U6 / R4U6N` 已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+   - `nRF52840`（`U13`）：经 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`（`c4d046ab`）。
+   - `STM32L432KC`（`U18`）：`R4U6 / R4U6N` 已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `e20c509d`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+3. **手机广播与 97 字节报告一键判读（免调试器）**：
+   - 手机 nRF Connect 复制 `0xFFFF` 厂商十六进制串：`python3 -B firmware/c08b-bringup/tools/decode_bringup.py --ble-hex "<HEX>"`
+   - SWD / GDB 导出 97 字节 `g_report`：`python3 -B firmware/c08b-bringup/tools/decode_bringup.py --report-hex "<HEX>"`
+   - 若解码器报 `CRITICAL_USB_INTERLOCK_BYPASSED`（`VBUS=1` 且 `OE_N=0`），立即断电排查互锁电路，严禁接触人体。

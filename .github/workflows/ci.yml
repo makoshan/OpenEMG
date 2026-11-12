@@ -59,6 +59,7 @@ jobs:
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/r4u6-readback.json
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2
+          python firmware/c08b-bringup/tools/decode_bringup.py --self-test
           cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host
           /tmp/test_c08b_host
 

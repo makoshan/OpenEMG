@@ -5,7 +5,7 @@
 1. 核心 3D 资产清单存在且几何格式真实有效：
    - 16 块整板满载 -3d.step（圆孔版与配 R13 无螺丝壳的四角缺口版：2ch / 8ch单面 / 8ch台架 / 8ch双路线软板 / 16ch双面 / 16ch双路线软板 / R4U6与R4U6N主控 / P44e转接板）
    - 3 套 46×40mm 外壳家族（ads1292-shell-r7、c08b-shell-r12、c08b-shell-r13-notch 含 Fusion .f3d 源档）
-   - 4 套表带/电极豆套件（tpu-layer-d2、capsule-cap-d2、pod-d1、f04-openback-tpu）
+   - 5 套表带/电极豆套件（tpu-layer-d2、tpu-layer-d2-8ch、capsule-cap-d2、pod-d1、f04-openback-tpu）
    - 关键连接器与模块参考 3D 源（FPC2-fh34.step、GT-USB-7014D.step、XIAO-nRF52840-v15.step）
 2. 格式真伪校验（拒绝空文件、截断 STEP、坏三角网格 STL、伪造 GLB 或损坏 .3mf/.f3d 压缩包）。
 3. 全仓 .kicad_pcb 的 (model "...") 路径零断链且零本机绝对路径（${KIPRJMOD}/... 必须在仓内真实存在）。
@@ -95,6 +95,12 @@ REQUIRED_3D_ASSETS: tuple[str, ...] = (
     "hardware/16ch-c08b-round/pod-d1/pod_strip_d1.step",
     "hardware/16ch-c08b-round/pod-d1/pod_strip_d1.stl",
     "hardware/16ch-c08b-round/pod-d1/pod_strip_d1-X2D-TPU95A.3mf",
+    # 8ch 单片软板专属短版表带 TPU 开孔层 D2-8CH（含 X2D 切片包）
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch_north.step",
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch_north.stl",
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch_south.step",
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch_south.stl",
+    "hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch-X2D-TPU95A.3mf",
     # 8ch 背开口连续 TPU 表带套件 F04
     "hardware/8ch-ads1298/f04-openback-tpu/assembled.step",
     "hardware/8ch-ads1298/f04-openback-tpu/loading.step",
@@ -118,6 +124,8 @@ STALE_LEGACY_DIRS_RE = re.compile(
     r"c08b-strap-fpc-d2-20261111|"
     r"c08b-strap-fpc-d2-8ch-20261112|"
     r"c08b-strap-layer-d2-20261111|"
+    r"c08b-strap-layer-d2-8ch-20261112|"
+    r"c08b-capsule-plate-d2-20261111|"
     r"mainboard-r4u6-boot0-20261111|"
     r"c08b-afe-relayout-20261102|"
     r"fpc-f04-budget|"

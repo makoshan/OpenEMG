@@ -9,7 +9,17 @@ from matplotlib.patches import Rectangle, Circle, Polygon
 import build as m
 
 HERE = Path(__file__).resolve().parent
-FONT = fm.FontProperties(fname="/System/Library/Fonts/Hiragino Sans GB.ttc")
+def _pick_cjk_font():
+    for fp in (
+        "/System/Library/Fonts/Hiragino Sans GB.ttc",
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc",
+    ):
+        if Path(fp).is_file():
+            return fm.FontProperties(fname=fp)
+    return fm.FontProperties()
+
+FONT = _pick_cjk_font()
 W, H = 297.0, 210.0
 fig = plt.figure(figsize=(W / 25.4, H / 25.4))
 ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(0, H); ax.set_aspect("equal"); ax.axis("off")
@@ -31,7 +41,7 @@ PY = lambda X: CY + X
 ax.add_patch(Rectangle((PX(YN), PY(-m.STRAP_W / 2)), PX(-128) - PX(YN), m.STRAP_W, fc="none", ec="0.55", lw=0.3, ls="--"))
 t(PX(-128) + 1.5, PY(m.STRAP_W / 2) - 2, "表带 25", 6, color="0.4")
 # 胶囊与生耳
-# 胶囊底盖（../c08b-capsule-plate-d2-20261111/build.py：正面和胶囊底同大，两条长边裙边，6 孔「大—小—大」）
+# 胶囊底盖（../../../enclosure-46x40/c08b-shell-r12/capsule-cap-d2/build.py：正面和胶囊底同大，两条长边裙边，6 孔「大—小—大」）
 import importlib.util as _iu
 _sp = _iu.spec_from_file_location("cap_plate", HERE.parents[2] / "enclosure-46x40/c08b-shell-r12/capsule-cap-d2/build.py")
 _cp = _iu.module_from_spec(_sp); _sp.loader.exec_module(_cp)

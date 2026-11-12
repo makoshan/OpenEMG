@@ -41,7 +41,7 @@
 
 ## B 结果怎么读
 
-**手机（不用接调试器）**：nRF Connect 扫描，名字 `C08B`，厂商数据是公司号 `0xFFFF`（2 字节）后面跟 10 字节结果：
+**手机（不用接调试器）**：nRF Connect 扫描，名字 `C08B`，厂商数据是公司号 `0xFFFF`（2 字节）后面跟 10 字节结果（可直接把复制出的十六进制串喂给 `python3 -B tools/decode_bringup.py --ble-hex "<HEX>"` 自动判读 `PASS / FAIL / WAITING_L432`、识别 `16CH / 8CH / 2CH` 并检查 `VBUS + OE_N` 互锁状态；SWD/GDB 导出的 97 字节 `g_report` 可用 `--report-hex "<HEX>"` 逐通道展开）：
 
 | 字节 | 含义 |
 |---|---|
@@ -89,6 +89,7 @@ make                             # 只编译：build/l432.hex、build/nrf.hex
 
 - `tools/pins.py` 直接解析定稿板文件 `C08B-main-R4U6.epcb2` 与 `C08B-main-R4U6N.epcb2`（核对 L432 23 个信号脚含 `U18.31 PH3=VBUS_SENSE`、nRF 15 个信号脚），并包含两条必败反例（篡改 `XIAO_CS` 网名 + 喂入缺 `BOOT0=VBUS_SENSE` 的旧版 `r4u2-readback.json`）。
 - `host_test/test_host.c` 覆盖 CRC、16CH/8CH/2CH 模式识别、期望掩码、B 片乱码/单活异常拦截、24 位补码与峰峰值/底噪门限的正反例测试。
+- `tools/decode_bringup.py` 提供零依赖命令行解码（`--ble-hex` 自动兼容 10B 值 / 12B 含公司号 / 23B AD 载荷 / 31B 完整广播 PDU，`--report-hex` 校验并解析 97 字节 `c08b_report_t`，检测 `VBUS=1 & OE_N=0` 互锁旁路危险态；`--self-test` 已纳入 `check.sh` 与云端 CI）。
 
 ## E 边界说明
 

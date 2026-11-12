@@ -54,6 +54,9 @@ for name, flash, ram in (('l432', (0x08000000, 0x08040000), (0x20000000, 0x2000C
     print(f'   {name}: SP 0x{sp:08X}，Reset 0x{rst:08X}，_SEGGER_RTT 0x{s["_SEGGER_RTT"]:08X}' + (f'，g_report 0x{s["g_report"]:08X}' if name == 'l432' else ''))
 EOF
 
-echo "== 4 产物"
+echo "== 4 主机端广播与97字节报告解码器自检"
+$PY -B tools/decode_bringup.py --self-test
+
+echo "== 5 产物"
 shasum -a 256 build/l432.hex build/nrf.hex | sed 's/^/   /'
-echo "检查通过（只证明能编、引脚对 R4U6/R4U6N 板、16CH/8CH/2CH 协议自洽；没上板）"
+echo "检查通过（只证明能编、引脚对 R4U6/R4U6N 板、16CH/8CH/2CH 协议与主机解码器自洽；没上板）"
