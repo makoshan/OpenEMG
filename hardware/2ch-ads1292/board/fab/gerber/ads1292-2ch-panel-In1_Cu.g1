@@ -1,12 +1,12 @@
 %TF.GenerationSoftware,KiCad,Pcbnew,10.0.6*%
-%TF.CreationDate,2026-11-12T15:22:25+08:00*%
+%TF.CreationDate,2026-11-12T17:35:43+08:00*%
 %TF.ProjectId,ads1292-2ch-panel,61647331-3239-4322-9d32-63682d70616e,rev?*%
 %TF.SameCoordinates,Original*%
 %TF.FileFunction,Copper,L2,Inr*%
 %TF.FilePolarity,Positive*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW 10.0.6) date 2026-11-12 15:22:25*
+G04 Created by KiCad (PCBNEW 10.0.6) date 2026-11-12 17:35:43*
 %MOMM*%
 %LPD*%
 G01*

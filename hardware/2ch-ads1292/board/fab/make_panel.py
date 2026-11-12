@@ -8,7 +8,7 @@ import hashlib, json, os, shutil, subprocess, zipfile
 import pcbnew as k
 
 HERE = os.path.dirname(os.path.abspath(__file__)); os.chdir(HERE)
-BLOB, SHA = 'd1df9d26ffc368177674573a6753d82a81e28417', None   # hardware/2ch-ads1292/board/ads1292-2ch.kicad_pcb（完整板，C08B 式 6 触点：两排大—辅—大，XIAO 经 P44e 和 20P 排线）
+BLOB, SHA = '05b6710dc606bd9d3527c021fc97eb67994e40da', None   # hardware/2ch-ads1292/board/ads1292-2ch.kicad_pcb（完整板，C08B 式 6 触点：两排大—辅—大，XIAO 经 P44e 和 20P 排线）
 PRO = 'hardware/2ch-ads1292/board/ads1292-2ch.kicad_pro'
 NAME = 'ads1292-2ch-panel'; ZP = f'{NAME}-gerber-20261104.zip'
 CLI = os.environ.get('KICAD_CLI', 'kicad-cli')

@@ -1,9 +1,9 @@
 """P44e：ADS1292 载板专用转接板。从 P44d 的 ROUTED 板文本改出：板厚 1.6 → 0.8，XIAO 5V 引到 J1 19 脚，J1 14、17 脚断开。
 P44d 文件不动。14、17 脚（RESET_N、CS_B）载板不用，断开才腾得出 19 脚的路；D0、D2 的上拉留着。python3 make_p44e.py，之后 kicad-cli 重铺。"""
-import hashlib, re, sys, uuid
+import hashlib, re, uuid
 from pathlib import Path
 P = Path(__file__).resolve().parent
-SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else (P / 'p44e.kicad_pcb')
+SRC = P / 'source/p44d-batslot-ROUTED.kicad_pcb'
 raw = SRC.read_bytes(); assert hashlib.sha256(raw).hexdigest().startswith('105c0e63'), '起点不是 P44d 下单版'
 t = raw.decode()
 t, n = re.subn(r'\n\t\t\(filled_polygon\n.*?\n\t\t\)', '', t, flags=re.S); assert n   # 旧填铜不留，新孔落在里面会被改成 GND

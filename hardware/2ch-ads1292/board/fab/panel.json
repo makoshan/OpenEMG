@@ -1,7 +1,7 @@
 {
  "source": {
-  "blob": "d1df9d26ffc368177674573a6753d82a81e28417",
-  "sha256": "058aec2f2e3047d0ca726823fa5023511e2ee8e96c681bc91c457212f1ca4ec5"
+  "blob": "05b6710dc606bd9d3527c021fc97eb67994e40da",
+  "sha256": "4dd9c640412891ac9a7c09edb9d09e258749c01de5cffdea9ed2cd4307a5a74b"
  },
  "panel_mm": [
   70.25,
@@ -68,6 +68,6 @@
   "E6.1"
  ],
  "zip": "ads1292-2ch-panel-gerber-20261104.zip",
- "zip_sha256": "14ac194ee1d9953c994a649cd3a76407ec5f2da36a811049cd5bb22feccfcb86",
+ "zip_sha256": "bdd44d3152454e9e2fed9079ef2ed61180b499564f652d796b3926790a867678",
  "kicad": "10.0.6"
 }

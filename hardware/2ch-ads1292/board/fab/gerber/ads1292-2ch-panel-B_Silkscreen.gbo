@@ -1,12 +1,12 @@
 %TF.GenerationSoftware,KiCad,Pcbnew,10.0.6*%
-%TF.CreationDate,2026-11-12T15:22:25+08:00*%
+%TF.CreationDate,2026-11-12T17:35:43+08:00*%
 %TF.ProjectId,ads1292-2ch-panel,61647331-3239-4322-9d32-63682d70616e,rev?*%
 %TF.SameCoordinates,Original*%
 %TF.FileFunction,Legend,Bot*%
 %TF.FilePolarity,Positive*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW 10.0.6) date 2026-11-12 15:22:25*
+G04 Created by KiCad (PCBNEW 10.0.6) date 2026-11-12 17:35:43*
 %MOMM*%
 %LPD*%
 G01*
@@ -206,6 +206,12 @@ D11*
 %TO.C,H4*%
 X119050000Y-115750000D03*
 %TD*%
+%TO.C,H2*%
+X80950000Y-84250000D03*
+%TD*%
+%TO.C,H1*%
+X80950000Y-115750000D03*
+%TD*%
 D12*
 %TO.C,PANEL*%
 X68400000Y-68400000D03*
@@ -256,12 +262,6 @@ X131600000Y-68400000D03*
 X131600000Y-131600000D03*
 %TD*%
 D11*
-%TO.C,H2*%
-X80950000Y-84250000D03*
-%TD*%
-%TO.C,H1*%
-X80950000Y-115750000D03*
-%TD*%
 %TO.C,H3*%
 X119050000Y-84250000D03*
 %TD*%

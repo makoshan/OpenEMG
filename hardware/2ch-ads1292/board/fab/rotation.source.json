@@ -1,7 +1,7 @@
 {
  "pcb": "hardware/2ch-ads1292/board/ads1292-2ch.kicad_pcb",
- "blob": "d1df9d26ffc368177674573a6753d82a81e28417",
- "pcb_sha256": "058aec2f2e3047d0ca726823fa5023511e2ee8e96c681bc91c457212f1ca4ec5",
+ "blob": "05b6710dc606bd9d3527c021fc97eb67994e40da",
+ "pcb_sha256": "4dd9c640412891ac9a7c09edb9d09e258749c01de5cffdea9ed2cd4307a5a74b",
  "rotation_sha256": "25557a86b6116d0341c97231cd5d258b162076f18a025e289e3f12d0fd9a262c",
- "change": "D1: IN1P/IN2N/RLDOUT/3V3 去微段"
+ "change": "E1-E2: IN1N/IN2P/ADS_CLK/GND 去微段与 build_board.py 全网 0 差同步 (346 段)"
 }

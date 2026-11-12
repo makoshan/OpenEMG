@@ -1,6 +1,6 @@
 # P44e：ADS1292 载板专用 XIAO 转接板
 
-2026-11-06，Mako 定「改薄重出」。**已实现未验收**，未下单、未打样。从 P44d（`../c08-p44d-xiao-adapter-batslot-20261101/`，文件没动）改出，`make_p44e.py` 可重建，改完用 `kicad-cli pcb drc --refill-zones --save-board` 重铺。
+2026-11-06，Mako 定「改薄重出」。**已实现未验收**，未下单、未打样。从 P44d（P44d，文件没动）改出，`make_p44e.py` 可重建，改完用 `kicad-cli pcb drc --refill-zones --save-board` 重铺。
 
 **只能配 ADS1292 载板，不能插 V4**：J1 19 脚是 5 V，V4 这只脚是 CS#4。背面丝印写了 `P44e ADS1292 ONLY`。
 
@@ -16,7 +16,7 @@
 
 - `pin-table.csv`：J1 脚表，载板 `design.py` 读它。
 - `fab-20261106/`：Gerber、钻孔、BOM、坐标，`make_fab.py` 生成。钢网只开背面。
-- `jlc-export/`：嘉立创专业版单文件工程 `P44e-XIAO转接板-0.8mm-PCB+3D.epro2`（SHA-256 前 8 位 `3b875366`，8/8 3D，DRC 0），供客户端查看与 3D 核对；光板下单仍传 `fab-20261106/` Gerber。
+- `jlc-eda/`：嘉立创专业版单文件工程 `P44e-XIAO转接板-0.8mm-PCB+3D.epro2`（SHA-256 前 8 位 `3fc30545`，8/8 3D，DRC 0），供客户端查看与 3D 核对；光板下单仍传 `fab-20261106/` Gerber。
 - DRC：重铺和不重铺都是 0 错 0 警 0 未连。
 
 下单要点：FR-4，2 层，**0.8 mm**，5 片。生产稿要核 3.1×3.7 BAT 槽保留且铣通。J1 脚距 0.5，表面处理按 P44d 的取舍另定。
