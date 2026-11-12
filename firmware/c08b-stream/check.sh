@@ -89,8 +89,9 @@ uint32_t c08b_abi_probe(c08b_link_tx_t *tx, c08b_link_rx_t *rx) {
     return (uint32_t)c08b_link_tx_ok(tx) + (uint32_t)c08b_link_rx_ok(rx);
 }
 EOF
+  GCC_INC="$("$ARM_GCC" -print-file-name=include)"
   "$ARM_GCC" -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 \
-    -std=c11 -O2 -Wall -Wextra -Werror -ffreestanding -I common \
+    -std=c11 -O2 -Wall -Wextra -Werror -ffreestanding -nostdinc -isystem "$GCC_INC" -I common \
     -c "$TMP_DIR/abi_probe.c" -o "$TMP_DIR/abi_probe.o"
   echo "   Cortex-M4 硬浮点 ABI 编译检查通过（$(basename "$ARM_GCC")）"
 fi

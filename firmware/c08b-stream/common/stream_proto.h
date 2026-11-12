@@ -9,7 +9,35 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#if defined(__STDC_HOSTED__) && (__STDC_HOSTED__ == 1) && (!defined(__has_include) || __has_include(<string.h>))
 #include <string.h>
+#define C08B_MEMSET memset
+#define C08B_MEMCPY memcpy
+#define C08B_MEMCMP memcmp
+#else
+static inline void *c08b_memset_(void *dst, int v, size_t n) {
+    uint8_t *p = (uint8_t *)dst;
+    for (size_t i = 0; i < n; i++) p[i] = (uint8_t)v;
+    return dst;
+}
+static inline void *c08b_memcpy_(void *dst, const void *src, size_t n) {
+    uint8_t *d = (uint8_t *)dst;
+    const uint8_t *s = (const uint8_t *)src;
+    for (size_t i = 0; i < n; i++) d[i] = s[i];
+    return dst;
+}
+static inline int c08b_memcmp_(const void *a, const void *b, size_t n) {
+    const uint8_t *pa = (const uint8_t *)a, *pb = (const uint8_t *)b;
+    for (size_t i = 0; i < n; i++) {
+        if (pa[i] != pb[i]) return (int)pa[i] - (int)pb[i];
+    }
+    return 0;
+}
+#define C08B_MEMSET c08b_memset_
+#define C08B_MEMCPY c08b_memcpy_
+#define C08B_MEMCMP c08b_memcmp_
+#endif
 
 #include "bench_release.h"
 
@@ -61,14 +89,14 @@ typedef enum {
 
 static inline uint8_t c08b_parse_ctrl4(const uint8_t cmd[4])
 {
-    if (!memcmp(cmd, "STOP", 4)) return C08B_MODE_STOP;
-    if (!memcmp(cmd, "TST1", 4)) return C08B_MODE_TST1;
-    if (!memcmp(cmd, "SHT1", 4)) return C08B_MODE_SHT1;
-    if (!memcmp(cmd, "EXT1", 4)) return C08B_MODE_EXT1;
-    if (!memcmp(cmd, "EXR1", 4)) return C08B_MODE_EXR1;
-    if (!memcmp(cmd, "SYN1", 4)) return C08B_MODE_SYN1;
-    if (!memcmp(cmd, "RLD1", 4)) return C08B_MODE_RLD1;
-    if (!memcmp(cmd, "PRB1", 4)) return C08B_MODE_PRB1;
+    if (!C08B_MEMCMP(cmd, "STOP", 4)) return C08B_MODE_STOP;
+    if (!C08B_MEMCMP(cmd, "TST1", 4)) return C08B_MODE_TST1;
+    if (!C08B_MEMCMP(cmd, "SHT1", 4)) return C08B_MODE_SHT1;
+    if (!C08B_MEMCMP(cmd, "EXT1", 4)) return C08B_MODE_EXT1;
+    if (!C08B_MEMCMP(cmd, "EXR1", 4)) return C08B_MODE_EXR1;
+    if (!C08B_MEMCMP(cmd, "SYN1", 4)) return C08B_MODE_SYN1;
+    if (!C08B_MEMCMP(cmd, "RLD1", 4)) return C08B_MODE_RLD1;
+    if (!C08B_MEMCMP(cmd, "PRB1", 4)) return C08B_MODE_PRB1;
     return 0;
 }
 
@@ -139,8 +167,8 @@ static inline bool c08b_build_ads1298_regs(
     uint8_t cfg[0x1A], uint8_t mask[0x1A],
     uint8_t *cfg3_step2, uint8_t *rld_sens_step2)
 {
-    memset(cfg, 0, 0x1A);
-    memset(mask, 0, 0x1A);
+    C08B_MEMSET(cfg, 0, 0x1A);
+    C08B_MEMSET(mask, 0, 0x1A);
     if (cfg3_step2) *cfg3_step2 = 0x00u;
     if (rld_sens_step2) *rld_sens_step2 = 0x00u;
 
@@ -200,8 +228,8 @@ static inline bool c08b_build_ads1298_regs(
 static inline bool c08b_build_ads1292_regs(
     uint8_t req_mode, uint16_t fs_hz, uint8_t cfg[0x0C], uint8_t mask[0x0C], uint8_t *rld_sens_step2)
 {
-    memset(cfg, 0, 0x0C);
-    memset(mask, 0, 0x0C);
+    C08B_MEMSET(cfg, 0, 0x0C);
+    C08B_MEMSET(mask, 0, 0x0C);
     if (rld_sens_step2) *rld_sens_step2 = 0x00u;
 
     uint8_t dr;
@@ -439,7 +467,7 @@ static inline size_t c08b_pack_f01_v1_8ch(
     if (cap < need) return 0;
     if (!c08b_pack_f01_header(out, 1u, 1u, count, flags, seq, ts_us)) return 0;
     for (uint8_t i = 0; i < count; i++) {
-        memcpy(out + C08B_F01_HEADER_BYTES + (size_t)i * 27u, frames[i], 27u);
+        C08B_MEMCPY(out + C08B_F01_HEADER_BYTES + (size_t)i * 27u, frames[i], 27u);
     }
     return need;
 }
@@ -454,7 +482,7 @@ static inline size_t c08b_pack_f01_v4_16ch(
     if (cap < need) return 0;
     if (!c08b_pack_f01_header(out, 4u, 1u, count, flags, seq, ts_us)) return 0;
     for (uint8_t i = 0; i < count; i++) {
-        memcpy(out + C08B_F01_HEADER_BYTES + (size_t)i * 54u, frames[i], 54u);
+        C08B_MEMCPY(out + C08B_F01_HEADER_BYTES + (size_t)i * 54u, frames[i], 54u);
     }
     return need;
 }
@@ -493,7 +521,7 @@ typedef struct {
 
 static inline void c08b_encode_ble_status(uint8_t out[64], const c08b_ble_status_t *s)
 {
-    memset(out, 0, 64);
+    C08B_MEMSET(out, 0, 64);
     c08b_put_u64_le(out + 0,  s->produced);
     c08b_put_u64_le(out + 8,  s->ring_dropped);
     c08b_put_u64_le(out + 16, s->scheduler_skipped);
@@ -515,7 +543,7 @@ static inline void c08b_encode_ble_status(uint8_t out[64], const c08b_ble_status
 static inline void c08b_fill_synth_slot(
     uint8_t slot[54], c08b_afe_mode_t mode, uint32_t sample_seq)
 {
-    memset(slot, 0, 54);
+    C08B_MEMSET(slot, 0, 54);
     slot[0] = 0xC0u; slot[1] = 0x00u; slot[2] = 0x00u;
     int ch_a = (mode == AFE_2CH) ? 2 : 8;
     for (int ch = 0; ch < ch_a; ch++) {
@@ -543,7 +571,7 @@ static inline void c08b_v12_uuid128_le(uint8_t suffix, uint8_t out16[16])
         0x00u, 0x00u, 0x00u, 0x9du, 0xbbu, 0x12u, 0x11u, 0x9du,
         0x03u, 0x4fu, 0x48u, 0x39u, 0x01u, 0xc1u, 0x24u, 0x7bu
     };
-    memcpy(out16, tmpl, 16);
+    C08B_MEMCPY(out16, tmpl, 16);
     out16[0] = suffix;
 }
 
