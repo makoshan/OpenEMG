@@ -1,0 +1,97 @@
+{
+  "id": "wl8",
+  "name": "唯理 WL8 八通道腕带",
+  "transport": {
+    "kind": "serial",
+    "match": {
+      "banner": "WaveleTech"
+    }
+  },
+  "decoder": "wl8",
+  "n_channels": 8,
+  "fs_Hz": 2000,
+  "fs_options": [
+    2000
+  ],
+  "resolution_bits": 24,
+  "channels": [
+    {
+      "label": "CH1",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH2",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH3",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH4",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH5",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH6",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH7",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH8",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    }
+  ],
+  "imu": {
+    "fs_Hz": 208,
+    "axes": 6,
+    "acc_scale": 0.0005978,
+    "gyro_scale": 0.0012
+  },
+  "digital_in": 0,
+  "battery": false,
+  "electrode_layout": "ring8",
+  "capabilities": {
+    "record": true,
+    "realtime": true,
+    "train": true,
+    "cursor": true,
+    "ab": true,
+    "imu": true
+  },
+  "limits": {
+    "rail_uV": 8220835.84,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  }
+}

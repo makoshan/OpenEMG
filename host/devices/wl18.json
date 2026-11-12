@@ -1,0 +1,168 @@
+{
+  "id": "wl18",
+  "name": "唯理 WL18 十八通道腕带",
+  "transport": {
+    "kind": "serial",
+    "match": {
+      "banner": "WaveleTech 18ch"
+    }
+  },
+  "decoder": "wl18",
+  "n_channels": 18,
+  "fs_Hz": 2000,
+  "fs_options": [
+    2000
+  ],
+  "resolution_bits": 16,
+  "channels": [
+    {
+      "label": "CH1",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH2",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH3",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH4",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH5",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH6",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH7",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH8",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH9",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH10",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH11",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH12",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH13",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH14",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH15",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH16",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH17",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH18",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    }
+  ],
+  "imu": {
+    "fs_Hz": 208,
+    "axes": 6,
+    "acc_scale": 0.00059820565,
+    "gyro_scale": 0.0012217304763960308
+  },
+  "digital_in": 0,
+  "battery": true,
+  "electrode_layout": "ring18",
+  "capabilities": {
+    "record": true,
+    "realtime": true,
+    "train": false,
+    "cursor": false,
+    "ab": false,
+    "imu": true
+  },
+  "limits": {
+    "rail_uV": 4281.69,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  },
+  "notes": "有线 USB CDC 2 Mbps；开机默认内置滤波开（41 字节帧、16 位），SetFilterEN-0 后 59 字节帧、24 位（rail 约 137 mV）。协议见 vendor/waveletech/。"
+}

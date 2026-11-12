@@ -1,0 +1,36 @@
+{
+  "source": "synthetic_host",
+  "physical_device": false,
+  "profiles": {
+    "2000_ordinary": 3034,
+    "4000_ordinary": 3434,
+    "2000_ubsan": 3034,
+    "4000_ubsan": 3434
+  },
+  "negative_controls": [
+    "合包跨缺口",
+    "零缺样错误清状态",
+    "首包缺会话标记",
+    "实际板包D0错脚",
+    "原SDK释放后角色访问",
+    "未审查SDK禁止套补丁"
+  ],
+  "sdk_variant_sha256": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+  "files_sha256": {
+    "check.py": "3be62eb2861a14ca1e76e891a41aa80c8d9249f51bad15837e0b55482a778d9b",
+    "collect.py": "a2a974eb47550e64c2e2f47917d56211245a0d8097e69e7c91d4957d4df53f28",
+    "end_to_end.py": "63457793fe6aad82815e73993ae9d12e4cc174783279e5d2324625e0b7ddfc8f",
+    "host_probe.c": "e8bfdd98e3e29c941c79aaf7253dbd4891a6810e4aacfc0ec009a819759d5cf2",
+    "main-check/Arduino.h": "470b3cebecfccddec207260698fb1658a4066a4ebdeee8cd1fc576bfe1f91cf9",
+    "main-check/bluefruit.h": "8dc19636f677457368be792c2ae8e7cd37dffa01cb1734f20d020cc92c67ae65",
+    "main-check/run.py": "8ba0b3b16a8af83c9e8296ac203d8052554ed9ff4b4866ba2f67a461f2aadfe4",
+    "main-check/v12_build_id.h": "fbfacc29a04b12c317cf81e92874fd10f37a850587d629b8f31ba3f30cc86c62",
+    "sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+    "src/codec.c": "5f1b8581f2f24d1d015e9a32861780323c790f24d4950fcc2289743b379858e3",
+    "src/dsp.c": "838d4d47a12ba23d999b0a5f82b5eef6f069639ea0e9db438afd8cfcbb4b240d",
+    "src/main.cpp": "36ab37054c814bdd170cea1ccc9764d918c5ec6a78283ac400b65c38d3827f28",
+    "src/v12_stream.c": "b6a272050acafe269403f8ddd714bb6c3264874fa5f832b24e1cd858f3c05613",
+    "src/v12_stream.h": "7d5b0ca4c7786f3b63ffe416809ea7a236a32303a61a84d4c73aa306751c81ed",
+    "verify_board.py": "b67fcee33c3ac568b4b2cc627364ed6761c628e16a724ff0d2d7745952445096"
+  }
+}

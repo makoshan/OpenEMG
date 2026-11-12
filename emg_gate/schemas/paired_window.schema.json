@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/paired_window.schema.json",
+  "title": "PairedWindow",
+  "description": "One host-clock window. IMU motion and EMG RMS effort are separate fields. There is no gesture_label. Effort is the RMS band from the local gate, not Newtons, and not an IMU feature.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "donning_id", "t_host_ms", "imu", "emg"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "donning_id": { "type": "string", "minLength": 1 },
+    "t_host_ms": { "type": "number" },
+    "imu": { "$ref": "#/$defs/imu" },
+    "emg": { "$ref": "#/$defs/emg" }
+  },
+  "$defs": {
+    "imu": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["motion", "fs_hz", "window_ms"],
+      "properties": {
+        "motion": {
+          "type": "string",
+          "enum": ["circle", "up_wave", "punch", "hook", "uppercut", "still", "daily"]
+        },
+        "fs_hz": { "type": "number", "exclusiveMinimum": 0 },
+        "window_ms": { "type": "number", "exclusiveMinimum": 0 },
+        "features": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "items": { "type": "number" }
+        }
+      }
+    },
+    "emg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["envelope", "band", "quality", "authorize", "window_ms", "hop_ms"],
+      "properties": {
+        "envelope": { "const": "rms" },
+        "band": { "type": "integer", "enum": [0, 1, 2] },
+        "quality": {
+          "type": "string",
+          "enum": ["ok", "lead_off", "poor_contact", "line_noise", "clip", "artifact_suspect"]
+        },
+        "authorize": { "type": "boolean" },
+        "norm": { "type": "number" },
+        "window_ms": { "type": "number", "exclusiveMinimum": 0 },
+        "hop_ms": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    }
+  }
+}

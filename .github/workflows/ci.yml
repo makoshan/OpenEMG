@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install C99 / Cortex-M4 toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang libclang-rt-dev gcc-arm-none-eabi binutils-arm-none-eabi
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt jsonschema scipy scikit-learn pyserial bleak h5py Pillow zstandard
+
+      - name: Public hygiene gate (9/9 selftest + archive deep scan)
+        run: |
+          python scripts/check_public_hygiene.py --selftest
+          python scripts/check_public_hygiene.py .
+
+      - name: 3D model completeness & self-contained CAD gate (4/4 selftest + full repo)
+        run: |
+          python scripts/check_3d_completeness.py --selftest
+          python scripts/check_3d_completeness.py .
+
+      - name: Hardware schematic parity & 8ch single-sided BOM verification
+        run: |
+          python hardware/common-mainboard/schematics/check_all.py
+          python hardware/16ch-c08b-round/schematics-afe/check_all.py
+          python hardware/8ch-ads1298/afe-d20-8ch/schematics-8ch/check_all.py
+          python hardware/2ch-ads1292/schematics/page1.py
+          python hardware/8ch-ads1298/stacked-d20-8ch/verify_8ch_dnp.py
+
+      - name: Firmware pin table & host unit tests
+        run: |
+          python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/r4u6-readback.json
+          cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host
+          /tmp/test_c08b_host
+
+      - name: EMG quality gate unit tests (170 tests)
+        run: |
+          python -m unittest discover -s emg_gate/tests -p "test_*.py"
+
+      - name: Host DSP & bench analysis checks
+        run: |
+          PY=python bash host/check_all.sh
+
+      - name: App frontend build & contract checks
+        working-directory: app
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+          YUANLI_PY: python
+        run: |
+          npm ci
+          npm run build
+          npm run check
+          npm run check:gesture-library
+          node --experimental-transform-types --no-warnings check-seal-game.mjs
+          npm run check:missing-label
+          npm run check:wear-hint
+          npm run check:rewear-hint
+
+      - name: Verify working tree stays clean after checks
+        run: |
+          test -z "$(git status --porcelain)"

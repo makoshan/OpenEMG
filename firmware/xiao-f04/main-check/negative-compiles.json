@@ -1,0 +1,12 @@
+[
+  {
+    "name": "afe1",
+    "exit_code": 1,
+    "expected_error": "F04不得启用真实AFE"
+  },
+  {
+    "name": "fs1000",
+    "exit_code": 1,
+    "expected_error": "采样率候选只允许2000或4000"
+  }
+]

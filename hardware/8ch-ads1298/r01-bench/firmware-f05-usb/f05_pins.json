@@ -1,0 +1,9 @@
+{
+  "src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+  "src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+  "src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+  "src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+  "src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+  "verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+  "sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472"
+}

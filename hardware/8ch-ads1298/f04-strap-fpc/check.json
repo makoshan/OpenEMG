@@ -1,0 +1,48 @@
+{
+  "status": "DESIGN_ROUTING_CHECK_PASS_NOT_RELEASED",
+  "copper_layers_used": 1,
+  "nets": 17,
+  "numbered_pads": 34,
+  "NPTH": 0,
+  "routed_slots": 0,
+  "physical_copper_lands": 85,
+  "tracks": 799,
+  "vias": 0,
+  "native_ERC": 0,
+  "native_DRC": 0,
+  "native_unconnected": 0,
+  "native_schematic_parity": 0,
+  "trace_lengths_mm": {
+    "E1P": 31.75,
+    "E1N": 31.75,
+    "E2P": 50.97,
+    "E2N": 50.97,
+    "E3P": 70.25,
+    "E3N": 70.25,
+    "E4P": 89.58,
+    "E4N": 89.58,
+    "E5P": 108.99,
+    "E5N": 108.99,
+    "E6P": 128.48,
+    "E6N": 128.48,
+    "E7P": 148.07,
+    "E7N": 148.07,
+    "E8P": 167.75,
+    "E8N": 167.75,
+    "E_RLD": 187.55
+  },
+  "negative_controls": [
+    "实际删除最长走线→原生DRC报未连接",
+    "J18:1错接N→针脚映射检查失败"
+  ],
+  "R01_sha256": "41c14119440f845cc6c4a9cac5a1a0fff9024f342588eaddd60217262c941ce4",
+  "manufacturing_ready": false,
+  "human_test_ready": false,
+  "open_gates": [
+    "工厂覆盖膜CAM和钢网确认（S7231焊盘已核）",
+    "无穿板槽承力座与实际焊接公差",
+    "真实弯曲余量/抗拉/疲劳",
+    "薄盖和实物弹片公差",
+    "17路尾板进主机与焊接应力释放"
+  ]
+}

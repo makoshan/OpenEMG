@@ -1,0 +1,96 @@
+{
+  "id": "replay",
+  "name": "回放（从文件读通道数与采样率）",
+  "transport": {
+    "kind": "replay",
+    "match": {
+      "path": null
+    }
+  },
+  "decoder": "wl8",
+  "n_channels": 8,
+  "fs_Hz": 2000,
+  "fs_options": [
+    2000
+  ],
+  "resolution_bits": 24,
+  "channels": [
+    {
+      "label": "CH1",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH2",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH3",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH4",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH5",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH6",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH7",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    },
+    {
+      "label": "CH8",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    }
+  ],
+  "imu": {
+    "fs_Hz": 208,
+    "axes": 6
+  },
+  "digital_in": 0,
+  "battery": false,
+  "electrode_layout": "ring8",
+  "capabilities": {
+    "record": false,
+    "realtime": true,
+    "train": true,
+    "cursor": true,
+    "ab": true,
+    "imu": true
+  },
+  "notes": "cursor/ab 为 true 是沿用旧行为：回放时光标状态页与 A/B 状态可读；真正动鼠标由 /api/emg/wl8/action 的「回放数据不能操作鼠标」拦下。",
+  "limits": {
+    "rail_uV": 8220835.84,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  }
+}

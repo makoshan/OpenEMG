@@ -1,0 +1,7 @@
+.pio/
+__pycache__/
+artifacts/
+main-check/harness.cpp
+main-check/*.o
+main-check/main-2000
+main-check/main-4000

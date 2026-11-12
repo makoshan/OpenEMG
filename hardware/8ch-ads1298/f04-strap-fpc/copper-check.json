@@ -1,0 +1,23 @@
+{
+  "physical_lands": 85,
+  "net_connected_components": {
+    "E1N": 1,
+    "E1P": 1,
+    "E2N": 1,
+    "E2P": 1,
+    "E3N": 1,
+    "E3P": 1,
+    "E4N": 1,
+    "E4P": 1,
+    "E5N": 1,
+    "E5P": 1,
+    "E6N": 1,
+    "E6P": 1,
+    "E7N": 1,
+    "E7P": 1,
+    "E8N": 1,
+    "E8P": 1,
+    "E_RLD": 1
+  },
+  "duplicate_pin_disconnection_negative": "PASS"
+}

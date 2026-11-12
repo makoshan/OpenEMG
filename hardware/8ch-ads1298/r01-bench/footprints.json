@@ -1,0 +1,146 @@
+{
+  "R0402": {
+    "footprint": "Resistor_SMD:R_0402_1005Metric",
+    "source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验"
+  },
+  "C0402": {
+    "footprint": "Capacitor_SMD:C_0402_1005Metric",
+    "source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验"
+  },
+  "C0603": {
+    "footprint": "Capacitor_SMD:C_0603_1608Metric",
+    "source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验"
+  },
+  "TESTPOINT": {
+    "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+    "source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验"
+  },
+  "U1": {
+    "footprint": "Package_QFP:TQFP-64_10x10mm_P0.5mm",
+    "source": "TI ADS1298IPAGR / PAG0064A / ads1298.pdf"
+  },
+  "ESD1": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD2": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD3": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD4": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD5": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD6": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD7": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD8": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD9": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD10": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD11": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD12": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD13": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD14": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD15": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD16": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "ESD17": {
+    "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+    "source": "TI ESD501DPYR / DPY0002A / esd501.pdf"
+  },
+  "C20": {
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "source": "C109314 / 0805 / 原设计10V22uF；直流偏压有效电容仍待验证"
+  },
+  "C21": {
+    "footprint": "Capacitor_SMD:C_0805_2012Metric",
+    "source": "C109314 / 0805 / 原设计10V22uF；直流偏压有效电容仍待验证"
+  },
+  "U9": {
+    "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+    "source": "TI TPS7A2018PDBVR / DBV0005A"
+  },
+  "Q1": {
+    "footprint": "Package_TO_SOT_SMD:SOT-23",
+    "source": "AOS AO3400A / 1G 2S 3D"
+  },
+  "D1": {
+    "footprint": "Diode_SMD:D_SOD-323",
+    "source": "R+O B5819WS C7420331 / 物理1K2A；候选已转换原逻辑脚号"
+  },
+  "U10": {
+    "footprint": "Package_TO_SOT_SMD:SOT-353_SC-70-5",
+    "source": "TI SN74AUP1T14DCKR / DCK0005A / SCES802"
+  },
+  "U12": {
+    "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+    "source": "TI TPS3808G33DBVR / DBV0006A"
+  },
+  "J1": {
+    "footprint": "V12Parts:Samtec_TST-108-01-L-D",
+    "source": "Samtec tst_c.pdf / 2x8 P2.54 / 键控垂直，配套线束待确认"
+  },
+  "J2": {
+    "footprint": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+    "source": "JST ePH.pdf / B2B-PH-K-S + PHR-2"
+  },
+  "J3": {
+    "footprint": "Connector_Molex:Molex_Micro-Fit_3.0_43045-2012_2x10_P3.00mm_Vertical",
+    "source": "Molex 43045-2012 + 43025-2000；1–17原逻辑，18–20NC"
+  },
+  "U7": {
+    "footprint": "V12Parts:TI_DLA0010A",
+    "source": "TI tps63802.pdf p36 DLA0010A 4223750/D 03/2019"
+  },
+  "U2": {
+    "footprint": "V12Parts:TI_RHL0024A",
+    "source": "TI sn74axc8t245.pdf p37 RHL0024A 4225250/C 06/2026"
+  },
+  "U3": {
+    "footprint": "V12Parts:TI_RHL0024A",
+    "source": "TI sn74axc8t245.pdf p37 RHL0024A 4225250/C 06/2026"
+  },
+  "L1": {
+    "footprint": "V12Parts:FTC201610S",
+    "source": "FTC201610SR47MBCA C5832340；厂家FT_Catalouge p5"
+  }
+}

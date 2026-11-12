@@ -1,0 +1,13 @@
+# 制造包 CSV 与 Gerber/钻孔文件保持原始换行符，防止跨平台克隆破坏 SHA-256 校验
+*.csv -text
+*.gbr -text
+*.gm1 -text
+*.gtl -text
+*.gbl -text
+*.gts -text
+*.gbs -text
+*.gto -text
+*.gbo -text
+*.gtp -text
+*.gbp -text
+*.drl -text

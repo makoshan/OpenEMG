@@ -1,0 +1,13 @@
+{
+  "TH_LOOSE_MAX": 0.15,
+  "TH_HARD_MIN": 0.40,
+  "fs": 500.0,
+  "window_ms": 200.0,
+  "hop_ms": 50.0,
+  "hpf_hz": 20.0,
+  "notch_hz": 50.0,
+  "notch_mode": "auto",
+  "envelope": "rms",
+  "norm_scale_uV": 200.0,
+  "enable_delta2": false
+}

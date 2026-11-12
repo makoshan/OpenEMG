@@ -1,0 +1,7 @@
+{
+ "pcb": "hardware/2ch-ads1292/board/ads1292-2ch.kicad_pcb",
+ "blob": "d1df9d26ffc368177674573a6753d82a81e28417",
+ "pcb_sha256": "058aec2f2e3047d0ca726823fa5023511e2ee8e96c681bc91c457212f1ca4ec5",
+ "rotation_sha256": "25557a86b6116d0341c97231cd5d258b162076f18a025e289e3f12d0fd9a262c",
+ "change": "D1: IN1P/IN2N/RLDOUT/3V3 去微段"
+}

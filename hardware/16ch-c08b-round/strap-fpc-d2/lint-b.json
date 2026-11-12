@@ -1,0 +1,98 @@
+{
+ "board": "./46a432fc-9b3d-4ee8-94df-873ab9575418/scratchpad/fpcd2/v12/c08b-strap-fpc-d2-20261111/strap-b.kicad_pcb",
+ "summary": {
+  "odd_angle": 0,
+  "sharp": 0,
+  "tee_acute": 0,
+  "tee_90": 0,
+  "width_jump": 0,
+  "dangling": 0,
+  "pad_exit": 0,
+  "pad_exit_side": 8,
+  "pad_exit_rotated": 0,
+  "multi_width": 0
+ },
+ "odd_angle": [],
+ "sharp": [],
+ "tee_acute": [],
+ "tee_90": [],
+ "width_jump": [],
+ "dangling": [],
+ "pad_exit": [],
+ "pad_exit_side": [
+  {
+   "pad": "TAIL_B.27",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    45.25
+   ]
+  },
+  {
+   "pad": "TAIL_B.28",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    44.75
+   ]
+  },
+  {
+   "pad": "TAIL_B.1",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    58.25
+   ]
+  },
+  {
+   "pad": "TAIL_B.5",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    56.25
+   ]
+  },
+  {
+   "pad": "TAIL_B.17",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    50.25
+   ]
+  },
+  {
+   "pad": "TAIL_B.18",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    32.69,
+    49.75
+   ]
+  },
+  {
+   "pad": "R34.1",
+   "net": "BIAS_DRV12",
+   "layer": "B.Cu",
+   "at": [
+    44.675,
+    50.0
+   ]
+  },
+  {
+   "pad": "R34.2",
+   "net": "BIAS_DRV12_E",
+   "layer": "B.Cu",
+   "at": [
+    46.325,
+    50.0
+   ]
+  }
+ ],
+ "pad_exit_rotated": [],
+ "multi_width": {}
+}

@@ -1,0 +1,2288 @@
+{
+  "status": "PASS_NOMINAL_CAD_UNVERIFIED_HARDWARE",
+  "all_gates_pass": true,
+  "dimensions_mm": {
+    "total_height_with_contacts_mm": 10.1,
+    "total_height_at_j300_ufl_blister_mm": 10.84,
+    "capsule_body_xy_mm": [
+      46.0,
+      40.0
+    ],
+    "tray_with_hidden_lugs_xy_mm": [
+      46.0,
+      45.75
+    ],
+    "north_lug_ear_protrusion_mm": 3.1,
+    "south_lug_ear_protrusion_mm": 2.65,
+    "center_strap_slot_y_protrusion_mm": 0.0,
+    "lug_ear_z_range_mm": [
+      2.0,
+      5.4
+    ],
+    "overall_length_with_strap_ends_mm": 53.25,
+    "outer_corner_radius_mm": 5.8,
+    "inner_corner_radius_mm": 4.6,
+    "top_outer_fillet_radius_mm": 3.0,
+    "bottom_outer_fillet_radius_mm": 0.9,
+    "r14_south_fpc_total_width_mm": 14.12,
+    "r12_south_fpc_slot_width_mm": 19.2,
+    "strap_connection_measured_width_mm": 22.04,
+    "lug_slot_width_mm": 22.3,
+    "lug_shroud_outer_width_mm": 26.7,
+    "spring_bar_spec": "Ø1.80 mm barrel, Ø0.80×0.90 mm tips, 22.04 mm measured strap connection width (lug slot width 22.30 mm, single-side clearance 0.13 mm; blind holes Ø1.20×1.20 mm, outer wall 1.00 mm ≥ 0.80 mm)"
+  },
+  "readback_single_solid": {
+    "tray": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 2818.284,
+      "volume_diff_mm3": 0.000347
+    },
+    "cover": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 2020.75,
+      "volume_diff_mm3": 0.000354
+    },
+    "switch_plunger": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 12.35,
+      "volume_diff_mm3": 8e-05
+    },
+    "pcb_standoff_std": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 11.206,
+      "volume_diff_mm3": 0.00041
+    },
+    "pcb_standoff_ne": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 10.763,
+      "volume_diff_mm3": 0.000375
+    },
+    "lug_test_22mm": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 273.438,
+      "volume_diff_mm3": 0.000437
+    },
+    "strap_test_coupon_ch5_ch9": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 2188.534,
+      "volume_diff_mm3": 0.000249
+    },
+    "strap_keeper": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 182.842,
+      "volume_diff_mm3": 0.000229
+    },
+    "strap_tongue_test": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 1520.76,
+      "volume_diff_mm3": 0.0
+    },
+    "strap_keeper_gauge_h5p8": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 183.88,
+      "volume_diff_mm3": 0.000353
+    },
+    "strap_keeper_gauge_h6p0": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 185.119,
+      "volume_diff_mm3": 0.000415
+    },
+    "whole_box_onepiece": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 4849.674,
+      "volume_diff_mm3": 0.000147
+    },
+    "strap_military_green_north": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 1914.6,
+      "volume_diff_mm3": 8.8e-05
+    },
+    "strap_military_green_south": {
+      "solids": 1,
+      "is_valid": true,
+      "volume_mm3": 10272.125,
+      "volume_diff_mm3": 0.000259
+    }
+  },
+  "unexpected_intersections_mm3": {},
+  "top10_min_clearances_mm": [
+    {
+      "pair": "tray_c_groove_radius(1.95) vs woven_strap_loop_radius(1.90)",
+      "clearance_mm": 0.05,
+      "note": "对齐 IMG_3799/3800.MOV：敞口内凹生耳弧槽（R=1.95）与 Ø3.80 织带回折圆筒（R=1.90）留 0.05 mm 贴合转动净空"
+    },
+    {
+      "pair": "MCU_R823_bottom(6.28) vs J_AFE_FFC20_loop_top(6.15)",
+      "clearance_mm": 0.13,
+      "note": "20P FFC 回折弧顶可压低至 Z<=6.10，与 R823 无干涉"
+    },
+    {
+      "pair": "cover_ceiling vs MCU_U12",
+      "clearance_mm": 0.16,
+      "clearance_datasheet_mm": 0.4,
+      "note": "SOT-23 嘉立创库 3D 高 1.69 mm，真实规格书最大 1.45 mm"
+    },
+    {
+      "pair": "cover_ceiling vs MCU_U17",
+      "clearance_mm": 0.16,
+      "clearance_datasheet_mm": 0.4,
+      "note": "SOT-23 嘉立创库 3D 高 1.69 mm，真实规格书最大 1.45 mm"
+    },
+    {
+      "pair": "switch_plunger_rest(x=3.54) vs MCU_SW300_actuator(x=3.38)",
+      "clearance_mm": 0.16,
+      "note": "静止态水平预留 0.16 mm 间隙"
+    },
+    {
+      "pair": "switch_plunger_rest(x=4.54) vs MCU_J300_body(x=4.71)",
+      "clearance_mm": 0.17,
+      "note": "静止与下压全程与 J300 保持 0.17 mm 水平净距"
+    },
+    {
+      "pair": "cover_j300_recess_ceiling(9.98) vs MCU_J300_UFL_plug_top(9.81)",
+      "clearance_mm": 0.17,
+      "note": "1代 U.FL 同轴插头扣合总高 2.40 mm（Z=9.81）与上盖微凸窗内顶（Z=9.98）留 0.17 mm 净空"
+    },
+    {
+      "pair": "FPC_ANT_2G4_south(y=18.42) vs MCU_and_D17_board_north_edge(y=18.25)",
+      "clearance_mm": 0.17,
+      "note": "20×4.2 mm 2.4G FPC 天线完全位于两块 PCB 铜皮北界（y=18.25）之外的无铜走廊"
+    },
+    {
+      "pair": "cover_ceiling vs MCU_SW300",
+      "clearance_mm": 0.214,
+      "clearance_datasheet_mm": 0.214,
+      "note": "嘉立创 3D 包围盒"
+    },
+    {
+      "pair": "tray_floor vs AFE_V4_U2",
+      "clearance_mm": 0.24,
+      "note": "AFE 底面器件 z0=1.24 vs 底槽 z=1.0"
+    }
+  ],
+  "cover_top_component_clearances_mm": [
+    {
+      "ref": "U12",
+      "x": [
+        -20.25,
+        -17.33
+      ],
+      "y": [
+        -0.82,
+        2.04
+      ],
+      "z_model": [
+        7.41,
+        9.1
+      ],
+      "ceiling_z_mm": 9.26,
+      "clearance_model_mm": 0.16,
+      "clearance_datasheet_mm": 0.4
+    },
+    {
+      "ref": "U17",
+      "x": [
+        8.94,
+        11.86
+      ],
+      "y": [
+        -4.67,
+        -1.82
+      ],
+      "z_model": [
+        7.41,
+        9.1
+      ],
+      "ceiling_z_mm": 9.26,
+      "clearance_model_mm": 0.16,
+      "clearance_datasheet_mm": 0.4
+    },
+    {
+      "ref": "SW300",
+      "x": [
+        -0.21,
+        3.38
+      ],
+      "y": [
+        12.81,
+        17.55
+      ],
+      "z_model": [
+        7.41,
+        8.8
+      ],
+      "ceiling_z_mm": 9.014,
+      "clearance_model_mm": 0.214,
+      "clearance_datasheet_mm": 0.214
+    },
+    {
+      "ref": "U14",
+      "x": [
+        -19.9,
+        -16.84
+      ],
+      "y": [
+        5.41,
+        8.33
+      ],
+      "z_model": [
+        7.41,
+        8.7
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.4,
+      "clearance_datasheet_mm": 0.24
+    },
+    {
+      "ref": "U15",
+      "x": [
+        -17.121,
+        -14.311
+      ],
+      "y": [
+        12.69,
+        15.62
+      ],
+      "z_model": [
+        7.41,
+        8.65
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.45,
+      "clearance_datasheet_mm": 0.24
+    },
+    {
+      "ref": "Q701",
+      "x": [
+        -20.13,
+        -17.31
+      ],
+      "y": [
+        -7.42,
+        -4.7
+      ],
+      "z_model": [
+        7.42,
+        8.5
+      ],
+      "ceiling_z_mm": 9.095,
+      "clearance_model_mm": 0.595,
+      "clearance_datasheet_mm": 0.595
+    },
+    {
+      "ref": "D2",
+      "x": [
+        -9.76,
+        -7.03
+      ],
+      "y": [
+        13.38,
+        16.2
+      ],
+      "z_model": [
+        7.42,
+        8.5
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.6,
+      "clearance_datasheet_mm": 0.6
+    },
+    {
+      "ref": "Q1",
+      "x": [
+        -16.54,
+        -13.72
+      ],
+      "y": [
+        -7.52,
+        -4.8
+      ],
+      "z_model": [
+        7.42,
+        8.5
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.6,
+      "clearance_datasheet_mm": 0.6
+    },
+    {
+      "ref": "Q2",
+      "x": [
+        -14.24,
+        -11.32
+      ],
+      "y": [
+        13.48,
+        16.02
+      ],
+      "z_model": [
+        7.41,
+        8.5
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.6,
+      "clearance_datasheet_mm": 0.6
+    },
+    {
+      "ref": "C31",
+      "x": [
+        -21.2,
+        -20.68
+      ],
+      "y": [
+        6.82,
+        7.84
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.642,
+      "clearance_model_mm": 0.702,
+      "clearance_datasheet_mm": 0.702
+    },
+    {
+      "ref": "C43",
+      "x": [
+        -21.2,
+        -20.68
+      ],
+      "y": [
+        8.79,
+        9.81
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.642,
+      "clearance_model_mm": 0.702,
+      "clearance_datasheet_mm": 0.702
+    },
+    {
+      "ref": "U13",
+      "x": [
+        11.48,
+        17.52
+      ],
+      "y": [
+        8.92,
+        14.96
+      ],
+      "z_model": [
+        7.41,
+        8.3
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.8,
+      "clearance_datasheet_mm": 0.8
+    },
+    {
+      "ref": "C56",
+      "x": [
+        20.43,
+        20.95
+      ],
+      "y": [
+        7.3,
+        8.32
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.829,
+      "clearance_model_mm": 0.889,
+      "clearance_datasheet_mm": 0.889
+    },
+    {
+      "ref": "D3",
+      "x": [
+        -11.49,
+        -9.86
+      ],
+      "y": [
+        11.83,
+        12.67
+      ],
+      "z_model": [
+        7.41,
+        8.16
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 0.94,
+      "clearance_datasheet_mm": 0.94
+    },
+    {
+      "ref": "C53",
+      "x": [
+        17.38,
+        17.9
+      ],
+      "y": [
+        16.692,
+        17.712
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.922,
+      "clearance_model_mm": 0.982,
+      "clearance_datasheet_mm": 0.982
+    },
+    {
+      "ref": "C47",
+      "x": [
+        16.49,
+        17.01
+      ],
+      "y": [
+        16.7,
+        17.72
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.95,
+      "clearance_model_mm": 1.01,
+      "clearance_datasheet_mm": 1.01
+    },
+    {
+      "ref": "C51",
+      "x": [
+        15.47,
+        15.99
+      ],
+      "y": [
+        16.61,
+        17.63
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.986,
+      "clearance_model_mm": 1.046,
+      "clearance_datasheet_mm": 1.046
+    },
+    {
+      "ref": "C26",
+      "x": [
+        12.37,
+        12.89
+      ],
+      "y": [
+        16.61,
+        17.63
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.986,
+      "clearance_model_mm": 1.046,
+      "clearance_datasheet_mm": 1.046
+    },
+    {
+      "ref": "C30",
+      "x": [
+        11.31,
+        11.83
+      ],
+      "y": [
+        16.61,
+        17.63
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.986,
+      "clearance_model_mm": 1.046,
+      "clearance_datasheet_mm": 1.046
+    },
+    {
+      "ref": "C44",
+      "x": [
+        14.44,
+        14.96
+      ],
+      "y": [
+        16.61,
+        17.63
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.986,
+      "clearance_model_mm": 1.046,
+      "clearance_datasheet_mm": 1.046
+    },
+    {
+      "ref": "C52",
+      "x": [
+        13.4,
+        13.92
+      ],
+      "y": [
+        16.61,
+        17.63
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 8.986,
+      "clearance_model_mm": 1.046,
+      "clearance_datasheet_mm": 1.046
+    },
+    {
+      "ref": "L3",
+      "x": [
+        18.89,
+        20.51
+      ],
+      "y": [
+        12.618,
+        13.438
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.026,
+      "clearance_model_mm": 1.086,
+      "clearance_datasheet_mm": 1.086
+    },
+    {
+      "ref": "C65",
+      "x": [
+        20.294,
+        20.924
+      ],
+      "y": [
+        13.741,
+        14.081
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 8.845,
+      "clearance_model_mm": 1.095,
+      "clearance_datasheet_mm": 1.095
+    },
+    {
+      "ref": "R38",
+      "x": [
+        10.27,
+        10.79
+      ],
+      "y": [
+        16.44,
+        17.46
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.04,
+      "clearance_model_mm": 1.1,
+      "clearance_datasheet_mm": 1.1
+    },
+    {
+      "ref": "R43",
+      "x": [
+        -10.3,
+        -9.28
+      ],
+      "y": [
+        16.69,
+        17.21
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.088,
+      "clearance_model_mm": 1.148,
+      "clearance_datasheet_mm": 1.148
+    },
+    {
+      "ref": "L5",
+      "x": [
+        18.96,
+        19.98
+      ],
+      "y": [
+        11.77,
+        12.29
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R201",
+      "x": [
+        -19.71,
+        -19.19
+      ],
+      "y": [
+        9.21,
+        10.23
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R208",
+      "x": [
+        8.36,
+        8.88
+      ],
+      "y": [
+        8.95,
+        9.97
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R26",
+      "x": [
+        -15.39,
+        -14.87
+      ],
+      "y": [
+        -9.72,
+        -8.7
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R704",
+      "x": [
+        -18.95,
+        -18.43
+      ],
+      "y": [
+        -9.75,
+        -8.73
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R27",
+      "x": [
+        12.81,
+        13.83
+      ],
+      "y": [
+        -3.75,
+        -3.23
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R41",
+      "x": [
+        -15.7,
+        -15.18
+      ],
+      "y": [
+        0.93,
+        1.95
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R200",
+      "x": [
+        -18.69,
+        -18.17
+      ],
+      "y": [
+        9.21,
+        10.23
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R207",
+      "x": [
+        12.81,
+        13.83
+      ],
+      "y": [
+        1.45,
+        1.97
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R705",
+      "x": [
+        -19.05,
+        -18.53
+      ],
+      "y": [
+        -3.49,
+        -2.47
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R703",
+      "x": [
+        -14.5,
+        -13.98
+      ],
+      "y": [
+        -3.5,
+        -2.48
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R206",
+      "x": [
+        12.81,
+        13.83
+      ],
+      "y": [
+        -1.72,
+        -1.2
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R44",
+      "x": [
+        -14.37,
+        -13.85
+      ],
+      "y": [
+        11.65,
+        12.67
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R204",
+      "x": [
+        9.25,
+        9.77
+      ],
+      "y": [
+        0.31,
+        1.33
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R706",
+      "x": [
+        -18.01,
+        -17.49
+      ],
+      "y": [
+        -3.49,
+        -2.47
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R203",
+      "x": [
+        9.13,
+        10.15
+      ],
+      "y": [
+        14.66,
+        15.18
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R205",
+      "x": [
+        11.03,
+        11.55
+      ],
+      "y": [
+        0.31,
+        1.33
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R25",
+      "x": [
+        -16.66,
+        -16.14
+      ],
+      "y": [
+        0.93,
+        1.95
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R24",
+      "x": [
+        -16.4,
+        -15.38
+      ],
+      "y": [
+        2.72,
+        3.24
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "R202",
+      "x": [
+        -18.94,
+        -17.92
+      ],
+      "y": [
+        4.37,
+        4.89
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C64",
+      "x": [
+        18.4,
+        19.42
+      ],
+      "y": [
+        9.45,
+        9.97
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C61",
+      "x": [
+        18.755,
+        19.775
+      ],
+      "y": [
+        13.645,
+        14.165
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C34",
+      "x": [
+        -19.064,
+        -18.044
+      ],
+      "y": [
+        13.076,
+        13.606
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C45",
+      "x": [
+        18.96,
+        19.98
+      ],
+      "y": [
+        10.74,
+        11.26
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C42",
+      "x": [
+        12.82,
+        13.84
+      ],
+      "y": [
+        2.41,
+        2.93
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C54",
+      "x": [
+        12.81,
+        13.83
+      ],
+      "y": [
+        -2.74,
+        -2.22
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C28",
+      "x": [
+        9.07,
+        10.09
+      ],
+      "y": [
+        12.54,
+        13.06
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C55",
+      "x": [
+        16.49,
+        17.01
+      ],
+      "y": [
+        7.04,
+        8.06
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C62",
+      "x": [
+        9.1,
+        10.12
+      ],
+      "y": [
+        13.67,
+        14.19
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C24",
+      "x": [
+        -16.49,
+        -15.47
+      ],
+      "y": [
+        -0.34,
+        0.18
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "C41",
+      "x": [
+        -17.68,
+        -17.16
+      ],
+      "y": [
+        9.23,
+        10.25
+      ],
+      "z_model": [
+        7.42,
+        7.94
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.16,
+      "clearance_datasheet_mm": 1.16
+    },
+    {
+      "ref": "Y3",
+      "x": [
+        17.74,
+        19.83
+      ],
+      "y": [
+        6.96,
+        8.65
+      ],
+      "z_model": [
+        7.41,
+        7.91
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.19,
+      "clearance_datasheet_mm": 1.19
+    },
+    {
+      "ref": "D401",
+      "x": [
+        9.6,
+        10.45
+      ],
+      "y": [
+        8.9,
+        10.56
+      ],
+      "z_model": [
+        7.41,
+        7.85
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.25,
+      "clearance_datasheet_mm": 1.25
+    },
+    {
+      "ref": "J300",
+      "x": [
+        4.71,
+        7.71
+      ],
+      "y": [
+        14.22,
+        17.34
+      ],
+      "z_model": [
+        7.42,
+        8.69
+      ],
+      "ceiling_z_mm": 9.98,
+      "clearance_model_mm": 1.29,
+      "clearance_datasheet_mm": 1.29
+    },
+    {
+      "ref": "L6",
+      "x": [
+        11.48,
+        12.11
+      ],
+      "y": [
+        7.5,
+        7.85
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "L4",
+      "x": [
+        12.88,
+        13.51
+      ],
+      "y": [
+        7.5,
+        7.85
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "C63",
+      "x": [
+        9.46,
+        10.09
+      ],
+      "y": [
+        11.83,
+        12.17
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "C59",
+      "x": [
+        14.21,
+        14.55
+      ],
+      "y": [
+        7.05,
+        7.68
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "C66",
+      "x": [
+        12.88,
+        13.51
+      ],
+      "y": [
+        6.75,
+        7.09
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "C48",
+      "x": [
+        15.73,
+        16.07
+      ],
+      "y": [
+        7.05,
+        7.68
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    },
+    {
+      "ref": "C46",
+      "x": [
+        14.97,
+        15.31
+      ],
+      "y": [
+        7.05,
+        7.68
+      ],
+      "z_model": [
+        7.41,
+        7.75
+      ],
+      "ceiling_z_mm": 9.1,
+      "clearance_model_mm": 1.35,
+      "clearance_datasheet_mm": 1.35
+    }
+  ],
+  "wall_thickness_and_membrane": {
+    "method": "scipy.ndimage.distance_transform_edt + maximum_filter(size=3) medial-axis ridge + exact normal probes",
+    "min_wall_mm": 0.8,
+    "edt_2d_sidewall_ridge_min_mm": 1.166,
+    "all_above_0p8_mm": true,
+    "approved_relaxed_probes_min_mm": {
+      "strap_mg_skin_under_fpc_mm": 0.35
+    },
+    "approved_relaxed_probes_ok": true,
+    "locations_below_1p0_mm": {
+      "tray_fpc_groove_floor_mm": 0.85,
+      "tray_north_pocket_floor_mm": 0.85,
+      "tray_north_pocket_wall_mm": 0.9,
+      "tray_south_lug_inner_wall_mm": 0.85,
+      "tray_lug_ear_outer_y_wall_mm": 0.85,
+      "cover_u12_u17_recess_roof_mm": 0.84,
+      "cover_j300_ufl_blister_roof_mm": 0.86,
+      "switch_plunger_stem_width_mm": 0.9,
+      "switch_plunger_south_keeper_thickness_mm": 0.84,
+      "cover_switch_keeper_recess_roof_mm": 0.88,
+      "tray_antenna_retainer_tab_width_mm": 0.93,
+      "tray_corner_boss_counterbore_wall_mm": 0.85,
+      "tray_corner_boss_pilot_floor_mm": 0.85,
+      "strap_mg_barrel_wall_mm": 0.98,
+      "strap_mg_solder_recess_roof_mm": 0.82,
+      "strap_mg_skin_under_fpc_mm": 0.35,
+      "strap_mg_fpc_pocket_side_wall_mm": 0.9,
+      "strap_mg_north_pocket_minus_x_wall_mm": 0.8,
+      "strap_mg_north_pocket_plus_x_wall_mm": 0.9,
+      "strap_mg_south_pocket_end_wall_mm": 0.8,
+      "strap_mg_buckle_side_wall_mm": 0.8
+    },
+    "probes_mm": {
+      "tray_main_side_wall_mm": 1.2,
+      "tray_corner_wall_mm": 1.2,
+      "tray_main_floor_mm": 1.05,
+      "tray_fpc_groove_floor_mm": 0.85,
+      "tray_north_pocket_floor_mm": 0.85,
+      "tray_north_pocket_wall_mm": 0.9,
+      "tray_south_lug_inner_wall_mm": 0.85,
+      "tray_lug_ear_bottom_wall_mm": 1.1,
+      "tray_lug_ear_top_wall_mm": 1.1,
+      "tray_lug_ear_outer_y_wall_mm": 0.85,
+      "tray_lug_cheek_outer_wall_after_pin_hole_mm": 1.0,
+      "cover_main_roof_mm": 1.0,
+      "cover_u12_u17_recess_roof_mm": 0.84,
+      "cover_j300_ufl_blister_roof_mm": 0.86,
+      "cover_side_wall_mm": 1.2,
+      "cover_fillet_min_wall_mm": 1.2,
+      "switch_plunger_stem_width_mm": 0.9,
+      "switch_plunger_cap_width_mm": 1.94,
+      "switch_plunger_south_keeper_thickness_mm": 0.84,
+      "cover_switch_keeper_recess_roof_mm": 0.88,
+      "tray_antenna_retainer_tab_width_mm": 0.93,
+      "tray_corner_boss_counterbore_wall_mm": 0.85,
+      "tray_corner_boss_pilot_floor_mm": 0.85,
+      "strap_mg_barrel_wall_mm": 0.98,
+      "strap_mg_fpc_pocket_roof_mm": 1.95,
+      "strap_mg_solder_recess_roof_mm": 0.82,
+      "strap_mg_skin_under_fpc_mm": 0.35,
+      "strap_mg_b_relief_roof_mm": 1.75,
+      "strap_mg_fpc_pocket_side_wall_mm": 0.9,
+      "strap_mg_north_pocket_minus_x_wall_mm": 0.8,
+      "strap_mg_north_pocket_plus_x_wall_mm": 0.9,
+      "strap_mg_south_pocket_end_wall_mm": 0.8,
+      "strap_mg_electrode_outer_wall_mm": 1.7,
+      "strap_mg_buckle_side_wall_mm": 0.8
+    },
+    "hole_membrane_intersections_mm3": {
+      "contact_E1P_hole": 0.0,
+      "contact_E1N_hole": 0.0,
+      "contact_E2P_hole": 0.0,
+      "contact_E2N_hole": 0.0,
+      "contact_EB1_hole": 0.0,
+      "contact_EB2_hole": 0.0,
+      "south_fpc_exit_slot": 0.0,
+      "north_branch_exit_slot": 0.0,
+      "usb_window_tray": 0.0,
+      "usb_window_cover": 0.0,
+      "switch_hole_cover": 0.0,
+      "south_c_groove_slot": 0.0,
+      "north_c_groove_slot": 0.0,
+      "south_pin_holes": 0.0,
+      "north_pin_holes": 0.0,
+      "whole_box_south_c_groove": 0.0,
+      "whole_box_north_c_groove": 0.0,
+      "whole_box_south_pin_holes": 0.0,
+      "whole_box_north_pin_holes": 0.0,
+      "strap_mg_north_spring_bore": 0.0,
+      "strap_mg_south_spring_bore": 0.0,
+      "strap_mg_north_buckle_slot": 0.0,
+      "strap_mg_ch3_hole": 0.0,
+      "strap_mg_ch5_hole": 0.0
+    },
+    "no_residual_membrane": true
+  },
+  "usb_plug_insertion": {
+    "plug_tongue_spec_mm": [
+      8.4,
+      2.6
+    ],
+    "plug_boot_spec_mm": [
+      12.4,
+      6.5
+    ],
+    "insertion_depth_to_x_mm": 16.5,
+    "boot_stop_x_mm": 22.35,
+    "tray_intersection_mm3": 0.0,
+    "cover_intersection_mm3": 0.0,
+    "can_insert_fully": true
+  },
+  "switch_plunger_verification": {
+    "part_number": "Panasonic EVQP7A01P (EVQ-P7 series)",
+    "source": "Panasonic EVQ-P7 Side-operational SMD Light Touch Switch Datasheet + 11.7 PCB 3D bbox",
+    "actuator_direction": "+X (pushed toward -X to actuate)",
+    "actuator_rest_x": 3.38,
+    "nominal_travel_mm": 0.3,
+    "full_stroke_mm": 0.5,
+    "plunger_vertical_stroke_mm": 0.8,
+    "wedge_angle_deg": 45.0,
+    "horizontal_push_mm": 0.64,
+    "hole_clearance_mm": 0.2,
+    "rest_clear_of_sw300_and_j300": true,
+    "anti_popout_retention_verified": true,
+    "upward_pull_retention_overlap_mm3": 0.684,
+    "downstroke_clear_of_cover_j300_board": true,
+    "downstroke_engages_sw300_mm3": 1.7,
+    "exceeds_datasheet_full_stroke": true
+  },
+  "antenna_and_ufl_verification": {
+    "type": "Internal 2.4 GHz FPC dipole/monopole patch antenna in North copper-free corridor + J300 1st-gen U.FL (IPEX1) mated plug",
+    "j300_part": "Hirose U.FL-R-SMT-1(10) on MCU top (x=6.21, y=15.78, z=7.42..8.69)",
+    "ufl_mated_plug_z_top_mm": 9.81,
+    "cover_ufl_recess_inner_z_mm": 9.98,
+    "cover_ufl_blister_outer_z_mm": 10.84,
+    "cover_ufl_roof_wall_mm": 0.86,
+    "fpc_antenna_size_mm": [
+      20.0,
+      4.2,
+      0.2
+    ],
+    "fpc_antenna_corridor_bbox": {
+      "x": [
+        -10.0,
+        10.0
+      ],
+      "y": [
+        18.42,
+        18.62
+      ],
+      "z": [
+        4.45,
+        8.65
+      ]
+    },
+    "distance_to_battery_mm": 8.71,
+    "outside_pcb_copper": true,
+    "ufl_plug_cover_intersection_mm3": 0.0,
+    "fpc_antenna_tray_intersection_mm3": 0.0,
+    "fpc_antenna_cover_intersection_mm3": 0.0,
+    "fpc_antenna_pcb_intersection_mm3": 0.0,
+    "ufl_plug_and_fpc_antenna_fit": true
+  },
+  "pcb_standoff_and_screw_verification": {
+    "hole_centers_mm": [
+      [
+        -19.05,
+        15.75
+      ],
+      [
+        19.05,
+        15.75
+      ],
+      [
+        -19.05,
+        -15.75
+      ],
+      [
+        19.05,
+        -15.75
+      ]
+    ],
+    "hole_diameter_mm": 1.7,
+    "inter_board_z_range_mm": [
+      3.35,
+      6.79
+    ],
+    "inter_board_height_mm": 3.44,
+    "std_pillar_spec_NW_SW_SE": "OD Ø2.50 mm, ID Ø1.45 mm, H 3.44 mm (compatible with M1.4×Ø2.5×3.5 mm plastic/nylon or brass standoff)",
+    "ne_pillar_spec": "Stepped insulating plastic/nylon pillar: base OD Ø2.60 mm (Z=3.35..5.95), top neck OD Ø2.00 mm (Z=5.95..6.79), ID Ø1.45 mm, clearing Mainboard R2 bottom R209 and VBUS",
+    "screw_spec": "M1.4×2.5 mm pan-head screws × 8 (head Ø2.50×0.80 mm on NW/SW/SE; nylon M1.4 head Ø2.40×0.80 mm on NE) OR M1.4×6 mm through-screws × 4 into tray Ø1.25 mm pilot holes",
+    "ne_stepped_pillar_r209_intersection_mm3": 0.0,
+    "ne_top_screw_c53_intersection_mm3": 0.0,
+    "all_fasteners_zero_interference": true
+  },
+  "strap_presolder_stack": {
+    "r15_board_t_mm": 0.203,
+    "r15_island_stiffener_t_mm": 0.15,
+    "r15_stiffener_on_back_B": true,
+    "r15_strap_contact_pads": 28,
+    "r15_pad_size_drill_mm": [
+      [
+        1.8,
+        1.0
+      ]
+    ],
+    "cad_fpc_t_mm": 0.353,
+    "head_top_to_fpc_F_gap_mm": 0.0,
+    "pin_tail_above_stiffener_mm": 1.147,
+    "recess_radial_clearance_mm": 0.5,
+    "recess_above_pin_top_mm": 0.08,
+    "pocket_h_mm": 0.45,
+    "b_relief_h_mm": 0.65,
+    "a_plus_b_stack_mm": 0.556,
+    "r15_b_band_y": [
+      44.88,
+      52.8
+    ],
+    "r15_a_south_island_x": [
+      86.5,
+      117.5
+    ],
+    "single_fits_pocket": true,
+    "ab_fits_relief": true,
+    "b_model_matches_r15": true,
+    "head_on_pad": true,
+    "fpc_model_matches_r15": true,
+    "pads_ok": true,
+    "pass": true
+  },
+  "strap_wrist_range_155_230": {
+    "model": "二维椭圆（短长轴比 0.72）+ 两生耳凸包，中性层离皮肤 1.525 mm；假设模型，未实戴",
+    "buckle_y": [
+      46.2,
+      52.0
+    ],
+    "slot_y": [
+      47.6,
+      50.6
+    ],
+    "tail_end_y": -217.0,
+    "north_pin_to_window_mm": 27.45,
+    "frame_outer_half_mm": 2.9,
+    "r15_fpc_strap_ends_y": [
+      45.5,
+      -123.5
+    ],
+    "south_pin_to_ch16_fpc_end_mm": 102.3,
+    "south_pin_to_body_end_mm": 103.5,
+    "south_pin_to_tail_tip_mm": 195.8,
+    "ch4_fpc_end_clear_of_buckle_mm": 0.7,
+    "tail_hold_min_mm": 15.0,
+    "rows": [
+      {
+        "wrist_mm": 155,
+        "south_pin_to_window_mm": 106.47,
+        "ch16_clear_of_buckle_mm": 1.27,
+        "body_clear_of_window_mm": 1.47,
+        "tail_past_window_mm": 89.33
+      },
+      {
+        "wrist_mm": 160,
+        "south_pin_to_window_mm": 110.92,
+        "ch16_clear_of_buckle_mm": 5.72,
+        "body_clear_of_window_mm": 5.92,
+        "tail_past_window_mm": 84.88
+      },
+      {
+        "wrist_mm": 165,
+        "south_pin_to_window_mm": 115.41,
+        "ch16_clear_of_buckle_mm": 10.21,
+        "body_clear_of_window_mm": 10.41,
+        "tail_past_window_mm": 80.39
+      },
+      {
+        "wrist_mm": 170,
+        "south_pin_to_window_mm": 119.93,
+        "ch16_clear_of_buckle_mm": 14.73,
+        "body_clear_of_window_mm": 14.93,
+        "tail_past_window_mm": 75.87
+      },
+      {
+        "wrist_mm": 175,
+        "south_pin_to_window_mm": 124.49,
+        "ch16_clear_of_buckle_mm": 19.29,
+        "body_clear_of_window_mm": 19.49,
+        "tail_past_window_mm": 71.31
+      },
+      {
+        "wrist_mm": 180,
+        "south_pin_to_window_mm": 129.08,
+        "ch16_clear_of_buckle_mm": 23.88,
+        "body_clear_of_window_mm": 24.08,
+        "tail_past_window_mm": 66.72
+      },
+      {
+        "wrist_mm": 185,
+        "south_pin_to_window_mm": 133.69,
+        "ch16_clear_of_buckle_mm": 28.49,
+        "body_clear_of_window_mm": 28.69,
+        "tail_past_window_mm": 62.11
+      },
+      {
+        "wrist_mm": 190,
+        "south_pin_to_window_mm": 138.33,
+        "ch16_clear_of_buckle_mm": 33.13,
+        "body_clear_of_window_mm": 33.33,
+        "tail_past_window_mm": 57.47
+      },
+      {
+        "wrist_mm": 195,
+        "south_pin_to_window_mm": 142.99,
+        "ch16_clear_of_buckle_mm": 37.79,
+        "body_clear_of_window_mm": 37.99,
+        "tail_past_window_mm": 52.81
+      },
+      {
+        "wrist_mm": 200,
+        "south_pin_to_window_mm": 147.67,
+        "ch16_clear_of_buckle_mm": 42.47,
+        "body_clear_of_window_mm": 42.67,
+        "tail_past_window_mm": 48.13
+      },
+      {
+        "wrist_mm": 205,
+        "south_pin_to_window_mm": 152.37,
+        "ch16_clear_of_buckle_mm": 47.17,
+        "body_clear_of_window_mm": 47.37,
+        "tail_past_window_mm": 43.43
+      },
+      {
+        "wrist_mm": 210,
+        "south_pin_to_window_mm": 157.09,
+        "ch16_clear_of_buckle_mm": 51.89,
+        "body_clear_of_window_mm": 52.09,
+        "tail_past_window_mm": 38.71
+      },
+      {
+        "wrist_mm": 215,
+        "south_pin_to_window_mm": 161.83,
+        "ch16_clear_of_buckle_mm": 56.63,
+        "body_clear_of_window_mm": 56.83,
+        "tail_past_window_mm": 33.97
+      },
+      {
+        "wrist_mm": 220,
+        "south_pin_to_window_mm": 166.58,
+        "ch16_clear_of_buckle_mm": 61.38,
+        "body_clear_of_window_mm": 61.58,
+        "tail_past_window_mm": 29.22
+      },
+      {
+        "wrist_mm": 225,
+        "south_pin_to_window_mm": 171.34,
+        "ch16_clear_of_buckle_mm": 66.14,
+        "body_clear_of_window_mm": 66.34,
+        "tail_past_window_mm": 24.46
+      },
+      {
+        "wrist_mm": 230,
+        "south_pin_to_window_mm": 176.12,
+        "ch16_clear_of_buckle_mm": 70.92,
+        "body_clear_of_window_mm": 71.12,
+        "tail_past_window_mm": 19.68
+      }
+    ],
+    "pass": true,
+    "geometry_bound": {
+      "north_buckle_inner_bar_y": 46.2,
+      "body_width_inside_end_mm": 23.2,
+      "width_past_body_end_mm": 21.2,
+      "south_tail_tip_y": -217.0,
+      "north_buckle_outer_y": 52.0,
+      "slot_material_mm3": 0.0,
+      "tongue_thickness_mm": 2.6,
+      "slot_minus_tongue_thickness_mm": 0.4,
+      "tongue_width_mm": 21.2,
+      "slot_minus_tongue_width_mm": 0.4,
+      "pass": true
+    }
+  },
+  "strap_r15_pad_alignment": {
+    "pads": 32,
+    "max_offset_mm": 0.0,
+    "bad": {},
+    "pass": true
+  },
+  "strap_keeper_fit": {
+    "tongue_section_wxt_mm": [
+      21.2,
+      2.6
+    ],
+    "stack_wxh_mm": [
+      21.2,
+      5.2
+    ],
+    "keeper_inner_measured_wxh_mm": [
+      21.8,
+      5.6
+    ],
+    "keeper_outer_mm": [
+      24.2,
+      7.6,
+      3.0
+    ],
+    "keeper_walls_mm": {
+      "skin": 0.8,
+      "outer": 1.2,
+      "side": 1.2
+    },
+    "clearance_probe_each_side_mm": 0.15,
+    "probe_vs_keeper_mm3": 0.0,
+    "slack_mm": {
+      "width_each_side": 0.3,
+      "thickness_each_side": 0.2
+    },
+    "slack_max_mm": [
+      0.35,
+      0.25
+    ],
+    "pass": true,
+    "park_off_electrodes": {
+      "keeper_len_mm": 3.0,
+      "margin_mm": 0.5,
+      "body_margin_mm": 0.5,
+      "min_wrist_mm": 165,
+      "fold_mm": 3.6,
+      "rows": [
+        {
+          "wrist_mm": 165,
+          "free_mm": 9.36,
+          "keeper_past_body_end_mm": 2.41
+        },
+        {
+          "wrist_mm": 170,
+          "free_mm": 13.88,
+          "keeper_past_body_end_mm": 6.93
+        },
+        {
+          "wrist_mm": 175,
+          "free_mm": 18.44,
+          "keeper_past_body_end_mm": 11.49
+        },
+        {
+          "wrist_mm": 180,
+          "free_mm": 23.03,
+          "keeper_past_body_end_mm": 16.08
+        },
+        {
+          "wrist_mm": 185,
+          "free_mm": 27.64,
+          "keeper_past_body_end_mm": 20.69
+        },
+        {
+          "wrist_mm": 190,
+          "free_mm": 32.28,
+          "keeper_past_body_end_mm": 25.33
+        },
+        {
+          "wrist_mm": 195,
+          "free_mm": 36.94,
+          "keeper_past_body_end_mm": 29.99
+        },
+        {
+          "wrist_mm": 200,
+          "free_mm": 41.62,
+          "keeper_past_body_end_mm": 34.67
+        },
+        {
+          "wrist_mm": 205,
+          "free_mm": 46.32,
+          "keeper_past_body_end_mm": 39.37
+        },
+        {
+          "wrist_mm": 210,
+          "free_mm": 51.04,
+          "keeper_past_body_end_mm": 44.09
+        },
+        {
+          "wrist_mm": 215,
+          "free_mm": 55.78,
+          "keeper_past_body_end_mm": 48.83
+        },
+        {
+          "wrist_mm": 220,
+          "free_mm": 60.53,
+          "keeper_past_body_end_mm": 53.58
+        },
+        {
+          "wrist_mm": 225,
+          "free_mm": 65.29,
+          "keeper_past_body_end_mm": 58.34
+        },
+        {
+          "wrist_mm": 230,
+          "free_mm": 70.07,
+          "keeper_past_body_end_mm": 63.12
+        }
+      ],
+      "min_free_mm": 9.36,
+      "min_past_body_end_mm": 2.41,
+      "pass": true
+    },
+    "tail_reach": {
+      "wrap_len_mm": 14.91,
+      "wrap_len_unlifted_mm": 10.52,
+      "worst_wrist_mm": 230.0,
+      "worst_spare_mm": 1.77,
+      "margin_mm": 1.0,
+      "pass": true
+    }
+  },
+  "strap_trim_marks": {
+    "tail_target_mm": 25.0,
+    "hold_min_mm": 15.0,
+    "rows": [
+      {
+        "wrist_mm": 160,
+        "y": -157.12,
+        "design_y": -157.12,
+        "applies_mm": [
+          155,
+          164.99
+        ],
+        "tail_mm": [
+          20.52,
+          29.45
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 165,
+        "y": -161.61,
+        "design_y": -161.61,
+        "applies_mm": [
+          165,
+          169.99
+        ],
+        "tail_mm": [
+          20.49,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 170,
+        "y": -166.13,
+        "design_y": -166.13,
+        "applies_mm": [
+          170,
+          174.99
+        ],
+        "tail_mm": [
+          20.45,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 175,
+        "y": -170.69,
+        "design_y": -170.69,
+        "applies_mm": [
+          175,
+          179.99
+        ],
+        "tail_mm": [
+          20.42,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 180,
+        "y": -175.28,
+        "design_y": -175.28,
+        "applies_mm": [
+          180,
+          184.99
+        ],
+        "tail_mm": [
+          20.4,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 185,
+        "y": -179.89,
+        "design_y": -179.89,
+        "applies_mm": [
+          185,
+          189.99
+        ],
+        "tail_mm": [
+          20.37,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 190,
+        "y": -184.53,
+        "design_y": -184.53,
+        "applies_mm": [
+          190,
+          194.99
+        ],
+        "tail_mm": [
+          20.35,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 195,
+        "y": -189.19,
+        "design_y": -189.19,
+        "applies_mm": [
+          195,
+          199.99
+        ],
+        "tail_mm": [
+          20.33,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 200,
+        "y": -193.87,
+        "design_y": -193.87,
+        "applies_mm": [
+          200,
+          204.99
+        ],
+        "tail_mm": [
+          20.31,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 205,
+        "y": -198.57,
+        "design_y": -198.57,
+        "applies_mm": [
+          205,
+          209.99
+        ],
+        "tail_mm": [
+          20.29,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 210,
+        "y": -203.29,
+        "design_y": -203.29,
+        "applies_mm": [
+          210,
+          214.99
+        ],
+        "tail_mm": [
+          20.27,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "wrist_mm": 215,
+        "y": -208.03,
+        "design_y": -208.03,
+        "applies_mm": [
+          215,
+          219.99
+        ],
+        "tail_mm": [
+          20.26,
+          25.0
+        ],
+        "notch_material_mm3": [
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "pass": true
+  },
+  "strap_keeper_test_kit": {
+    "tongue_y_range": [
+      -165.0,
+      -135.0
+    ],
+    "residual_vs_south_strap_mm3": 0.0,
+    "trim_marks_inside": [
+      160,
+      165
+    ],
+    "notch_material_mm3": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "keepers": {
+      "strap_keeper": {
+        "inner_wxh_mm": [
+          21.8,
+          5.6
+        ],
+        "probe_vs_keeper_mm3": 0.0,
+        "slack_mm": {
+          "width_each_side": 0.3,
+          "thickness_each_side": 0.2
+        },
+        "walls_mm": {
+          "skin": 0.8,
+          "outer": 1.2,
+          "side": 1.2
+        }
+      },
+      "strap_keeper_gauge_h5p8": {
+        "inner_wxh_mm": [
+          21.8,
+          5.8
+        ],
+        "probe_vs_keeper_mm3": 0.0,
+        "slack_mm": {
+          "width_each_side": 0.3,
+          "thickness_each_side": 0.3
+        },
+        "walls_mm": {
+          "skin": 0.8,
+          "outer": 1.2,
+          "side": 1.2
+        }
+      },
+      "strap_keeper_gauge_h6p0": {
+        "inner_wxh_mm": [
+          21.8,
+          6.0
+        ],
+        "probe_vs_keeper_mm3": 0.0,
+        "slack_mm": {
+          "width_each_side": 0.3,
+          "thickness_each_side": 0.4
+        },
+        "walls_mm": {
+          "skin": 0.8,
+          "outer": 1.2,
+          "side": 1.2
+        }
+      }
+    },
+    "pass": true
+  },
+  "negative_controls": {
+    "neg1_height_9p7_collision": {
+      "tested_total_height_mm": 9.7,
+      "colliding_refs": [
+        "U12",
+        "U17",
+        "SW300",
+        "J300"
+      ],
+      "min_clearance_mm": -0.417,
+      "sw300_intersection_vol_mm3": 1.416,
+      "detected": true
+    },
+    "neg2_excessive_fillet_r3p6_collision": {
+      "tested_top_inner_r_mm": 2.6,
+      "colliding_refs": [
+        "U12",
+        "SW300"
+      ],
+      "min_clearance_mm": -0.221,
+      "detected": true
+    },
+    "neg3_pin_hole_breach_thin_wall": {
+      "tested_pin_hole_depth_mm": 1.6,
+      "remaining_outer_wall_mm": 0.6,
+      "threshold_mm": 0.8,
+      "detected": true
+    },
+    "neg4_ufl_plug_without_blister_collision": {
+      "tested_ufl_blister": false,
+      "ufl_plug_intersection_vol_mm3": 4.706,
+      "detected": true
+    },
+    "neg5_ne_unstepped_3mm_pillar_r209_collision": {
+      "tested_ne_pillar_top_od_mm": 3.0,
+      "r209_intersection_vol_mm3": 0.1136,
+      "detected": true
+    },
+    "neg6_old_long_lug_protrusion_rejected": {
+      "tested_old_north_protrusion_mm": 6.8,
+      "tested_old_south_protrusion_mm": 4.8,
+      "tested_old_total_y_mm": 51.6,
+      "max_allowed_protrusion_mm": 3.2,
+      "max_allowed_total_y_mm": 46.0,
+      "current_north_protrusion_mm": 3.1,
+      "current_south_protrusion_mm": 2.65,
+      "current_total_y_mm": 45.75,
+      "current_center_slot_overhang_vol_mm3": 0.0,
+      "detected": true
+    },
+    "neg7_head_not_on_fpc_pad": {
+      "tested_fpc_z_min_mm": 1.32,
+      "head_top_to_fpc_F_gap_mm": 0.82,
+      "detected": true
+    },
+    "neg8_fpc_without_stiffener": {
+      "tested_cad_fpc_t_mm": 0.23,
+      "r15_actual_t_mm": 0.353,
+      "detected": true
+    },
+    "neg9_no_relief_for_b_over_a": {
+      "strap_south_vs_b_over_a_vol_mm3": 26.0251,
+      "detected": true
+    },
+    "neg10_old_buckle_and_tail_fail_wrist_155_230": {
+      "failing_wrists_mm": [
+        155,
+        160,
+        165,
+        170,
+        175,
+        180,
+        185,
+        190,
+        195,
+        200,
+        205,
+        210,
+        215,
+        220,
+        225,
+        230
+      ],
+      "detected": true
+    },
+    "neg11_old_strap_mapping_off_r15_pads": {
+      "max_offset_mm": 1.0,
+      "detected": true
+    },
+    "neg12_north_pocket_pm10p70_hits_ch3_island": {
+      "vol_mm3": 0.9168,
+      "detected": true
+    },
+    "neg13_south_root_closed_blocks_a_band": {
+      "vol_mm3": 3.2356,
+      "detected": true
+    },
+    "neg20_tongue_test_without_trim_marks": {
+      "trim_marks_inside": [],
+      "residual_vs_south_strap_mm3": 0.0,
+      "detected": true
+    },
+    "neg14_old_loose_keeper_23p8x6p2": {
+      "slack_mm": {
+        "width_each_side": 1.3,
+        "thickness_each_side": 0.5
+      },
+      "detected": true
+    },
+    "neg15_snug_keeper_from_160_sits_on_body": {
+      "min_past_body_end_mm": -2.08,
+      "detected": true
+    },
+    "neg16_keeper_inner_height_5p4_too_tight": {
+      "probe_vs_keeper_mm3": 6.4582,
+      "detected": true
+    },
+    "neg17_trim_marks_too_short": {
+      "min_tail_mm": 5.26,
+      "detected": true
+    },
+    "neg18_trim_10mm_steps_tail_too_short_for_keeper": {
+      "worst_wrist_mm": 219.99,
+      "worst_spare_mm": -2.38,
+      "detected": true
+    },
+    "neg19_keeper_10mm_cannot_park_off_electrodes": {
+      "min_free_mm": 9.36,
+      "detected": true
+    }
+  }
+}

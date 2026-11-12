@@ -1,0 +1,310 @@
+{
+  "tray": {
+    "step": "tray.step",
+    "stl": "tray.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 2818.284,
+    "bbox_min": [
+      -23.0,
+      -22.65,
+      0.15
+    ],
+    "bbox_max": [
+      23.0,
+      23.1,
+      6.76
+    ],
+    "size_mm": [
+      46.0,
+      45.75,
+      6.61
+    ]
+  },
+  "cover": {
+    "step": "cover.step",
+    "stl": "cover.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 2020.75,
+    "bbox_min": [
+      -23.0,
+      -20.0,
+      6.76
+    ],
+    "bbox_max": [
+      23.0,
+      20.0,
+      10.84
+    ],
+    "size_mm": [
+      46.0,
+      40.0,
+      4.08
+    ]
+  },
+  "switch_plunger": {
+    "step": "switch_plunger.step",
+    "stl": "switch_plunger.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 12.35,
+    "bbox_min": [
+      2.5,
+      12.3,
+      8.22
+    ],
+    "bbox_max": [
+      5.54,
+      16.46,
+      10.4
+    ],
+    "size_mm": [
+      3.04,
+      4.16,
+      2.18
+    ]
+  },
+  "pcb_standoff_std": {
+    "step": "pcb_standoff_std.step",
+    "stl": "pcb_standoff_std.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 11.206,
+    "bbox_min": [
+      -1.25,
+      -1.25,
+      3.35
+    ],
+    "bbox_max": [
+      1.25,
+      1.25,
+      6.79
+    ],
+    "size_mm": [
+      2.5,
+      2.5,
+      3.44
+    ]
+  },
+  "pcb_standoff_ne": {
+    "step": "pcb_standoff_ne.step",
+    "stl": "pcb_standoff_ne.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 10.763,
+    "bbox_min": [
+      -1.3,
+      -1.3,
+      3.35
+    ],
+    "bbox_max": [
+      1.3,
+      1.3,
+      6.79
+    ],
+    "size_mm": [
+      2.6,
+      2.6,
+      3.44
+    ]
+  },
+  "lug_test_22mm": {
+    "step": "lug_test_22mm.step",
+    "stl": "lug_test_22mm.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 273.438,
+    "bbox_min": [
+      -14.2,
+      -22.65,
+      0.15
+    ],
+    "bbox_max": [
+      14.2,
+      -16.5,
+      6.76
+    ],
+    "size_mm": [
+      28.4,
+      6.15,
+      6.61
+    ]
+  },
+  "strap_test_coupon_ch5_ch9": {
+    "step": "strap_test_coupon_ch5_ch9.step",
+    "stl": "strap_test_coupon_ch5_ch9.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 2188.534,
+    "bbox_min": [
+      -11.6,
+      -70.0,
+      0.15
+    ],
+    "bbox_max": [
+      11.6,
+      -28.2,
+      5.6
+    ],
+    "size_mm": [
+      23.2,
+      41.8,
+      5.45
+    ]
+  },
+  "strap_keeper": {
+    "step": "strap_keeper.step",
+    "stl": "strap_keeper.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 182.842,
+    "bbox_min": [
+      -12.1,
+      -3.6,
+      0.0
+    ],
+    "bbox_max": [
+      12.1,
+      4.0,
+      3.0
+    ],
+    "size_mm": [
+      24.2,
+      7.6,
+      3.0
+    ]
+  },
+  "strap_tongue_test": {
+    "step": "strap_tongue_test.step",
+    "stl": "strap_tongue_test.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 1520.76,
+    "bbox_min": [
+      -10.6,
+      -165.0,
+      0.15
+    ],
+    "bbox_max": [
+      10.6,
+      -135.0,
+      2.75
+    ],
+    "size_mm": [
+      21.2,
+      30.0,
+      2.6
+    ]
+  },
+  "strap_keeper_gauge_h5p8": {
+    "step": "strap_keeper_gauge_h5p8.step",
+    "stl": "strap_keeper_gauge_h5p8.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 183.88,
+    "bbox_min": [
+      -12.1,
+      -3.7,
+      0.0
+    ],
+    "bbox_max": [
+      12.1,
+      4.1,
+      3.0
+    ],
+    "size_mm": [
+      24.2,
+      7.8,
+      3.0
+    ]
+  },
+  "strap_keeper_gauge_h6p0": {
+    "step": "strap_keeper_gauge_h6p0.step",
+    "stl": "strap_keeper_gauge_h6p0.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 185.119,
+    "bbox_min": [
+      -12.1,
+      -3.8,
+      0.0
+    ],
+    "bbox_max": [
+      12.1,
+      4.2,
+      3.0
+    ],
+    "size_mm": [
+      24.2,
+      8.0,
+      3.0
+    ]
+  },
+  "whole_box_onepiece": {
+    "step": "whole_box_onepiece.step",
+    "stl": "whole_box_onepiece.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 4849.674,
+    "bbox_min": [
+      -23.0,
+      -22.65,
+      0.15
+    ],
+    "bbox_max": [
+      23.0,
+      23.1,
+      10.84
+    ],
+    "size_mm": [
+      46.0,
+      45.75,
+      10.69
+    ]
+  },
+  "strap_military_green_north": {
+    "step": "strap_military_green_north.step",
+    "stl": "strap_military_green_north.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 1914.6,
+    "bbox_min": [
+      -11.95,
+      19.75,
+      0.15
+    ],
+    "bbox_max": [
+      11.6,
+      52.0,
+      5.6
+    ],
+    "size_mm": [
+      23.55,
+      32.25,
+      5.45
+    ]
+  },
+  "strap_military_green_south": {
+    "step": "strap_military_green_south.step",
+    "stl": "strap_military_green_south.stl",
+    "is_valid": true,
+    "solid_count": 1,
+    "volume_mm3": 10272.125,
+    "bbox_min": [
+      -11.6,
+      -217.0,
+      0.15
+    ],
+    "bbox_max": [
+      11.6,
+      -19.3,
+      5.6
+    ],
+    "size_mm": [
+      23.2,
+      197.7,
+      5.45
+    ]
+  }
+}

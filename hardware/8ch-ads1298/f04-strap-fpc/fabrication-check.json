@@ -1,0 +1,10 @@
+{
+  "status": "CAM_REVIEW_ONLY",
+  "IPC_records": 85,
+  "logical_pins": 34,
+  "nets": 17,
+  "stiffeners_dark_regions": 1,
+  "stiffener_clear_slots": 0,
+  "native_geometry_boundary_match": true,
+  "factory_CAM_approved": false
+}

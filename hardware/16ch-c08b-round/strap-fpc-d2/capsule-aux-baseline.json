@@ -1,0 +1,302 @@
+{
+  "E1N": {
+    "piece": "a",
+    "ref": "E1N",
+    "x": 50.5,
+    "y": 42.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH1_N_E",
+        "x": 50.5,
+        "y": 42.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "E1P": {
+    "piece": "a",
+    "ref": "E1P",
+    "x": 50.5,
+    "y": 58.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH1_P_E",
+        "x": 50.5,
+        "y": 58.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "EB1": {
+    "piece": "a",
+    "ref": "EB1",
+    "x": 65.5,
+    "y": 50.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "BIAS_DRV1_E",
+        "x": 65.5,
+        "y": 50.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "E2P": {
+    "piece": "a",
+    "ref": "E2P",
+    "x": 65.5,
+    "y": 58.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH2_P_E",
+        "x": 65.5,
+        "y": 58.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "E2N": {
+    "piece": "a",
+    "ref": "E2N",
+    "x": 65.5,
+    "y": 42.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH2_N_E",
+        "x": 65.5,
+        "y": 42.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "R3": {
+    "piece": "a",
+    "ref": "R3",
+    "x": 65.5,
+    "y": 56.2,
+    "layer": "B.Cu",
+    "value": "100k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH2_P",
+        "x": 65.5,
+        "y": 55.69,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "CH2_P_E",
+        "x": 65.5,
+        "y": 56.71,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  },
+  "R2": {
+    "piece": "a",
+    "ref": "R2",
+    "x": 50.5,
+    "y": 43.6,
+    "layer": "B.Cu",
+    "value": "100k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH1_N",
+        "x": 50.5,
+        "y": 44.11,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "CH1_N_E",
+        "x": 50.5,
+        "y": 43.09,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  },
+  "R4": {
+    "piece": "a",
+    "ref": "R4",
+    "x": 65.5,
+    "y": 43.6,
+    "layer": "B.Cu",
+    "value": "100k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH2_N",
+        "x": 65.5,
+        "y": 44.11,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "CH2_N_E",
+        "x": 65.5,
+        "y": 43.09,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  },
+  "R33": {
+    "piece": "a",
+    "ref": "R33",
+    "x": 69.0,
+    "y": 54.8,
+    "layer": "B.Cu",
+    "value": "200k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "BIAS_DRV1",
+        "x": 69.0,
+        "y": 55.625,
+        "w": 1.05,
+        "h": 0.95,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "BIAS_DRV1_E",
+        "x": 69.0,
+        "y": 53.975,
+        "w": 1.05,
+        "h": 0.95,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  },
+  "R1": {
+    "piece": "a",
+    "ref": "R1",
+    "x": 50.5,
+    "y": 56.2,
+    "layer": "B.Cu",
+    "value": "100k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "CH1_P",
+        "x": 50.5,
+        "y": 55.69,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "CH1_P_E",
+        "x": 50.5,
+        "y": 56.71,
+        "w": 0.64,
+        "h": 0.54,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  },
+  "EB2": {
+    "piece": "b",
+    "ref": "EB2",
+    "x": 50.5,
+    "y": 50.0,
+    "layer": "F.Cu",
+    "value": "贴肤触点",
+    "pads": [
+      {
+        "num": "1",
+        "net": "BIAS_DRV12_E",
+        "x": 50.5,
+        "y": 50.0,
+        "w": 1.8,
+        "h": 1.8,
+        "circle": true,
+        "drill": 1.0
+      }
+    ]
+  },
+  "R34": {
+    "piece": "b",
+    "ref": "R34",
+    "x": 53.5,
+    "y": 50.0,
+    "layer": "B.Cu",
+    "value": "200k",
+    "pads": [
+      {
+        "num": "1",
+        "net": "BIAS_DRV12",
+        "x": 54.325,
+        "y": 50.0,
+        "w": 0.95,
+        "h": 1.05,
+        "circle": false,
+        "drill": null
+      },
+      {
+        "num": "2",
+        "net": "BIAS_DRV12_E",
+        "x": 52.675,
+        "y": 50.0,
+        "w": 0.95,
+        "h": 1.05,
+        "circle": false,
+        "drill": null
+      }
+    ]
+  }
+}

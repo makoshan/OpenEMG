@@ -1,0 +1,375 @@
+{
+ "a": [
+  {
+   "ch": 1,
+   "bumps": [
+    {
+     "net": "CH1_P",
+     "at": [
+      57.0,
+      55.275
+     ],
+     "height": 0.121,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 47.4709,
+   "tail_P_mm": 47.4709,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.0903,
+   "elec_P_mm": 2.0903,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 2,
+   "bumps": [
+    {
+     "net": "CH2_N",
+     "at": [
+      60.2,
+      45.125
+     ],
+     "height": 0.483,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 47.9768,
+   "tail_P_mm": 47.9768,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 2.0903,
+   "elec_P_mm": 2.0903,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 3,
+   "bumps": [],
+   "method": "北岛分叉高度 ys=48.2316",
+   "tail_N_mm": 49.3473,
+   "tail_P_mm": 49.3473,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 4,
+   "bumps": [],
+   "method": "北岛分叉高度 ys=48.2316",
+   "tail_N_mm": 65.1973,
+   "tail_P_mm": 65.1973,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 5,
+   "bumps": [
+    {
+     "net": "CH5_P",
+     "at": [
+      89.675,
+      51.487
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 70.5448,
+   "tail_P_mm": 70.5448,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 6,
+   "bumps": [
+    {
+     "net": "CH6_P",
+     "at": [
+      97.675,
+      51.487
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 78.9176,
+   "tail_P_mm": 78.9176,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 7,
+   "bumps": [
+    {
+     "net": "CH7_P",
+     "at": [
+      105.675,
+      51.487
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 87.2904,
+   "tail_P_mm": 87.2904,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 8,
+   "bumps": [
+    {
+     "net": "CH8_P",
+     "at": [
+      113.675,
+      51.487
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 95.6632,
+   "tail_P_mm": 95.6632,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  }
+ ],
+ "b": [
+  {
+   "ch": 9,
+   "bumps": [],
+   "method": "腿上凸起",
+   "hairpin": {
+    "net": "CH9_P",
+    "extra_mm": 4.67,
+    "height": 2.2867,
+    "top_y": 50.7233
+   },
+   "tail_N_mm": 99.8023,
+   "tail_P_mm": 99.8023,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 10,
+   "bumps": [],
+   "method": "腿上凸起",
+   "hairpin": {
+    "net": "CH10_P",
+    "extra_mm": 3.0684,
+    "height": 1.4859,
+    "top_y": 50.7233
+   },
+   "tail_N_mm": 107.4361,
+   "tail_P_mm": 107.4361,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 11,
+   "bumps": [],
+   "method": "腿上凸起",
+   "hairpin": {
+    "net": "CH11_P",
+    "extra_mm": 1.4666,
+    "height": 0.685,
+    "top_y": 50.7233
+   },
+   "tail_N_mm": 114.9088,
+   "tail_P_mm": 114.9088,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 12,
+   "bumps": [
+    {
+     "net": "CH12_N",
+     "at": [
+      145.675,
+      47.966
+     ],
+     "height": 0.163,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 122.5168,
+   "tail_P_mm": 122.5168,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 13,
+   "bumps": [
+    {
+     "net": "CH13_N",
+     "at": [
+      153.675,
+      47.837
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 130.7201,
+   "tail_P_mm": 130.7201,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 14,
+   "bumps": [
+    {
+     "net": "CH14_N",
+     "at": [
+      161.675,
+      47.837
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 138.7781,
+   "tail_P_mm": 138.7781,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 15,
+   "bumps": [
+    {
+     "net": "CH15_N",
+     "at": [
+      169.675,
+      47.837
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 146.8361,
+   "tail_P_mm": 146.8361,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 16,
+   "bumps": [
+    {
+     "net": "CH16_N",
+     "at": [
+      177.675,
+      47.837
+     ],
+     "height": 0.785,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "腿上凸起",
+   "tail_N_mm": 154.687,
+   "tail_P_mm": 154.687,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 2.4461,
+   "elec_P_mm": 2.4461,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  }
+ ]
+}

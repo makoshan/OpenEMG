@@ -1,0 +1,29 @@
+{
+ "roof_across": {
+  "south": true,
+  "north": true
+ },
+ "control_plain_south_not_across": true,
+ "estimate": {
+  "time": "45m 38s",
+  "filament_g": "13.97"
+ },
+ "south_label": "47",
+ "probe_layer_z": 1.16,
+ "notches": {
+  "-157.12": true,
+  "-161.61": true,
+  "-166.13": true,
+  "-170.69": true,
+  "-175.28": true,
+  "-179.89": true,
+  "-184.53": true,
+  "-189.19": true,
+  "-193.87": true,
+  "-198.57": true,
+  "-203.29": true,
+  "-208.03": true
+ },
+ "control_band_-148_-140_has_notch": false,
+ "pass": true
+}

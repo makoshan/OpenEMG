@@ -1,0 +1,6836 @@
+{
+  "V4_C63": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C63",
+    "pcb_properties": {
+      "Reference": "V4_C63",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "TP902": {
+    "value": "V4_REF1",
+    "footprint": "C08A:TP902",
+    "pcb_properties": {
+      "Reference": "TP902",
+      "Value": "V4_REF1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "D2": {
+    "value": "BAT54C",
+    "footprint": "C08A:D2",
+    "pcb_properties": {
+      "Reference": "D2",
+      "Value": "BAT54C",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "BAT54C",
+      "LCSC": "C2135"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "BAT54C",
+      "LCSC": "C2135"
+    }
+  },
+  "D926": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D926",
+    "pcb_properties": {
+      "Reference": "D926",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C68": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C68",
+    "pcb_properties": {
+      "Reference": "V4_C68",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "R803": {
+    "value": "10k",
+    "footprint": "C08A:R803",
+    "pcb_properties": {
+      "Reference": "R803",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C59": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C59",
+    "pcb_properties": {
+      "Reference": "V4_C59",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "D916": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D916",
+    "pcb_properties": {
+      "Reference": "D916",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C84": {
+    "value": "2.2uF",
+    "footprint": "C08A:V4_C84",
+    "pcb_properties": {
+      "Reference": "V4_C84",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A225KO5NQNC",
+      "LCSC": "C170151"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A225KO5NQNC",
+      "LCSC": "C170151"
+    }
+  },
+  "D918": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D918",
+    "pcb_properties": {
+      "Reference": "D918",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "C30": {
+    "value": "100nF",
+    "footprint": "C08A:C30",
+    "pcb_properties": {
+      "Reference": "C30",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C77": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C77",
+    "pcb_properties": {
+      "Reference": "V4_C77",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "C901": {
+    "value": "10uF",
+    "footprint": "C08A:C901",
+    "pcb_properties": {
+      "Reference": "C901",
+      "Value": "10uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "HGC0402R5106M100NTEJ",
+      "LCSC": "C7472949"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "HGC0402R5106M100NTEJ",
+      "LCSC": "C7472949"
+    }
+  },
+  "V4_C32": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C32",
+    "pcb_properties": {
+      "Reference": "V4_C32",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "C50": {
+    "value": "DNP",
+    "footprint": "C08A:C50",
+    "pcb_properties": {
+      "Reference": "C50",
+      "Value": "DNP",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "DNP",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "yes",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "DNP",
+      "LCSC": ""
+    }
+  },
+  "D914": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D914",
+    "pcb_properties": {
+      "Reference": "D914",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_FPC1": {
+    "value": "SM20B-SURS-TF(LF)(SN)",
+    "footprint": "C08A:V4_FPC1",
+    "pcb_properties": {
+      "Reference": "V4_FPC1",
+      "Value": "SM20B-SURS-TF(LF)(SN)",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "connector/SMD_single_row_plus_mounting_pad",
+      "MPN": "SM20B-SURS-TF(LF)(SN)",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "MP"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SM20B-SURS-TF(LF)(SN)",
+      "LCSC": ""
+    }
+  },
+  "R805": {
+    "value": "10k",
+    "footprint": "C08A:R805",
+    "pcb_properties": {
+      "Reference": "R805",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_R17": {
+    "value": "10K",
+    "footprint": "C08A:V4_R17",
+    "pcb_properties": {
+      "Reference": "V4_R17",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_R27": {
+    "value": "100kΩ",
+    "footprint": "C08A:V4_R27",
+    "pcb_properties": {
+      "Reference": "V4_R27",
+      "Value": "100kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "RT0402BRD07100KL",
+      "LCSC": "C852472"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "RT0402BRD07100KL",
+      "LCSC": "C852472"
+    }
+  },
+  "R200": {
+    "value": "1M",
+    "footprint": "C08A:R200",
+    "pcb_properties": {
+      "Reference": "R200",
+      "Value": "1M",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1M",
+      "LCSC": "C26083"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1M",
+      "LCSC": "C26083"
+    }
+  },
+  "D912": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D912",
+    "pcb_properties": {
+      "Reference": "D912",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "U16": {
+    "value": "LSM6DS3TR-C",
+    "footprint": "C08A:U16",
+    "pcb_properties": {
+      "Reference": "U16",
+      "Value": "LSM6DS3TR-C",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/no_lead",
+      "MPN": "LSM6DS3TR-C",
+      "LCSC": "C967633"
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "LSM6DS3TR-C",
+      "LCSC": "C967633"
+    }
+  },
+  "V4_C62": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C62",
+    "pcb_properties": {
+      "Reference": "V4_C62",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C66": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C66",
+    "pcb_properties": {
+      "Reference": "V4_C66",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "C54": {
+    "value": "2.2uF",
+    "footprint": "C08A:C54",
+    "pcb_properties": {
+      "Reference": "C54",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    }
+  },
+  "V4_C69": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C69",
+    "pcb_properties": {
+      "Reference": "V4_C69",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C82": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C82",
+    "pcb_properties": {
+      "Reference": "V4_C82",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C70": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C70",
+    "pcb_properties": {
+      "Reference": "V4_C70",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "R207": {
+    "value": "5.1k",
+    "footprint": "C08A:R207",
+    "pcb_properties": {
+      "Reference": "R207",
+      "Value": "5.1k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "5.1k",
+      "LCSC": "C25905"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "5.1k",
+      "LCSC": "C25905"
+    }
+  },
+  "V4_C58": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C58",
+    "pcb_properties": {
+      "Reference": "V4_C58",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_R28": {
+    "value": "100kΩ",
+    "footprint": "C08A:V4_R28",
+    "pcb_properties": {
+      "Reference": "V4_R28",
+      "Value": "100kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "RT0402BRD07100KL",
+      "LCSC": "C852472"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "RT0402BRD07100KL",
+      "LCSC": "C852472"
+    }
+  },
+  "R701": {
+    "value": "100k",
+    "footprint": "C08A:R701",
+    "pcb_properties": {
+      "Reference": "R701",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "R201": {
+    "value": "1M",
+    "footprint": "C08A:R201",
+    "pcb_properties": {
+      "Reference": "R201",
+      "Value": "1M",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1M",
+      "LCSC": "C26083"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1M",
+      "LCSC": "C26083"
+    }
+  },
+  "V4_C35": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C35",
+    "pcb_properties": {
+      "Reference": "V4_C35",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_U6": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U6",
+    "pcb_properties": {
+      "Reference": "V4_U6",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "R808": {
+    "value": "10k",
+    "footprint": "C08A:R808",
+    "pcb_properties": {
+      "Reference": "R808",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "C53": {
+    "value": "2.2uF",
+    "footprint": "C08A:C53",
+    "pcb_properties": {
+      "Reference": "C53",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    }
+  },
+  "R804": {
+    "value": "10k",
+    "footprint": "C08A:R804",
+    "pcb_properties": {
+      "Reference": "R804",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_X1": {
+    "value": "2.048MHz",
+    "footprint": "C08A:V4_X1",
+    "pcb_properties": {
+      "Reference": "V4_X1",
+      "Value": "2.048MHz",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "SWOFCVXXE8-2.048000",
+      "LCSC": "C22368484"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SWOFCVXXE8-2.048000",
+      "LCSC": "C22368484"
+    }
+  },
+  "V4_C72": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C72",
+    "pcb_properties": {
+      "Reference": "V4_C72",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D927": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D927",
+    "pcb_properties": {
+      "Reference": "D927",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "R705": {
+    "value": "100k",
+    "footprint": "C08A:R705",
+    "pcb_properties": {
+      "Reference": "R705",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "R703": {
+    "value": "10k",
+    "footprint": "C08A:R703",
+    "pcb_properties": {
+      "Reference": "R703",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "D911": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D911",
+    "pcb_properties": {
+      "Reference": "D911",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C83": {
+    "value": "2.2uF",
+    "footprint": "C08A:V4_C83",
+    "pcb_properties": {
+      "Reference": "V4_C83",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A225KO5NQNC",
+      "LCSC": "C170151"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A225KO5NQNC",
+      "LCSC": "C170151"
+    }
+  },
+  "C40": {
+    "value": "100nF",
+    "footprint": "C08A:C40",
+    "pcb_properties": {
+      "Reference": "C40",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_U5": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U5",
+    "pcb_properties": {
+      "Reference": "V4_U5",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "R901": {
+    "value": "10kΩ",
+    "footprint": "C08A:R901",
+    "pcb_properties": {
+      "Reference": "R901",
+      "Value": "10kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_R24": {
+    "value": "392K",
+    "footprint": "C08A:V4_R24",
+    "pcb_properties": {
+      "Reference": "V4_R24",
+      "Value": "392K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C54": {
+    "value": "22uF",
+    "footprint": "C08A:V4_C54",
+    "pcb_properties": {
+      "Reference": "V4_C54",
+      "Value": "22uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL21A226MAQNNNE",
+      "LCSC": "C45783"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL21A226MAQNNNE",
+      "LCSC": "C45783"
+    }
+  },
+  "R39": {
+    "value": "10k",
+    "footprint": "C08A:R39",
+    "pcb_properties": {
+      "Reference": "R39",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "D913": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D913",
+    "pcb_properties": {
+      "Reference": "D913",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C74": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C74",
+    "pcb_properties": {
+      "Reference": "V4_C74",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D910": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D910",
+    "pcb_properties": {
+      "Reference": "D910",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C57": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C57",
+    "pcb_properties": {
+      "Reference": "V4_C57",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "C60": {
+    "value": "0.5pF",
+    "footprint": "C08A:C60",
+    "pcb_properties": {
+      "Reference": "C60",
+      "Value": "0.5pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "GJM1555C1HR50WB01D",
+      "LCSC": "C76912"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GJM1555C1HR50WB01D",
+      "LCSC": "C76912"
+    }
+  },
+  "C27": {
+    "value": "100nF",
+    "footprint": "C08A:C27",
+    "pcb_properties": {
+      "Reference": "C27",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "R42": {
+    "value": "10k",
+    "footprint": "C08A:R42",
+    "pcb_properties": {
+      "Reference": "R42",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "TP901": {
+    "value": "V4_REF2",
+    "footprint": "C08A:TP901",
+    "pcb_properties": {
+      "Reference": "TP901",
+      "Value": "V4_REF2",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_U4": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U4",
+    "pcb_properties": {
+      "Reference": "V4_U4",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "D901": {
+    "value": "XL-1005UGC",
+    "footprint": "C08A:D901",
+    "pcb_properties": {
+      "Reference": "D901",
+      "Value": "XL-1005UGC",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "XL-1005UGC",
+      "LCSC": "C965793"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "XL-1005UGC",
+      "LCSC": "C965793"
+    }
+  },
+  "C51": {
+    "value": "4.7uF",
+    "footprint": "C08A:C51",
+    "pcb_properties": {
+      "Reference": "C51",
+      "Value": "4.7uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "CL05A475MP5NRNC",
+      "LCSC": "C23733"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A475MP5NRNC",
+      "LCSC": "C23733"
+    }
+  },
+  "R43": {
+    "value": "100k",
+    "footprint": "C08A:R43",
+    "pcb_properties": {
+      "Reference": "R43",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "V4_C47": {
+    "value": "10nF",
+    "footprint": "C08A:V4_C47",
+    "pcb_properties": {
+      "Reference": "V4_C47",
+      "Value": "10nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0402B103K500NT",
+      "LCSC": "C1524"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402B103K500NT",
+      "LCSC": "C1524"
+    }
+  },
+  "Q2": {
+    "value": "AO3401A",
+    "footprint": "C08A:Q2",
+    "pcb_properties": {
+      "Reference": "Q2",
+      "Value": "AO3401A",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "AO3401A",
+      "LCSC": "C15127"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "AO3401A",
+      "LCSC": "C15127"
+    }
+  },
+  "V4_R35": {
+    "value": "10K",
+    "footprint": "C08A:V4_R35",
+    "pcb_properties": {
+      "Reference": "V4_R35",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "R35": {
+    "value": "10k",
+    "footprint": "C08A:R35",
+    "pcb_properties": {
+      "Reference": "R35",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_U3": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U3",
+    "pcb_properties": {
+      "Reference": "V4_U3",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "L4": {
+    "value": "4.7nH",
+    "footprint": "C08A:L4",
+    "pcb_properties": {
+      "Reference": "L4",
+      "Value": "4.7nH",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "LQG15HS4N7S02D",
+      "LCSC": "C86065"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "LQG15HS4N7S02D",
+      "LCSC": "C86065"
+    }
+  },
+  "V4_R34": {
+    "value": "10K",
+    "footprint": "C08A:V4_R34",
+    "pcb_properties": {
+      "Reference": "V4_R34",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C45": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C45",
+    "pcb_properties": {
+      "Reference": "V4_C45",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C31": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C31",
+    "pcb_properties": {
+      "Reference": "V4_C31",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_C67": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C67",
+    "pcb_properties": {
+      "Reference": "V4_C67",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_R29": {
+    "value": "104k",
+    "footprint": "C08A:V4_R29",
+    "pcb_properties": {
+      "Reference": "V4_R29",
+      "Value": "104k",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "RN73R1JTTD1043C50",
+      "LCSC": "C2520016"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "RN73R1JTTD1043C50",
+      "LCSC": "C2520016"
+    }
+  },
+  "D921": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D921",
+    "pcb_properties": {
+      "Reference": "D921",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "J400": {
+    "value": "TYPE-C-31-M-14 16P mid-mount",
+    "footprint": "C08A:J400",
+    "pcb_properties": {
+      "Reference": "J400",
+      "Value": "TYPE-C-31-M-14 16P mid-mount",
+      "Datasheet": "",
+      "Description": "",
+      "LCSC Part": "C223907",
+      "MPN": "TYPE-C-31-M-14 16P mid-mount",
+      "LCSC": "C223907"
+    },
+    "pins": [
+      "A1B12",
+      "A4B9",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "B1A12",
+      "B4A9",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "S"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "TYPE-C-31-M-14 16P mid-mount",
+      "LCSC": "C223907"
+    }
+  },
+  "C34": {
+    "value": "2.2uF",
+    "footprint": "C08A:C34",
+    "pcb_properties": {
+      "Reference": "C34",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    }
+  },
+  "R206": {
+    "value": "5.1k",
+    "footprint": "C08A:R206",
+    "pcb_properties": {
+      "Reference": "R206",
+      "Value": "5.1k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "5.1k",
+      "LCSC": "C25905"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "5.1k",
+      "LCSC": "C25905"
+    }
+  },
+  "D915": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D915",
+    "pcb_properties": {
+      "Reference": "D915",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "R44": {
+    "value": "1M",
+    "footprint": "C08A:R44",
+    "pcb_properties": {
+      "Reference": "R44",
+      "Value": "1M",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1M",
+      "LCSC": "C26083"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1M",
+      "LCSC": "C26083"
+    }
+  },
+  "V4_C78": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C78",
+    "pcb_properties": {
+      "Reference": "V4_C78",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "Q1": {
+    "value": "AO3400A",
+    "footprint": "C08A:Q1",
+    "pcb_properties": {
+      "Reference": "Q1",
+      "Value": "AO3400A",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "AO3400A",
+      "LCSC": "C20917"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "AO3400A",
+      "LCSC": "C20917"
+    }
+  },
+  "C28": {
+    "value": "100nF",
+    "footprint": "C08A:C28",
+    "pcb_properties": {
+      "Reference": "C28",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C81": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C81",
+    "pcb_properties": {
+      "Reference": "V4_C81",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "R204": {
+    "value": "33R",
+    "footprint": "C08A:R204",
+    "pcb_properties": {
+      "Reference": "R204",
+      "Value": "33R",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "33R",
+      "LCSC": "C25105"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "33R",
+      "LCSC": "C25105"
+    }
+  },
+  "C52": {
+    "value": "2.2uF",
+    "footprint": "C08A:C52",
+    "pcb_properties": {
+      "Reference": "C52",
+      "Value": "2.2uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "2.2uF",
+      "LCSC": "C12530"
+    }
+  },
+  "C59": {
+    "value": "0.8pF",
+    "footprint": "C08A:C59",
+    "pcb_properties": {
+      "Reference": "C59",
+      "Value": "0.8pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "GJM1555C1HR80WB01D",
+      "LCSC": "C88902"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GJM1555C1HR80WB01D",
+      "LCSC": "C88902"
+    }
+  },
+  "C55": {
+    "value": "12pF",
+    "footprint": "C08A:C55",
+    "pcb_properties": {
+      "Reference": "C55",
+      "Value": "12pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "12pF",
+      "LCSC": "C1547"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "12pF",
+      "LCSC": "C1547"
+    }
+  },
+  "C46": {
+    "value": "47nF",
+    "footprint": "C08A:C46",
+    "pcb_properties": {
+      "Reference": "C46",
+      "Value": "47nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402B473K500NT",
+      "LCSC": "C82219"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402B473K500NT",
+      "LCSC": "C82219"
+    }
+  },
+  "C902": {
+    "value": "4.7uF",
+    "footprint": "C08A:C902",
+    "pcb_properties": {
+      "Reference": "C902",
+      "Value": "4.7uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A475KP5NRNC",
+      "LCSC": "C368809"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A475KP5NRNC",
+      "LCSC": "C368809"
+    }
+  },
+  "V4_C79": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C79",
+    "pcb_properties": {
+      "Reference": "V4_C79",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D924": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D924",
+    "pcb_properties": {
+      "Reference": "D924",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "R208": {
+    "value": "100R",
+    "footprint": "C08A:R208",
+    "pcb_properties": {
+      "Reference": "R208",
+      "Value": "100R",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100R",
+      "LCSC": "C25076"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100R",
+      "LCSC": "C25076"
+    }
+  },
+  "V4_C65": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C65",
+    "pcb_properties": {
+      "Reference": "V4_C65",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C49": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C49",
+    "pcb_properties": {
+      "Reference": "V4_C49",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "R706": {
+    "value": "1M",
+    "footprint": "C08A:R706",
+    "pcb_properties": {
+      "Reference": "R706",
+      "Value": "1M",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1M",
+      "LCSC": "C26083"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1M",
+      "LCSC": "C26083"
+    }
+  },
+  "C26": {
+    "value": "100nF",
+    "footprint": "C08A:C26",
+    "pcb_properties": {
+      "Reference": "C26",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "R203": {
+    "value": "10k",
+    "footprint": "C08A:R203",
+    "pcb_properties": {
+      "Reference": "R203",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C44": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C44",
+    "pcb_properties": {
+      "Reference": "V4_C44",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "C62": {
+    "value": "100nF",
+    "footprint": "C08A:C62",
+    "pcb_properties": {
+      "Reference": "C62",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "C29": {
+    "value": "100nF",
+    "footprint": "C08A:C29",
+    "pcb_properties": {
+      "Reference": "C29",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C71": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C71",
+    "pcb_properties": {
+      "Reference": "V4_C71",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_LM27762": {
+    "value": "LM27762DSSR",
+    "footprint": "C08A:V4_LM27762",
+    "pcb_properties": {
+      "Reference": "V4_LM27762",
+      "Value": "LM27762DSSR",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "LM27762DSSR",
+      "LCSC": "C473398"
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "LM27762DSSR",
+      "LCSC": "C473398"
+    }
+  },
+  "V4_C75": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C75",
+    "pcb_properties": {
+      "Reference": "V4_C75",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "V4_C76": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C76",
+    "pcb_properties": {
+      "Reference": "V4_C76",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "R36": {
+    "value": "10k",
+    "footprint": "C08A:R36",
+    "pcb_properties": {
+      "Reference": "R36",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C48": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C48",
+    "pcb_properties": {
+      "Reference": "V4_C48",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "R205": {
+    "value": "33R",
+    "footprint": "C08A:R205",
+    "pcb_properties": {
+      "Reference": "R205",
+      "Value": "33R",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "33R",
+      "LCSC": "C25105"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "33R",
+      "LCSC": "C25105"
+    }
+  },
+  "V4_C60": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C60",
+    "pcb_properties": {
+      "Reference": "V4_C60",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "U3": {
+    "value": "SN74AXC2T245RSWR",
+    "footprint": "C08A:U3",
+    "pcb_properties": {
+      "Reference": "U3",
+      "Value": "SN74AXC2T245RSWR",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/no_lead",
+      "MPN": "SN74AXC2T245RSWR",
+      "LCSC": "C1882550"
+    },
+    "pins": [
+      "1",
+      "10",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SN74AXC2T245RSWR",
+      "LCSC": "C1882550"
+    }
+  },
+  "D922": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D922",
+    "pcb_properties": {
+      "Reference": "D922",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C36": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C36",
+    "pcb_properties": {
+      "Reference": "V4_C36",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "Q701": {
+    "value": "AO3400A",
+    "footprint": "C08A:Q701",
+    "pcb_properties": {
+      "Reference": "Q701",
+      "Value": "AO3400A",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "AO3400A",
+      "LCSC": "C20917"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "AO3400A",
+      "LCSC": "C20917"
+    }
+  },
+  "V4_C123": {
+    "value": "100pF",
+    "footprint": "C08A:V4_C123",
+    "pcb_properties": {
+      "Reference": "V4_C123",
+      "Value": "100pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0402CG101J500NT",
+      "LCSC": "C1546"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402CG101J500NT",
+      "LCSC": "C1546"
+    }
+  },
+  "C45": {
+    "value": "1uF",
+    "footprint": "C08A:C45",
+    "pcb_properties": {
+      "Reference": "C45",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "R202": {
+    "value": "20k",
+    "footprint": "C08A:R202",
+    "pcb_properties": {
+      "Reference": "R202",
+      "Value": "20k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF2002TCE",
+      "LCSC": "C25765"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF2002TCE",
+      "LCSC": "C25765"
+    }
+  },
+  "R25": {
+    "value": "100k",
+    "footprint": "C08A:R25",
+    "pcb_properties": {
+      "Reference": "R25",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "R24": {
+    "value": "47k",
+    "footprint": "C08A:R24",
+    "pcb_properties": {
+      "Reference": "R24",
+      "Value": "47k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "47k",
+      "LCSC": "C25792"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "47k",
+      "LCSC": "C25792"
+    }
+  },
+  "V4_C64": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C64",
+    "pcb_properties": {
+      "Reference": "V4_C64",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C46": {
+    "value": "10uF",
+    "footprint": "C08A:V4_C46",
+    "pcb_properties": {
+      "Reference": "V4_C46",
+      "Value": "10uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL10A106KP8NNNC",
+      "LCSC": "C19702"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL10A106KP8NNNC",
+      "LCSC": "C19702"
+    }
+  },
+  "Y3": {
+    "value": "32MHz",
+    "footprint": "C08A:Y3",
+    "pcb_properties": {
+      "Reference": "Y3",
+      "Value": "32MHz",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "crystal_resonator_oscillator",
+      "MPN": "X201632MKB4SI",
+      "LCSC": "C718072"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "X201632MKB4SI",
+      "LCSC": "C718072"
+    }
+  },
+  "C47": {
+    "value": "100nF",
+    "footprint": "C08A:C47",
+    "pcb_properties": {
+      "Reference": "C47",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C61": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C61",
+    "pcb_properties": {
+      "Reference": "V4_C61",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "R26": {
+    "value": "0R",
+    "footprint": "C08A:R26",
+    "pcb_properties": {
+      "Reference": "R26",
+      "Value": "0R",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0R",
+      "LCSC": "C17168"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0R",
+      "LCSC": "C17168"
+    }
+  },
+  "R704": {
+    "value": "100k",
+    "footprint": "C08A:R704",
+    "pcb_properties": {
+      "Reference": "R704",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "V4_C33": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C33",
+    "pcb_properties": {
+      "Reference": "V4_C33",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "D923": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D923",
+    "pcb_properties": {
+      "Reference": "D923",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "R806": {
+    "value": "10k",
+    "footprint": "C08A:R806",
+    "pcb_properties": {
+      "Reference": "R806",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "R37": {
+    "value": "10k",
+    "footprint": "C08A:R37",
+    "pcb_properties": {
+      "Reference": "R37",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "C56": {
+    "value": "12pF",
+    "footprint": "C08A:C56",
+    "pcb_properties": {
+      "Reference": "C56",
+      "Value": "12pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "12pF",
+      "LCSC": "C1547"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "12pF",
+      "LCSC": "C1547"
+    }
+  },
+  "R801": {
+    "value": "10k",
+    "footprint": "C08A:R801",
+    "pcb_properties": {
+      "Reference": "R801",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C43": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C43",
+    "pcb_properties": {
+      "Reference": "V4_C43",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_U1": {
+    "value": "ADS1298IPAGR",
+    "footprint": "C08A:V4_U1",
+    "pcb_properties": {
+      "Reference": "V4_U1",
+      "Value": "ADS1298IPAGR",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ADS1298IPAGR",
+      "LCSC": "C527440"
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "3",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "4",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "49",
+      "5",
+      "50",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "6",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ADS1298IPAGR",
+      "LCSC": "C527440"
+    }
+  },
+  "D919": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D919",
+    "pcb_properties": {
+      "Reference": "D919",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C73": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C73",
+    "pcb_properties": {
+      "Reference": "V4_C73",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "C42": {
+    "value": "1uF",
+    "footprint": "C08A:C42",
+    "pcb_properties": {
+      "Reference": "C42",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    }
+  },
+  "D925": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D925",
+    "pcb_properties": {
+      "Reference": "D925",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "U13": {
+    "value": "nRF52840-QIAA-R",
+    "footprint": "C08A:U13",
+    "pcb_properties": {
+      "Reference": "U13",
+      "Value": "nRF52840-QIAA-R",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "nRF52840-QIAA-R",
+      "LCSC": "C190794"
+    },
+    "pins": [
+      "A10",
+      "A12",
+      "A14",
+      "A16",
+      "A18",
+      "A20",
+      "A22",
+      "A23",
+      "A8",
+      "AA24",
+      "AB2",
+      "AC11",
+      "AC13",
+      "AC15",
+      "AC17",
+      "AC19",
+      "AC21",
+      "AC24",
+      "AC5",
+      "AC9",
+      "AD10",
+      "AD12",
+      "AD14",
+      "AD16",
+      "AD18",
+      "AD2",
+      "AD20",
+      "AD22",
+      "AD23",
+      "AD4",
+      "AD6",
+      "AD8",
+      "B1",
+      "B11",
+      "B13",
+      "B15",
+      "B17",
+      "B19",
+      "B24",
+      "B3",
+      "B5",
+      "B7",
+      "B9",
+      "C1",
+      "D2",
+      "D23",
+      "E24",
+      "F2",
+      "F23",
+      "G1",
+      "G74",
+      "H2",
+      "H23",
+      "J1",
+      "J24",
+      "K2",
+      "L1",
+      "L24",
+      "M2",
+      "N1",
+      "N24",
+      "P2",
+      "P23",
+      "R1",
+      "R24",
+      "T2",
+      "T23",
+      "U1",
+      "U24",
+      "V23",
+      "W1",
+      "W24",
+      "Y2",
+      "PCB-BATCH"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "nRF52840-QIAA-R",
+      "LCSC": "C190794"
+    }
+  },
+  "V4_R18": {
+    "value": "10K",
+    "footprint": "C08A:V4_R18",
+    "pcb_properties": {
+      "Reference": "V4_R18",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "R198": {
+    "value": "4.7k",
+    "footprint": "C08A:R198",
+    "pcb_properties": {
+      "Reference": "R198",
+      "Value": "4.7k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    }
+  },
+  "R38": {
+    "value": "10k",
+    "footprint": "C08A:R38",
+    "pcb_properties": {
+      "Reference": "R38",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "C24": {
+    "value": "1uF",
+    "footprint": "C08A:C24",
+    "pcb_properties": {
+      "Reference": "C24",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    }
+  },
+  "R702": {
+    "value": "100k",
+    "footprint": "C08A:R702",
+    "pcb_properties": {
+      "Reference": "R702",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "V4_C34": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C34",
+    "pcb_properties": {
+      "Reference": "V4_C34",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C50": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C50",
+    "pcb_properties": {
+      "Reference": "V4_C50",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "C41": {
+    "value": "100nF",
+    "footprint": "C08A:C41",
+    "pcb_properties": {
+      "Reference": "C41",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "R27": {
+    "value": "100k",
+    "footprint": "C08A:R27",
+    "pcb_properties": {
+      "Reference": "R27",
+      "Value": "100k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100k",
+      "LCSC": "C25741"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100k",
+      "LCSC": "C25741"
+    }
+  },
+  "R807": {
+    "value": "10k",
+    "footprint": "C08A:R807",
+    "pcb_properties": {
+      "Reference": "R807",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C55": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C55",
+    "pcb_properties": {
+      "Reference": "V4_C55",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C37": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C37",
+    "pcb_properties": {
+      "Reference": "V4_C37",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "D920": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D920",
+    "pcb_properties": {
+      "Reference": "D920",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_R26": {
+    "value": "107k",
+    "footprint": "C08A:V4_R26",
+    "pcb_properties": {
+      "Reference": "V4_R26",
+      "Value": "107k",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0603WAF1073T5E",
+      "LCSC": "C14889"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0603WAF1073T5E",
+      "LCSC": "C14889"
+    }
+  },
+  "R34": {
+    "value": "10k",
+    "footprint": "C08A:R34",
+    "pcb_properties": {
+      "Reference": "R34",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "10k",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "10k",
+      "LCSC": "C25744"
+    }
+  },
+  "R41": {
+    "value": "4.7k",
+    "footprint": "C08A:R41",
+    "pcb_properties": {
+      "Reference": "R41",
+      "Value": "4.7k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    }
+  },
+  "R199": {
+    "value": "4.7k",
+    "footprint": "C08A:R199",
+    "pcb_properties": {
+      "Reference": "R199",
+      "Value": "4.7k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "4.7k",
+      "LCSC": "C25900"
+    }
+  },
+  "D917": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D917",
+    "pcb_properties": {
+      "Reference": "D917",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "C39": {
+    "value": "100nF",
+    "footprint": "C08A:C39",
+    "pcb_properties": {
+      "Reference": "C39",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "L3": {
+    "value": "10uH",
+    "footprint": "C08A:L3",
+    "pcb_properties": {
+      "Reference": "L3",
+      "Value": "10uH",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "MLZ1608M100WT000",
+      "LCSC": "C76798"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "MLZ1608M100WT000",
+      "LCSC": "C76798"
+    }
+  },
+  "D937": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D937",
+    "pcb_properties": {
+      "Reference": "D937",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C101": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C101",
+    "pcb_properties": {
+      "Reference": "V4_C101",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C119": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C119",
+    "pcb_properties": {
+      "Reference": "V4_C119",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_C85": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C85",
+    "pcb_properties": {
+      "Reference": "V4_C85",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "D946": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D946",
+    "pcb_properties": {
+      "Reference": "D946",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "D935": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D935",
+    "pcb_properties": {
+      "Reference": "D935",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "D942": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D942",
+    "pcb_properties": {
+      "Reference": "D942",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_U7": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U7",
+    "pcb_properties": {
+      "Reference": "V4_U7",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "D945": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D945",
+    "pcb_properties": {
+      "Reference": "D945",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C94": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C94",
+    "pcb_properties": {
+      "Reference": "V4_C94",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "D936": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D936",
+    "pcb_properties": {
+      "Reference": "D936",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "U2": {
+    "value": "SN74AXC8T245RHLR",
+    "footprint": "C08A:U2",
+    "pcb_properties": {
+      "Reference": "U2",
+      "Value": "SN74AXC8T245RHLR",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "SN74AXC8T245RHLR",
+      "LCSC": "C2677358"
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SN74AXC8T245RHLR",
+      "LCSC": "C2677358"
+    }
+  },
+  "J300": {
+    "value": "U.FL-R-SMT-1(10)",
+    "footprint": "C08A:J300",
+    "pcb_properties": {
+      "Reference": "J300",
+      "Value": "U.FL-R-SMT-1(10)",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "U.FL-R-SMT-1(10)",
+      "LCSC": "C88373"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "U.FL-R-SMT-1(10)",
+      "LCSC": "C88373"
+    }
+  },
+  "V4_C124": {
+    "value": "100pF",
+    "footprint": "C08A:V4_C124",
+    "pcb_properties": {
+      "Reference": "V4_C124",
+      "Value": "100pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0402CG101J500NT",
+      "LCSC": "C1546"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402CG101J500NT",
+      "LCSC": "C1546"
+    }
+  },
+  "V4_C113": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C113",
+    "pcb_properties": {
+      "Reference": "V4_C113",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "V4_C110": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C110",
+    "pcb_properties": {
+      "Reference": "V4_C110",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "J301": {
+    "value": "SWD + UART pads",
+    "footprint": "C08A:J301",
+    "pcb_properties": {
+      "Reference": "J301",
+      "Value": "SWD + UART pads",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "SWD + UART pads",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SWD + UART pads",
+      "LCSC": ""
+    }
+  },
+  "V4_U2": {
+    "value": "ADS1298IPAGR",
+    "footprint": "C08A:V4_U2",
+    "pcb_properties": {
+      "Reference": "V4_U2",
+      "Value": "ADS1298IPAGR",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ADS1298IPAGR",
+      "LCSC": "C527440"
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "3",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "4",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "49",
+      "5",
+      "50",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "6",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64",
+      "7",
+      "8",
+      "9"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ADS1298IPAGR",
+      "LCSC": "C527440"
+    }
+  },
+  "V4_C104": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C104",
+    "pcb_properties": {
+      "Reference": "V4_C104",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "C57": {
+    "value": "20pF",
+    "footprint": "C08A:C57",
+    "pcb_properties": {
+      "Reference": "C57",
+      "Value": "20pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "20pF",
+      "LCSC": "C1554"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "20pF",
+      "LCSC": "C1554"
+    }
+  },
+  "V4_C95": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C95",
+    "pcb_properties": {
+      "Reference": "V4_C95",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C89": {
+    "value": "10nF",
+    "footprint": "C08A:V4_C89",
+    "pcb_properties": {
+      "Reference": "V4_C89",
+      "Value": "10nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "0402B103K500NT",
+      "LCSC": "C1524"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402B103K500NT",
+      "LCSC": "C1524"
+    }
+  },
+  "V4_U8": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U8",
+    "pcb_properties": {
+      "Reference": "V4_U8",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "V4_C102": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C102",
+    "pcb_properties": {
+      "Reference": "V4_C102",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "D944": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D944",
+    "pcb_properties": {
+      "Reference": "D944",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "C49": {
+    "value": "820pF",
+    "footprint": "C08A:C49",
+    "pcb_properties": {
+      "Reference": "C49",
+      "Value": "820pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "820pF",
+      "LCSC": "C107031"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "820pF",
+      "LCSC": "C107031"
+    }
+  },
+  "SW300": {
+    "value": "EVQP7A01P side push",
+    "footprint": "C08A:SW300",
+    "pcb_properties": {
+      "Reference": "SW300",
+      "Value": "EVQP7A01P side push",
+      "Datasheet": "",
+      "Description": "",
+      "LCSC Part": "C79167",
+      "MPN": "EVQP7A01P side push",
+      "LCSC": "C79167"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "EVQP7A01P side push",
+      "LCSC": "C79167"
+    }
+  },
+  "V4_C114": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C114",
+    "pcb_properties": {
+      "Reference": "V4_C114",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D940": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D940",
+    "pcb_properties": {
+      "Reference": "D940",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "J401": {
+    "value": "BAT pads (NTC pad unused)",
+    "footprint": "C08A:J401",
+    "pcb_properties": {
+      "Reference": "J401",
+      "Value": "BAT pads (NTC pad unused)",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "BAT pads (NTC pad unused)",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2",
+      "3"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "BAT pads (NTC pad unused)",
+      "LCSC": ""
+    }
+  },
+  "TP903": {
+    "value": "V4_REF2",
+    "footprint": "C08A:TP903",
+    "pcb_properties": {
+      "Reference": "TP903",
+      "Value": "V4_REF2",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C118": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C118",
+    "pcb_properties": {
+      "Reference": "V4_C118",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "U14": {
+    "value": "TP4054",
+    "footprint": "C08A:U14",
+    "pcb_properties": {
+      "Reference": "U14",
+      "Value": "TP4054",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "TP4054",
+      "LCSC": "C668215"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "TP4054",
+      "LCSC": "C668215"
+    }
+  },
+  "TP701": {
+    "value": "ADS_DRDY_A",
+    "footprint": "C08A:TP701",
+    "pcb_properties": {
+      "Reference": "TP701",
+      "Value": "ADS_DRDY_A",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "D933": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D933",
+    "pcb_properties": {
+      "Reference": "D933",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "R802": {
+    "value": "10k",
+    "footprint": "C08A:R802",
+    "pcb_properties": {
+      "Reference": "R802",
+      "Value": "10k",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0402WGF1002TCE",
+      "LCSC": "C25744"
+    }
+  },
+  "V4_C91": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C91",
+    "pcb_properties": {
+      "Reference": "V4_C91",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_C87": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C87",
+    "pcb_properties": {
+      "Reference": "V4_C87",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_U9": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U9",
+    "pcb_properties": {
+      "Reference": "V4_U9",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "C58": {
+    "value": "20pF",
+    "footprint": "C08A:C58",
+    "pcb_properties": {
+      "Reference": "C58",
+      "Value": "20pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "20pF",
+      "LCSC": "C1554"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "20pF",
+      "LCSC": "C1554"
+    }
+  },
+  "D3": {
+    "value": "RB521S-30",
+    "footprint": "C08A:D3",
+    "pcb_properties": {
+      "Reference": "D3",
+      "Value": "RB521S-30",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "RB521S-30",
+      "LCSC": "C8523"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "RB521S-30",
+      "LCSC": "C8523"
+    }
+  },
+  "C44": {
+    "value": "1uF",
+    "footprint": "C08A:C44",
+    "pcb_properties": {
+      "Reference": "C44",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_C112": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C112",
+    "pcb_properties": {
+      "Reference": "V4_C112",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "V4_C100": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C100",
+    "pcb_properties": {
+      "Reference": "V4_C100",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "TP704": {
+    "value": "MCU_MISO",
+    "footprint": "C08A:TP704",
+    "pcb_properties": {
+      "Reference": "TP704",
+      "Value": "MCU_MISO",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C93": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C93",
+    "pcb_properties": {
+      "Reference": "V4_C93",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "D938": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D938",
+    "pcb_properties": {
+      "Reference": "D938",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "U10": {
+    "value": "SN74AUP1T14DCKR",
+    "footprint": "C08A:U10",
+    "pcb_properties": {
+      "Reference": "U10",
+      "Value": "SN74AUP1T14DCKR",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "SN74AUP1T14DCKR",
+      "LCSC": "C2682010"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SN74AUP1T14DCKR",
+      "LCSC": "C2682010"
+    }
+  },
+  "V4_C117": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C117",
+    "pcb_properties": {
+      "Reference": "V4_C117",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "V4_C86": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C86",
+    "pcb_properties": {
+      "Reference": "V4_C86",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "D941": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D941",
+    "pcb_properties": {
+      "Reference": "D941",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C120": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C120",
+    "pcb_properties": {
+      "Reference": "V4_C120",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "L5": {
+    "value": "15nH",
+    "footprint": "C08A:L5",
+    "pcb_properties": {
+      "Reference": "L5",
+      "Value": "15nH",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "LQG15HS15NJ02D",
+      "LCSC": "C86059"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "LQG15HS15NJ02D",
+      "LCSC": "C86059"
+    }
+  },
+  "V4_C121": {
+    "value": "1uF",
+    "footprint": "C08A:V4_C121",
+    "pcb_properties": {
+      "Reference": "V4_C121",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05A105KA5NQNC",
+      "LCSC": "C52923"
+    }
+  },
+  "TP705": {
+    "value": "GND",
+    "footprint": "C08A:TP705",
+    "pcb_properties": {
+      "Reference": "TP705",
+      "Value": "GND",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "C48": {
+    "value": "100pF",
+    "footprint": "C08A:C48",
+    "pcb_properties": {
+      "Reference": "C48",
+      "Value": "100pF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100pF",
+      "LCSC": "C1546"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100pF",
+      "LCSC": "C1546"
+    }
+  },
+  "V4_R37": {
+    "value": "10K",
+    "footprint": "C08A:V4_R37",
+    "pcb_properties": {
+      "Reference": "V4_R37",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C115": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C115",
+    "pcb_properties": {
+      "Reference": "V4_C115",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "JP701": {
+    "value": "BENCH_0R_DNP",
+    "footprint": "C08A:JP701",
+    "pcb_properties": {
+      "Reference": "JP701",
+      "Value": "BENCH_0R_DNP",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "0R",
+      "LCSC": "C17168"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "yes",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "0R",
+      "LCSC": "C17168"
+    }
+  },
+  "TP703": {
+    "value": "ADS_DRDY_B",
+    "footprint": "C08A:TP703",
+    "pcb_properties": {
+      "Reference": "TP703",
+      "Value": "ADS_DRDY_B",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C96": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C96",
+    "pcb_properties": {
+      "Reference": "V4_C96",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "TP702": {
+    "value": "MCU_DRDY",
+    "footprint": "C08A:TP702",
+    "pcb_properties": {
+      "Reference": "TP702",
+      "Value": "MCU_DRDY",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_R32": {
+    "value": "392K",
+    "footprint": "C08A:V4_R32",
+    "pcb_properties": {
+      "Reference": "V4_R32",
+      "Value": "392K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_C103": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C103",
+    "pcb_properties": {
+      "Reference": "V4_C103",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C98": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C98",
+    "pcb_properties": {
+      "Reference": "V4_C98",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "TP904": {
+    "value": "V4_REF1",
+    "footprint": "C08A:TP904",
+    "pcb_properties": {
+      "Reference": "TP904",
+      "Value": "V4_REF1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "no"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "D401": {
+    "value": "blue LED",
+    "footprint": "C08A:D401",
+    "pcb_properties": {
+      "Reference": "D401",
+      "Value": "blue LED",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "blue LED",
+      "LCSC": "C2986058"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "blue LED",
+      "LCSC": "C2986058"
+    }
+  },
+  "V4_R36": {
+    "value": "10K",
+    "footprint": "C08A:V4_R36",
+    "pcb_properties": {
+      "Reference": "V4_R36",
+      "Value": "10K",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "",
+      "LCSC": ""
+    }
+  },
+  "V4_FPC3": {
+    "value": "SM20B-SURS-TF(LF)(SN)",
+    "footprint": "C08A:V4_FPC3",
+    "pcb_properties": {
+      "Reference": "V4_FPC3",
+      "Value": "SM20B-SURS-TF(LF)(SN)",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "connector/SMD_single_row_plus_mounting_pad",
+      "MPN": "SM20B-SURS-TF(LF)(SN)",
+      "LCSC": ""
+    },
+    "pins": [
+      "1",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "2",
+      "20",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "MP"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "SM20B-SURS-TF(LF)(SN)",
+      "LCSC": ""
+    }
+  },
+  "U12": {
+    "value": "TPS3808G33DBVR",
+    "footprint": "C08A:U12",
+    "pcb_properties": {
+      "Reference": "U12",
+      "Value": "TPS3808G33DBVR",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "TPS3808G33DBVR",
+      "LCSC": "C43698"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "TPS3808G33DBVR",
+      "LCSC": "C43698"
+    }
+  },
+  "D934": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D934",
+    "pcb_properties": {
+      "Reference": "D934",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C108": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C108",
+    "pcb_properties": {
+      "Reference": "V4_C108",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "C31": {
+    "value": "100nF",
+    "footprint": "C08A:C31",
+    "pcb_properties": {
+      "Reference": "C31",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "100nF",
+      "LCSC": "C1525"
+    }
+  },
+  "U17": {
+    "value": "USBLC6-2SC6",
+    "footprint": "C08A:U17",
+    "pcb_properties": {
+      "Reference": "U17",
+      "Value": "USBLC6-2SC6",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "USBLC6-2SC6",
+      "LCSC": "C7519"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "USBLC6-2SC6",
+      "LCSC": "C7519"
+    }
+  },
+  "V4_C109": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C109",
+    "pcb_properties": {
+      "Reference": "V4_C109",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "V4_C97": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C97",
+    "pcb_properties": {
+      "Reference": "V4_C97",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C122": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C122",
+    "pcb_properties": {
+      "Reference": "V4_C122",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "U15": {
+    "value": "TLV75533PDBVR",
+    "footprint": "C08A:U15",
+    "pcb_properties": {
+      "Reference": "U15",
+      "Value": "TLV75533PDBVR",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "package/gullwing",
+      "MPN": "TLV75533PDBVR",
+      "LCSC": "C404027"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "TLV75533PDBVR",
+      "LCSC": "C404027"
+    }
+  },
+  "Y4": {
+    "value": "32.768kHz",
+    "footprint": "C08A:Y4",
+    "pcb_properties": {
+      "Reference": "Y4",
+      "Value": "32.768kHz",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "FC-135R 32.7680KA-A3",
+      "LCSC": "C6554955"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "FC-135R 32.7680KA-A3",
+      "LCSC": "C6554955"
+    }
+  },
+  "D930": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D930",
+    "pcb_properties": {
+      "Reference": "D930",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_U10": {
+    "value": "15kΩ",
+    "footprint": "C08A:V4_U10",
+    "pcb_properties": {
+      "Reference": "V4_U10",
+      "Value": "15kΩ",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    },
+    "pins": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "YC124-JR-0715KL",
+      "LCSC": "C728762"
+    }
+  },
+  "V4_C107": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C107",
+    "pcb_properties": {
+      "Reference": "V4_C107",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C116": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C116",
+    "pcb_properties": {
+      "Reference": "V4_C116",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D943": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D943",
+    "pcb_properties": {
+      "Reference": "D943",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "C43": {
+    "value": "1uF",
+    "footprint": "C08A:C43",
+    "pcb_properties": {
+      "Reference": "C43",
+      "Value": "1uF",
+      "Datasheet": "",
+      "Description": "",
+      "KiLib_Generator": "SMD_2terminal_chip_molded",
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "1uF",
+      "LCSC": "C52923"
+    }
+  },
+  "D939": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D939",
+    "pcb_properties": {
+      "Reference": "D939",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C111": {
+    "value": "1nF",
+    "footprint": "C08A:V4_C111",
+    "pcb_properties": {
+      "Reference": "V4_C111",
+      "Value": "1nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1H102GE01D",
+      "LCSC": "C3857115"
+    }
+  },
+  "D931": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D931",
+    "pcb_properties": {
+      "Reference": "D931",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C90": {
+    "value": "100nF",
+    "footprint": "C08A:V4_C90",
+    "pcb_properties": {
+      "Reference": "V4_C90",
+      "Value": "100nF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL05B104KO5NNNC",
+      "LCSC": "C1525"
+    }
+  },
+  "V4_C99": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C99",
+    "pcb_properties": {
+      "Reference": "V4_C99",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "D932": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D932",
+    "pcb_properties": {
+      "Reference": "D932",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C88": {
+    "value": "10uF",
+    "footprint": "C08A:V4_C88",
+    "pcb_properties": {
+      "Reference": "V4_C88",
+      "Value": "10uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL10A106KP8NNNC",
+      "LCSC": "C19702"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL10A106KP8NNNC",
+      "LCSC": "C19702"
+    }
+  },
+  "V4_C105": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C105",
+    "pcb_properties": {
+      "Reference": "V4_C105",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  },
+  "V4_C92": {
+    "value": "22uF",
+    "footprint": "C08A:V4_C92",
+    "pcb_properties": {
+      "Reference": "V4_C92",
+      "Value": "22uF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "CL21A226MAQNNNE",
+      "LCSC": "C45783"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "CL21A226MAQNNNE",
+      "LCSC": "C45783"
+    }
+  },
+  "D947": {
+    "value": "ESD501DPYRQ1",
+    "footprint": "C08A:D947",
+    "pcb_properties": {
+      "Reference": "D947",
+      "Value": "ESD501DPYRQ1",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "ESD501DPYRQ1",
+      "LCSC": "C43177583"
+    }
+  },
+  "V4_C106": {
+    "value": "470pF",
+    "footprint": "C08A:V4_C106",
+    "pcb_properties": {
+      "Reference": "V4_C106",
+      "Value": "470pF",
+      "Datasheet": "",
+      "Description": "",
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    },
+    "pins": [
+      "1",
+      "2"
+    ],
+    "baseline_schematic_attributes": {
+      "dnp": "no",
+      "on_board": "yes",
+      "in_bom": "yes"
+    },
+    "baseline_schematic_procurement": {
+      "MPN": "GRM0335C1E471GA01D",
+      "LCSC": "C384950"
+    }
+  }
+}

@@ -1,0 +1,638 @@
+{
+  "state": "已实现未验收",
+  "profiles": [
+    {
+      "environment": "ads_2k",
+      "fs_Hz": 2000,
+      "build_id": "6a2928b784244d56",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 2000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 61854,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "11f6dee96ecfdd1722887050bd3cf3668d9a75646c2aef379fd41df71a30a614",
+          "path": "artifacts/ads_2k-6a2928b784244d56/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "ae8597fd357480d90626c3e39a3079657af45e4e5451ca9b62d4db60226f3ba6",
+          "path": "artifacts/ads_2k-6a2928b784244d56/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "34d212239bda3c0d0a73ea966d081e9c7a432439f6f8205a5ccf3b68d794c169",
+          "path": "artifacts/ads_2k-6a2928b784244d56/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_4k",
+      "fs_Hz": 4000,
+      "build_id": "269184ba2083d163",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 2000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 37848,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "5dd291111c5027d96d52e5886a83c9e9a6bad82ba1087134efc8dccf371d49f3",
+          "path": "artifacts/ads_4k-269184ba2083d163/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "23710eaa0c58e30e05dd903e53ee83513cc75aed2888c6220d1babd6c4191d9c",
+          "path": "artifacts/ads_4k-269184ba2083d163/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "df0eda86a9488ca769535812668985ba5da00d9a7d2a44f1a2381932f82a2b5a",
+          "path": "artifacts/ads_4k-269184ba2083d163/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_2k_spi1",
+      "fs_Hz": 2000,
+      "build_id": "c72b8609b5bb5669",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 1000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 45374,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "c230426716c5a358ef69d4bb71b5e4455ff9f7a4be8dcdb0923ac605ef15f334",
+          "path": "artifacts/ads_2k_spi1-c72b8609b5bb5669/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "bbc3153deea193f06fc805d7d5c2eb3e783cf0b708ab09d7350ad7a4d7b6b21b",
+          "path": "artifacts/ads_2k_spi1-c72b8609b5bb5669/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "232f2d7e1aac14a70a59e4d7806089b2844579b16d9dbef94d538b38e60def5e",
+          "path": "artifacts/ads_2k_spi1-c72b8609b5bb5669/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_2k_spi4",
+      "fs_Hz": 2000,
+      "build_id": "e3ad6529dc6f95c0",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 4000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 31743,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "05c12912c8077213a1b450b94abe96e8e5fdd2af3d112601b94d5111723c3aaa",
+          "path": "artifacts/ads_2k_spi4-e3ad6529dc6f95c0/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "3798651373048140785eaeff8af5831426fc3e67d8124c352af1aea6251d6b9e",
+          "path": "artifacts/ads_2k_spi4-e3ad6529dc6f95c0/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "b3b467c0b3fac2137b488b2793761aa0ee58f3f0cbe5e4f81a86df194590a246",
+          "path": "artifacts/ads_2k_spi4-e3ad6529dc6f95c0/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_2k_spi8",
+      "fs_Hz": 2000,
+      "build_id": "f6ac995361bfecb2",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 8000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 45802,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "a6c5f6ce037c7eb59b050e053947761a3985759200c13bc99a8b288226d267a4",
+          "path": "artifacts/ads_2k_spi8-f6ac995361bfecb2/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "be952ad9ffc758387e3a1af16089570103713c9d109186b1eb6b1d17ff23c418",
+          "path": "artifacts/ads_2k_spi8-f6ac995361bfecb2/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "19620221163abea6ed0889b42773d718274c6da6900558280b24dd2194380434",
+          "path": "artifacts/ads_2k_spi8-f6ac995361bfecb2/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_4k_spi1",
+      "fs_Hz": 4000,
+      "build_id": "fec41aa240779257",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 1000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 978,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "003b1e9e40fe1c9e7f9a899ae574eaa1ebadeb4510804951459bd331f2724d8e",
+          "path": "artifacts/ads_4k_spi1-fec41aa240779257/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "d48705cc981c519564a8e3298de0798bdaa013dcee8e8b2474e5a92668d846e7",
+          "path": "artifacts/ads_4k_spi1-fec41aa240779257/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129245,
+          "sha256": "6b0af5f1dc2545da8ad5d320d4bc1d0c8cf43f5a43f908826c35e46482a089b8",
+          "path": "artifacts/ads_4k_spi1-fec41aa240779257/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_4k_spi4",
+      "fs_Hz": 4000,
+      "build_id": "f8bbd0014d2afd3a",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 4000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 26227,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "9f149e90ecfc5f6260f4ce002e6cd1b6bbb605209c89eb328c0ff16e38b9d41b",
+          "path": "artifacts/ads_4k_spi4-f8bbd0014d2afd3a/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "8f8851dd3aa110255e52bd3df7c3bbf7de72c16cac1cab90f0f6b7fdab7ee789",
+          "path": "artifacts/ads_4k_spi4-f8bbd0014d2afd3a/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "af470a04fefa14afbb0dd515008bdd3850b12b776831cc909941f3fefae96c82",
+          "path": "artifacts/ads_4k_spi4-f8bbd0014d2afd3a/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_4k_spi8",
+      "fs_Hz": 4000,
+      "build_id": "ed599bb52c75f512",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 8000000,
+      "imu_enabled": false,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 128444,
+      "static_ram_bytes": 21272,
+      "linker_heap_region_bytes": 214248,
+      "application_start": "0x27000",
+      "application_binary_bytes": 128444,
+      "dfu_crc16": 64392,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 299860,
+          "sha256": "61f74ac3a81231c8a1e979bdede5f0fa910624c330af8a94b061d79fbe65fcac",
+          "path": "artifacts/ads_4k_spi8-ed599bb52c75f512/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 361350,
+          "sha256": "b24663e9e3c657da93ec09b8ea0f1f4580dd60df539383a2b7ed4ec96950df9f",
+          "path": "artifacts/ads_4k_spi8-ed599bb52c75f512/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 129247,
+          "sha256": "a8600f5cc3cc2a999762b57d53db757a2e170c579d2447b22118c62e758384da",
+          "path": "artifacts/ads_4k_spi8-ed599bb52c75f512/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_2k_imu",
+      "fs_Hz": 2000,
+      "build_id": "99f8d26519965b09",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 2000000,
+      "imu_enabled": true,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 136680,
+      "static_ram_bytes": 21648,
+      "linker_heap_region_bytes": 213872,
+      "application_start": "0x27000",
+      "application_binary_bytes": 136680,
+      "dfu_crc16": 39340,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 301412,
+          "sha256": "3faeb6e59c8f2477c774afafb08e9c576f8454b4822170d81aa7576e3b9b1526",
+          "path": "artifacts/ads_2k_imu-99f8d26519965b09/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 384504,
+          "sha256": "8b89271071efbed543561bcf97aaec95a26e9ffe4c2f9f3bafd0f3c5ee745d98",
+          "path": "artifacts/ads_2k_imu-99f8d26519965b09/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 137483,
+          "sha256": "5285e11a2e606d10d203f4364b625a65d718f181fcbf396ce46128919a27ef63",
+          "path": "artifacts/ads_2k_imu-99f8d26519965b09/firmware.zip"
+        }
+      }
+    },
+    {
+      "environment": "ads_4k_imu",
+      "fs_Hz": 4000,
+      "build_id": "1ec0a14b87f83177",
+      "profile": "F05_ADS_LOCKED",
+      "spi_Hz": 2000000,
+      "imu_enabled": true,
+      "afe_enabled": false,
+      "flashed": false,
+      "physical_device_verified": false,
+      "flash_bytes": 136680,
+      "static_ram_bytes": 21648,
+      "linker_heap_region_bytes": 213872,
+      "application_start": "0x27000",
+      "application_binary_bytes": 136680,
+      "dfu_crc16": 20481,
+      "source_sha256": {
+        "firmware-f05/platformio.ini": "5bea18d8d6a24f1c58b1302f234a8c723519afe0830302f2419bdb4a60c57358",
+        "firmware-f05/verify_board.py": "ff31fd1b7ec339d22e04dbcdbdf899bab2b857c31bd5a96e5943f30a0e94c29a",
+        "firmware-f05/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+        "firmware-f05/src/ads1298.cpp": "600bbffe6ebe6abb15ab9fdfa7a787ab6b3286ef67a08720412c4f2298b52ba6",
+        "firmware-f05/src/ads1298.h": "2c1e8a198507e1f8096a52fa7983c32d43c4d76388d58bdccd18678424e16603",
+        "firmware-f05/src/bench_release.h": "553302834625dda972486aa7ff38d91040ad7cf04315f9ff2f79d807e32571e3",
+        "firmware-f05/src/capture_guard.h": "1f3aa3c507c88f37d04b3edf61b0679e471a61ce53df9527e9624098c0869838",
+        "firmware-f05/src/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b",
+        "firmware-f05/src/diagnostics.h": "9d6c8d057e376733c0c28c425ed46aa69212141823e731c1b0d32da73146212c",
+        "firmware-f05/src/imu.h": "91ea70793e58196f46b80735d9bb108dd90269104bde0d2a21628426ac021c0c",
+        "firmware-f05/src/imu_board.h": "eeafb82eed697276ea4c56d8e3fad56d389994176a127998cccf2ba9ae040049",
+        "firmware-f05/src/imu_bridge.h": "b54608605d294edbc051eaeb0b069e6376df6445dc6116c579c91d82816e2dd5",
+        "firmware-f05/src/main.cpp": "12afcd92fa669c12944071b31a3402b8528c043d0a71754d558ec88da703a9e8",
+        "firmware-f05/src/timebase.h": "8b2d540abd403daa94b9f4a4dab71afb7564c3fcb525a2a0b3e2e68512f8fc77",
+        "firmware-f05/src/timebase_board.h": "ad7a3b33c34572a51e4f9d80085ce52d01322c5a3a5f42bfaf25434b99d1783f",
+        "firmware-f05/src/v12_codec.c": "144772b783591870cddc952e1590402e4a0967ce70ad3d99ceb032006d13d1f8",
+        "firmware-f05/src/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+        "firmware-f05/src/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+        "firmware-f05/src/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+        "firmware-f05/src/v12_stream.c": "93c6b6aca54cea66c63eb7856bf4a68bd8623f7cb2e03a666f0e5a289a752371",
+        "firmware-f05/src/v12_stream.h": "b22405ef7a8f3fd7de658fe2dd2e0c1e9aa637770fb53dd84e60c6ad80117eb4",
+        "sdk/variant.cpp": "cacadbabe9c0174863613a27cde85a5d684c120ff12ccba87e11666465c498b5",
+        "sdk/resource/cores/nRF5/wiring.c": "9f34333d2f7bd98542e3e74bdc94c247e4633c54c52fa2f0dc93c335c8db0791",
+        "sdk/resource/cores/nRF5/nordic/nrfx_config.h": "d989e05770655d3776e6dd7fecbda3a0d8a78aefd8d3ebf63b1b0833137b8c45",
+        "sdk/resource/libraries/SPI/SPI.cpp": "53d83288c4fa7f07401503e4b5e7c57408df32bb6b60bdcc5ab8828671b59a87",
+        "sdk/bluefruit.cpp.original": "95f267709779cdbca963ae5872b0be7e9dcd16a01045c7fc09f684c150c256f1",
+        "sdk/bluefruit.cpp.patched": "e93f316162e538d632e94bb96a4364b836e9f3c08e61c4eb5e3c0c5b5910c84b"
+      },
+      "artifacts": {
+        "firmware.elf": {
+          "bytes": 301412,
+          "sha256": "fff5dccbfc572b23b384dee44f0aca4eb683dd356c9cd48a663b08c0b3dc9244",
+          "path": "artifacts/ads_4k_imu-1ec0a14b87f83177/firmware.elf"
+        },
+        "firmware.hex": {
+          "bytes": 384504,
+          "sha256": "b6f6aa9eb41bd27c2c53090a8ab8c61c6b0d6ed69cbdb9a00527ee822c190047",
+          "path": "artifacts/ads_4k_imu-1ec0a14b87f83177/firmware.hex"
+        },
+        "firmware.zip": {
+          "bytes": 137483,
+          "sha256": "fe08d604f7e48f4b5c8126942fbe50efb37e17e0b603c20c02b04cb843b52756",
+          "path": "artifacts/ads_4k_imu-1ec0a14b87f83177/firmware.zip"
+        }
+      }
+    }
+  ],
+  "negative_controls": [
+    "10个环境旧源码清单、篡改采样率/SPI/IMU标记均被拒绝"
+  ]
+}

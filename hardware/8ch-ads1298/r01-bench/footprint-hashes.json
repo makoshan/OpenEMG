@@ -1,0 +1,20 @@
+{
+  "Resistor_SMD.pretty/R_0402_1005Metric.kicad_mod": "e875ddd2428798850938aa4707f1d277531abdd9a4e01792f5291c141d7a3a0c",
+  "Capacitor_SMD.pretty/C_0402_1005Metric.kicad_mod": "ed3e9d0a84ccc4820e9147ae42e296267eda3328b1ce86d37f53b13a349e57dc",
+  "Capacitor_SMD.pretty/C_0603_1608Metric.kicad_mod": "42f1bdf4bcfe4dc6f656e62890fd6a25a1f6a21c4051fccdfea852772bb1be61",
+  "TestPoint.pretty/TestPoint_Pad_D1.0mm.kicad_mod": "e4db851375f9e90db1f5adc70a9149ba4db05a66fd034be4e9a1342b873ea36a",
+  "Package_QFP.pretty/TQFP-64_10x10mm_P0.5mm.kicad_mod": "2a823f11580e26020e30876cace9d0afd1142f16d255d3c7140f75d07d39d191",
+  "Package_SON.pretty/Texas_DPY0002A_0.6x1mm_P0.65mm.kicad_mod": "a37f3943229d40a967a253057b139c2da882d3ac73f62d61f026e6a2eef44c18",
+  "Capacitor_SMD.pretty/C_0805_2012Metric.kicad_mod": "18b4d899d71f02e9d8a19dfc658e4cd53d002793638cab89bd51d518ed23f981",
+  "Package_TO_SOT_SMD.pretty/SOT-23-5.kicad_mod": "aad532f13aef39e12950fbe66f9f70e48ac88794f44edb6cecc98dccb8f6ebb3",
+  "Package_TO_SOT_SMD.pretty/SOT-23.kicad_mod": "9a1993aad643808346c2ee62b06ca8cb5d100385ce4d9ec307772d218c48d4b2",
+  "Diode_SMD.pretty/D_SOD-323.kicad_mod": "e451593d644b31c6996eb47f91db1d684fdb574b937c53bb226d938a488dfe15",
+  "Package_TO_SOT_SMD.pretty/SOT-353_SC-70-5.kicad_mod": "5c358409f1ccfbc6147965b7b897ea6a2aba8af4faaf21cb779fefd9408e350a",
+  "Package_TO_SOT_SMD.pretty/SOT-23-6.kicad_mod": "e541759f47ead40f2b1a2eed8c60842a0c202711424b5f1a123fc021d5cd7a34",
+  "V12Parts.pretty/Samtec_TST-108-01-L-D.kicad_mod": "93944f618c7dc006ff6b4db23547399166fa88a60a3d6908795d717479611747",
+  "Connector_JST.pretty/JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical.kicad_mod": "122fe473cd64b6bce67e880aabc72322ed6159e2e4b68d89a331c38dc2795c7a",
+  "Connector_Molex.pretty/Molex_Micro-Fit_3.0_43045-2012_2x10_P3.00mm_Vertical.kicad_mod": "6627316a4a6edf43fc40c0a62e8e6bd0cdb8d758334167cd2534bb28553591d5",
+  "V12Parts.pretty/TI_DLA0010A.kicad_mod": "480f8e213215c53bf43fcd9065442792787efbfc6c6e938025bb8c73eba197db",
+  "V12Parts.pretty/TI_RHL0024A.kicad_mod": "7bbe8ddf1a2be981374ee849258d54dd2f690507d77b75286f8eb29b1f8bcf48",
+  "V12Parts.pretty/FTC201610S.kicad_mod": "4f44f5fa94265af7471ee3d4939b4baca18c5bb3679e178121b404a04eda98c9"
+}

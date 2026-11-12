@@ -1,0 +1,3204 @@
+{
+ "plan": "emg/v12/PLAN.md v6 (2026-09-30)",
+ "parts": [
+  {
+   "ref": "U1",
+   "value": "ADS1298IPAGR",
+   "lcsc": "C527440",
+   "sym": "ADS1298",
+   "fp": null,
+   "pins": {
+    "15": "ADS_IN1N",
+    "16": "ADS_IN1P",
+    "13": "ADS_IN2N",
+    "14": "ADS_IN2P",
+    "11": "ADS_IN3N",
+    "12": "ADS_IN3P",
+    "9": "ADS_IN4N",
+    "10": "ADS_IN4P",
+    "7": "ADS_IN5N",
+    "8": "ADS_IN5P",
+    "5": "ADS_IN6N",
+    "6": "ADS_IN6P",
+    "3": "ADS_IN7N",
+    "4": "ADS_IN7P",
+    "1": "ADS_IN8N",
+    "2": "ADS_IN8P",
+    "17": "AVDD",
+    "18": "AVDD",
+    "19": "AVDD",
+    "21": "AVDD",
+    "22": "AVDD",
+    "54": "AVDD",
+    "56": "AVDD",
+    "59": "AVDD",
+    "20": "GND",
+    "23": "GND",
+    "32": "GND",
+    "53": "GND",
+    "57": "GND",
+    "58": "GND",
+    "24": "VREFP",
+    "25": "GND",
+    "26": "VCAP4",
+    "27": null,
+    "28": "VCAP1",
+    "29": null,
+    "30": "VCAP2",
+    "31": "GND",
+    "33": "GND",
+    "34": "ADS_DIN",
+    "35": "ADS_PWDN",
+    "36": "ADS_RESET",
+    "37": "ADS_CLK",
+    "38": "GND",
+    "39": "ADS_CS",
+    "40": "ADS_SCLK",
+    "41": "GND",
+    "42": "ADS_GPIO1",
+    "43": "ADS_DOUT",
+    "44": "ADS_GPIO2",
+    "45": "ADS_GPIO3",
+    "46": "ADS_GPIO4",
+    "47": "ADS_DRDY",
+    "48": "DVDD",
+    "49": "GND",
+    "50": "DVDD",
+    "51": "GND",
+    "52": "ADS_CLKSEL",
+    "55": "VCAP3",
+    "60": "RLDREF",
+    "61": "RLDINV",
+    "62": "RLDOUT",
+    "63": "RLDOUT",
+    "64": null
+   },
+   "sheet": "ADS",
+   "block": "ADC",
+   "note": ""
+  },
+  {
+   "ref": "C1",
+   "value": "10uF",
+   "lcsc": "C19702",
+   "sym": "CAP",
+   "fp": "C0603",
+   "pins": {
+    "1": "VREFP",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C2",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "VREFP",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C3",
+   "value": "22uF",
+   "lcsc": "C59461",
+   "sym": "CAP",
+   "fp": "C0603",
+   "pins": {
+    "1": "VCAP1",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": "有效电容/压电噪声待核"
+  },
+  {
+   "ref": "C4",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "VCAP2",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C5",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "VCAP3",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C6",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "VCAP3",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C7",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "VCAP4",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "VREF_VCAP",
+   "note": ""
+  },
+  {
+   "ref": "C8",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 19/21/22"
+  },
+  {
+   "ref": "C9",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 19/21/22"
+  },
+  {
+   "ref": "C10",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 54 AVDD1"
+  },
+  {
+   "ref": "C11",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 54 AVDD1"
+  },
+  {
+   "ref": "C12",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 56/59"
+  },
+  {
+   "ref": "C13",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "AVDD 脚 56/59"
+  },
+  {
+   "ref": "C14",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "DVDD 脚 48"
+  },
+  {
+   "ref": "C15",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": "DVDD 脚 50"
+  },
+  {
+   "ref": "C16",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DECOUPLE",
+   "note": ""
+  },
+  {
+   "ref": "R1",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "RLDREF"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R2",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "RLDREF",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "C17",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "RLDREF",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R3",
+   "value": "200k",
+   "lcsc": "C25764",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "RLDOUT",
+    "2": "RLD_FB"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R4",
+   "value": "200k",
+   "lcsc": "C25764",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "RLD_FB",
+    "2": "RLDINV"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "C18",
+   "value": "10nF",
+   "lcsc": "C15195",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "RLDOUT",
+    "2": "RLDINV"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R5",
+   "value": "200k",
+   "lcsc": "C25764",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "RLDOUT",
+    "2": "RLD_MID"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R6",
+   "value": "200k",
+   "lcsc": "C25764",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "RLD_MID",
+    "2": "E_RLD"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R7",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E_RLD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "ESD17",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E_RLD",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "RLD",
+   "note": ""
+  },
+  {
+   "ref": "R8",
+   "value": "33R",
+   "lcsc": "C25105",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "SCLK_B",
+    "2": "ADS_SCLK"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R9",
+   "value": "33R",
+   "lcsc": "C25105",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "DIN_B",
+    "2": "ADS_DIN"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R10",
+   "value": "33R",
+   "lcsc": "C25105",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_DOUT",
+    "2": "DOUT_B"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R11",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_CS",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R12",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_SCLK",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R13",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_DIN",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R14",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_RESET",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R15",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_CLKSEL",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R16",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_GPIO1",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R17",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_GPIO2",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R18",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_GPIO3",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R19",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_GPIO4",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "R20",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_CLK",
+    "2": "GND"
+   },
+   "sheet": "ADS",
+   "block": "DIGITAL",
+   "note": ""
+  },
+  {
+   "ref": "ESD1",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E1P",
+    "2": "GND"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R1PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E1P",
+    "2": "L1P1"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R1PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1P1",
+    "2": "L1P2"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1P2",
+    "2": "L1P3"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1P3",
+    "2": "ADS_IN1P"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN1P",
+    "2": "L1PB"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R1PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1PB",
+    "2": "GND"
+   },
+   "sheet": "CH1",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD2",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E1N",
+    "2": "GND"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R1NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E1N",
+    "2": "L1N1"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R1NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1N1",
+    "2": "L1N2"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1N2",
+    "2": "L1N3"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1N3",
+    "2": "ADS_IN1N"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R1NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN1N",
+    "2": "L1NB"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R1NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L1NB",
+    "2": "GND"
+   },
+   "sheet": "CH1",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD3",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E2P",
+    "2": "GND"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R2PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E2P",
+    "2": "L2P1"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R2PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2P1",
+    "2": "L2P2"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2P2",
+    "2": "L2P3"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2P3",
+    "2": "ADS_IN2P"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN2P",
+    "2": "L2PB"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R2PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2PB",
+    "2": "GND"
+   },
+   "sheet": "CH2",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD4",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E2N",
+    "2": "GND"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R2NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E2N",
+    "2": "L2N1"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R2NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2N1",
+    "2": "L2N2"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2N2",
+    "2": "L2N3"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2N3",
+    "2": "ADS_IN2N"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R2NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN2N",
+    "2": "L2NB"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R2NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L2NB",
+    "2": "GND"
+   },
+   "sheet": "CH2",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD5",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E3P",
+    "2": "GND"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R3PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E3P",
+    "2": "L3P1"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R3PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3P1",
+    "2": "L3P2"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3P2",
+    "2": "L3P3"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3P3",
+    "2": "ADS_IN3P"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN3P",
+    "2": "L3PB"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R3PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3PB",
+    "2": "GND"
+   },
+   "sheet": "CH3",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD6",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E3N",
+    "2": "GND"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R3NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E3N",
+    "2": "L3N1"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R3NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3N1",
+    "2": "L3N2"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3N2",
+    "2": "L3N3"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3N3",
+    "2": "ADS_IN3N"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R3NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN3N",
+    "2": "L3NB"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R3NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L3NB",
+    "2": "GND"
+   },
+   "sheet": "CH3",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD7",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E4P",
+    "2": "GND"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R4PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E4P",
+    "2": "L4P1"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R4PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4P1",
+    "2": "L4P2"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4P2",
+    "2": "L4P3"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4P3",
+    "2": "ADS_IN4P"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN4P",
+    "2": "L4PB"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R4PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4PB",
+    "2": "GND"
+   },
+   "sheet": "CH4",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD8",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E4N",
+    "2": "GND"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R4NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E4N",
+    "2": "L4N1"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R4NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4N1",
+    "2": "L4N2"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4N2",
+    "2": "L4N3"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4N3",
+    "2": "ADS_IN4N"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R4NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN4N",
+    "2": "L4NB"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R4NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L4NB",
+    "2": "GND"
+   },
+   "sheet": "CH4",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD9",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E5P",
+    "2": "GND"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R5PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E5P",
+    "2": "L5P1"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R5PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5P1",
+    "2": "L5P2"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5P2",
+    "2": "L5P3"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5P3",
+    "2": "ADS_IN5P"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN5P",
+    "2": "L5PB"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R5PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5PB",
+    "2": "GND"
+   },
+   "sheet": "CH5",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD10",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E5N",
+    "2": "GND"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R5NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E5N",
+    "2": "L5N1"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R5NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5N1",
+    "2": "L5N2"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5N2",
+    "2": "L5N3"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5N3",
+    "2": "ADS_IN5N"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R5NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN5N",
+    "2": "L5NB"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R5NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L5NB",
+    "2": "GND"
+   },
+   "sheet": "CH5",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD11",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E6P",
+    "2": "GND"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R6PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E6P",
+    "2": "L6P1"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R6PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6P1",
+    "2": "L6P2"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6P2",
+    "2": "L6P3"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6P3",
+    "2": "ADS_IN6P"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN6P",
+    "2": "L6PB"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R6PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6PB",
+    "2": "GND"
+   },
+   "sheet": "CH6",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD12",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E6N",
+    "2": "GND"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R6NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E6N",
+    "2": "L6N1"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R6NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6N1",
+    "2": "L6N2"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6N2",
+    "2": "L6N3"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6N3",
+    "2": "ADS_IN6N"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R6NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN6N",
+    "2": "L6NB"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R6NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L6NB",
+    "2": "GND"
+   },
+   "sheet": "CH6",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD13",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E7P",
+    "2": "GND"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R7PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E7P",
+    "2": "L7P1"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R7PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7P1",
+    "2": "L7P2"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7P2",
+    "2": "L7P3"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7P3",
+    "2": "ADS_IN7P"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN7P",
+    "2": "L7PB"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R7PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7PB",
+    "2": "GND"
+   },
+   "sheet": "CH7",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD14",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E7N",
+    "2": "GND"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R7NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E7N",
+    "2": "L7N1"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R7NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7N1",
+    "2": "L7N2"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7N2",
+    "2": "L7N3"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7N3",
+    "2": "ADS_IN7N"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R7NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN7N",
+    "2": "L7NB"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R7NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L7NB",
+    "2": "GND"
+   },
+   "sheet": "CH7",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "ESD15",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E8P",
+    "2": "GND"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R8PA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E8P",
+    "2": "L8P1"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R8PB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8P1",
+    "2": "L8P2"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8PC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8P2",
+    "2": "L8P3"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8PD",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8P3",
+    "2": "ADS_IN8P"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8PE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN8P",
+    "2": "L8PB"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "R8PF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8PB",
+    "2": "GND"
+   },
+   "sheet": "CH8",
+   "block": "P",
+   "note": ""
+  },
+  {
+   "ref": "ESD16",
+   "value": "ESD501DPYR",
+   "lcsc": "C42409135",
+   "sym": "ESD501",
+   "fp": null,
+   "pins": {
+    "1": "E8N",
+    "2": "GND"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R8NA",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "E8N",
+    "2": "L8N1"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": "",
+   "value_q": "100k",
+   "lcsc_q": "C25741"
+  },
+  {
+   "ref": "R8NB",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8N1",
+    "2": "L8N2"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8NC",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8N2",
+    "2": "L8N3"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8ND",
+   "value": "1M",
+   "lcsc": "C26083",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8N3",
+    "2": "ADS_IN8N"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": "",
+   "value_q": "0R",
+   "lcsc_q": "C17168"
+  },
+  {
+   "ref": "R8NE",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ADS_IN8N",
+    "2": "L8NB"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "R8NF",
+   "value": "10M",
+   "lcsc": "C2933065",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "L8NB",
+    "2": "GND"
+   },
+   "sheet": "CH8",
+   "block": "N",
+   "note": ""
+  },
+  {
+   "ref": "U7",
+   "value": "TPS63802DLAR",
+   "lcsc": "C2845237",
+   "sym": "TPS63802",
+   "fp": null,
+   "pins": {
+    "1": "U7_EN",
+    "2": "VBAT",
+    "3": "GND",
+    "4": "U7_FB",
+    "5": "PG",
+    "6": "AVDD",
+    "7": "U7_L2",
+    "8": "GND",
+    "9": "U7_L1",
+    "10": "VBAT"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": "MODE 接 VIN = 强制 PWM"
+  },
+  {
+   "ref": "L1",
+   "value": "470nH",
+   "lcsc": "C5832340",
+   "sym": "IND",
+   "fp": null,
+   "pins": {
+    "1": "U7_L1",
+    "2": "U7_L2"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": ""
+  },
+  {
+   "ref": "C19",
+   "value": "10uF",
+   "lcsc": "C19702",
+   "sym": "CAP",
+   "fp": "C0603",
+   "pins": {
+    "1": "VBAT",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": ""
+  },
+  {
+   "ref": "C20",
+   "value": "22uF",
+   "lcsc": "C109314",
+   "sym": "CAP",
+   "fp": null,
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": "0805 10V；5V 偏压有效电容待核"
+  },
+  {
+   "ref": "C21",
+   "value": "22uF",
+   "lcsc": "C109314",
+   "sym": "CAP",
+   "fp": null,
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": "0805 10V"
+  },
+  {
+   "ref": "R21",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "U7_FB"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": "0.5V×(1+100k/11k)=5.045V"
+  },
+  {
+   "ref": "R22",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "U7_FB",
+    "2": "U7_FBL"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": ""
+  },
+  {
+   "ref": "R23",
+   "value": "1k",
+   "lcsc": "C11702",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "U7_FBL",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "BUCKBOOST",
+   "note": ""
+  },
+  {
+   "ref": "U9",
+   "value": "TPS7A2018PDBVR",
+   "lcsc": "C963430",
+   "sym": "TPS7A2018",
+   "fp": null,
+   "pins": {
+    "1": "AVDD",
+    "2": "GND",
+    "3": "AVDD",
+    "4": null,
+    "5": "DVDD"
+   },
+   "sheet": "POWER",
+   "block": "LDO",
+   "note": "EN 接 IN；具体后缀待核"
+  },
+  {
+   "ref": "C22",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "LDO",
+   "note": ""
+  },
+  {
+   "ref": "C23",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "LDO",
+   "note": ""
+  },
+  {
+   "ref": "D1",
+   "value": "B5819WS",
+   "lcsc": "C7420331",
+   "sym": "B5819WS",
+   "fp": null,
+   "pins": {
+    "1": "DVDD",
+    "2": "AVDD"
+   },
+   "sheet": "POWER",
+   "block": "LDO",
+   "note": "阳极 DVDD、阴极 AVDD（立创 1=A 2=K）"
+  },
+  {
+   "ref": "R24",
+   "value": "47k",
+   "lcsc": "C25792",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ANA_EN",
+    "2": "U7_EN"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": ""
+  },
+  {
+   "ref": "R25",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "U7_EN",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": ""
+  },
+  {
+   "ref": "C24",
+   "value": "1uF",
+   "lcsc": "C52923",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "U7_EN",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": ""
+  },
+  {
+   "ref": "Q1",
+   "value": "AO3400A",
+   "lcsc": "C20917",
+   "sym": "AO3400A",
+   "fp": null,
+   "pins": {
+    "1": "VBUS",
+    "2": "GND",
+    "3": "ILK_D"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": "VBUS 在 → 拉低 U7.EN"
+  },
+  {
+   "ref": "R26",
+   "value": "0R",
+   "lcsc": "C17168",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "ILK_D",
+    "2": "U7_EN"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": "互锁跳线：默认装，仅离体台架拆"
+  },
+  {
+   "ref": "R27",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "VBUS",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": "草案新增：Q1 栅极下拉，拔 USB 后 VBUS 脚不悬空"
+  },
+  {
+   "ref": "R28",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "PG",
+    "2": "DVDD"
+   },
+   "sheet": "POWER",
+   "block": "ENABLE",
+   "note": "U7 PG 上拉 DVDD → U10/U11（E01）"
+  },
+  {
+   "ref": "R29",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVDD",
+    "2": "AVS1"
+   },
+   "sheet": "POWER",
+   "block": "SENSE",
+   "note": ""
+  },
+  {
+   "ref": "R30",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVS1",
+    "2": "AVS2"
+   },
+   "sheet": "POWER",
+   "block": "SENSE",
+   "note": ""
+  },
+  {
+   "ref": "R31",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVS2",
+    "2": "AVDD_SENSE"
+   },
+   "sheet": "POWER",
+   "block": "SENSE",
+   "note": ""
+  },
+  {
+   "ref": "R32",
+   "value": "100k",
+   "lcsc": "C25741",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "AVDD_SENSE",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "SENSE",
+   "note": ""
+  },
+  {
+   "ref": "C25",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "AVDD_SENSE",
+    "2": "GND"
+   },
+   "sheet": "POWER",
+   "block": "SENSE",
+   "note": ""
+  },
+  {
+   "ref": "U2",
+   "value": "SN74AXC8T245RHLR",
+   "lcsc": "C2677358",
+   "sym": "SN74AXC8T245",
+   "fp": null,
+   "pins": {
+    "1": "3V3",
+    "2": "3V3",
+    "11": "GND",
+    "22": "OE_N",
+    "23": "DVDD",
+    "24": "DVDD",
+    "12": "GND",
+    "13": "GND",
+    "25": "GND",
+    "3": "XIAO_CS",
+    "4": "XIAO_SCLK",
+    "5": "XIAO_MOSI",
+    "6": "XIAO_RESET",
+    "7": "XIAO_CLKSEL",
+    "8": "GND",
+    "9": "GND",
+    "10": "GND",
+    "21": "ADS_CS",
+    "20": "SCLK_B",
+    "19": "DIN_B",
+    "18": "ADS_RESET",
+    "17": "ADS_CLKSEL",
+    "16": null,
+    "15": null,
+    "14": null
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "DIR1=H DIR2=L：8 位 A→B（XIAO→ADS）；未用 A 输入接地"
+  },
+  {
+   "ref": "U3",
+   "value": "SN74AXC8T245RHLR",
+   "lcsc": "C2677358",
+   "sym": "SN74AXC8T245",
+   "fp": null,
+   "pins": {
+    "1": "3V3",
+    "2": "GND",
+    "11": "GND",
+    "22": "OE_N",
+    "23": "DVDD",
+    "24": "DVDD",
+    "12": "GND",
+    "13": "GND",
+    "25": "GND",
+    "21": "DOUT_B",
+    "20": "ADS_DRDY",
+    "19": "GND",
+    "18": "GND",
+    "17": "GND",
+    "16": "GND",
+    "15": "GND",
+    "14": "GND",
+    "3": "XIAO_MISO",
+    "4": "XIAO_DRDY",
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null,
+    "10": null
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "DIR1=L DIR2=L：8 位 B→A（ADS→XIAO）；未用 B 输入接地"
+  },
+  {
+   "ref": "C26",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "3V3",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "U2 VCCA"
+  },
+  {
+   "ref": "C27",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "U2 VCCB"
+  },
+  {
+   "ref": "C28",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "3V3",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "U3 VCCA"
+  },
+  {
+   "ref": "C29",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "LEVEL",
+   "note": "U3 VCCB"
+  },
+  {
+   "ref": "R33",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "OE_N",
+    "2": "3V3"
+   },
+   "sheet": "IF",
+   "block": "OE",
+   "note": "草案：OE 默认高 = 高阻"
+  },
+  {
+   "ref": "U10",
+   "value": "SN74LV1T04DBVR",
+   "lcsc": "C141355",
+   "sym": "SN74LV1T04",
+   "fp": null,
+   "pins": {
+    "1": null,
+    "2": "PG",
+    "3": "GND",
+    "4": "OE_N",
+    "5": "3V3"
+   },
+   "sheet": "IF",
+   "block": "OE",
+   "note": "E01：3V3 供电反相器，PG 高（≥1.74 V，VIH≤1.48 V）才拉低 OE#；取代 AO3400A（1.8 V 栅驱无保证）"
+  },
+  {
+   "ref": "C30",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "3V3",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "OE",
+   "note": "U10 VCC"
+  },
+  {
+   "ref": "U11",
+   "value": "SN74LV1T34DBVR",
+   "lcsc": "C100024",
+   "sym": "SN74LV1T34",
+   "fp": null,
+   "pins": {
+    "1": null,
+    "2": "PG",
+    "3": "GND",
+    "4": "ADS_PWDN",
+    "5": "DVDD"
+   },
+   "sheet": "IF",
+   "block": "OE",
+   "note": "E01：DVDD 供电缓冲，VIL≥0.55 V 吃下 PG 0.4 V，输出 ≤0.1 V 满足 ADS VIL 0.352 V"
+  },
+  {
+   "ref": "C31",
+   "value": "100nF",
+   "lcsc": "C1525",
+   "sym": "CAP",
+   "fp": "C0402",
+   "pins": {
+    "1": "DVDD",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "OE",
+   "note": "U11 VCC"
+  },
+  {
+   "ref": "R34",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "XIAO_CS",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "XIAO_PD",
+   "note": ""
+  },
+  {
+   "ref": "R35",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "XIAO_SCLK",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "XIAO_PD",
+   "note": ""
+  },
+  {
+   "ref": "R36",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "XIAO_MOSI",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "XIAO_PD",
+   "note": ""
+  },
+  {
+   "ref": "R37",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "XIAO_RESET",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "XIAO_PD",
+   "note": ""
+  },
+  {
+   "ref": "R38",
+   "value": "10k",
+   "lcsc": "C25744",
+   "sym": "RES",
+   "fp": "R0402",
+   "pins": {
+    "1": "XIAO_CLKSEL",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "XIAO_PD",
+   "note": ""
+  },
+  {
+   "ref": "J1",
+   "value": "XIAO_14P",
+   "lcsc": "",
+   "sym": "J1_XIAO",
+   "fp": null,
+   "pins": {
+    "1": "3V3",
+    "2": "GND",
+    "3": "XIAO_SCLK",
+    "4": "XIAO_MISO",
+    "5": "XIAO_MOSI",
+    "6": "XIAO_CS",
+    "7": "XIAO_DRDY",
+    "8": "XIAO_RESET",
+    "9": "XIAO_CLKSEL",
+    "10": "ANA_EN",
+    "11": "AVDD_SENSE",
+    "12": "VBUS",
+    "13": "VBAT",
+    "14": "GND"
+   },
+   "sheet": "IF",
+   "block": "CONN",
+   "note": "14 触点：9 信号+3V3+VBUS+BAT++2GND；型号、物理线序待定（此为逻辑顺序）"
+  },
+  {
+   "ref": "J2",
+   "value": "BAT_2P",
+   "lcsc": "",
+   "sym": "J2_BAT",
+   "fp": null,
+   "pins": {
+    "1": "VBAT",
+    "2": "GND"
+   },
+   "sheet": "IF",
+   "block": "CONN",
+   "note": "电池 BAT± 分支到 U7 与 XIAO；型号/极性标记待定"
+  },
+  {
+   "ref": "J3",
+   "value": "ELECTRODE_17P",
+   "lcsc": "",
+   "sym": "J3_ELEC",
+   "fp": null,
+   "pins": {
+    "1": "E1P",
+    "2": "E1N",
+    "3": "E2P",
+    "4": "E2N",
+    "5": "E3P",
+    "6": "E3N",
+    "7": "E4P",
+    "8": "E4N",
+    "9": "E5P",
+    "10": "E5N",
+    "11": "E6P",
+    "12": "E6N",
+    "13": "E7P",
+    "14": "E7N",
+    "15": "E8P",
+    "16": "E8N",
+    "17": "E_RLD"
+   },
+   "sheet": "IF",
+   "block": "CONN",
+   "note": "17 条患者路径（8 对 + RLD）；与 J1 物理防混插；型号待定"
+  }
+ ],
+ "pinnames": {
+  "ADS1298": {
+   "1": "IN8N",
+   "2": "IN8P",
+   "3": "IN7N",
+   "4": "IN7P",
+   "5": "IN6N",
+   "6": "IN6P",
+   "7": "IN5N",
+   "8": "IN5P",
+   "9": "IN4N",
+   "10": "IN4P",
+   "11": "IN3N",
+   "12": "IN3P",
+   "13": "IN2N",
+   "14": "IN2P",
+   "15": "IN1N",
+   "16": "IN1P",
+   "17": "TESTP_PACE_OUT1",
+   "18": "TESTN_PACE_OUT2",
+   "19": "AVDD",
+   "20": "AVSS",
+   "21": "AVDD",
+   "22": "AVDD",
+   "23": "AVSS",
+   "24": "VREFP",
+   "25": "VREFN",
+   "26": "VCAP4",
+   "27": "NC",
+   "28": "VCAP1",
+   "29": "NC",
+   "30": "VCAP2",
+   "31": "RESV1",
+   "32": "AVSS",
+   "33": "DGND",
+   "34": "DIN",
+   "35": "PWDN#",
+   "36": "RESET#",
+   "37": "CLK",
+   "38": "START",
+   "39": "CS#",
+   "40": "SCLK",
+   "41": "DAISY_IN",
+   "42": "GPIO1",
+   "43": "DOUT",
+   "44": "GPIO2",
+   "45": "GPIO3",
+   "46": "GPIO4",
+   "47": "DRDY#",
+   "48": "DVDD",
+   "49": "DGND",
+   "50": "DVDD",
+   "51": "DGND",
+   "52": "CLKSEL",
+   "53": "AVSS1",
+   "54": "AVDD1",
+   "55": "VCAP3",
+   "56": "AVDD",
+   "57": "AVSS",
+   "58": "AVSS",
+   "59": "AVDD",
+   "60": "RLDREF",
+   "61": "RLDINV",
+   "62": "RLDIN",
+   "63": "RLDOUT",
+   "64": "WCT"
+  },
+  "TPS63802": {
+   "1": "EN",
+   "2": "MODE",
+   "3": "AGND",
+   "4": "FB",
+   "5": "PG",
+   "6": "VOUT",
+   "7": "L2",
+   "8": "GND",
+   "9": "L1",
+   "10": "VIN"
+  },
+  "TPS7A2018": {
+   "1": "IN",
+   "2": "GND",
+   "3": "EN",
+   "4": "N/C",
+   "5": "OUT"
+  },
+  "SN74AXC8T245": {
+   "1": "VCCA",
+   "2": "DIR1",
+   "3": "A1",
+   "4": "A2",
+   "5": "A3",
+   "6": "A4",
+   "7": "A5",
+   "8": "A6",
+   "9": "A7",
+   "10": "A8",
+   "11": "DIR2",
+   "12": "GND",
+   "13": "GND",
+   "14": "B8",
+   "15": "B7",
+   "16": "B6",
+   "17": "B5",
+   "18": "B4",
+   "19": "B3",
+   "20": "B2",
+   "21": "B1",
+   "22": "OE#",
+   "23": "VCCB",
+   "24": "VCCB",
+   "25": "EP"
+  },
+  "AO3400A": {
+   "3": "D",
+   "1": "G",
+   "2": "S"
+  },
+  "B5819WS": {
+   "1": "A",
+   "2": "K"
+  },
+  "SN74LV1T04": {
+   "1": "NC",
+   "2": "A",
+   "3": "GND",
+   "4": "Y",
+   "5": "VCC"
+  },
+  "SN74LV1T34": {
+   "1": "NC",
+   "2": "A",
+   "3": "GND",
+   "4": "Y",
+   "5": "VCC"
+  },
+  "ESD501": {
+   "1": "IO",
+   "2": "GND"
+  },
+  "J1_XIAO": {
+   "1": "3V3",
+   "2": "GND",
+   "3": "D8_SCK",
+   "4": "D9_MISO",
+   "5": "D10_MOSI",
+   "6": "D7_CS",
+   "7": "D6_DRDY",
+   "8": "D2_RESET",
+   "9": "D1_CLKSEL",
+   "10": "D0_ANA_EN",
+   "11": "D3_AVDD_SENSE",
+   "12": "VBUS_SENSE",
+   "13": "BAT+",
+   "14": "GND"
+  },
+  "J2_BAT": {
+   "1": "BAT+",
+   "2": "BAT-"
+  },
+  "J3_ELEC": {
+   "1": "E1P",
+   "2": "E1N",
+   "3": "E2P",
+   "4": "E2N",
+   "5": "E3P",
+   "6": "E3N",
+   "7": "E4P",
+   "8": "E4N",
+   "9": "E5P",
+   "10": "E5N",
+   "11": "E6P",
+   "12": "E6N",
+   "13": "E7P",
+   "14": "E7N",
+   "15": "E8P",
+   "16": "E8N",
+   "17": "E_RLD"
+  }
+ },
+ "power": [
+  "GND",
+  "AVDD",
+  "DVDD",
+  "3V3",
+  "VBAT",
+  "VBUS"
+ ]
+}

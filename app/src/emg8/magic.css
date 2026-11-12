@@ -1,0 +1,97 @@
+/* 魔法手帐（design/emg-console-v4/magic.html）：背景是手帐纸，前景是玻璃部件 + 光迹星点（magic.ts）。 */
+.emg8[data-guided] {
+  --mg-sky: #8EC5F0; --mg-mint: #7FD3B0; --mg-sakura: #F4A3A8; --mg-lilac: #B9A6EC; --mg-gold: #F5C86A;
+  --mg-ink: #2F3A36; --mg-sub: #6B756F; --mg-faint: #AEB4AE; --mg-glass: rgba(255,255,255,.74);
+  position: relative; isolation: isolate;
+  background:
+    radial-gradient(900px 500px at 15% -10%, rgba(185,166,236,.16), transparent 70%), radial-gradient(800px 500px at 100% 110%, rgba(127,211,176,.16), transparent 70%),
+    linear-gradient(#E7EDF1 1px, transparent 1px) 0 0 / 22px 22px, linear-gradient(90deg, #E7EDF1 1px, transparent 1px) 0 0 / 22px 22px, #FBF7EE;
+}
+.emg8[data-guided] .emg8-card { background: var(--mg-glass); backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,.95); border-radius: 20px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 1px 2px rgba(47,58,54,.06), 0 18px 40px -22px rgba(47,58,54,.35); }
+.emg8[data-guided] .emg8-thumb-phases { display: none; }            /* 和阶段条重复 */
+.emg8[data-guided] .emg8-head h2 { background: linear-gradient(100deg, #2F3A36 30%, #6E5BC9 55%, #2F3A36 80%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: mg-sheen 6s ease-in-out infinite; }
+@keyframes mg-sheen { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+
+/* —— 控制台 A —— */
+.mg-console { display: grid; grid-template-columns: 280px minmax(0, 1fr) 340px; gap: 18px; align-items: start; color: var(--mg-ink); }
+.mg-card { position: relative; background: var(--mg-glass); backdrop-filter: blur(14px) saturate(1.2); border: 1px solid rgba(255,255,255,.95); border-radius: 22px; padding: 16px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 1px 2px rgba(47,58,54,.06), 0 18px 40px -22px rgba(47,58,54,.35); }
+.mg-cap { font-size: 11px; letter-spacing: .14em; color: var(--mg-sub); }
+.mg-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.mg-fine { font-size: 11.5px; color: var(--mg-faint); margin: 8px 0 0; }
+.mg-why { font-size: 13px; color: var(--mg-sub); }
+.mg-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 14px; }
+.mg-btns, .mg-two { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.mg-two { grid-template-columns: 1fr 1fr; }
+/* 玻璃键帽：亮 = 这次真的触发了绑定 */
+.mg-key { position: relative; overflow: hidden; padding: 9px 10px 8px; border-radius: 15px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--c) 22%, #fff), color-mix(in srgb, var(--c) 48%, #fff));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 color-mix(in srgb, var(--c) 40%, transparent), 0 6px 14px -8px color-mix(in srgb, var(--c) 90%, #000), 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent);
+  transition: opacity .3s, filter .3s; }
+.mg-key svg { width: 22px; height: 22px; display: block; fill: none; stroke: var(--mg-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mg-key b { display: block; font-size: 14px; font-weight: 650; }
+.mg-key small { display: block; font-size: 11px; color: color-mix(in srgb, var(--mg-ink) 70%, transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mg-key::after { content: ""; position: absolute; inset: -40% auto -40% -60%; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent); transform: skewX(-20deg); opacity: 0; }
+.mg-key.shine::after { animation: mg-shine .7s cubic-bezier(.22,1,.36,1); }
+@keyframes mg-shine { 0% { opacity: 1; transform: skewX(-20deg) translateX(0); } 100% { opacity: 1; transform: skewX(-20deg) translateX(520%); } }
+.mg-key.dim { opacity: .4; filter: saturate(.25); }
+/* 开关 */
+.mg-switch { all: unset; display: flex; gap: 12px; align-items: center; cursor: pointer; }
+.mg-switch:disabled { cursor: not-allowed; opacity: .6; }
+.mg-switch:focus-visible .rail { outline: 2px solid var(--mg-lilac); outline-offset: 2px; }
+.mg-switch .rail { width: 56px; height: 30px; border-radius: 15px; background: rgba(47,58,54,.12); position: relative; transition: background .35s, box-shadow .35s; flex: none; }
+.mg-switch .knob { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.25); transition: left .45s cubic-bezier(.34,1.56,.64,1); }
+.mg-switch.on .rail { background: linear-gradient(90deg, #5FC79F, #7FD3B0); box-shadow: 0 0 16px rgba(95,199,159,.55); }
+.mg-switch.on .knob { left: 29px; }
+.mg-switch b { font-size: 15px; } .mg-switch small { display: block; font-size: 12px; color: var(--mg-sub); }
+.mg-step { font-size: 12px; color: var(--mg-sub); display: flex; gap: 6px; align-items: center; }
+.mg-lat { display: flex; align-items: baseline; gap: 5px; } .mg-lat b { font: 700 26px ui-monospace, "SF Mono", monospace; } .mg-lat small { font-size: 12px; color: var(--mg-sub); }
+.mg-banner { margin: 10px 0 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; animation: mg-in .3s ease-out; }
+.mg-banner.warn { background: rgba(245,200,106,.18); border: 1px solid rgba(245,200,106,.7); }
+@keyframes mg-in { from { opacity: 0; transform: translateY(-6px); } }
+/* 手 + 读数 */
+.mg-stage { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 8px; }
+.mg-aura { --aura: 0; position: relative; }
+.mg-aura::before { content: ""; position: absolute; inset: 8% 4% 4% 4%; border-radius: 50%; z-index: -1;
+  background: radial-gradient(closest-side, rgba(185,166,236,calc(.15 + var(--aura) * .55)), rgba(142,197,240,calc(var(--aura) * .3)) 60%, transparent);
+  transform: scale(calc(.85 + var(--aura) * .35)); filter: blur(6px); }
+.mg-hand { width: 210px; height: 238px; display: block; filter: drop-shadow(0 16px 18px rgba(47,58,54,.12)); }
+.mg-readout { text-align: center; }
+.mg-word { font-size: 44px; font-weight: 750; letter-spacing: .04em; min-height: 60px; background: linear-gradient(180deg, #2F3A36, #556a63); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mg-gauge { width: 220px; height: 122px; display: block; margin: 4px auto 0; overflow: visible; }
+.mg-tip { fill: #B9A6EC; filter: drop-shadow(0 0 5px rgba(185,166,236,.9)); }
+/* 光标小屏 */
+.mg-screen { position: relative; height: 170px; margin-top: 12px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.95); box-shadow: inset 0 2px 8px rgba(47,58,54,.08);
+  background: radial-gradient(circle, rgba(47,58,54,.10) 1px, transparent 1.3px) 0 0 / 16px 16px, linear-gradient(180deg, rgba(255,255,255,.75), rgba(240,245,250,.75)); }
+.mg-screen canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mg-screen .mg-cap { position: absolute; left: 12px; top: 9px; }
+.mg-cursor { position: absolute; left: 50%; top: 50%; width: 18px; height: 24px; margin: -3px 0 0 -3px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+.mg-cursor path { fill: #fff; stroke: var(--mg-ink); stroke-width: 1.6; stroke-linejoin: round; }
+.mg-off { position: absolute; inset: 0; display: grid; place-items: center; color: var(--mg-sub); background: rgba(255,255,255,.55); backdrop-filter: blur(2px); font-size: 13px; letter-spacing: .08em; }
+.mg-ring { position: absolute; width: 20px; height: 20px; margin: -10px; border-radius: 50%; border: 2px solid; pointer-events: none; }
+.mg-feed { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.mg-feed span { display: flex; gap: 8px; padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,.7); font-size: 12.5px; box-shadow: 0 1px 3px rgba(0,0,0,.06); animation: mg-feed .42s cubic-bezier(.22,1,.36,1); }
+.mg-feed span.dim { color: var(--mg-faint); }
+.mg-feed i { font: 600 11px ui-monospace, monospace; color: var(--mg-faint); font-style: normal; }
+@keyframes mg-feed { from { opacity: 0; filter: blur(6px); transform: translateY(-8px); } }
+/* AI 卡 */
+.mg-ai h3 { margin: 4px 0 4px; font-size: 18px; }
+.mg-ai.pending { animation: mg-aura 2.4s ease-in-out infinite; }
+@keyframes mg-aura { 50% { box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 0 0 1px rgba(185,166,236,.55), 0 0 34px -4px rgba(185,166,236,.55), 0 18px 40px -22px rgba(47,58,54,.35); } }
+.mg-sec { font: 700 20px ui-monospace, monospace; fill: var(--mg-ink); }
+.mg-cmd { font: 14px ui-monospace, "SF Mono", monospace; padding: 9px 12px; border-radius: 12px; background: rgba(47,58,54,.06); margin: 10px 0 2px; word-break: break-all; }
+.mg-seal { position: absolute; right: 16px; bottom: 54px; width: 92px; height: 92px; border-radius: 50%; display: grid; place-content: center; text-align: center; color: #fff; pointer-events: none;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), var(--s1) 26%, var(--s2)); box-shadow: 0 8px 20px -6px var(--s2), inset 0 0 0 5px rgba(255,255,255,.18); }
+.mg-seal::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: 1.5px dashed rgba(255,255,255,.6); }
+.mg-seal b { font-size: 16px; font-weight: 800; letter-spacing: .06em; } .mg-seal small { font: 10px ui-monospace, monospace; opacity: .9; }
+.mg-seal.allow { --s1: #5FC79F; --s2: #2F8F69; } .mg-seal.deny { --s1: #E46A73; --s2: #B8424C; } .mg-seal.timeout { --s1: #9AA39D; --s2: #6B756F; }
+@container (max-width: 1100px) { .mg-console { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .mg-console *, .emg8[data-guided] .emg8-head h2 { animation: none !important; transition: none !important; } }
+
+/* 鼠标八类录制页：右栏放宽成 2×4 玻璃键帽 */
+.emg8-meta-capture[data-protocol=mouse] .emg8-thumb-workgrid { grid-template-columns: minmax(0, 1fr) 440px; }
+.emg8-meta-capture[data-protocol=mouse] .emg8-thumb-gestures [role=group] { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 12px; }
+.emg8-meta-capture[data-protocol=mouse] .emg8-thumb-gesture { border-radius: 14px; border: 0; padding: 9px 10px; min-height: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(241,236,250,.8)); box-shadow: inset 0 1px 0 #fff, 0 6px 14px -9px rgba(47,58,54,.5), 0 0 0 1px rgba(47,58,54,.06); }
+.emg8-meta-capture[data-protocol=mouse] .emg8-thumb-gesture[aria-pressed=true] { box-shadow: inset 0 1px 0 #fff, 0 0 0 2px #8B78D8, 0 8px 18px -8px rgba(139,120,216,.6); }

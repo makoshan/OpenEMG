@@ -1,0 +1,23 @@
+{
+ "pcb_sha256": "5457b05ab823d0bc2875e5197570cd522dd979ac1a6b9db479ee14bae247c158",
+ "gerber_zip_sha256": "044240f64b3436a4844d60654273d08c521b6bdf501cd6b151e71de49a9ea5f5",
+ "files": [
+  "p44e-B_Cu.gbr",
+  "p44e-B_Mask.gbr",
+  "p44e-B_Paste.gbr",
+  "p44e-B_Silkscreen.gbr",
+  "p44e-Edge_Cuts.gbr",
+  "p44e-F_Cu.gbr",
+  "p44e-F_Mask.gbr",
+  "p44e-F_Silkscreen.gbr",
+  "p44e-NPTH.drl",
+  "p44e-PTH.drl",
+  "p44e-job.gbrjob"
+ ],
+ "board_mm": [
+  17.78,
+  21
+ ],
+ "layers": 2,
+ "stencil": "只开 B.Paste（背面：J1 与阻容）；正面 XIAO 手焊不开"
+}

@@ -1,0 +1,9 @@
+{
+  "build.py": "bedc2385a48b67afadcf9b56d787c2b84c6466808f23c513bdc87835fee0d746",
+  "assembly.py": "d42011b246be67e55f3df7e7b7c9034fe22e294cebef073e96fadb6cbc8907ef",
+  "check.py": "3fbcea75c216f28e68264cc4e6d54fb32d45f6951114abdbc97bd01265e8bb48",
+  "copper_check.py": "03db6096cddc1fc7652578401ca2fc385acb3cc88b86caa2d24b8920045a6c38",
+  "fpc-f04.kicad_pcb": "a588469e70d9119126bac63668986d99c35030a30b32a15129b3ddc6d5a81ad0",
+  "module.step": "9a7623030f1be46ec29441b8aad01b6a5f9b00741674ff8a8cc6499bd2e41ad9",
+  "bent-concept.step": "5c3da6f35a218d319c52b05371ef5769456d0bb881ad8891350d37d69c5960ba"
+}

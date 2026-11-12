@@ -1,0 +1,38 @@
+{
+  "name": "yuanli-band",
+  "productName": "OpenEMG",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite build && electron .",
+    "check": "node --experimental-strip-types --no-warnings check-wl8.mjs && node --experimental-strip-types --no-warnings check-wl18.mjs",
+    "pack": "vite build && node check-gesture-library.mjs dist && ./scripts/bundle-python.sh && node scripts/pack.mjs",
+    "check:install": "node scripts/running.mjs",
+    "check:validation": "node check-validation-ui.mjs",
+    "check:cloud": "node --no-warnings check-cloud.mjs",
+    "check:seal-game": "node --experimental-transform-types --no-warnings check-seal-game.mjs && node check-live-window.mjs",
+    "check:filter-ui": "node check-filter-ui.mjs",
+    "check:filter-stream": "node --experimental-transform-types --no-warnings check-filter-stream.mjs",
+    "check:wear-hint": "node --experimental-strip-types --no-warnings check-wear-hint.mjs",
+    "check:gesture-library": "node check-gesture-library.mjs",
+    "check:missing-label": "node check-missing-label.mjs",
+    "check:rewear-hint": "node --experimental-transform-types --no-warnings check-rewear-hint.mjs"
+  },
+  "dependencies": {
+    "motion": "^13.4.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "recharts": "3.8.0",
+    "webgl-plot": "^1.1.2"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "@vitejs/plugin-react": "6.0.2",
+    "electron": "^44.3.0",
+    "vite": "8.0.13"
+  }
+}

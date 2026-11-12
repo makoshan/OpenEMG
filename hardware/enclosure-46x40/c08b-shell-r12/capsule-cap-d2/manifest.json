@@ -1,0 +1,42 @@
+{
+ "face_z0": -1.056,
+ "proud_big": {
+  "E1N": 1.2,
+  "E1P": 1.2,
+  "E2N": 1.2,
+  "E2P": 1.2
+ },
+ "proud_aux": {
+  "EB1": 1.2,
+  "EB2": 1.2
+ },
+ "lowest_z": -2.256,
+ "total_height_new": 12.356,
+ "total_height_r13": 10.1,
+ "width_with_skirt": 47.6,
+ "hole_gap_min": 3.0,
+ "fpc_gap": 0.406,
+ "tray_floor_min_at_res": 0.35,
+ "tray_wall_at_groove": 0.9,
+ "face_t": 0.8,
+ "tray": {
+  "volume": 2945.5,
+  "solids": 1,
+  "valid": true,
+  "bbox": [
+   46.0,
+   45.75,
+   6.61
+  ]
+ },
+ "cap": {
+  "volume": 1432.1,
+  "solids": 1,
+  "valid": true,
+  "bbox": [
+   47.6,
+   40.0,
+   2.356
+  ]
+ }
+}

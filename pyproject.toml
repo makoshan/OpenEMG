@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_backend"
+
+[project]
+name = "emg-gate"
+version = "1.0.0"
+description = "EMG P0 capture protocol + P1 local calibration gate (single-channel ADS1292)"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+emg-gate = "emg_gate.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["emg_gate*"]
+
+[tool.setuptools.package-data]
+emg_gate = ["schemas/*.schema.json", "configs/*.json", "licenses/*.txt"]

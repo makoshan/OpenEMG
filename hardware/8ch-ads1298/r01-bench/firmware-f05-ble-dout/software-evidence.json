@@ -1,0 +1,36 @@
+{
+  "profile": "R01_BLE_DOUT_BENCH",
+  "build_id": "41749eacd66446e1",
+  "transport": "ble",
+  "off_body_only": true,
+  "bench_basis": "waived_by_Mako_2026-10-21_not_measured",
+  "physical_verified": false,
+  "fs_Hz": 2000,
+  "spi_Hz": 2000000,
+  "min_period_assumed_us": 450,
+  "files": {
+    "r01-ble-dout-41749eacd66446e1-dfu.zip": "cdbf6391a2a04df9754503aacf6d6a3f35e6e440600ca86b98da2f2b1209b4f1",
+    "r01-ble-dout-41749eacd66446e1.hex": "d5e78c5f647d9a1897bf668d20ed40afd8c5a12b4e866292a47d61900e14b46d",
+    "r01-ble-dout-41749eacd66446e1.uf2": "9315db5bb952012d08a52d406255311ad579a18018e2b452ebd90569622cd2bd"
+  },
+  "toolchain": "platformio/toolchain-gccarmnoneeabi@1.120301.0",
+  "checks": {
+    "capture_state_machine_groups": 16,
+    "timing_boundary_cases": 14,
+    "host_metadata_entry": "通过",
+    "host_ble_boundary_groups": 32,
+    "host_status_entry": "通过",
+    "uf2_hex_roundtrip": "通过"
+  },
+  "independent_review": {
+    "result": "无阻塞；两项P1修复后复核通过",
+    "scope": "源码、状态机检查、来源与UF2读回；未访问设备"
+  },
+  "limitations": [
+    "450us为候选保守假设，未实测",
+    "BLE连续两分钟未实测",
+    "DOUT镜像行为未在本轮实测",
+    "同步SPI库若永久卡死，后置时间检查无法运行",
+    "VCAP1与参考稳定时间沿用Mako已批准的离体豁免"
+  ]
+}

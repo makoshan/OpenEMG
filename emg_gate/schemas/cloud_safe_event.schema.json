@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/cloud_safe_event.schema.json",
+  "title": "CloudSafeEvent",
+  "description": "Only envelope allowed to leave the phone (ADR sync contract §1b): event + band + quality + de-identified summary. additionalProperties=false makes raw_window / raw_adc / raw_uV / raw_imu structurally impossible.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "quality", "t_host_ms"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "kind": { "type": "string", "minLength": 1 },
+    "band": { "type": "integer", "enum": [0, 1, 2] },
+    "quality": {
+      "type": "string",
+      "enum": ["ok", "lead_off", "poor_contact", "line_noise", "clip", "artifact_suspect"]
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "t_host_ms": { "type": "number" },
+    "summary": { "type": "string", "maxLength": 280 }
+  },
+  "not": {
+    "anyOf": [
+      { "required": ["raw_window"] },
+      { "required": ["raw_adc"] },
+      { "required": ["raw_uV"] },
+      { "required": ["raw_imu"] }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "source_sha256": "3fe6a02bb7c3370155413e1492fd7324e95ac15e881308e2df601db7dd7d8675",
+  "disc_diameter_mm": 9,
+  "pocket_diameter_mm": 9.4,
+  "radial_gap_mm": 0.2,
+  "spring_envelope_top_mm": 1.656,
+  "disc_back_mm": 1.656,
+  "nominal_interference_preload_mm": 0,
+  "liner_bridge_thickness_mm": 0.4,
+  "FPC_midplane_mm": 0.303,
+  "TPU_bridge_midplane_mm": 2.1559999999999997,
+  "midplane_distance_mm": 1.8529999999999998,
+  "kinematic_assumption": "将TPU连接薄面视为转轴、排间按19.6/R转角估算；不是实际中性层、材料应变或有限元结果",
+  "extra_path_per_joint_mm": [
+    {
+      "assumed_radius_mm": 25,
+      "angle_rad": 0.784,
+      "height_offset_times_angle_mm": 1.4527519999999998
+    },
+    {
+      "assumed_radius_mm": 30,
+      "angle_rad": 0.6533333333333334,
+      "height_offset_times_angle_mm": 1.2106266666666665
+    },
+    {
+      "assumed_radius_mm": 40,
+      "angle_rad": 0.49000000000000005,
+      "height_offset_times_angle_mm": 0.9079699999999999
+    }
+  ],
+  "fixings": "圆片环胶；织带外缘胶及补强背胶；未建机械防脱",
+  "status": "平展几何通过，弯曲装配与固定仍待验证"
+}

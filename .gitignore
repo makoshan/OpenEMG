@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv*/
+node_modules/
+app/dist/
+app/build/
+app/out/
+apple/openEMG/openEMG.xcodeproj/
+firmware/c08b-bringup/build/
+*.kicad_prl
+*.npz
+*.edf
+*.bdf
+*.gdf
+.DS_Store

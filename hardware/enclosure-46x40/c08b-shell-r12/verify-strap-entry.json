@@ -1,0 +1,86 @@
+{
+  "fpc_length": {
+    "mapping_box_c_from_E1P_E2P": [
+      58.0,
+      58.0
+    ],
+    "mapping_strap_south_c_from_E5P": 58.0,
+    "mapping_strap_north_c_from_E3P": 58.0,
+    "south_fpc_short_flat_mm": 0.016,
+    "north_fpc_short_flat_mm": 0.014,
+    "head_hole_radial_clearance_mm": 0.08,
+    "south_bend_deg_to_absorb_est": 0.4,
+    "north_bend_deg_to_absorb_est": 0.3
+  },
+  "entry_ray_profile": {
+    "south_A_band": {
+      "x_range": [
+        3.3,
+        9.0
+      ],
+      "samples": 115,
+      "blocked_samples": 0,
+      "blocked_x": null
+    },
+    "south_B_band": {
+      "x_range": [
+        -5.12,
+        2.8
+      ],
+      "samples": 159,
+      "blocked_samples": 0,
+      "blocked_x": null
+    },
+    "north_branch": {
+      "x_range": [
+        -11.05,
+        -9.15
+      ],
+      "samples": 39,
+      "blocked_samples": 0,
+      "blocked_x": null
+    }
+  },
+  "entry_ray_controls": {
+    "slot_center_x0_min_gap_mm": 1.0,
+    "outside_pocket_x11p2_min_gap_mm": 0.0,
+    "north_outside_pocket_xm11p5_min_gap_mm": 0.0
+  },
+  "r15_outline_vs_strap_opening": {
+    "south_A": {
+      "area_outside_opening_mm2": 0.0,
+      "in_entry_mm2": 0.0,
+      "in_pocket_walls_mm2": 0.0,
+      "pieces": []
+    },
+    "south_B": {
+      "area_outside_opening_mm2": 0.0,
+      "in_entry_mm2": 0.0,
+      "in_pocket_walls_mm2": 0.0,
+      "pieces": []
+    },
+    "north_A": {
+      "area_outside_opening_mm2": 0.0,
+      "in_entry_mm2": 0.0,
+      "in_pocket_walls_mm2": 0.0,
+      "pieces": []
+    }
+  },
+  "control_full_width_opening_residual_mm2": {
+    "south_A": 0.0,
+    "south_B": 0.0,
+    "north_A": 0.0
+  },
+  "verdict": {
+    "south_entry_blocks_A_band": false,
+    "south_entry_blocks_B_band": false,
+    "north_entry_blocks_branch": false,
+    "fpc_into_pocket_walls": {
+      "south_A": false,
+      "south_B": false,
+      "north_A": false
+    },
+    "flat_fpc_short_exceeds_head_clearance": false,
+    "controls_ok": true
+  }
+}

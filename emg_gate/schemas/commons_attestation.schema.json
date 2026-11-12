@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/commons_attestation.schema.json",
+  "title": "CommonsAttestation",
+  "description": "One person's evaluation of a shared model on their own held-out donning, run on their own machine. Only numbers and a sha256 commitment of the evaluated rows leave the machine. Ed25519-signed by the same key that signs that person's bundles.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "model_id", "snapshot_id", "pool_key", "contributor", "pubkey", "n_windows", "accuracy", "false_green", "rows_sha256", "made_on", "sig"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "model_id": { "type": "string", "pattern": "^m_[0-9a-f]{16}$" },
+    "snapshot_id": { "type": "string", "pattern": "^s_[0-9a-f]{16}$" },
+    "pool_key": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "contributor": { "type": "string", "pattern": "^c_[0-9a-f]{16}$" },
+    "pubkey": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "n_windows": { "type": "integer", "minimum": 1 },
+    "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+    "accuracy_own": { "type": "number", "minimum": 0, "maximum": 1 },
+    "false_green": { "type": "integer", "minimum": 0 },
+    "rows_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "made_on": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "sig": { "type": "string", "pattern": "^[0-9a-f]{128}$" }
+  }
+}

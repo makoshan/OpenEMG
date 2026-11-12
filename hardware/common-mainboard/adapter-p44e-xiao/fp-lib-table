@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "p44")(type "KiCad")(uri "${KIPRJMOD}/p44.pretty")(options "")(descr "P44 自建封装"))
+)

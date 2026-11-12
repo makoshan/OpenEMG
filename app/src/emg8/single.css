@@ -1,0 +1,34 @@
+/* 单通道工作室：沿用八通道的卡片、步骤条和 ins-* 版式，这里只补单通道特有的几块 */
+.emg8 .ins-corner.static { position: static; margin-bottom: 10px; }
+.emg1-dial { width: 210px; height: 210px; border-radius: 50%; border: 14px solid var(--emg8-line); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 8px 0 6px; transition: border-color .3s; }
+.emg1-dial[data-on] { border-color: color-mix(in srgb, var(--pt-state-success, #3a8f5c) 55%, var(--emg8-line)); }
+.emg1-dial b { font-size: 34px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.emg1-dial.big b { font-size: 44px; }
+.emg1-dial small { font-size: 12px; color: var(--emg8-dim); }
+.emg1-wave { width: 100%; min-width: 0; }
+.emg1-wave .emg8-wave-emg { height: 160px; }
+.emg1-range { display: flex; justify-content: flex-end; font-size: 12px; color: var(--emg8-dim); margin-bottom: 4px; }
+.emg1-capture { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 18px; align-items: start; }
+.emg1-capture .emg1-wave .emg8-wave-emg { height: 320px; }
+.emg1-seg { display: inline-flex; gap: 4px; padding: 3px; border: 1px solid var(--emg8-line); border-radius: 10px; margin-bottom: 10px; }
+.emg1-seg button { border: 0; background: transparent; padding: 5px 10px; border-radius: 7px; font: inherit; font-size: 12px; cursor: pointer; color: var(--emg8-dim); }
+.emg1-seg button[aria-pressed="true"] { background: var(--pt-action-primary, #163f35); color: var(--pt-surface-panel, #fff); }
+.emg1-gestures { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.emg1-gestures button { width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr) 90px 56px; align-items: center; gap: 10px; text-align: left; padding: 8px 10px; border: 1px solid var(--emg8-line); border-radius: 10px; background: var(--emg8-panel); font: inherit; cursor: pointer; }
+.emg1-gestures button[aria-pressed="true"] { border-color: var(--pt-action-primary, #163f35); box-shadow: inset 0 0 0 1px var(--pt-action-primary, #163f35); }
+.emg1-gestures small { color: var(--emg8-dim); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.emg1-gestures em { font-style: normal; font-variant-numeric: tabular-nums; font-size: 12px; text-align: right; }
+.emg1-bar { height: 6px; border-radius: 3px; background: var(--emg8-line); overflow: hidden; }
+.emg1-bar i { display: block; height: 100%; background: var(--pt-state-success, #3a8f5c); transition: width .4s; }
+.emg1-cue { margin: 14px 0 0; padding: 14px; border-radius: 12px; border: 1px dashed var(--emg8-line); text-align: center; }
+.emg1-cue b { display: block; font-size: 36px; font-weight: 650; }
+.emg1-cue small { color: var(--emg8-dim); }
+.emg1-cue[data-now] { border-style: solid; border-color: var(--pt-state-danger, #b4432f); }
+.emg1-cue[data-now] b { color: var(--pt-state-danger, #b4432f); }
+.emg1-count { font-size: 12px; color: var(--emg8-dim); display: inline-flex; align-items: center; gap: 4px; }
+.emg1-train-head { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.emg1-runs { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.emg1-runs th { text-align: left; font-weight: 500; color: var(--emg8-dim); font-size: 12px; border-bottom: 1px solid var(--emg8-line); padding: 6px 8px; }
+.emg1-runs td { border-bottom: 1px solid var(--emg8-line); padding: 6px 8px; }
+.emg1-more iframe { width: 100%; height: 72vh; min-height: 480px; border: 1px solid var(--emg8-line); border-radius: 8px; background: var(--emg8-panel); }
+@media (max-width: 900px) { .emg1-capture { grid-template-columns: minmax(0, 1fr); } }

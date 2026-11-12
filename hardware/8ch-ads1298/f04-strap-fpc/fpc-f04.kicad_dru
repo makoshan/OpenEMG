@@ -1,0 +1,4 @@
+(version 1)
+(rule "FPC copper gap" (constraint clearance (min 0.10mm)))
+(rule "FPC edge" (constraint edge_clearance (min 0.30mm)))
+(rule "FPC track" (constraint track_width (min 0.15mm)))

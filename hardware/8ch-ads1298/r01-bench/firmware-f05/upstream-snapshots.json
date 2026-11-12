@@ -1,0 +1,14 @@
+{
+  "emg/v12/firmware-f04/platformio.ini": "65ed5ec7838bd69942ad8ed300eb9288c132b43a414a04998892738b156b528c",
+  "emg/v12/firmware-f04/sdk_patch.py": "9d2b1bf0b61cddb77d32590f629729532d55aee134f9664b40e33b8cbeb88472",
+  "emg/v12/firmware-f04/verify_board.py": "b67fcee33c3ac568b4b2cc627364ed6761c628e16a724ff0d2d7745952445096",
+  "emg/v12/firmware-f04/collect.py": "a2a974eb47550e64c2e2f47917d56211245a0d8097e69e7c91d4957d4df53f28",
+  "emg/v12/firmware-f04/src/main.cpp": "36ab37054c814bdd170cea1ccc9764d918c5ec6a78283ac400b65c38d3827f28",
+  "emg/v12/firmware-f04/src/v12_stream.c": "b6a272050acafe269403f8ddd714bb6c3264874fa5f832b24e1cd858f3c05613",
+  "emg/v12/firmware-f04/src/v12_stream.h": "7d5b0ca4c7786f3b63ffe416809ea7a236a32303a61a84d4c73aa306751c81ed",
+  "emg/v12/offline-f01/v12_codec.c": "3bf56696137a3c6bdea98065ae475814962688754a96bb1e99865eb8d6f2784e",
+  "emg/v12/offline-f01/v12_codec.h": "ec6e6e2cc387c328dff292ca33d51a40d7b3809301c6b37b960e4670d6481fa7",
+  "emg/v12/dsp-f03/v12_dsp.c": "1b098ef205108d221a4b3be8381f15cd219a01d8599f14ddf5d5081e9c6d9a56",
+  "emg/v12/dsp-f03/v12_dsp.h": "cb68b9876c7fcdcb2d2a8326beb1fe9b88d27e2bee729b657cdcde305d1504a5",
+  "emg/v12/dsp-f03/coefficients.h": "6d13c60121a147350fb8c94d015690debdd71259c8495670eaddd16b5650e39b"
+}

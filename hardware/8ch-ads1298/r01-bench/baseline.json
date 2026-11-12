@@ -1,0 +1,6 @@
+{
+  "source": "emg/v12/easyeda-sch/design.json",
+  "sha256": "ccf844626367520eebdf03494f2c680cbcf91c0f7d2eb1a161b42939a047c948",
+  "base_commit": "1b5ad8a",
+  "purpose": "八通道离体制造候选，保留旧设计；未放行制造或佩戴"
+}

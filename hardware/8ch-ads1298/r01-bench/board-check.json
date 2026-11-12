@@ -1,0 +1,88 @@
+{
+  "status": "ROUTING_ONLY_PASS",
+  "footprints": 208,
+  "pads_checked_including_split_EP": 577,
+  "tracks": 1539,
+  "vias": 253,
+  "zones": 4,
+  "tracks_per_layer": {
+    "F.Cu": 636,
+    "B.Cu": 647,
+    "In2.Cu": 256
+  },
+  "trace_metrics": {
+    "U7_L1": {
+      "length_mm": 3.032,
+      "vias": 0
+    },
+    "U7_L2": {
+      "length_mm": 3.032,
+      "vias": 0
+    },
+    "VCAP1": {
+      "length_mm": 5.87,
+      "vias": 0
+    },
+    "VCAP2": {
+      "length_mm": 1.666,
+      "vias": 0
+    },
+    "VCAP3": {
+      "length_mm": 4.838,
+      "vias": 1
+    },
+    "VCAP4": {
+      "length_mm": 1.666,
+      "vias": 0
+    },
+    "VREFP": {
+      "length_mm": 3.888,
+      "vias": 1
+    },
+    "ADS_SCLK": {
+      "length_mm": 45.92,
+      "vias": 4
+    },
+    "ADS_DIN": {
+      "length_mm": 28.904,
+      "vias": 4
+    },
+    "ADS_DOUT": {
+      "length_mm": 11.31,
+      "vias": 1
+    },
+    "ADS_DRDY": {
+      "length_mm": 21.525,
+      "vias": 4
+    }
+  },
+  "negative_control_unconnected": 153,
+  "manufacturing_ready": false,
+  "human_test_ready": false,
+  "open_gates": [
+    "实际供电/掉电波形",
+    "真实接口与电池确认",
+    "工厂工艺/物料与独立制造包复核",
+    "人体路径安全复核",
+    "真实信号/无线/装配验收"
+  ],
+  "analog_length_mm": {
+    "ADS_IN1P": 16.988,
+    "ADS_IN1N": 16.591,
+    "ADS_IN2P": 16.241,
+    "ADS_IN2N": 15.943,
+    "ADS_IN3P": 15.699,
+    "ADS_IN3N": 15.514,
+    "ADS_IN4P": 15.388,
+    "ADS_IN4N": 15.325,
+    "ADS_IN5P": 15.325,
+    "ADS_IN5N": 15.388,
+    "ADS_IN6P": 15.514,
+    "ADS_IN6N": 15.699,
+    "ADS_IN7P": 15.943,
+    "ADS_IN7N": 16.241,
+    "ADS_IN8P": 16.591,
+    "ADS_IN8N": 16.988
+  },
+  "via_hole_intrusions": []
+}

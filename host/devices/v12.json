@@ -1,0 +1,95 @@
+{
+  "id": "v12",
+  "name": "OpenEMG V12（ADS1298）",
+  "transport": {
+    "kind": "ble",
+    "match": {
+      "name_prefix": "YUANLI",
+      "service_uuid": null
+    }
+  },
+  "decoder": "v12",
+  "n_channels": 8,
+  "fs_Hz": 2000,
+  "fs_options": [
+    2000,
+    4000
+  ],
+  "resolution_bits": 24,
+  "channels": [
+    {
+      "label": "CH1",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH2",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH3",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH4",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH5",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH6",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH7",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    },
+    {
+      "label": "CH8",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 0.0794728
+    }
+  ],
+  "imu": null,
+  "digital_in": 1,
+  "battery": true,
+  "electrode_layout": "ring8",
+  "capabilities": {
+    "record": false,
+    "realtime": true,
+    "train": true,
+    "cursor": true,
+    "ab": true,
+    "imu": false
+  },
+  "limits": {
+    "rail_uV": 8220835.84,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  },
+  "notes": "BLE 广播名/UUID 待固件定（附录 I-1）；record=false 直到 BLE 桥接实采接通"
+}

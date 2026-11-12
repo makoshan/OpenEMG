@@ -1,0 +1,10 @@
+import { fileURLToPath } from 'node:url';
+process.chdir(fileURLToPath(new URL('.', import.meta.url)));
+import { build } from 'vite';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+await mkdir('build/live-check', { recursive: true });
+await writeFile('build/live-check/index.html', '<div id="root"></div><script type="module" src="../../check-live-fixture.tsx"></script>');
+await build({ build: { outDir: 'build/live-dist', rollupOptions: { input: 'build/live-check/index.html' } } });
+const r = spawnSync('node_modules/.bin/electron', ['check-live-window.cjs'], { stdio: 'inherit' });
+process.exit(r.status ?? 1);

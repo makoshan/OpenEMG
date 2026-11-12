@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>v12/fpc-f04-budget/fpc-f04.kicad_sch</source>
+    <date>2026-10-09T20:15:18</date>
+    <tool>Eeschema 10.0.6</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>fpc-f04.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J1">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e4136e55-52ea-51e9-93c3-3c9da0c57b96</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J2">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c95f72bd-24b2-5c27-b2fd-2553364ac3fb</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J3">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fc833f88-eff9-53e9-9429-5668e8f3a063</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J4">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c6a3bedf-6a65-5ff8-905a-84bf7e1d0921</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J5">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d3d6dcca-afea-54fe-b457-d7690a427312</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J6">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a151fe10-b0f2-545a-bca7-8adcefae39da</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J7">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a35f06bc-4fe8-5d28-a667-22c0d238dbfd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J8">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2af5ed14-cbed-5ed3-8688-a1587b301c54</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J9">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0adbe7cb-3aea-5878-91cc-ab07b1aadb79</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J10">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3e04bd74-41d8-5fa6-a6ef-823e466f383d</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J11">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8539ca3d-08b2-5705-aeff-47b49988cff1</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J12">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5e736b61-b8bc-5f2c-9040-6c49e4ac6bac</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J13">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7ff8b989-3eb5-5d64-ae33-ef217810925c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J14">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9d900adb-ea94-597c-acf2-ddae5d5bdb98</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J15">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4a34aeb0-667c-54a0-9c48-9ec5612c8752</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J16">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0889b6ac-dd06-5a2b-9930-837462e6e101</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J17">
+      <value>S7231-45R</value>
+      <footprint>FPC:S7231</footprint>
+      <fields>
+        <field name="Footprint">FPC:S7231</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="S7231" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>070c117c-f0a9-5dd5-9b8c-0e0d4c5226de</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J18">
+      <value>TAIL17_TO_R01_J3</value>
+      <footprint>FPC:TAIL17</footprint>
+      <fields>
+        <field name="Footprint">FPC:TAIL17</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="FPC" part="TAIL17" description=""/>
+      <property name="Sheetname" value="fpc-f04"/>
+      <property name="Sheetfile" value="fpc-f04.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>acb8a649-3eb4-51cc-a59b-a53d4e4d536b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="16"/>
+            <pin num="17"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="FPC" part="S7231">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">S7231</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="FPC" part="TAIL17">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">TAIL17</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+        <pin num="5" name="5" type="passive"/>
+        <pin num="6" name="6" type="passive"/>
+        <pin num="7" name="7" type="passive"/>
+        <pin num="8" name="8" type="passive"/>
+        <pin num="9" name="9" type="passive"/>
+        <pin num="10" name="10" type="passive"/>
+        <pin num="11" name="11" type="passive"/>
+        <pin num="12" name="12" type="passive"/>
+        <pin num="13" name="13" type="passive"/>
+        <pin num="14" name="14" type="passive"/>
+        <pin num="15" name="15" type="passive"/>
+        <pin num="16" name="16" type="passive"/>
+        <pin num="17" name="17" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="FPC">
+      <uri>${KIPRJMOD}/FPC.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="E1N" class="Default">
+      <node ref="J18" pin="2" pinfunction="2_2" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="2" name="E1P" class="Default">
+      <node ref="J1" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="3" name="E2N" class="Default">
+      <node ref="J18" pin="4" pinfunction="4_4" pintype="passive"/>
+      <node ref="J4" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="4" name="E2P" class="Default">
+      <node ref="J18" pin="3" pinfunction="3_3" pintype="passive"/>
+      <node ref="J3" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="5" name="E3N" class="Default">
+      <node ref="J18" pin="6" pinfunction="6_6" pintype="passive"/>
+      <node ref="J6" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="6" name="E3P" class="Default">
+      <node ref="J18" pin="5" pinfunction="5_5" pintype="passive"/>
+      <node ref="J5" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="7" name="E4N" class="Default">
+      <node ref="J18" pin="8" pinfunction="8_8" pintype="passive"/>
+      <node ref="J8" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="8" name="E4P" class="Default">
+      <node ref="J18" pin="7" pinfunction="7_7" pintype="passive"/>
+      <node ref="J7" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="9" name="E5N" class="Default">
+      <node ref="J10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="10" pinfunction="10_10" pintype="passive"/>
+    </net>
+    <net code="10" name="E5P" class="Default">
+      <node ref="J18" pin="9" pinfunction="9_9" pintype="passive"/>
+      <node ref="J9" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="11" name="E6N" class="Default">
+      <node ref="J12" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="12" pinfunction="12_12" pintype="passive"/>
+    </net>
+    <net code="12" name="E6P" class="Default">
+      <node ref="J11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="11" pinfunction="11_11" pintype="passive"/>
+    </net>
+    <net code="13" name="E7N" class="Default">
+      <node ref="J14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="14" pinfunction="14_14" pintype="passive"/>
+    </net>
+    <net code="14" name="E7P" class="Default">
+      <node ref="J13" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="13" pinfunction="13_13" pintype="passive"/>
+    </net>
+    <net code="15" name="E8N" class="Default">
+      <node ref="J16" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="16" pinfunction="16_16" pintype="passive"/>
+    </net>
+    <net code="16" name="E8P" class="Default">
+      <node ref="J15" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="15" pinfunction="15_15" pintype="passive"/>
+    </net>
+    <net code="17" name="E_RLD" class="Default">
+      <node ref="J17" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="J18" pin="17" pinfunction="17_17" pintype="passive"/>
+    </net>
+  </nets>
+</export>

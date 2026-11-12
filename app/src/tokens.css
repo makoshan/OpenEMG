@@ -1,0 +1,43 @@
+/* 生成文件，别手改：node scripts/gen-tokens.mjs（真源 docs/design/mac-ide-v1/tokens.json v1.0-proposal） */
+:root {
+  --pt-surface-paper: #FAF8F2;
+  --pt-surface-panel: #FFFEFB;
+  --pt-surface-subtle: #F3F1EA;
+  --pt-text-primary: #24352F;
+  --pt-text-secondary: #65736B;
+  --pt-action-primary: #163F35;
+  --pt-state-success: #237A57;
+  --pt-state-attention: #A95822;
+  --pt-state-danger: #B63D36;
+  --pt-border-default: #E5E0D7;
+  --pt-canvas-dot: #D5D0C6;
+  --pt-canvas-engineering: #07141C;
+  --pt-space-1: 4px;
+  --pt-space-2: 8px;
+  --pt-space-3: 12px;
+  --pt-space-4: 16px;
+  --pt-space-5: 24px;
+  --pt-space-6: 32px;
+  --pt-radius-control: 10px;
+  --pt-radius-card: 12px;
+  --pt-radius-overlay: 14px;
+  --pt-radius-window: 16px;
+  --pt-type-body-size: 14px;
+  --pt-type-body-line: 22px;
+  --pt-type-caption-size: 12px;
+  --pt-type-caption-line: 18px;
+  --pt-type-heading-size: 16px;
+  --pt-type-heading-line: 24px;
+  --pt-type-title-size: 24px;
+  --pt-type-title-line: 32px;
+  --pt-layout-width: 1600px;
+  --pt-layout-height: 1000px;
+  --pt-layout-titlebar: 38px;
+  --pt-layout-toolbar: 64px;
+  --pt-layout-statusbar: 28px;
+  --pt-layout-rail: 60px;
+  --pt-layout-chat: 320px;
+  --pt-layout-inspector: 320px;
+  --pt-dot-spacing: 24px;
+  --pt-dot-diameter: 1.6px;
+}

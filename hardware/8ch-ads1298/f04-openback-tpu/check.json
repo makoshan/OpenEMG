@@ -1,0 +1,27 @@
+{
+  "state": "已实现未实物验收",
+  "shell_mm": 2.356,
+  "metal_top_mm": 2.856,
+  "with_glue_without_strap_mm": 3.006,
+  "with_assumed_strap_mm": 4.2059999999999995,
+  "local_patch_mm": 0.2,
+  "continuous_liner_mm": [
+    172.4,
+    28,
+    2.356
+  ],
+  "contacts": 17,
+  "tests": [
+    "两种单排无交叠",
+    "背装连续扫掠及封底碰撞反例",
+    "触点从正面装入及下穿反例",
+    "连续TPU单实体",
+    "6STEP有效回读"
+  ],
+  "unverified": [
+    "BW焊脚与压缩力，现为S7231包络",
+    "TPU刚度、胶粘保持、0.2补强效果",
+    "打印公差、切片和实打",
+    "弯曲/扣具/尾线/佩戴舒适"
+  ]
+}

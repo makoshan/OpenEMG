@@ -1,0 +1,396 @@
+{
+ "a": [
+  {
+   "ch": 1,
+   "bumps": [
+    {
+     "net": "CH1_P",
+     "at": [
+      52.2,
+      53.59
+     ],
+     "height": 1.351,
+     "normal": [
+      0.707,
+      0.707
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 33.9671,
+   "tail_P_mm": 33.9671,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 1.09,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.2,
+   "elec_diff_mil": 7.87
+  },
+  {
+   "ch": 2,
+   "bumps": [
+    {
+     "net": "CH2_P",
+     "at": [
+      63.75,
+      53.54
+     ],
+     "height": 0.701,
+     "normal": [
+      -0.707,
+      0.707
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 42.15,
+   "tail_P_mm": 42.15,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.09,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.2,
+   "elec_diff_mil": 7.87
+  },
+  {
+   "ch": 3,
+   "bumps": [],
+   "method": "北岛分叉线下移 +0.4435 mm",
+   "tail_N_mm": 47.1603,
+   "tail_P_mm": 47.1603,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 3.5083,
+   "elec_P_mm": 3.5083,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 4,
+   "bumps": [],
+   "method": "北岛分叉线下移 +0.3192 mm",
+   "tail_N_mm": 59.6477,
+   "tail_P_mm": 59.6477,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 3.5083,
+   "elec_P_mm": 3.5083,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 5,
+   "bumps": [
+    {
+     "net": "CH5_P",
+     "at": [
+      91.163,
+      52.389
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 71.5281,
+   "tail_P_mm": 71.5281,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 6,
+   "bumps": [
+    {
+     "net": "CH6_P",
+     "at": [
+      99.4,
+      52.27
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 82.2864,
+   "tail_P_mm": 82.2864,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 7,
+   "bumps": [
+    {
+     "net": "CH7_P",
+     "at": [
+      107.875,
+      52.032
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 92.9878,
+   "tail_P_mm": 92.9878,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 8,
+   "bumps": [
+    {
+     "net": "CH8_P",
+     "at": [
+      114.99,
+      52.475
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 100.2954,
+   "tail_P_mm": 100.2954,
+   "tail_diff_mm": -0.0,
+   "tail_diff_mil": -0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  }
+ ],
+ "b": [
+  {
+   "ch": 9,
+   "bumps": [
+    {
+     "net": "CH9_N",
+     "at": [
+      122.74,
+      47.05
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 99.3682,
+   "tail_P_mm": 99.3682,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 10,
+   "bumps": [
+    {
+     "net": "CH10_N",
+     "at": [
+      128.4,
+      47.48
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 105.0862,
+   "tail_P_mm": 105.0862,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 11,
+   "bumps": [
+    {
+     "net": "CH11_N",
+     "at": [
+      136.4,
+      47.48
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 113.169,
+   "tail_P_mm": 113.169,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 12,
+   "bumps": [
+    {
+     "net": "CH12_N",
+     "at": [
+      144.4,
+      47.48
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 122.0626,
+   "tail_P_mm": 122.0626,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 13,
+   "bumps": [
+    {
+     "net": "CH13_N",
+     "at": [
+      152.423,
+      47.468
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 129.7905,
+   "tail_P_mm": 129.7905,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 14,
+   "bumps": [
+    {
+     "net": "CH14_N",
+     "at": [
+      160.68,
+      47.34
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 137.8627,
+   "tail_P_mm": 137.8627,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 15,
+   "bumps": [
+    {
+     "net": "CH15_N",
+     "at": [
+      169.195,
+      47.082
+     ],
+     "height": 0.46,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 146.088,
+   "tail_P_mm": 146.088,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  },
+  {
+   "ch": 16,
+   "bumps": [
+    {
+     "net": "CH16_N",
+     "at": [
+      178.74,
+      47.05
+     ],
+     "height": 1.11,
+     "normal": [
+      -1.0,
+      -0.0
+     ]
+    }
+   ],
+   "method": "凸起",
+   "tail_N_mm": 156.8676,
+   "tail_P_mm": 156.8676,
+   "tail_diff_mm": 0.0,
+   "tail_diff_mil": 0.0,
+   "elec_N_mm": 1.29,
+   "elec_P_mm": 1.29,
+   "elec_diff_mm": 0.0,
+   "elec_diff_mil": 0.0
+  }
+ ]
+}

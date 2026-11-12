@@ -1,0 +1,238 @@
+/* 按已确认的动作稿接入；以工作区可用宽度收拢，助手栏展开时仍保留完整口令。 */
+.emg8[data-guided] { container-type: inline-size; padding: 16px 20px; gap: 12px; }
+.emg8[data-guided] .emg8-head { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 9px 18px; }
+.emg8[data-guided] .emg8-head > .emg8-row { grid-column: 1 / -1; }
+.emg8-project-heading { min-width: 0; }
+.emg8-project-heading small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 540px; }
+.emg8[data-guided] .emg8-head h2 { font-size: 23px; }
+.emg8[data-guided] .emg8-tabs { border: 0; border-radius: 0; padding: 0; background: transparent; gap: 14px; }
+.emg8[data-guided] .emg8-tabs button { border-radius: 0; padding: 6px 0 9px; font-size: 12px; color: var(--emg8-dim); border-bottom: 2px solid transparent; }
+.emg8[data-guided] .emg8-tabs button[aria-pressed=true] { color: var(--emg8-accent); border-bottom-color: var(--emg8-accent); }
+.emg8[data-guided] .emg8-tab-pill { display: none; }
+.emg8-thumb-connection { display: flex; gap: 13px; flex-wrap: wrap; align-items: center; border: 1px solid var(--emg8-line); border-radius: 7px; background: var(--emg8-panel); padding: 9px 13px; font-size: 12px; }
+.emg8-thumb-connection button { margin-left: auto; font-size: 12px; padding: 4px 9px; }
+.emg8-thumb-capture { display: grid; gap: 13px; }
+.emg8-thumb-phases { display: flex; gap: 22px; border-bottom: 1px solid var(--emg8-line); color: var(--emg8-dim); font-size: 12px; flex-wrap: wrap; }
+.emg8-thumb-phases span { padding-bottom: 7px; }
+.emg8-thumb-phases .active { color: var(--emg8-accent); border-bottom: 2px solid var(--emg8-accent); font-weight: 600; }
+.emg8-thumb-workgrid { display: grid; grid-template-columns: minmax(0,1fr) 220px; gap: 14px; align-items: start; }
+.emg8 .emg8-thumb-action,.emg8 .emg8-thumb-gestures { padding: 0; border-radius: 8px; overflow: hidden; }
+.emg8 .emg8-thumb-action > header,.emg8 .emg8-thumb-gestures > header { padding: 12px 16px; border-bottom: 1px solid var(--emg8-line); margin: 0; }
+.emg8-thumb-session { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--emg8-dim); }
+.emg8-thumb-session select { padding: 3px 6px; font-size: 12px; }
+.emg8-demo-body { display: grid; grid-template-columns: minmax(180px,1fr) minmax(175px,1fr); gap: 17px; padding: 16px; align-items: center; }
+.emg8-thumb-picture { margin: 0; background: color-mix(in srgb,var(--emg8-line) 14%,var(--emg8-panel)); border-radius: 7px; padding: 8px; min-width: 0; text-align: center; }
+.emg8-thumb-picture > small { display: block; font-size: 10px; text-align: left; }
+.emg8-thumb-picture svg { width: 100%; height: 225px; max-width: 320px; overflow: visible; }
+.emg8-thumb-picture figcaption { font-size: 10px; color: var(--emg8-dim); padding-bottom: 2px; }
+.emg8-thumb-picture .thumb-finger { fill: #F0E4D6; stroke: var(--emg8-dim); stroke-width: 1.6; }
+.emg8-thumb-picture .thumb-pad { fill: #E8CFB7; stroke: var(--emg8-dim); stroke-width: 1.6; }
+.emg8-thumb-picture .thumb-anatomy { fill: none; stroke: var(--emg8-dim); stroke-width: 1; opacity: .55; }
+.emg8-thumb-picture .thumb-contact { fill: none; stroke: var(--emg8-accent); stroke-width: 2; stroke-dasharray: 4 3; }
+.emg8-thumb-picture .thumb-arrow { fill: none; stroke: var(--emg8-accent); stroke-width: 2; stroke-linecap: round; }
+.emg8-thumb-picture .thumb-label { font-size: 12px; fill: var(--emg8-dim); }
+.emg8 .emg8-thumb-instructions h3 { font-size: 28px; line-height: 1.3; margin: 0 0 10px; }
+.emg8-thumb-instructions > p { font-size: 14px; margin: 0 0 9px; }
+.emg8-thumb-instructions > small { font-size: 11px; }
+.emg8-thumb-sequence { list-style: none; margin: 14px 0; padding: 0; display: grid; gap: 8px; font-size: 12px; }
+.emg8-thumb-sequence li { display: flex; align-items: center; gap: 8px; }
+.emg8-thumb-sequence b { display: grid; place-items: center; width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; border: 1px solid var(--emg8-line); font-size: 11px; font-weight: 500; }
+.emg8-thumb-sequence .current { font-weight: 600; }
+.emg8-thumb-sequence .current b { background: var(--emg8-accent); color: var(--emg8-accent-text); border-color: var(--emg8-accent); }
+.emg8-preview-controls { display: flex; align-items: center; gap: 9px; font-size: 11px; }
+.emg8-preview-controls button { font-size: 11px; padding: 4px 7px; }
+.emg8-thumb-cue { margin: 0 16px 13px; padding: 9px 12px; background: color-mix(in srgb,var(--emg8-line) 35%,var(--emg8-panel)); border-radius: 6px; min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.emg8-thumb-cue strong { display: block; font-size: 18px; }
+.emg8-thumb-cue small { display: block; font-size: 11px; }
+.emg8-thumb-cue > b { font-size: 32px; font-variant-numeric: tabular-nums; }
+.emg8-thumb-cue.go { background: color-mix(in srgb,var(--emg8-ok) 10%,var(--emg8-panel)); }
+.emg8-thumb-actionbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--emg8-line); }
+/* 首页的裸 footer 带 150px 最小高度；组件的操作栏与计数栏只按内容占高。 */
+.emg8[data-guided] .emg8-thumb-actionbar,.emg8[data-guided] .emg8-thumb-gestures > footer { min-height: 0; }
+.emg8-thumb-actionbar label { font-size: 11px; color: var(--emg8-dim); }
+.emg8-thumb-actionbar select { padding: 5px 6px; font-size: 11px; }
+.emg8 .emg8-thumb-actionbar .emg8-primary { margin-left: auto; min-width: 180px; padding: 10px 13px; }
+.emg8[data-guided] .emg8-primary::before { display: none; }
+.emg8 .emg8-thumb-gesture { display: grid; grid-template-columns: 23px minmax(0,1fr) auto; align-items: center; width: calc(100% - 14px); margin: 4px 7px; padding: 10px 8px; text-align: left; border: 0; border-radius: 5px; background: transparent; }
+.emg8-thumb-gesture > span:first-child { font-size: 21px; }
+.emg8-thumb-gesture span small { display: block; font-size: 10px; }
+.emg8-thumb-gesture[aria-pressed=true] { background: color-mix(in srgb,var(--emg8-accent) 8%,var(--emg8-panel)); box-shadow: inset 3px 0 var(--emg8-accent); }
+.emg8-thumb-gestures > footer { padding: 12px 15px; border-top: 1px solid var(--emg8-line); display: flex; justify-content: space-between; font-size: 12px; }
+.emg8-thumb-details { border: 1px solid var(--emg8-line); border-radius: 7px; background: var(--emg8-panel); font-size: 12px; }
+.emg8-thumb-details summary { padding: 10px 13px; color: var(--emg8-dim); cursor: pointer; }
+.emg8-thumb-details-body { padding: 0 14px 14px; display: grid; gap: 10px; }
+.emg8-thumb-details-body > button { justify-self: start; font-size: 12px; }
+.emg8-thumb-foot { display: flex; justify-content: space-between; gap: 12px; }
+.emg8 .emg8-thumb-validation { margin: 0; padding: 0 16px 12px; }
+.emg8[data-guided] .emg8-signal { border: 0; padding: 0; }
+.emg8[data-guided] .emg8-wave-emg { height: 240px; }
+@container (max-width: 900px) {
+  .emg8-thumb-workgrid { grid-template-columns: minmax(0,1fr) 180px; gap: 11px; }
+  .emg8-demo-body { gap: 11px; padding: 13px; }
+  .emg8-thumb-picture svg { height: 200px; }
+  .emg8-thumb-session > small { display: none; }
+  .emg8-thumb-instructions > p { font-size: 13px; }
+  .emg8[data-guided] .emg8-head h2 { font-size: 21px; }
+}
+@container (max-width: 700px) {
+  .emg8-thumb-workgrid { grid-template-columns: 1fr; }
+  .emg8-thumb-gestures { grid-row: 1; }
+  .emg8 .emg8-thumb-gestures > header,.emg8-thumb-gestures > footer { display: none; }
+  .emg8-thumb-gestures > div { display: flex; padding: 5px; gap: 3px; }
+  .emg8 .emg8-thumb-gesture { flex: 1; margin: 0; padding: 6px 4px; grid-template-columns: 20px minmax(0,1fr); font-size: 11px; }
+  .emg8-thumb-gesture > small { grid-column: 2; font-size: 10px; }
+  .emg8-thumb-gesture span small { display: none; }
+  .emg8[data-guided] .emg8-tabs { gap: 9px; }
+  .emg8[data-guided] .emg8-tabs button { font-size: 11px; }
+  .emg8-thumb-phases { gap: 12px; font-size: 11px; }
+  .emg8 .emg8-thumb-actionbar .emg8-primary { min-width: 155px; flex: 1; }
+}
+@container (max-width: 450px) {
+  .emg8[data-guided] .emg8-head { grid-template-columns: 1fr; }
+  .emg8-demo-body { grid-template-columns: 1fr; }
+  .emg8-thumb-picture svg { height: 180px; }
+  .emg8-thumb-session > small { display: block; }
+  .emg8-thumb-connection small { width: 100%; }
+}
+
+/* 专训动作较多，列表在自身区域滚动，录制口令不被挤到下面。 */
+.emg8-meta-capture .emg8-thumb-gestures > [role=group] { max-height: 380px; overflow-y: auto; }
+.emg8-meta-capture .emg8-thumb-gestures > p,.emg8-meta-capture .emg8-thumb-gestures > .emg8-preview-controls { margin: 10px; }
+.emg8-meta-capture .emg8-thumb-instructions h3 { font-size: 23px; }
+@container (max-width: 700px) {
+ .emg8-meta-capture .emg8-thumb-gestures > [role=group] { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); max-height: 160px; }
+ .emg8-meta-capture .emg8-thumb-gestures > [role=group] button { width: 100%; }
+}
+/* 设备选择放进 IMU / 肌电那一排的空位，不再单独占一行。 */
+.emg-data-stack > .v3-vtools { margin-bottom: 0; min-height: 36px; padding-right: 280px; }
+.emg-device-slot { position: absolute; top: 4px; right: 8px; z-index: 5; }
+/* 手势组、连接状态、五步和旁边的按钮钉在滚动区顶部，卷上去也还在。 */
+.emg8[data-guided] .emg8-chrome { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; position: sticky; top: 0; z-index: 4; flex-shrink: 0; background: var(--paper, #FAF8F2); padding: 4px 0; }
+.emg8-focus { margin-left: auto; font-size: 12px; padding: 2px 8px; }
+.v3[data-train-focus] .v3-bar { display: none; }
+.v3[data-train-focus] .emg-data-stack > .v3-vtools,
+.v3[data-train-focus] .emg-device-slot { display: none; }
+.emg8[data-guided] .emg8-chrome .emg8-head,
+.emg8[data-guided] .emg8-chrome .ins-stepbar { display: contents; }
+.emg8[data-guided] .emg8-chrome .emg8-project-heading { display: none; }
+.emg8[data-guided] .emg8-chrome .ins-steps { flex: 1; min-width: 280px; }
+.emg8-meta-capture .emg8-thumb-actionbar { position: sticky; bottom: 0; z-index: 3; background: var(--emg8-panel, #FFFEFB); }
+
+/* 引导条收成一行：步骤副标题（唤醒手环、检查贴合…）不再占高度。 */
+.emg8[data-guided] .ins-steps small { display: none; }
+.emg8[data-guided] .ins-steps { margin: 0; }
+.emg8[data-guided] .ins-steps .step { gap: 2px; }
+.emg8[data-guided] .ins-steps .dot { width: 22px; height: 22px; }
+.emg8[data-guided] .ins-steps .cur .dot { transform: none; }
+.emg8[data-guided] .ins-stepbar { align-items: center; gap: 8px; }
+/* 录动作：八路滚动波形钉在顶栏下面，每一路一条线，左边是通道号和微伏。 */
+.emg8-channels { display: grid; gap: 4px; margin: 2px 0 8px; flex: none; }   /* 原来 flex:1 0 100% 让八路段在 .emg8 列里占满一屏、三行被拉出空带，动作卡被挤到首屏外（D5 R1）。校准页走下面 :has 的网格，不受影响 */
+.emg8-channels-bar { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--emg8-dim); }
+.emg8-channels-bar b { color: var(--emg8-text); font-size: 13px; }
+.emg8-channels-bar select { font: inherit; }
+/* 只有校准页压到 96px（:has 提到 0,5,0，压过第 68 行 240px）。八路名字放不进 96px，幅度用上面那一行数字，画布铺满。其他录动作页保持 240px。 */
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-lanes { display: none; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-wave-emg canvas { inset: 0; width: 100%; }
+.emg8-ch-readout { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0 8px; list-style: none; }
+.emg8-ch-readout li { display: flex; justify-content: space-between; gap: 4px; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--emg8-dim); }
+.emg8-ch-readout b { color: var(--emg8-text); font-size: 11px; }
+.emg8-readfirst { margin: 10px 16px 0; font-size: 13px; line-height: 1.5; color: var(--emg8-text); }
+.emg8-calibration .emg8-contact,.emg8-calibration .ins-zero { margin: 12px 16px 0; }
+.emg8-channels .emg8-signal { grid-template-columns: minmax(0, 1fr) 180px; }   /* 电极环固定 180px 宽，栏只给 132px 时右边被裁 */
+.emg8-channels .emg8-wave-gyro { display: none; }
+
+/* 专训首屏只留一个手势组标题，给口令与录制按钮让出空间。 */
+.emg8:has(.emg8-meta-capture) .emg8-project-heading { display: none; }
+.emg8:has(.emg8-meta-capture) .emg8-head > .emg8-row { grid-column: 1; grid-row: 1; }
+.emg8:has(.emg8-meta-capture) .emg8-head > .emg8-tabs { grid-column: 2; grid-row: 1; }
+.emg8-meta-capture .emg8-demo-body { padding: 12px; gap: 12px; }
+.emg8-meta-capture .emg8-thumb-picture svg { height: 180px; }
+.emg8-meta-capture .emg8-thumb-instructions h3 { font-size: 20px; margin-bottom: 8px; }
+.emg8-meta-capture .emg8-thumb-sequence { gap: 6px; margin: 10px 0; font-size: 11px; }
+.emg8-meta-capture .emg8-thumb-cue { min-height: 44px; padding: 7px 10px; margin-bottom: 8px; }
+.emg8-meta-capture .emg8-thumb-actionbar { padding: 9px 12px; }
+/* 校准页一屏：右栏不必 440px，示范图不再按正方形把按钮挤到屏幕外。佩戴位置跟进度放在一起。 */
+.emg8-meta-capture[data-protocol=mouse].emg8-calibration .emg8-thumb-workgrid { grid-template-columns: minmax(0, 1fr) 280px; }
+.emg8-calibration .emg8-demo-body { grid-template-columns: 140px minmax(0, 1fr); align-items: start; }
+.emg8-calibration .emg8-meta-anim-frame { aspect-ratio: auto; height: 112px; }
+.emg8-calibration .emg8-meta-anim-frame img { width: 100%; height: 100%; object-fit: contain; }
+.emg8-calibration .emg8-cal-place { display: grid; gap: 3px; margin: 8px 12px 0; font-size: 11px; color: var(--emg8-dim); }
+.emg8-calibration .emg8-cal-place input { font: inherit; color: var(--emg8-text); }
+@container (max-width: 700px) {
+ .emg8:has(.emg8-meta-capture) .emg8-head > .emg8-row { grid-column: 1 / -1; grid-row: 2; }
+ .emg8:has(.emg8-meta-capture) .emg8-head > .emg8-tabs { grid-column: 1 / -1; grid-row: 1; }
+}
+
+/* 每次佩戴校准：3 轮 × 8 类的进度珠 */
+.emg8-cal-beads { display: grid; grid-template-columns: auto repeat(8, 1fr); gap: 6px 4px; align-items: center; padding: 10px 14px; }
+.emg8-cal-beads small { font-size: 11px; color: var(--emg8-dim); text-align: center; white-space: nowrap; }
+.emg8-cal-beads i { display: block; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--emg8-line); justify-self: center; transition: transform .25s, background .25s; }
+.emg8-cal-beads i.ok { background: var(--emg8-accent); border-color: var(--emg8-accent); }
+.emg8-cal-beads i.redo { background: #E9B949; border-color: #E9B949; }
+.emg8-cal-beads i.now { border: 2px solid var(--emg8-accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--emg8-accent) 22%, transparent); transform: scale(1.1); }
+.emg8-cal-body { padding: 12px 16px; display: grid; gap: 10px; }
+.emg8-cal-body .big { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.emg8-cal-last { font-size: 13px; color: var(--emg8-dim); min-height: 1.4em; }
+.emg8-cal-note { color: #A8781A; }                                           /* 自动改了佩戴编号：整轮常驻提醒 */
+.emg8-cal-body .big.emg8-score-bad { color: #D0606A; } .emg8-cal-body .big.emg8-score-fair { color: #A8781A; } .emg8-cal-body .big.emg8-score-good { color: var(--emg8-ok); }
+.emg8 .emg8-thumb-validation button { padding: 2px 8px; font-size: 11px; vertical-align: baseline; }   /* 未连上时就地「重新连接」 */
+/* 手势示范动图：白线透明底 → invert 成深色线；录制那一遍播完停回首帧 */
+.emg8-meta-anim-frame { position: relative; aspect-ratio: 1; max-height: 280px; margin: 0 auto; display: grid; place-items: center; background: rgba(47,58,54,.035); border-radius: 18px; }
+.emg8-meta-anim-frame img { width: 92%; height: 92%; object-fit: contain; filter: invert(.86) sepia(.08); pointer-events: none; }
+.emg8-meta-anim-frame[data-mode="record"][data-playing="on"] { box-shadow: 0 0 0 3px color-mix(in srgb, var(--emg8-accent) 45%, transparent); }
+.emg8-meta-anim-icon { position: absolute; right: 12px; top: 8px; font-size: 28px; color: #256A60; }
+/* 结印：白线示范 + 实拍并排 */
+.emg8-meta-anim.with-photo { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: center; }
+.emg8-meta-anim.with-photo > small, .emg8-meta-anim.with-photo > figcaption { grid-column: 1 / -1; }
+.emg8-meta-photo { width: 100%; aspect-ratio: 1; max-height: 280px; object-fit: cover; border-radius: 18px; pointer-events: none; }
+.emg8-calibration .emg8-demo-body:has(.with-photo) { grid-template-columns: 236px minmax(0, 1fr); }
+.emg8-calibration .emg8-meta-photo { height: 112px; width: auto; justify-self: center; }
+
+/* 校准页底噪：8 根小柱，红线 = NOISE_LIMIT_UV */
+.emg8-noise { display: grid; gap: 4px; } .emg8-noise small { font-size: 12px; color: var(--emg8-dim); }
+.emg8-noise .bars { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; height: 34px; align-items: end; position: relative; padding-top: 2px; }
+.emg8-noise .bars::before { content: ""; position: absolute; left: 0; right: 0; top: 37.5%; border-top: 1px dashed #D0606A; opacity: .7; }
+.emg8-noise .bars i { display: block; border-radius: 3px 3px 0 0; background: var(--emg8-line); transition: height .3s; }
+.emg8-noise .bars i.ok { background: var(--emg8-accent); } .emg8-noise .bars i.high { background: #E9B949; } .emg8-noise .bars i.bad { background: #D0606A; }
+.emg8-noise-high small, .emg8-thumb-validation.emg8-noise-high { color: #A8781A; } .emg8-noise-bad small, .emg8-thumb-validation.emg8-noise-bad { color: #D0606A; font-weight: 600; }
+
+/* 校准中电极没贴紧：电极环标出哪一片，红片呼吸 */
+.emg8-contact { display: grid; grid-template-columns: 132px 1fr; gap: 14px; align-items: center; }
+.emg8-contact div { display: grid; gap: 4px; } .emg8-contact small { color: var(--emg8-dim); }
+.emg8-contact .emg8-ring-seg[data-hot="1"] { animation: emg8-breathe 1.1s ease-in-out infinite; }
+@keyframes emg8-breathe { 50% { opacity: .45; } }
+
+/* 校准页：八路波形改到左侧整栏（Mako 2026-10-12），动作说明、进度和开始按钮同一屏；读数两行四列。 */
+.emg8[data-guided]:has(.emg8-calibration) .emg8-ch-readout { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; row-gap: 2px; padding: 0 2px; }   /* 220px 塞 4 列会把「µV」挤到下一行、两个数黏在一起：改 2 列（2026-10-12） */
+.emg8[data-guided]:has(.emg8-calibration) { height: 100%; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 220px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 8px 12px; padding: 8px 12px 4px; box-sizing: border-box; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-chrome { grid-column: 1 / -1; grid-row: 1; }   /* #317 后标题 + 步骤包在 .emg8-chrome 里（钉顶），它是网格第一行 */
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels { grid-column: 1; grid-row: 2; margin: 0; min-height: 0; display: flex; flex-direction: column; background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 10px 8px 8px; overflow: hidden; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-body { grid-column: 2; grid-row: 2; min-height: 0; overflow: auto; }   /* Electron 里 .emg8 定高：矮窗口右栏要能滚，不能裁掉开始按钮（#314 复核 P1） */
+/* 不做窄屏单列：容器查询查不到容器自己（.emg8 就是 container），之前那块只命中子元素、整页塌掉（#314 复核 P0）；右栏自己有 ≤900 / ≤700 的响应式。 */
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-signal { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); flex: 1; min-height: 0; padding: 0; background: transparent; border: 0; border-radius: 0; backdrop-filter: none; align-items: stretch; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-wave { height: 100%; min-width: 0; min-height: 0; grid-template-rows: minmax(120px, 1fr); }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-wave-emg { height: 100%; min-height: 120px; width: 100%; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-ring { display: none; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels-bar { gap: 6px; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels-bar b { display: none; }
+.emg8-calibration .emg8-thumb-workgrid { grid-template-columns: minmax(0, 1fr) 260px; align-items: stretch; }
+.emg8-calibration .emg8-meta-anim-frame { max-height: 180px; }
+.emg8-calibration .emg8-thumb-validation { padding-bottom: 4px; margin: 0 16px 8px; }
+.emg8-calibration .emg8-thumb-cue { margin: 8px 16px 0; padding: 0 0 8px; min-height: 0; background: transparent; border-radius: 0; border-bottom: 0; }
+.emg8-calibration .emg8-thumb-cue strong { font-size: 15px; }
+.emg8-calibration .emg8-thumb-actionbar { border-top: 1px solid var(--emg8-line); padding-top: 10px; }
+.emg8-calibration .emg8-thumb-instructions h3 { margin-bottom: 4px; }
+.emg8-calibration .emg8-thumb-instructions > p { margin-bottom: 4px; }
+.emg8-calibration .emg8-thumb-sequence { margin: 4px 0; }
+.emg8-calibration .emg8-readfirst { margin-top: 4px; }
+
+.emg8-ch-readout li { white-space: nowrap; }
+.emg8-ch-readout li span { text-align: right; }
+.emg8-ch-readout li.over, .emg8-ch-readout li.over b { color: #D0606A; }
+.emg8-ch-readout li.note { grid-column: 1 / -1; justify-content: flex-start; color: var(--emg8-dim); cursor: help; }   /* 去噪标注独占一行：校准页 2 列 204px、其它页 8 列都放得下；悬停看两条链口径 */
+/* 录动作页整排 8 格：每格「CH1 284 µV」靠左成组、格间留空，不再两端对齐把数值贴到下一格的 CH 名上。校准页 2 列照旧 */
+.emg8:not(:has(.emg8-calibration)) .emg8-ch-readout { column-gap: 16px; }
+.emg8:not(:has(.emg8-calibration)) .emg8-ch-readout li { justify-content: flex-start; }
+@container (max-width: 700px) { .emg8:not(:has(.emg8-calibration)) .emg8-ch-readout { grid-template-columns: repeat(4, minmax(0, 1fr)); } }   /* 窄窗口 8 格每格不到 70px，「超量程」会压到下一格 */
+.emg8 .emg8-range-up { margin-left: auto; padding: 2px 8px; font-size: 11px; }
+.emg8-guide-folded { margin: 10px 16px 0; font-size: 13px; color: var(--emg8-dim); }

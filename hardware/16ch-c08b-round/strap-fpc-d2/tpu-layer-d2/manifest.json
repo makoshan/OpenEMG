@@ -1,0 +1,47 @@
+{
+ "pitch": 8.0,
+ "channels": 14,
+ "hole_d": 6.5,
+ "disc_proud": 1.2,
+ "wall_to_edge": 0.85,
+ "wall_between_ch": 1.5,
+ "wall_to_end": 0.85,
+ "disc_inside_strap": 0.5,
+ "stack_t": 0.91,
+ "pocket_floor": 0.35,
+ "pockets": {
+  "north": 4,
+  "south": 24
+ },
+ "north_to_loop": 6.35,
+ "north_to_ring": 29.05,
+ "south_to_loop": 4.8,
+ "north_y": [
+  29.9,
+  46.1
+ ],
+ "south_y": [
+  -124.1,
+  -27.9
+ ],
+ "north": {
+  "bbox": [
+   26.2,
+   16.2,
+   0.8
+  ],
+  "volume_mm3": 227.6,
+  "solids": 1,
+  "valid": true
+ },
+ "south": {
+  "bbox": [
+   26.2,
+   96.2,
+   0.8
+  ],
+  "volume_mm3": 1349.4,
+  "solids": 1,
+  "valid": true
+ }
+}

@@ -1,0 +1,10 @@
+{
+  "archive": "V12-R01-REVIEW.zip",
+  "files": 128,
+  "sha256": "171fe54687300bdd58cc9453a79cbd7873d06474d25c6945b8a7469950c18a1c",
+  "crc_verified": true,
+  "extracted_netlist_check": true,
+  "extracted_native_drc": true,
+  "manufacturing_ready": false,
+  "human_test_ready": false
+}

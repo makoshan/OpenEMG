@@ -1,0 +1,64 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>肌电采集</title>
+<style>
+:root{--bg:#0a0f1c;--panel:#0f1729;--line:#1c2742;--txt:#c8d3e6;--dim:#6b7a99;--cy:#3fd8ff;--gn:#4ade80;--or:#fbbf24;--pk:#f43f7a;--wh:#e5ecff}
+body{margin:0;background:var(--bg);color:var(--txt);font:13px/1.5 ui-monospace,Menlo,monospace;padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.p{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}.p h3{margin:0 0 8px;font-size:11px;color:var(--dim);letter-spacing:.08em}
+button{background:#182448;color:#dbe4ff;border:1px solid #2b3a66;border-radius:4px;padding:5px 12px;font:inherit;cursor:pointer;margin:2px}button.on{background:#0f4d5c;border-color:var(--cy)}button:disabled{opacity:.4}
+input,select{background:#0b1222;color:var(--wh);border:1px solid #2b3a66;border-radius:4px;padding:4px 6px;font:inherit}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left}th{color:var(--dim);font-weight:600}
+#prog{font-size:34px;color:var(--cy);min-height:44px}#log{white-space:pre-wrap;color:var(--dim);max-height:220px;overflow:auto;font-size:12px}
+.ok{color:var(--gn)}.warn{color:var(--or)}.bad{color:var(--pk)}#rig{color:var(--wh)}.wide{grid-column:1/3}
+body.embedded{display:block}body.embedded .p{margin-bottom:12px}body.embedded .wide a{display:none}body.embedded.capture>.p:nth-of-type(3){display:none}body.embedded.train>.p:nth-of-type(2){display:none}
+@media(max-width:700px){body{display:block}.p{margin-bottom:10px}input{max-width:100%}}
+</style>
+<div class="p wide"><h3>台架</h3><span id=rig>…</span> &nbsp; <a href="/guide" style="color:var(--gn)">引导录制（一步一步）</a> &nbsp; <a href="/pulse" target=_blank style="color:var(--cy)">实时波形（PULSE 页，选「服务器流」）</a></div>
+<div class=p><h3>录制 · 三档 + 松脱负样本</h3>
+<div>session <input id=session size=28 placeholder="Mako 左前臂屈肌肌腹 干电极+凝胶"> 第 <input id=donning type=number value=1 style="width:50px"> 次戴上
+&nbsp;集 <select id=set><option value=train>train（emg-data）</option><option value=rewear>rewear（摘下重贴后）</option></select>
+&nbsp;L 脚 <select id=wear><option value=high>high=戴上</option><option value=low>low=戴上</option><option value=off>不看</option></select></div>
+<div style="margin:8px 0">每档 <input id=count type=number value=30 style="width:56px"> 条：<span id=tiers></span></div>
+<div id=prog>—</div><div id=log></div></div>
+<div class=p><h3>数据（磁盘上的 .npz）</h3><table id=counts></table>
+<h3 style="margin-top:12px">跑</h3><button data-stage=gate>门禁</button><button data-stage=auto>门禁→训练</button><button data-stage=evaluate>验收（rewear）</button><button data-stage=lead>提前量（EMG+IMU）</button><button id=bEv>写 evidence</button>
+<div id=res></div><h3 style="margin-top:12px">实时手势 <span id=live style="font-weight:normal;color:var(--dim)"></span></h3><div id=events style="font-size:22px;min-height:30px"></div></div>
+<script>
+// 页面不碰串口、不算特征：它只按按钮、看状态。数字全部来自 emg_web.py 从磁盘和 pipeline 读回来的东西。
+const $ = id => document.getElementById(id), H = { 'Content-Type': 'application/json', 'X-Mako-Collector': '1' };
+const params = new URLSearchParams(location.search), projectId = params.get('project') || '';
+H['X-Mako-Project'] = projectId;
+if (params.get('embed') === '1') document.body.classList.add('embedded', params.get('view') === 'train' ? 'train' : 'capture');
+const post = (url, body) => fetch(url, { method: 'POST', headers: H, body: JSON.stringify(body) }).then(r => r.json());
+let state = {};
+async function refresh() {
+  try { state = await (await fetch('/api/emg/state')).json(); } catch (e) { $('rig').textContent = 'emg_web.py 没在跑（或正在重启）'; return; }
+  if ((state.project?.id || '') !== projectId) { $('rig').textContent = '工程已切换，请重新打开工作台'; document.querySelectorAll('button').forEach(b => b.disabled = true); return; }
+  const r = state.rig; $('rig').textContent = r.error ? '未连接：' + r.error : !r.kind ? '还没开串口——按任一录制键或打开 PULSE 页的「服务器流」时去找板子' : `${r.port} · ${r.kind} · ${r.banner}${r.streaming ? ' · 流开着' : ''}`;
+  if (!$('tiers').children.length) for (const t of state.tiers) { const b = document.createElement('button'); b.textContent = t; b.onclick = () => rec(t); $('tiers').appendChild(b); }
+  for (const b of $('tiers').children) b.disabled = !!state.busy;
+  for (const b of document.querySelectorAll('[data-stage]')) {
+    b.disabled = !!state.busy;
+    if (r.kind === 'wl8') { b.hidden = b.dataset.stage !== 'auto'; if (!b.hidden) b.textContent = '训练 LDA · 电极扫描与重戴评估'; }
+  }
+  const p = state.progress; $('prog').textContent = state.busy ? (p.label ? `${p.label} ${p.take}/${p.count} · ${p.phase === 'NOW' ? '● 做动作' : p.phase}` : state.busy + '…') : '—';
+  $('log').textContent = state.log.slice().reverse().join('\n');
+  $('live').textContent = state.live ? (state.live === 'ready' ? '（在听）' : '（标定中，保持放松 3 s）') : '（未加载模型：emg_web.py --model x.npz）';
+  $('events').innerHTML = (state.events || []).slice().reverse().map(e => `<span style="margin-right:14px">${e.label} <small>${e.conf}</small></span>`).join('');
+  const labels = [...new Set(Object.values(state.counts).flatMap(o => Object.keys(o)))];
+  $('counts').innerHTML = '<tr><th>档</th>' + Object.keys(state.counts).map(k => `<th>${k}</th>`).join('') + '</tr>' +
+    labels.map(l => `<tr><td>${l}</td>` + Object.values(state.counts).map(o => `<td>${o[l] || 0}</td>`).join('') + '</tr>').join('');
+  const R = state.results, out = [];
+  if (R.gate) { const s = R.gate.separability; out.push(`<div class=${s.status === 'ok' ? 'ok' : s.status === 'warn' ? 'warn' : 'bad'}>门禁 ${s.status}：${s.message}</div>` + (s.pairs || []).map(q => `<div>${q.classes.join(' vs ')}：混淆 ${q.confusion} · 最能分的「${q.best_feature_label}」d′ ${q.best_separation}</div>`).join('')); }
+  if (R.auto) { const t = R.auto.trained; out.push(t ? `<div class=ok>训练：LOO ${(t.metadata.loo.accuracy * 100).toFixed(0)}% · 阈值 ${JSON.stringify(t.metadata.profile.cuts)}</div>` : `<div class=bad>没训：${R.auto.stopped}</div>`); }
+  if (R.evaluate) { const e = R.evaluate.evaluation; out.push(`<div class=${e.rewear ? (e.rewear.accuracy >= .8 ? 'ok' : 'warn') : 'warn'}>验收：${e.message}</div>`); }
+  if (R.sweep) out.push(`<div class=${R.sweep.g2_passed ? 'ok' : 'warn'}>腕带扫描：${R.sweep.message}</div>`);
+  if (R.lead) out.push(`<div class=${R.lead.with_both_onsets >= 30 ? 'ok' : 'warn'}>提前量：${R.lead.message}（${R.lead.with_both_onsets}/${R.lead.takes} 条两端都有起点）</div>`);
+  $('res').innerHTML = out.join('');
+}
+async function rec(label) {
+  const r = await post('/api/emg/record', { label, count: +$('count').value, set: $('set').value, session: $('session').value, donning: +$('donning').value, wear: $('wear').value });
+  if (r.error) alert(r.error);
+}
+document.querySelectorAll('[data-stage]').forEach(b => b.onclick = async () => { const r = await post('/api/emg/run', { stage: b.dataset.stage }); if (r.error) alert(r.error); });
+$('bEv').onclick = async () => { const r = await post('/api/emg/evidence', {}); if (r.error) alert(r.error); else alert('写到 ' + r.path); };
+setInterval(refresh, 500); refresh();
+</script>

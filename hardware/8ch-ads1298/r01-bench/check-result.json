@@ -1,0 +1,14 @@
+{
+  "components": 208,
+  "connected_pins_verified": 548,
+  "negative_controls_rejected": [
+    "U1.35",
+    "R40.2",
+    "D1.1",
+    "U12.6",
+    "C24.1",
+    "J1.16"
+  ],
+  "netlist_matches": true,
+  "scope": "静态电气与原生网表；非上电/人体/制造验收"
+}

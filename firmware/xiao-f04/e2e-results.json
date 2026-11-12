@@ -1,0 +1,24 @@
+[
+  {
+    "fs_Hz": 2000,
+    "source": "synthetic_host",
+    "accepted_samples": 1200,
+    "missing_samples": 16,
+    "exit_code": 0,
+    "physical_device": false,
+    "input_sha256": "eee963cd031a36bb91245909ec45adc8a7b3f8a9c09f851d1e82e3f243e5cfe6",
+    "samples_sha256": "34f3d71f50d988e11ef3c207d6e57c7e492a7b7692d19fe790052b89707bf98b",
+    "evidence": "artifacts/e2e-2000-ba30eddd5fd757c8"
+  },
+  {
+    "fs_Hz": 4000,
+    "source": "synthetic_host",
+    "accepted_samples": 1200,
+    "missing_samples": 16,
+    "exit_code": 0,
+    "physical_device": false,
+    "input_sha256": "7135bd9ed216cbef71178f91f3f964ae14037229b494db9fbb0b3264be965e7d",
+    "samples_sha256": "9a7bcbfae239baded1984a76304af2ce056fda1f5838aa427d5b25feac7ad186",
+    "evidence": "artifacts/e2e-4000-9c78bff14ae1e8a0"
+  }
+]

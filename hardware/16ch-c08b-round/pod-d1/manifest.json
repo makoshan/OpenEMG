@@ -1,0 +1,31 @@
+{
+ "pod_wlh": [
+  8.1,
+  30.0,
+  6.0
+ ],
+ "pocket_d": 6.4,
+ "pad_proud": 0.5,
+ "contact_proud": 1.61,
+ "contact_proud_bottomed": 0.96,
+ "floor_over_pocket": 0.7999999999999998,
+ "side_wall_at_pocket": 0.8499999999999996,
+ "end_wall_at_pocket": 1.7999999999999998,
+ "channel_w": 25.6,
+ "lip_opening": 23.6,
+ "end_wall_t": 2.1999999999999993,
+ "min_wrist_touching": 169.6,
+ "pitch": 8.875,
+ "gap": 0.775,
+ "strip_len": 141.225,
+ "strip_plus_capsule": 181.225,
+ "pod_mm3": 616.12,
+ "strip_mm3": 9877.4,
+ "valid": true,
+ "solids": 1,
+ "strip_bbox": [
+  141.225,
+  30.0,
+  6.0
+ ]
+}

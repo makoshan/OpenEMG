@@ -1,0 +1,34 @@
+{
+ "file": "hardware/16ch-c08b-round/afe-d20/afe-d20-silk.kicad_pcb",
+ "sha256": "313238267216c032e11496a289c3cb21d70863daff151d648592985a3cdcb878",
+ "files": {
+  "hardware/16ch-c08b-round/afe-d20/afe-d20-silk.kicad_pcb": {
+   "blob": "6730e5fdb5976d9ea14bb450062001cc86564e43",
+   "sha256": "313238267216c032e11496a289c3cb21d70863daff151d648592985a3cdcb878",
+   "bytes": 2833659
+  },
+  "hardware/16ch-c08b-round/afe-d20/afe-d20-silk.kicad_pro": {
+   "blob": "b05d26338836b28ec334e185f9d3e820459d31d1",
+   "sha256": "b2c6c9fa323696130c1641ae46d929bb353b4d20cb180d605b6f49fcf83b5e7a",
+   "bytes": 11248
+  },
+  "hardware/16ch-c08b-round/afe-d20/afe-d20-silk.kicad_dru": {
+   "blob": "6b40f1003d7a5254a47d2e25ece5a03712b2a9ec",
+   "sha256": "02f8f03a8c790e0ed7e25c71cb1e18a9e2c73ad6ffd39b35ec37759fc927e2c8",
+   "bytes": 701
+  },
+  "hardware/16ch-c08b-round/afe-d20/jlc_smt_bom.csv": {
+   "blob": "923b1576cf20cbc21fe769928b1fd57f9dd39571",
+   "sha256": "445bea42d74e851620f5db67f71fe41a47f272e483824c7ff11dbb9b9acdcff6",
+   "bytes": 1742
+  },
+  "hardware/16ch-c08b-round/afe-d20/jlc_smt_cpl.csv": {
+   "blob": "ca7c8b3fe0bdedb303ff4a3b3de2465729a17654",
+   "sha256": "0c6c4d2299593026dff7877cbca3a5da386899a108ae49bbba98d192ac0bf3b3",
+   "bytes": 4765
+  }
+ },
+ "kicad": "10.0.6",
+ "production_released": false,
+ "platform_verified": false
+}

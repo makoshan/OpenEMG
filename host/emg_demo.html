@@ -1,0 +1,80 @@
+<!doctype html><meta charset=utf-8><title>肌电 · 力度演示</title>
+<style>html,body{margin:0;height:100%;background:#050608;color:#cfd8dc;font:13px/1.5 monospace;overflow:hidden}
+canvas{display:block}#p{position:fixed;left:12px;top:10px;background:#0b0e12cc;padding:10px 12px;border:1px solid #223;border-radius:6px;min-width:230px}
+#p b{color:#7fe0d0}button{background:#15202b;color:#cfd8dc;border:1px solid #345;border-radius:4px;padding:4px 10px;margin:2px 4px 2px 0;font:inherit;cursor:pointer}
+button.on{background:#0f4a40;border-color:#7fe0d0}#log{position:fixed;left:12px;bottom:8px;color:#789;font-size:12px;white-space:pre}
+.state{font-size:18px;margin:6px 0}.state.on{color:#7fe0d0}.state.off{color:#667}</style>
+<canvas id=c></canvas>
+<div id=p><b>Cheez sEMG-D · 单通道力度</b><br>
+<button id=bConn>连接串口</button><button id=bSim>模拟信号</button><br>
+<div id=state class="state off">未连接</div>
+<div id=meta>—</div>
+<div style="color:#789;margin-top:6px">模拟模式：按住空格 / 鼠标 = 用力</div></div>
+<div id=log></div>
+<script src="emg_demo.js"></script>
+<script>
+// 一路腕部肌电只读得出「用力多大、何时用力」（evidence/2026-09-23-emg-db6.md），演示就只画这个：
+// 粒子球随力度胀缩，闸门开合对应「有没有用力」。分类（rest/fist/flick）在 Python 侧，不在页面里。
+const ctx = c.getContext('2d'); let W, H;
+const resize = () => { W = c.width = innerWidth; H = c.height = innerHeight; }; addEventListener('resize', resize); resize();
+const N = 1400, pts = [];
+for (let i = 0; i < N; i++) { const z = 2 * Math.random() - 1, a = Math.random() * Math.PI * 2, r = Math.sqrt(1 - z * z); pts.push([r * Math.cos(a), r * Math.sin(a), z, Math.random()]); }
+const env = new Envelope(100), gate = new EffortGate(), cleaner = new Cleaner(50);
+let view = { active: false, force: 0, ratio: 1, floor: 0 }, worn = 0, lastT = 0, trace = new Float32Array(600), ti = 0, lines = 0, dropped = 0, source = 'none';
+function feed(line) {
+  const p = parseLine(line); if (!p) { dropped++; return; }
+  lines++; worn = p.worn; lastT = p.t;
+  let e; for (const v of p.samples) { const c = cleaner.push(v - MID); e = env.push(c + MID); trace[ti] = c; ti = (ti + 1) % trace.length; }
+  view = gate.update(e, p.worn >= 8 ? p.worn : 0);      // 8/10 samples on skin = worn this chunk
+}
+// ---- serial (Chrome/Edge: Web Serial). The firmware's `s` toggles the stream; sent again on close.
+let port, reader, writer;
+async function connect() {
+  if (port) { try { await writer.write(new TextEncoder().encode('s')); await reader.cancel(); await port.close(); } catch (e) {} port = null; bConn.textContent = '连接串口'; bConn.classList.remove('on'); source = 'none'; return; }
+  if (!navigator.serial) { log('这个浏览器没有 Web Serial：用 Chrome / Edge 打开'); return; }
+  try {
+    port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x2886 }] });   // Seeed XIAO
+    await port.open({ baudRate: 115200 }); writer = port.writable.getWriter();
+    stopSim(); source = 'serial'; bConn.textContent = '断开'; bConn.classList.add('on');
+    await writer.write(new TextEncoder().encode('s'));
+    reader = port.readable.pipeThrough(new TextDecoderStream()).getReader(); let buf = '';
+    for (;;) { const { value, done } = await reader.read(); if (done) break; buf += value; const parts = buf.split('\n'); buf = parts.pop(); parts.forEach(feed); }
+  } catch (e) { log('串口: ' + e.message); port = null; bConn.textContent = '连接串口'; bConn.classList.remove('on'); source = 'none'; }
+}
+// ---- synthetic source: same line format, so the page cannot tell it from the board
+let simTimer = null, pressed = false, simT = 0;
+function startSim() { if (port) return; stopSim(); source = 'sim'; bSim.classList.add('on'); simTimer = setInterval(() => { feed(synthLine(simT, pressed)); simT += CHUNK; }, CHUNK); }
+function stopSim() { clearInterval(simTimer); simTimer = null; bSim.classList.remove('on'); if (source === 'sim') source = 'none'; }
+bConn.onclick = connect; bSim.onclick = () => simTimer ? stopSim() : startSim();
+addEventListener('keydown', e => { if (e.code === 'Space') pressed = true; }); addEventListener('keyup', e => { if (e.code === 'Space') pressed = false; });
+addEventListener('mousedown', e => { if (!p.contains(e.target)) pressed = true; }); addEventListener('mouseup', () => pressed = false);
+const log = m => { document.getElementById('log').textContent = m; };
+// ---- draw
+let rot = 0, shown = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  shown += (view.force - shown) * 0.15;                 // eased for the eye, the gate is not eased
+  const base = Math.min(W, H) * 0.14, R = base * (1 + 1.6 * shown), jitter = 6 + 60 * shown;
+  rot += 0.003 + 0.02 * shown;
+  ctx.fillStyle = '#050608'; ctx.fillRect(0, 0, W, H);
+  const cx = W / 2, cy = H / 2 - 20, on = view.active;
+  ctx.fillStyle = on ? '#7fe0d0' : '#2f6f68';
+  for (const [x, y, z, s] of pts) {
+    const X = x * Math.cos(rot) - z * Math.sin(rot), Z = x * Math.sin(rot) + z * Math.cos(rot);
+    const j = jitter * (s - 0.5), px = cx + (X * R + j * Math.sin(now / 90 + s * 40)), py = cy + (y * R + j * Math.cos(now / 110 + s * 30));
+    const d = (Z + 1) / 2; ctx.globalAlpha = 0.25 + 0.7 * d; const sz = 1 + 1.6 * d + 2 * shown;
+    ctx.fillRect(px, py, sz, sz);
+  }
+  ctx.globalAlpha = 1;
+  // raw trace strip along the bottom, scaled to the chunk's own envelope
+  const h = 70, y0 = H - h - 8, scale = h / 2 / Math.max(env.value * 4, 30);
+  ctx.strokeStyle = '#3a4a55'; ctx.beginPath(); ctx.moveTo(0, y0 + h / 2); ctx.lineTo(W, y0 + h / 2); ctx.stroke();
+  ctx.strokeStyle = on ? '#7fe0d0' : '#8899a6'; ctx.beginPath();
+  for (let i = 0; i < trace.length; i++) { const v = trace[(ti + i) % trace.length]; const x = i / trace.length * W, y = y0 + h / 2 - Math.max(-h / 2, Math.min(h / 2, v * scale)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+  ctx.stroke();
+  state.className = 'state ' + (source === 'none' ? 'off' : on ? 'on' : 'off');
+  state.textContent = source === 'none' ? '未连接' : worn < 8 ? '电极没贴好' : on ? '● 用力' : '○ 放松';
+  meta.textContent = source === 'none' ? '—' : `力度 ${(view.force * 100).toFixed(0).padStart(3)}%  包络 ${env.value.toFixed(1)}  底噪 ${isFinite(view.floor) ? view.floor.toFixed(1) : '…'}  ×${view.ratio.toFixed(1)}\n${source === 'sim' ? '模拟' : '串口'}  行 ${lines}  丢 ${dropped}  t=${lastT}`;
+}
+requestAnimationFrame(frame);
+</script>

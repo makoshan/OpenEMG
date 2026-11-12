@@ -1,0 +1,29 @@
+{
+ "input": "r4u6-pre.epcb2",
+ "input_sha256": "a481f806b41074f22d9b071f16652c3c182ee206842c22cbde9d06d1cb072ec8",
+ "pours": 4,
+ "saved": true,
+ "ratlines": 0,
+ "components": 119,
+ "files": {
+  "gerber": {
+   "file": "C08B-main-R4U6-gerber.zip",
+   "client_name": "C08B-main-R4U6",
+   "bytes": 239781,
+   "sha256": "b1b1cf52c8d13e387dd1cbe0afdec4ca101d5314b7bea56eb2d1f2a3bf4fa779"
+  },
+  "bom": {
+   "file": "C08B-main-R4U6-bom.csv",
+   "client_name": "C08B-main-R4U6-bom.csv",
+   "bytes": 12206,
+   "sha256": "d4c8f2561eecd2140a6ad9cec9cf19df036158214cc894c43f7a9fd137d622cb"
+  },
+  "cpl": {
+   "file": "C08B-main-R4U6-cpl.csv",
+   "client_name": "C08B-main-R4U6-cpl",
+   "bytes": 34162,
+   "sha256": "3c3a49d72fdc8d42f2b3ad937ca17650083e40d760fd5d82ae31d93db0a766ed"
+  }
+ },
+ "repoured_sha256": "e9393309eb7f5bc7159633a15e06851a513fbdbf14c6bffff6adda824fc86022"
+}

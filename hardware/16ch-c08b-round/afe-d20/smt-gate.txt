@@ -1,0 +1,1 @@
+贴片门 通过 {'courtyard_bad': 0, 'no_courtyard': 0, 'spacing_pairs': 0, 'spacing_parts': 0, 'checked': 84, 'skipped': 43}

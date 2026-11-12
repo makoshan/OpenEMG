@@ -1,0 +1,785 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>肌电引导录制</title>
+<style>
+:root{color-scheme:dark;--paper:#070b14;--ink:#d6deee;--muted:#96a4bf;--line:#243148;--accent:#152f43;--dark:#2fc7f0;--red:#f0406f;--amber:#f2c14e;--ok:#36d07a;--panel:#0c1424}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 30% 20%,#12203a 0%,#070b14 55%,#04060b 100%);min-height:100vh;color:var(--ink);font-family:Inter,-apple-system,"PingFang SC",sans-serif}
+header{max-width:none;margin:auto;padding:16px 28px;background:linear-gradient(#d9dde4,#c3c8d1);color:#2a3140;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand{font-size:22px;font-weight:800;letter-spacing:-.5px}.brand span{font-size:12px;color:#515d70;margin-left:12px;font-weight:500;letter-spacing:1px}
+.badge{color:var(--ink);font-size:12px;border:1px solid var(--line);padding:7px 12px;border-radius:30px;display:flex;gap:8px;align-items:center;background:var(--panel)}
+.dot{width:8px;height:8px;border-radius:50%;background:#aab3ab}.dot.on{background:var(--ok)}.dot.bad{background:var(--red)}
+main{max-width:1440px;margin:auto;padding:24px 28px;display:grid;grid-template-columns:260px minmax(0,1fr) 150px;gap:20px}
+.card{background:linear-gradient(135deg,#0d1729,#070b14);border:1px solid var(--line);border-radius:6px;padding:18px}
+.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:10px;text-transform:uppercase}
+ol{list-style:none;margin:0;padding:0}li{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;font-size:14px;color:var(--muted)}
+li.cur{background:var(--accent);color:var(--dark);font-weight:700}li.done{color:var(--ok)}li.done span::before{content:"✓ "}li small{font-variant-numeric:tabular-nums}
+#steps{max-height:440px;overflow:auto}#stage{display:flex;flex-direction:column;align-items:center;text-align:center;min-height:470px;justify-content:center;gap:14px}
+#icon{font-size:110px;line-height:1}#cue{font-size:40px;font-weight:800;letter-spacing:-1px}#hint{color:var(--muted);font-size:15px;max-width:520px;line-height:1.7}
+#big{font-size:92px;font-weight:800;font-variant-numeric:tabular-nums;min-height:110px;line-height:110px}#big.now{color:var(--red)}
+.bar{width:100%;max-width:520px;height:10px;border-radius:6px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--dark);transition:width .3s}
+#hold{background:var(--red)}#hold.go{transition:width 2s linear;width:100%}
+button{font:inherit;cursor:pointer;border:1px solid var(--dark);border-radius:6px;padding:13px 26px;background:var(--dark);color:#07101b;font-weight:700;font-size:16px}
+button.ghost{background:var(--panel);color:var(--ink);border-color:var(--line)}button:disabled{opacity:.4;cursor:default}
+#meter{height:360px;width:46px;margin:6px auto;border-radius:12px;background:var(--line);position:relative;overflow:hidden}
+#fill{position:absolute;bottom:0;left:0;right:0;background:var(--dark)}
+#mv{text-align:center;font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}#mvl{text-align:center;color:var(--muted);font-size:12px}
+#log{font:12px/1.6 ui-monospace,Menlo,monospace;color:var(--muted);margin-top:14px;white-space:pre-wrap;max-height:130px;overflow:auto}
+.ok{color:var(--ok)}.bad{color:var(--red)}.warn{color:var(--amber)}
+input{background:var(--panel);color:var(--ink);font:inherit;width:100%;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:13px}
+#signals{width:100%;text-align:left;border-top:1px solid var(--line);padding-top:12px}#signals p{margin:0 0 8px;color:var(--muted);font-size:11px}#signals canvas{display:block;width:100%;height:210px}#signalStatus{font-size:12px;color:var(--muted)}
+#res{font-size:15px;line-height:1.8;max-width:560px}
+@media(max-width:900px){main{grid-template-columns:1fr}#stage{order:-1;min-height:0}#meterCard{order:-1}#meter{height:120px;width:100%}}
+body.scope main{display:block;max-width:none;padding:14px}body.scope main>details,body.scope main>section:not(#stage),body.scope #stage> :not(#signals){display:none}body.scope #stage{min-height:0;display:block}body.scope #signals{border:0}body.scope #signals canvas{height:60vh;min-height:360px}#scopeTools{display:none;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}body.scope #scopeTools{display:flex}#scopeTools button,#scopeTools select{font:inherit;padding:6px 10px}#scopeTools input{width:auto}#readout{font:12px monospace;min-height:20px}
+/* PrintThings shared paper palette for collection and waveform views. */
+body{color-scheme:light;--paper:#FAF8F2;--panel:#FFFEFB;--ink:#24352F;--muted:#65736B;--line:#E5E0D7;--dark:#24352F;--ok:#46785D;--red:#B85C43;background:var(--paper);min-height:100vh}
+body header{padding:8px 16px;background:var(--panel);color:var(--ink)}
+body .brand{font-size:18px;font-weight:600;letter-spacing:0}
+body .badge{background:var(--paper);border-color:var(--line);color:var(--muted);font-size:12px;padding:6px 10px}
+body.scope main{padding:0 20px 14px}
+body.scope #stage{background:none;border:0;border-radius:0;padding:16px 0 0}
+body.scope #signals{padding:0}
+body.scope #signals>p{font-size:12px;line-height:1.8;margin-bottom:14px}
+body #signals>p span:nth-child(1){color:#C44752!important}
+body #signals>p span:nth-child(2){color:#A67C00!important}
+body #signals>p span:nth-child(3){color:#21806B!important}
+body.scope #scopeTools{gap:10px;font-size:12px;padding-bottom:14px;margin-bottom:0;border-bottom:1px solid var(--line)}
+body.scope #scopeTools button,body.scope #scopeTools select{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:7px 13px;font-size:12px;font-weight:500}
+body.scope #scopeTools #freeze{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+body.scope #scopeTools button:hover{filter:brightness(.96)}
+body.scope #scopeTools label{display:flex;align-items:center;gap:6px;color:var(--muted)}
+body.scope #scopeTools input{margin:0;accent-color:var(--ink)}
+body.scope #scopeTools>span{color:var(--muted);margin-left:auto;font-size:11px}
+body.scope #readout{color:var(--muted);font-size:11px;padding-top:10px;min-height:28px;font-variant-numeric:tabular-nums}
+body.scope #signals canvas{height:calc(100vh - 245px);min-height:260px}
+body.scope #signalStatus{font-size:11px;padding-top:10px;color:var(--muted)}
+body :focus-visible{outline:2px solid #46785D;outline-offset:3px}
+body:not(.scope) main{max-width:none;padding:18px;grid-template-columns:minmax(0,1fr) 100px;gap:14px}
+body:not(.scope) .card{background:var(--panel);border-color:var(--line);border-radius:12px;padding:16px}
+body:not(.scope) .brand span{display:none}
+summary{cursor:pointer;color:var(--muted);font-size:12px;padding:6px 0}
+#collectionDetails{grid-column:1/-1;order:2}
+#collectionDetails[open] summary{margin-bottom:12px}
+body:not(.scope) #meterCard{order:0}
+body:not(.scope) #stage{order:0;min-height:0;justify-content:flex-start;gap:12px}
+body:not(.scope) #icon{font-size:64px;margin-top:10px}
+body:not(.scope) #cue{font-size:28px;letter-spacing:0}
+body:not(.scope) #hint{font-size:13px;line-height:1.65;max-width:480px}
+body:not(.scope) #big{font-size:64px;min-height:64px;line-height:64px}
+body:not(.scope) #big:empty{display:none}
+body:not(.scope) .bar{height:7px;max-width:460px}
+body:not(.scope) #go{background:#163F35;color:#FFFEFB;border-color:#163F35;padding:13px 32px;min-width:200px;border-radius:10px;font-size:16px}
+body:not(.scope) #go:disabled{background:#E5E0D7;color:#65736B;border-color:#E5E0D7;opacity:1}
+body:not(.scope) li{padding:7px 8px;font-size:12px;border-radius:7px}
+body:not(.scope) li.cur{background:#E7EEE6;color:#163F35}
+body:not(.scope) #steps{max-height:330px}
+body:not(.scope) #meter{height:230px;width:30px}
+body:not(.scope) #log{max-height:80px;font-size:11px}
+body:not(.scope) #signals canvas{height:180px}
+body:not(.scope) #res{font-size:12px}
+@media(max-width:760px){body:not(.scope) main{grid-template-columns:1fr}body:not(.scope) #stage{order:-2}body:not(.scope) #meter{height:36px;width:100%}}
+/* Keep the action and all three live traces visible together. */
+body:not(.scope) main{padding:12px;grid-template-columns:minmax(0,1fr) 76px;gap:10px}
+body:not(.scope) #stage{display:grid;grid-template-columns:minmax(210px,.75fr) minmax(0,1.6fr);align-items:stretch;gap:20px}
+#actionPanel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0}
+body:not(.scope) #icon{font-size:40px;margin:0}
+body:not(.scope) #cue{font-size:24px}
+body:not(.scope) #hint{font-size:12px;line-height:1.5}
+body:not(.scope) #big{font-size:56px;line-height:60px;min-height:60px}
+body:not(.scope) #signals{border-top:0;border-left:1px solid var(--line);padding:0 0 0 16px;min-width:0}
+body:not(.scope) #signals canvas{height:clamp(240px,calc(100vh - 210px),420px)}
+body:not(.scope) #meterCard{padding:12px 8px}
+body:not(.scope) #meter{height:clamp(180px,calc(100vh - 230px),340px)}
+@media(max-width:700px){
+ body:not(.scope) main{grid-template-columns:minmax(0,1fr) 64px}
+ body:not(.scope) #stage{display:flex;gap:12px}
+ #actionPanel{display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px 10px;width:100%}
+ #actionPanel> :not(#icon):not(#cue){grid-column:1/-1}
+ body:not(.scope) #icon{font-size:30px}
+ body:not(.scope) #cue{font-size:20px}
+ body:not(.scope) #signals{border-left:0;border-top:1px solid var(--line);padding:10px 0 0}
+ body:not(.scope) #signals canvas{height:210px}
+ body:not(.scope) #meter{width:26px}
+}
+body:not(.scope) #scopeTools{display:flex;font-size:11px;margin:0;justify-content:flex-end}
+body:not(.scope) #scopeTools>*{display:none}
+body:not(.scope) #scopeTools>label:has(#autoScale),body:not(.scope) #scopeTools>label:has(#envelopeWindow){display:flex;align-items:center;gap:5px;color:var(--muted)}
+body:not(.scope) #scopeTools input{margin:0;accent-color:var(--ink)}
+body:not(.scope) #signals>p{display:none}
+
+/* Shared action contrast and the dedicated training workspace. */
+body button:not(.ghost){color:var(--panel)}
+body button:disabled{background:var(--line);border-color:var(--line);color:var(--muted);opacity:1}
+a.primary-link{display:inline-block;background:var(--ink);color:var(--panel);padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600}
+#trainingPanel{max-width:1120px;margin:0 auto;padding:28px 24px;color:var(--ink)}
+#trainingPanel h1{font-size:30px;margin:22px 0 6px}#trainingPanel h2{font-size:21px;margin:8px 0 18px}
+.train-nav{display:flex;justify-content:space-between;gap:16px;font-size:13px;color:var(--muted)}.train-nav a{color:var(--ink)}
+#trainProject{color:var(--muted);margin-bottom:24px}.train-state{margin-bottom:20px}.train-next{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+#trainProgress{width:100%;height:10px;accent-color:var(--ink)}.train-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:20px}
+#trainingPanel .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+#trainingPanel label{display:block;margin:12px 0}#trainingPanel select{display:block;width:100%;margin-top:8px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit}
+#trainingPanel button{width:100%;margin:10px 0}#trainingPanel p{line-height:1.7}#trainResult{line-height:1.8;overflow-wrap:anywhere}
+#confusionLead{font-size:22px;font-weight:650;margin:0 0 8px}#confusionLead:empty,#datasetDelta:empty,#confusionGrid:empty{display:none}
+#datasetDelta{margin:0 0 14px}#confusionGrid table{width:100%;border-collapse:separate;border-spacing:4px;table-layout:fixed}
+#confusionGrid th,#confusionGrid td{text-align:center;font-variant-numeric:tabular-nums;font-size:13px}
+#confusionGrid th{color:var(--muted);font-weight:550;font-size:12px;white-space:nowrap}
+#confusionGrid td{height:36px;border-radius:8px}#confusionGrid caption{caption-side:bottom;text-align:left;color:var(--muted);font-size:12px;padding-top:6px}
+#scoreChart{margin:16px 0 6px}#scoreChart:empty{display:none}.score-row{display:grid;grid-template-columns:minmax(92px,150px) 1fr 44px;gap:8px;align-items:center;margin:7px 0;font-size:12px}.score-track{height:10px;background:var(--line);border-radius:99px;overflow:hidden}.score-bar{height:100%;background:var(--green)}.score-row.selected .score-bar{background:var(--ink)}.score-row strong{text-align:right;font-variant-numeric:tabular-nums}.score-note{font-size:12px;color:var(--muted);margin:10px 0 0}
+@media(max-width:760px){.train-grid{grid-template-columns:1fr}#trainingPanel{padding:20px 14px}.train-nav{flex-wrap:wrap}}
+#powerReminder{grid-column:1/-1;margin:0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font-size:12px;line-height:1.5;text-align:left}body.scope #powerReminder{margin:12px 0}
+</style>
+<header><div class=brand>肌电引导录制<span>CHEEZ sEMG-D · 纯肌电五类采集</span></div>
+<a id=studioLink style="color:inherit;font-size:13px">手掌 / 录制 / 训练</a><div class=badge><span class=dot id=wdot></span><span id=wtxt>连板子中…</span></div></header>
+<p id=actionError role=alert hidden style="color:var(--red);margin:8px 20px"></p>
+<main>
+<aside id=powerReminder aria-label="采集供电提醒"><strong>采集前请确认：</strong>电脑使用电池供电，断开充电器和扩展坞。<span style="color:var(--muted)"> 供电状态需自行确认。</span></aside>
+<details class="card" id=collectionDetails><summary>全部步骤 · 佩戴备注 · 采集记录</summary><ol id=steps></ol>
+<div class=eyebrow style="margin-top:18px">本次佩戴备注</div><input id=session>
+<div id=log></div><div id=res></div>
+<p><a href="/">高级页</a> · <a href="#" id=reset>重置引导进度</a></p></details>
+<section class="card" id=stage>
+<div id=actionPanel>
+<div id=icon></div><div id=cue></div><div id=hint></div>
+<div id=big></div><div class=bar><i id=hold></i></div>
+<div class=bar title="本组进度"><i id=prog></i></div><div id=count style="color:var(--muted);font-size:13px"></div>
+<div id=captureIssue role=alert hidden style="color:var(--red);font-size:12px;line-height:1.5;text-align:left"></div>
+<button id=deferStep hidden>暂存问题，继续下一动作</button>
+<button id=resumeSteps hidden>返回待检查动作</button>
+<div><button id=go>开始</button></div>
+<button id=rehearsalStart>新版采集 · 先预演 5 条</button>
+<div id=rehearsalSetup hidden>
+<label for=participant>用户</label><input id=participant maxlength=160 value="Mako">
+<label for=placement>佩戴位置与方向</label><input id=placement maxlength=160 placeholder="记录手臂、位置和模块方向">
+<label><input id=batteryCheck type=checkbox>已使用电脑电池，断开充电器和扩展坞</label>
+<button id=rehearsalConfirm>确认条件，进入预演</button></div>
+<button id=diagnosticStart>新一轮诊断采集 · 45 条</button>
+<button id=factorCheckStart>三类对照 · 同一次佩戴</button>
+<div id=factorSetup hidden><label for=factorCondition>本轮条件（先采当前位置 A）</label>
+<input id=factorCondition maxlength=80 value="位置 A · 当前位置" aria-describedby=factorError>
+<button id=factorConfirm>确认条件，进入 15 条采集</button></div>
+<p id=factorError role=alert></p>
+<a id=trainingLink class=primary-link>打开模型训练 →</a>
+</div>
+<section id=signals aria-label="单通道信号观察">
+<p><span style="color:#d6deee">原始</span> · <span style="color:#36d07a">滤波</span> · <span style="color:#2fc7f0">包络</span><br>同一路肌电 · 默认最近 2 秒 · 可见曲线独立缩放 · ADC 计数（非电极端电压）</p>
+<div id=scopeTools><button id=freeze>暂停显示</button><label>时间窗 <select id=window><option value=2000>2 秒</option><option value=5000>5 秒</option><option value=10000>10 秒</option></select></label><label><input id=autoScale type=checkbox checked>自动量程（取消可锁定对比）</label><label>包络 <select id=envelopeWindow><option value=20>20 ms · 快速</option><option value=50>50 ms</option><option value=100>100 ms · 平滑</option></select></label><button id=snapshot>导出可见 CSV</button><span>暂停只冻结画面，采集持续进行</span></div><div id=readout role=status></div>
+<canvas id=traces role=img aria-label="原始波形、滤波波形和RMS力度包络">原始波形、滤波波形、力度包络</canvas>
+<div id=signalStatus role=status>等待实时信号…</div>
+</section>
+</section>
+<section class="card" id=meterCard><div class=eyebrow>实时力度</div><div id=meter><div id=fill></div></div><div id=mv>—</div><div id=mvl>mV（包络）</div></section>
+</main>
+<section class="card" id="dataset" hidden style="margin:24px"><h2>本工程肌电数据</h2><p id="projectName"></p><pre id="datasetCounts"></pre><p>训练每类 30 条，验证和独立测试每类 10 条。可在引导页完成采集后选择模型训练。</p></section>
+<section id=trainingPanel hidden>
+<nav class=train-nav><a id=backToCapture>← 返回采集</a><span>本机运行 · 测试集保持封存</span></nav>
+<h1>模型训练</h1><p id=trainProject></p>
+<section class="card train-state" aria-live=polite><small>当前进度</small><h2 id=trainPhase>读取训练状态…</h2><progress id=trainProgress hidden aria-label="训练与验证进行中"></progress><p id=trainStatus role=status></p><div class=train-next><b>下一步</b><p id=trainNext>正在读取本工程数据。</p></div></section>
+<section class=card style="margin:18px 0"><h2 id=decisionTitle>下一步建议</h2><p id=decisionText></p><button id=decisionAction hidden></button><details id=qualityDetails><summary>查看需要检查的样本</summary><pre id=qualityList style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details></section>
+<div class=train-grid><section class=card><h2>1 · 训练与验证</h2>
+<label>选择模型 <select id=trainModel><option value=lda>收缩 LDA · 小样本基线</option><option value=svm>SVM · 非线性分类</option><option value=cnn>1D CNN · 波形学习</option><optgroup label="书中方法 · 单通道实验适配"><option value=lda_features>LDA＋书中特征</option><option value=svm_features>SVM＋书中特征</option><option value=knn>KNN · 邻近样本</option><option value=rf>随机森林</option><option value=mlp>BP／MLP · 多层感知机</option><option value=rnn>RNN · 循环网络</option><option value=lstm>LSTM · 长短期记忆</option><option value=gru>GRU · 门控循环</option><option value=cnn_lstm>CNN-LSTM · 串联</option><option value=gaf_cnn>GAF-CNN · 图像编码</option><option value=gaf_cnn_lstm>GAF-CNN-LSTM</option><option value=gaf_caps>GAF-CapsNet · 胶囊网络</option><option value=gaf_cnn_caps>GAF-CNN＋CapsNet · 并联</option><option value=caps_gru>CapsNet＋GRU · 并联</option><option value=dual_stream>CNN＋LSTM · 双流</option><option value=feature_fusion>CNN＋LSTM＋传统特征 · 融合</option></optgroup></select></label>
+<p style="font-size:12px">新增书中方法为单通道实验适配，非原实验复现。先比较验证结果，再选定模型做独立验收；全部在本机运行，当前为 2 秒整条分类。</p>
+<button id=trainStart>训练并验证</button>
+</section><section class=card><h2>2 · 结果与独立验收</h2><label>选择训练结果 <select id=trainRun></select></label>
+<button id=trainEvaluate>冻结所选模型并独立验收</button>
+
+<p id=confusionLead></p><p id=datasetDelta></p><div id=scoreChart aria-label="同一数据版本的重戴验证比较"></div><p id=scoreNote class=score-note></p><div id=confusionGrid></div><p id=friendlyResult></p><details><summary>展开数字版混淆矩阵</summary><pre id=trainResult style="white-space:pre-wrap;font-size:12px"></pre></details></section></div>
+</section>
+<script src="emg_demo.js"></script>
+<script>
+// 引导页：只按按钮、看状态。录制/门禁/训练/验收全走 emg_web.py 的同一组接口；当前步骤由磁盘上的条数推出来，刷新或重启都能接着录。
+const $ = id => document.getElementById(id), H = { 'Content-Type': 'application/json', 'X-Mako-Collector': '1' };
+const params = new URLSearchParams(location.search), projectId = params.get('project') || '';
+$('studioLink').href = '/pulse?view=studio&project=' + encodeURIComponent(projectId) + '&section=' + (params.get('view') === 'train' ? 'train' : 'capture');
+$('studioLink').hidden = params.get('embed') === '1';
+H['X-Mako-Project'] = projectId;
+const rehearsal = params.get('rehearsal') === '1';
+const diagnostic = params.get('diagnostic') === '1';
+const factorCheck = params.get('factorcheck') === '1';
+const scope = params.get('view') === 'scope', trainingPage = params.get('view') === 'train';
+$('trainingLink').href = '?project=' + encodeURIComponent(projectId) + '&view=train';
+$('backToCapture').href = '?project=' + encodeURIComponent(projectId);
+if (params.get('embed') === '1') { $('trainingLink').hidden = true; $('backToCapture').hidden = true; }
+if (trainingPage) { $('trainingPanel').hidden = false; $('trainStart').disabled = true; $('trainEvaluate').disabled = true; document.title = '模型训练 · PrintThings'; $('wtxt').textContent = '本机训练 · 不占用采集流'; document.querySelector('main').style.display = 'none'; document.querySelector('.brand').textContent = '模型训练'; }
+if (scope) { document.body.classList.add('scope'); document.querySelector('.brand').textContent = '实时波形'; }
+let frozen = null, windowSamples = 2000, envelopeMs = 20;
+let plotRanges = [[0,4095],[-2048,2048],[0,2048]];
+$('autoScale').onchange = () => drawSignals();
+function visibleTraces() { return (frozen || traces).map(a => a.slice(-windowSamples)); }
+$('freeze').onclick = () => { frozen = frozen ? null : traces.map(a => a.slice()); $('freeze').textContent = frozen ? '继续显示' : '暂停显示'; drawSignals(); };
+$('window').onchange = () => { windowSamples = Number($('window').value); drawSignals(); };
+$('snapshot').onclick = () => {
+  const a = visibleTraces(); if (!a[0].length) return;
+  const csv = '# Single physical EMG channel; derived views; ADC counts; not labelled training data\nrelative_seconds,raw_counts,filtered_counts,rms' + envelopeMs + 'ms_counts\n' + a[0].map((v,i)=>[((i-a[0].length+1)/1000).toFixed(3),v,a[1][i],a[2][i]].join(',')).join('\n');
+  const url = URL.createObjectURL(new Blob([csv],{type:'text/csv'})), link = document.createElement('a');
+  link.href=url; link.download='emg-waveform-'+Date.now()+'.csv'; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$('traces').onmousemove = ev => {
+  const a=visibleTraces(), r=$('traces').getBoundingClientRect(), i=Math.round((ev.clientX-r.left-48)/(r.width-60)*(windowSamples-1))-(windowSamples-a[0].length);
+  $('readout').textContent = i>=0 && i<a[0].length ? `${((i-a[0].length+1)/1000).toFixed(3)} s · 原始 ${a[0][i].toFixed(1)} · 滤波 ${a[1][i].toFixed(1)} · RMS ${a[2][i].toFixed(1)} ADC 计数` : '';
+};
+if (params.get('view') === 'data') { document.querySelector('main').hidden = true; document.querySelector('main').style.display = 'none'; $('dataset').hidden = false; }
+function showActionError(message) {
+  $('actionError').textContent = message || '';
+  $('actionError').hidden = !message;
+}
+const post = async (u, b) => {
+  showActionError('');
+  try {
+    const response = await fetch(u, { method: 'POST', headers: H, body: JSON.stringify(b) });
+    const result = await response.json();
+    if (!response.ok && !result.error) result.error = `请求失败（${response.status}）`;
+    if (result.error) showActionError(result.error);
+    return result;
+  } catch {
+    const error = '连接采集服务失败；请检查连接后重试。';
+    showActionError(error);
+    return {error};
+  }
+};
+const mem = { get: k => { try { return localStorage.getItem(projectId + ':' + k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(projectId + ':' + k, v); } catch {} } };
+const ACTIONS = [
+  ['rest', '🖐️', '保持放松', '整段保持放松，不做手指动作。'],
+  ['pinch', '🤏', '捏合一次，再松开', '拇指与食指接触一次，随后分开；其他手指自然弯曲。'],
+  ['rub', '👌', '连搓三下，再松开', '拇指指腹贴住食指侧面来回搓 3 下（约 1 秒，像捻盐），然后松开；每条速度和力度一致。'],
+  ['snap', '🫰', '打一次响指', '拇指与中指打一次响指，随后放松。'],
+  ['fist', '✊', '握拳一次，再松开', '握拳短暂停留后松开；保持舒服且一致的力度。'],
+];
+const STEPS = [{id:'wear', title:'戴好电极', icon:'🩹', cue:'戴好电极，前臂放稳', hint:'同一路肌电，五种动作。每条录 2 秒：先短暂放松，再做一次动作，结束前松开。电脑使用电池供电，断开充电器和扩展坞。'}];
+function addRound(set, n, round) {
+  for (const [label, icon, cue, hint] of ACTIONS) STEPS.push({set, label, n, icon, cue, hint:hint+' 倒计时后，2 秒内完成「放松 → 动作 → 放松」。', title:`${round} · ${cue.split('，')[0]}`});
+}
+for (let round=1; round<=3; round++) addRound('train', round*10, `训练 ${round}/3`);
+STEPS.push({id:'validationWear',title:'重戴 · 验证集',icon:'🔁',cue:'摘下再戴，准备验证集',hint:'完整摘下再戴回。接下来每类 10 条，用于比较方法和调参，与训练集分开保存。'});
+addRound('validation',10,'验证');
+STEPS.push({id:'testWear',title:'再次重戴 · 测试集',icon:'🔁',cue:'再次摘下重戴，留出测试集',hint:'建议隔天录。每类 10 条独立保存，模型和参数确定后才评估，不用于调参。'});
+addRound('test',10,'测试');
+STEPS.push({id:'complete',title:'采集完成',icon:'🏁',cue:'五类数据已采齐',hint:'原始时序已保存。打开模型训练页，在本机训练和验证；选定模型后再进行独立验收。'});
+if (rehearsal) {
+  STEPS.length = 0;
+  STEPS.push({id:'rehearsalSetup',title:'确认条件',icon:'🩹',cue:'先预演 5 条',hint:'各动作一条，检查提示、波形与数据保存。预演单独保存，审核前不开正式采集。'});
+  for (const [label,icon,cue,hint] of ACTIONS) STEPS.push({set:'wear-1',label,n:1,icon,
+    cue:label==='rub'?'搓动一次，再松开':cue,
+    hint:label==='rest'?'整段保持放松，倒计时结束后仍然不做动作。':(label==='rub'?'拇指与食指接触后滑动一次，然后分开，不连搓。':hint)+' 先等提示「做」，提示「松开」后放松。',title:label==='rub'?'搓动一次':cue});
+  STEPS.push({id:'complete',title:'等待检查',icon:'🏁',cue:'5 条预演已保存，等待检查',hint:'检查动作是否完整、放松是否异常、录制时显示是否卡顿。预演未计入训练；正式采集暂未开放。'});
+} else if (factorCheck) {
+  STEPS.length = 0;
+  STEPS.push({id:'factorWear', donning:1, title:'同一次佩戴', icon:'🩹', cue:'戴好电极，前臂放稳', hint:'这一轮只改一个条件：位置、接触或线缆。前臂和线缆按这一轮的固定方式放稳。接下来放松、捏合、搓动交替各 5 条。捏合用平时的力度，不要改成握拳。这 15 条不进训练，也不并进已完成的 45 条。'});
+  for (let n = 1; n <= 5; n++) {
+    STEPS.push({set:'wear-1', donning:1, label:'rest', n, icon:'✋', cue:'整段保持放松', hint:'前臂和线缆不要动。等「做！」出现后，2 秒内保持放松。', title:`放松 · ${n}/5`});
+    STEPS.push({set:'wear-1', donning:1, label:'pinch', n, icon:'🤏', cue:'拇指与食指轻触并保持', hint:'用舒适的力度让指腹接触并保持约 1 秒，结束前松开。不要握拳，不要为了让波形变大而加力。', title:`捏合 · ${n}/5`});
+    const rub = ACTIONS[2];
+    STEPS.push({set:'wear-1', donning:1, label:'rub', n, icon:rub[1], cue:rub[2], hint:rub[3] + ' 等「做！」出现后，2 秒内完成。', title:`搓动 · ${n}/5`});
+  }
+  STEPS.push({id:'complete', title:'三类对照完成', icon:'🏁', cue:'15 条已单独保存', hint:'下一步看这一条件下三类中段是否分开，以及捏合是否仍和搓动重叠。不要把这批当成准确率。'});
+  document.title = '三类对照 · PrintThings';
+} else if (diagnostic) {
+  STEPS.length = 0;
+  for (let wear = 1; wear <= 3; wear++) {
+    STEPS.push({id:'diagnosticWear'+wear, donning:wear, title:`第 ${wear}/3 次佩戴`, icon:'🔁', cue:wear===1?'准备第一轮佩戴':'摘下电极，再重新戴好', hint:'本次放松、捏合、搓动各 5 条，交替录制；固定前臂与线缆。完成后确认继续。'});
+    for (let n=1; n<=5; n++) for (let j=0; j<3; j++) {
+      const [label,icon,cue,hint] = ACTIONS[(j+n+wear)%3];
+      STEPS.push({set:'wear-'+wear, donning:wear, label,n,icon,cue,hint:hint+' 等「做！」出现后，2 秒内完成。',title:`佩戴 ${wear}/3 · ${cue} · ${n}/5`});
+    }
+  }
+  STEPS.push({id:'complete',title:'诊断采集完成',icon:'🏁',cue:'45 条诊断数据已采齐',hint:'下一步检查动作时序和跨佩戴差异。这批数据单独保存，尚未并入训练或独立测试。'});
+}
+$('rehearsalStart').onclick = () => { location.href = '?project=' + encodeURIComponent(projectId) + '&rehearsal=1' + (params.get('embed') === '1' ? '&embed=1' : ''); };
+$('rehearsalConfirm').onclick = async () => {
+  $('rehearsalConfirm').disabled = true;
+  try {
+    const r = await post('/api/emg/rehearsal', {participant:$('participant').value, placement:$('placement').value, battery_confirmed:$('batteryCheck').checked});
+    if (!r.error) await refresh();
+  } finally { $('rehearsalConfirm').disabled = false; }
+};
+$('diagnosticStart').onclick = async () => {
+  const r = await post('/api/emg/diagnostic', {action:'start'});
+  if (r.error) return showActionError(r.error);
+  location.href = '?project=' + encodeURIComponent(projectId) + '&diagnostic=1' + (params.get('embed') === '1' ? '&embed=1' : '');
+};
+async function enterFactorCheck() {
+  const factor = st.factor_check?.id ? '' : $('factorCondition').value.trim();
+  $('factorError').textContent = '';
+  if (!st.factor_check?.id && (!factor || factor.length > 80 || /[\r\n]/.test(factor))) {
+    $('factorError').textContent = '请填写本轮条件，最多 80 字。'; return;
+  }
+  $('factorConfirm').disabled = true;
+  try {
+    const r = await post('/api/emg/factor-check', {action:'start', factor});
+    if (r.error) { $('factorError').textContent = r.error; return; }
+    location.href = '?project=' + encodeURIComponent(projectId) + '&factorcheck=1' + (params.get('embed') === '1' ? '&embed=1' : '');
+  } catch {
+    $('factorError').textContent = '连接采集服务失败，请重试。';
+  } finally { $('factorConfirm').disabled = false; }
+}
+$('factorCheckStart').onclick = () => {
+  if (st.factor_check?.id) return enterFactorCheck();
+  $('factorSetup').hidden = false;
+  $('factorCondition').focus();
+};
+$('factorConfirm').onclick = enterFactorCheck;
+$('session').value = mem.get('emg.session') || 'Mako 左手 左前臂屈肌肌腹 肘下约5-8cm Cheez 绑带干电极 ESP32-S3';
+$('session').onchange = () => mem.set('emg.session', $('session').value);
+
+let st = { gesture_counts: { train: {}, validation: {}, test: {} }, results: {}, log: [] }, wornSince = 0, wornNow = false, lastPhase = '';
+const have = s => ((rehearsal ? st.rehearsal?.counts : factorCheck ? st.factor_check?.counts : diagnostic ? st.diagnostic?.counts : st.gesture_counts)?.[s.set] || {})[s.label] || 0;
+function done(s) {
+  if (s.id === 'rehearsalSetup') return !!st.rehearsal?.id;
+  if (s.id === 'factorWear') return st.factor_check?.confirmed?.includes(1) || false;
+  if (s.id?.startsWith('diagnosticWear')) return st.diagnostic?.confirmed?.includes(s.donning) || false;
+  if (s.id === 'wear') return mem.get('emg.gesture.worn') === '1' || Object.values(st.gesture_counts?.train || {}).some(n=>n>0);
+  if (s.id === 'validationWear' || s.id === 'testWear') return mem.get('emg.rewear.'+s.id) === '1' || ACTIONS.every(([l]) => (st.gesture_counts?.[s.id==='testWear'?'test':'validation'] || {})[l] > 0);
+  if (s.id === 'complete') return false;
+  return have(s) >= s.n;
+}
+const stepKey = s => `${s.set}/${s.label}/${s.n}`;
+const deferred = s => !rehearsal && !diagnostic && !factorCheck && !!s.n && mem.get('emg.deferred.' + stepKey(s)) === '1' && !done(s);
+const current = () => STEPS.find(s => !done(s) && !deferred(s));
+const deferButton = $('deferStep');
+deferButton.onclick = () => { if (st.busy) return; mem.set('emg.deferred.' + stepKey(current()), '1'); render(); };
+const resumeButton = $('resumeSteps');
+resumeButton.onclick = () => { if (st.busy) return; for (const s of STEPS) mem.set('emg.deferred.' + stepKey(s), ''); render(); };
+
+
+const GESTURE_ORDER = ['rest', 'pinch', 'rub', 'snap', 'fist'];
+// Validation takes archived as same-wear are not re-wear evidence; the server scores only the classes really re-worn.
+function rewearScore(run) { return run?.rewear?.score ?? run?.validation?.balanced_accuracy; }
+function sameWearNote(run, names) { const ex = run?.rewear?.excluded || []; return ex.length ? `${ex.map(l => names[l] || l).join('、')}的验证是同次佩戴，不计入` : ''; }
+function runStamp(id) { return /^\d{8}-\d{6}/.test(id || '') ? id.slice(0, 15) : ''; }
+function datasetTime(runs, datasetId) {
+  return runs.map(run => run.dataset_id === datasetId ? runStamp(run.id) : '').filter(Boolean).sort()[0] || '';
+}
+function pickSameModel(list, selected) {
+  if (!list.length) return null;
+  const sameRep = list.filter(run => (run.representation || '') === (selected.representation || ''));
+  let candidates = sameRep.length ? sameRep : list.slice();
+  const plain = candidates.filter(run => !String(run.id).includes('tuned'));
+  if (plain.length) candidates = plain;
+  return candidates.slice().sort((a, b) => (runStamp(b.id) || b.id).localeCompare(runStamp(a.id) || a.id))[0];
+}
+function priorRun(runs, selected) {
+  if (!selected?.samples || !selected.dataset_id) return null;
+  const mine = datasetTime(runs, selected.dataset_id);
+  const older = [...new Set(runs.map(run => run.dataset_id))].filter(id => id && id !== selected.dataset_id && datasetTime(runs, id) && mine && datasetTime(runs, id) < mine)
+    .sort((a, b) => datasetTime(runs, b).localeCompare(datasetTime(runs, a)));
+  for (const id of older) {
+    const run = pickSameModel(runs.filter(item => item.model === selected.model && item.dataset_id === id && item.samples), selected);
+    if (run) return {run, sameData: false};
+  }
+  const peers = runs.filter(run => run.model === selected.model && run.dataset_id === selected.dataset_id && run.id !== selected.id && run.samples && runStamp(run.id) && (!runStamp(selected.id) || runStamp(run.id) < runStamp(selected.id)));
+  const run = pickSameModel(peers, selected);
+  return run ? {run, sameData: true} : null;
+}
+function classHits(run, label) {
+  const labels = run?.validation?.labels || [];
+  const index = labels.indexOf(label);
+  if (index < 0) return null;
+  const row = run.validation.confusion[index] || [];
+  const sum = row.reduce((total, count) => total + count, 0);
+  return sum ? {hit: row[index] || 0, sum} : null;
+}
+function confusionPeak(matrix, skip = []) {
+  if (!matrix) return null;
+  let best = null, ties = 0;
+  matrix.forEach((row, i) => (row || []).forEach((count, j) => {
+    if (i === j || !count || skip.includes(i)) return;
+    if (!best || count > best.n) { best = {n: count, i, j}; ties = 1; }
+    else if (count === best.n) ties += 1;
+  }));
+  if (!best) return null;
+  const row = matrix[best.i];
+  const rowSum = row.reduce((total, count) => total + count, 0);
+  return {...best, rowSum, concentrated: ties === 1 && best.n * 2 >= rowSum - row[best.i]};
+}
+function datasetDeltaText(runs, selected, peak, names, modelName) {
+  const prior = priorRun(runs, selected);
+  if (!prior?.run?.samples || !selected.samples) return '';
+  const changed = GESTURE_ORDER.filter(label => selected.samples[label] !== prior.run.samples[label]);
+  const priorName = modelName(selected.model);
+  const text = prior.sameData
+    ? `与同一份数据上的上一份${/^[A-Za-z0-9]/.test(priorName) ? ' ' : ''}${priorName}相比，样本没换。`
+    : changed.length === 1 ? `与上一份数据相比，只有${names[changed[0]] || changed[0]}换了。`
+    : changed.length ? `与上一份数据相比，${changed.map(label => names[label] || label).join('、')}换了。`
+    : '与上一份数据相比，样本没换。';
+  if (!peak) return text;
+  const label = selected.validation.labels[peak.i];
+  if (changed.includes(label)) return text;
+  const now = classHits(selected, label), then = classHits(prior.run, label);
+  if (!now || !then || now.hit === then.hit) return text;
+  const name = names[label] || label;
+  return prior.sameData ? text + `${name}认对从 ${then.hit}/${then.sum} 到 ${now.hit}/${now.sum}。`
+    : text + `${name}样本没变，识别从 ${then.hit}/${then.sum} ${now.hit < then.hit ? '降到' : '升到'} ${now.hit}/${now.sum}。`;
+}
+function renderConfusion(selected, peak, names) {
+  const host = $('confusionGrid');
+  const matrix = selected?.validation?.confusion, labels = selected?.validation?.labels;
+  if (!host || !matrix || !labels) { if (host) host.innerHTML = ''; return; }
+  const esc = value => String(value).replace(/[&<>"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));
+  const color = (count, hit) => {
+    if (!count) return '#F4F1EA';
+    const scale = 0.18 + 0.72 * Math.min(count, 10) / 10;
+    const [red, green, blue] = hit ? [70, 120, 93] : [184, 92, 67];
+    const mix = channel => Math.round(255 + (channel - 255) * scale);
+    return `rgb(${mix(red)},${mix(green)},${mix(blue)})`;
+  };
+  const head = labels.map(label => `<th scope="col">${esc(names[label] || label)}</th>`).join('');
+  const body = matrix.map((row, i) => `<tr${(selected.rewear?.excluded || []).includes(labels[i]) ? ' class="same-wear" style="opacity:.4"' : ''}><th scope="row">${esc(names[labels[i]] || labels[i])}</th>${row.map((count, j) => {
+    const worst = peak && peak.i === i && peak.j === j;
+    return `<td style="background:${color(count, i === j)}${worst ? ';border:2.5px solid #24352F;font-weight:750' : ''}">${count}</td>`;
+  }).join('')}</tr>`).join('');
+  host.innerHTML = `<table aria-label="重戴验证混淆矩阵"><caption>行是真实动作，列是预测。颜色深浅是次数，加粗框是错得最多的一格。${sameWearNote(selected, names) ? `${esc(sameWearNote(selected, names))}，这几行只作参考，不参与判断。` : ''}</caption><thead><tr><th></th>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+function renderScoreChart(runs, selected, modelName) {
+  const host = $('scoreChart'), note = $('scoreNote');
+  if (!host || !selected) { if (host) host.innerHTML = ''; if (note) note.textContent = ''; return; }
+  const comparable = runs.filter(run => run.dataset_id && selected.dataset_id ? run.dataset_id === selected.dataset_id : !run.dataset_id && !selected.dataset_id);
+  const byModel = new Map();
+  for (const run of comparable) {
+    const key = run.model + (run.representation === 'rms-shape-v1' ? ':shape' : ''), old = byModel.get(key);
+    if (run.id === selected.id || !old || runStamp(run.id) > runStamp(old.id)) byModel.set(key, run);
+  }
+  const shown = [...byModel.values()].sort((a, b) => rewearScore(b) - rewearScore(a));
+  host.innerHTML = shown.map(run => {
+    const score = Math.round(rewearScore(run) * 100);
+    const label = modelName(run.model) + (run.representation === 'rms-shape-v1' ? ' · 归一化包络' : '');
+    return `<div class="score-row${run.id === selected.id ? ' selected' : ''}"><span>${label}</span><div class="score-track"><div class="score-bar" style="width:${score}%"></div></div><strong>${score}%</strong></div>`;
+  }).join('');
+  const train = selected.training?.balanced_accuracy;
+  note.textContent = train == null
+    ? '这次运行没有保存训练集预测；只显示已保存的重戴验证，不补算。'
+    : `当前模型：训练 ${(train * 100).toFixed(1)}%，重戴 ${(rewearScore(selected) * 100).toFixed(1)}%，差 ${((train - rewearScore(selected)) * 100).toFixed(1)} 个百分点。`;
+}
+
+function render() {
+  const cur = current(), busy = st.busy, p = st.progress || {};
+  $('steps').innerHTML = STEPS.map(s => `<li class="${s === cur ? 'cur' : done(s) ? 'done' : ''}"><span>${s.title}${deferred(s) ? ' · 待检查' : ''}</span>${s.n ? `<small>${s.label === 'loose' ? '' : Math.min(have(s), s.n) + '/' + s.n}</small>` : ''}</li>`).join('');
+  // 旧协议五类采齐 ≠ 本轮可训练：V3 方案要先预演 5 条并审核，st.rehearsal.training_eligible 才为真。
+  const legacyComplete = cur.id === 'complete' && !rehearsal && !diagnostic && !factorCheck && !st.rehearsal?.training_eligible;
+  $('icon').textContent = cur.icon; $('cue').textContent = legacyComplete ? '旧协议数据已采齐 · 本轮不用于训练' : cur.cue;
+  $('hint').textContent = legacyComplete ? '这批按旧动作定义采集，只留作诊断。V3 方案：先预演 5 条并审核通过，才开正式采集与训练。' : cur.hint;
+  const big = $('big'), hold = $('hold');
+  if (busy && p.label) {
+    const now = p.phase === 'NOW';
+    big.textContent = now ? (rehearsal ? '先放松' : '做！') : p.phase; big.className = now ? 'now' : '';
+    if (now && lastPhase !== 'NOW') { hold.className = ''; void hold.offsetWidth; hold.className = 'go'; }
+    if (!now) hold.className = '';
+    lastPhase = p.phase;
+    $('prog').style.width = (100 * (p.take - (now ? 0 : 1)) / p.count) + '%'; $('count').textContent = `${p.label} 第 ${p.take} / ${p.count} 条`;
+  } else {
+    big.textContent = busy ? '…' : ''; big.className = ''; hold.className = ''; lastPhase = '';
+    $('prog').style.width = cur.n ? (100 * Math.min(have(cur), cur.n) / cur.n) + '%' : '0'; $('count').textContent = cur.n && cur.label !== 'loose' ? `已收下 ${have(cur)} / ${cur.n}` : '';
+  }
+  const issue = st.capture_issue?.label === cur.label && st.capture_issue?.split === cur.set ? st.capture_issue : null;
+  deferButton.hidden = rehearsal || diagnostic || !issue || !!busy;
+  resumeButton.hidden = !STEPS.some(deferred); resumeButton.disabled = !!busy;
+  if (cur.id === 'complete' && STEPS.some(deferred)) { $('cue').textContent = '采集暂告一段落，仍有待检查动作'; $('hint').textContent = '跳过的动作尚未采齐，不能作为完整训练或验收数据。点击返回待检查动作可继续。'; }
+  $('captureIssue').hidden = !issue;
+  const diagnosticSmr = diagnostic && issue && /SMR/.test(issue.reason);
+  $('captureIssue').textContent = issue ? `${issue.stopped ? '已暂停，先检查信号' : '样本未收下'}：${issue.reason}。${issue.saved_path ? '原始样本已单独保留，未计入训练。' : '本次未保存原始样本。'} 调整后仅试录 1 条，通过后再继续。` : '';
+  if (issue?.limit_reached) $('captureIssue').textContent = '本次佩戴已达 5 次失败上限，停止补录。已保存的数据保留，请先检查原因，再建立新的佩戴会话。';
+  if (diagnosticSmr && !issue?.limit_reached) $('captureIssue').textContent = '上一条因低频能量偏高被拦截，原始数据已保留。诊断规则已修正：可以继续录，低 SMR 将标记待检查，不自动加入训练。';
+  $('trainingPanel').hidden = !trainingPage;
+  if (trainingPage) {
+  const training = st.gesture_training || {runs:[]};
+  const ready = ['train','validation'].every(split => ACTIONS.every(([label]) => (st.gesture_counts?.[split]?.[label] || 0) >= (split === 'train' ? 30 : 10)));
+  $('trainStart').disabled = !!busy || !!training.frozen || !ready;
+  $('trainModel').disabled = !!busy || !!training.frozen;
+  const runSelect = $('trainRun'), oldRun = runSelect.value;
+  runSelect.disabled = !!busy;
+  const modelName = k => Array.from($('trainModel').options || []).find(o=>o.value===k)?.textContent.split(' · ')[0] || k.toUpperCase();
+  const signature = JSON.stringify(training.runs.map(r=>r.id));
+  // Newest timestamped run first: tuned-v1 ids carry no time and sort after it, so the page never opens on stale data.
+  const byTime = [...training.runs].sort((a,b)=>runStamp(b.id).localeCompare(runStamp(a.id)));
+  if (runSelect.datasetSignature !== signature) {
+    runSelect.innerHTML = byTime.map(r=>`<option value="${r.id}">${modelName(r.model)}${r.representation === 'rms-shape-v1' ? ' · 归一化包络' : ''} · ${r.rewear?.excluded?.length ? `重戴 ${r.validation.labels.length - r.rewear.excluded.length} 类` : '验证'} ${(rewearScore(r)*100).toFixed(0)}% · ${r.id}</option>`).join('');
+    runSelect.value = training.runs.some(r=>r.id===oldRun) ? oldRun : byTime[0]?.id || '';
+    runSelect.datasetSignature = signature;
+  }
+  const selected = training.runs.find(r=>r.id===runSelect.value) || byTime[0];
+  const names = {rest:'放松',pinch:'捏合',rub:'搓动',snap:'响指',fist:'握拳'};
+  const peak = selected ? confusionPeak(selected.validation.confusion, (selected.rewear?.excluded || []).map(l => selected.validation.labels.indexOf(l))) : null;
+  const gestureName = index => names[selected.validation.labels[index]] || selected.validation.labels[index];
+  $('confusionLead').textContent = peak ? `${gestureName(peak.i)} → ${gestureName(peak.j)}，${peak.n}/${peak.rowSum}` : '';
+  $('datasetDelta').textContent = selected ? datasetDeltaText(training.runs, selected, peak, names, modelName) : '';
+  renderConfusion(selected, peak, names);
+  const comparable = training.runs.filter(r => r.dataset_id && selected?.dataset_id ? r.dataset_id === selected.dataset_id : !r.dataset_id && !selected?.dataset_id);
+  renderScoreChart(training.runs, selected, modelName);
+  if (sameWearNote(selected, names)) $('scoreNote').textContent += ` 分数只算真实重戴的类别：${sameWearNote(selected, names)}。`;
+  const best = [...comparable].sort((a,b)=>rewearScore(b)-rewearScore(a))[0];
+  const untried = ['lda','svm','cnn'].find(m=>!comparable.some(r=>r.model===m));
+  const weaker = selected ? Object.entries(selected.validation.recall).filter(([k]) => !(selected.rewear?.excluded || []).includes(k)).sort((a,b)=>a[1]-b[1]).slice(0,2).map(([k,v])=>`${names[k] || k}：每 10 次约认对 ${Math.round(v*10)} 次`).join('；') : '';
+  $('friendlyResult').textContent = selected ? `当前查看 ${modelName(selected.model)}：${selected.rewear?.excluded?.length ? `真实重戴的${selected.validation.labels.filter(l => !selected.rewear.excluded.includes(l)).map(l => names[l] || l).join('、')}平均识别率 ${(rewearScore(selected)*100).toFixed(0)}%（${sameWearNote(selected, names)}）` : `五种动作的平均识别率 ${(rewearScore(selected)*100).toFixed(0)}%`}，目标 80%。较弱的动作是${weaker}。` : '还没有训练结果。';
+  $('qualityList').textContent = selected?.warnings?.join('\n') || '当前报告没有工频占比提醒。';
+  $('qualityDetails').hidden = !selected;
+  const action = $('decisionAction'); action.hidden = !!busy || !selected || !!training.frozen || !!selected.test;
+  if (selected?.test || training.frozen) {
+    $('decisionTitle').textContent = selected?.test ? '独立验收结果已保存' : '模型已选定';
+    $('decisionText').textContent = '不再用本次独立测试集挑选模型。请按上方下一步提示继续。';
+  } else if (best && selected && best.id !== selected.id && rewearScore(best) > rewearScore(selected)) {
+    $('decisionTitle').textContent = `先查看表现更好的 ${modelName(best.model)}`;
+    $('decisionText').textContent = `已训练的 ${modelName(best.model)} 为 ${(rewearScore(best)*100).toFixed(0)}%，当前 ${modelName(selected.model)} 为 ${(rewearScore(selected)*100).toFixed(0)}%。只需切换结果，不必重新训练。`;
+    action.textContent = `查看 ${modelName(best.model)} 结果`;
+    action.onclick = () => { runSelect.value = best.id; render(); };
+  } else if (selected && rewearScore(selected) < .8) {
+    if (untried) {
+      $('decisionTitle').textContent = '下一步：比较尚未试过的模型';
+      $('decisionText').textContent = `先试 ${untried.toUpperCase()}，使用同一份验证集比较。独立测试暂不运行。`;
+      action.textContent = `选择 ${untried.toUpperCase()} 进行对比`;
+      action.onclick = () => { $('trainModel').value = untried; $('trainStart').focus(); };
+    } else if (peak?.concentrated) {
+      const from = selected.validation.labels[peak.i], to = selected.validation.labels[peak.j];
+      const pair = `${gestureName(peak.i)}和${gestureName(peak.j)}`, cut = `${gestureName(peak.i)} → ${gestureName(peak.j)}`;
+      // One model's confusion is not evidence about the signal: only call the pair hard when every peer on this data confuses it too.
+      const miss = run => { const l = run.validation.labels, row = run.validation.confusion[l.indexOf(from)] || []; return l.includes(from) && l.includes(to) ? {n: row[l.indexOf(to)] || 0, hit: classHits(run, from)} : null; };
+      const peers = comparable.filter(run => run.id !== selected.id).map(run => ({run, m: miss(run)})).filter(p => p.m?.hit);
+      const hitNow = selected.validation.confusion[peak.i][peak.i] || 0;
+      const split = peers.filter(p => p.m.n <= 1 && p.m.hit.hit > hitNow).sort((a, b) => a.m.n - b.m.n || b.m.hit.hit - a.m.hit.hit)[0];
+      if (split) {
+        const other = modelName(split.run.model) + (split.run.representation === 'rms-shape-v1' ? ' · 归一化包络' : '');
+        // No jump button: the peer usually scores lower overall and would send the user straight back here.
+        $('decisionTitle').textContent = `下一步：先别改动作，${pair}信号里分得开`;
+        $('decisionText').textContent = `同一份数据上，${other}的 ${cut} 只有 ${split.m.n}/${split.m.hit.sum}，${gestureName(peak.i)}认对 ${split.m.hit.hit}/${split.m.hit.sum}；当前模型是 ${peak.n}/${peak.rowSum}。问题在当前模型的特征，不在动作本身。`;
+        action.hidden = true;
+      } else {
+        const confusers = peers.filter(p => p.m.n >= 2).length + 1;
+        $('decisionTitle').textContent = `下一步：先分开${pair}`;
+        $('decisionText').textContent = `同一份数据上已比较的 ${peers.length + 1} 个模型，${confusers} 个出现 ${cut} 至少 2 次，没有一个能把两者分开。这两类在当前单通道数据上难分，先改动作定义或补这两类的样本。`;
+        action.hidden = true;
+      }
+    } else {
+      $('decisionTitle').textContent = '下一步：检查数据，不要重复训练';
+      $('decisionText').textContent = `同一批数据已比较的模型，最好为 ${(rewearScore(best)*100).toFixed(0)}%。${weaker}。先查看下方 ${selected.warnings.length} 条质量提醒，核查工频干扰与动作标注；确认需补充的训练样本后，再训练。相同数据、参数和种子重复运行不会自动提高成绩。`;
+      action.textContent = '展开样本质量提醒';
+      action.onclick = () => { $('qualityDetails').open = true; };
+    }
+  } else {
+    $('decisionTitle').textContent = selected?.test ? '独立验收结果已保存' : selected ? '验证达标，可以进入独立验收' : '下一步：训练第一个模型';
+    $('decisionText').textContent = selected?.test ? '根据独立测试结果决定是否进入实时识别验证。' : selected ? '这只是验证结果。确认选定该模型后，再使用封存的独立测试集验收。' : '建议从收缩 LDA 开始，再比较 SVM 和 CNN。';
+    action.hidden = true;
+  }
+  const testReady = ACTIONS.every(([label]) => (st.gesture_counts?.test?.[label] || 0) >= 10);
+  $('trainEvaluate').disabled = !!busy || !testReady || !selected || (!!training.frozen && training.frozen !== selected.id) || !!selected?.test || (!training.frozen && rewearScore(selected) < .8);
+  $('trainEvaluate').textContent = selected && rewearScore(selected) < .8 && !training.frozen ? '验证未达 80%，先改进再验收' : '选定此模型，进行独立验收';
+  $('trainResult').textContent = busy ? `正在${busy}…` : selected ?
+    `验证集平衡准确率：${(selected.validation.balanced_accuracy*100).toFixed(1)}%${selected.rewear?.excluded?.length ? `（含同次佩戴）；真实重戴：${(rewearScore(selected)*100).toFixed(1)}%，${sameWearNote(selected, names)}` : ''}\n各类召回：${Object.entries(selected.validation.recall).map(([k,v])=>(names[k] || k)+' '+(v*100).toFixed(0)+'%').join(' / ')}\n混淆矩阵（行=真实，列=预测）：\n${selected.validation.labels.map(k=>names[k] || k).join(' / ')}\n${selected.validation.confusion.map(r=>r.join('  ')).join('\n')}\n${selected.test ? '独立测试：'+(selected.test.balanced_accuracy*100).toFixed(1)+'%（目标 ≥80%）' : '独立测试尚未运行'}\n质量提醒：${selected.warnings.length} 条\n${selected.note}` : '选择模型开始，测试集保持封存。';
+  $('trainStatus').textContent = (st.log || []).slice(-1)[0] || '尚未启动训练';
+  const failed = !busy && /(?:五类训练|独立验收) 出错/.test((st.log || []).slice(-1)[0] || '');
+  const working = busy === '五类训练' || busy === '独立验收';
+  $('trainProgress').hidden = !working;
+  $('trainProject').textContent = st.project?.name || '独立采集工程';
+  $('trainPhase').textContent = working ? (busy === '五类训练' ? '正在训练与验证' : '正在独立验收') : busy ? '采集任务进行中' : failed ? '最近一次训练任务失败' : selected?.test ? '独立验收已完成' : selected ? '训练与验证已完成' : ready ? '数据已就绪，等待训练' : '训练数据尚未齐备';
+  $('trainNext').textContent = working ? '任务在本机运行。服务尚未提供逐轮进度，完成后这里会自动更新；无需重复点击。'
+    : busy ? '等待当前采集任务结束。'
+    : failed ? '查看上方错误原因并修复后重试。已有报告来自之前成功的任务，不代表本次任务通过。'
+    : selected?.test ? (selected.test.balanced_accuracy >= .8 ? '独立测试达到当前 80% 目标。下一步验证连续识别、误触发和重戴表现；这还不是硬件验收。' : '独立测试未达到 80% 目标。先分析混淆类别；改进后须使用新采集的独立测试集，不再用本测试集选模型。')
+    : training.frozen ? '模型已冻结。若独立验收失败，查看下方日志后重试同一个模型；不要用独立测试集重新选模型。'
+    : !ready ? '返回采集：训练每类至少 30 条，重戴验证每类至少 10 条。补齐后再开始训练。'
+    : !selected ? '选择一个模型，点击「训练并验证」。独立测试集不会在此步骤打开。'
+    : rewearScore(selected) < .8 ? $('decisionText').textContent
+    : !testReady ? '返回采集补齐独立测试：每类至少 10 条。不要用独立测试结果调整模型。'
+    : '比较验证结果后选定一个模型，再冻结并进行一次独立验收；验收后不再使用该测试集选模型。';
+  }
+  $('rehearsalStart').hidden = rehearsal || diagnostic || factorCheck; $('rehearsalStart').disabled = !!busy;
+  $('rehearsalSetup').hidden = !rehearsal || !!st.rehearsal?.id;
+  $('diagnosticStart').hidden = rehearsal || diagnostic || factorCheck; $('diagnosticStart').disabled = !!busy;
+  $('diagnosticStart').textContent = st.diagnostic?.id ? '继续诊断采集 · 45 条' : '新一轮诊断采集 · 45 条';
+  $('factorCheckStart').hidden = rehearsal || diagnostic || factorCheck; $('factorCheckStart').disabled = !!busy;
+  $('factorCheckStart').textContent = st.factor_check?.id ? '继续三类对照 · 同一次佩戴' : '三类对照 · 同一次佩戴';
+  $('trainingLink').hidden = rehearsal || diagnostic || factorCheck || legacyComplete || params.get('embed') === '1'; $('trainingLink').style.display = $('trainingLink').hidden ? 'none' : ''; 
+  const go = $('go');
+  go.disabled = !!busy || cur.id === 'complete' || !wornNow;
+  go.textContent = busy ? (st.busy.startsWith('录') ? '录制中…（空格无效）' : st.busy + '…')
+    : issue ? '检查后试录 1 条' : cur.id === 'wear' ? (wornNow ? '戴好了，下一步' : '等电极贴好…') : cur.id === 'complete' ? (STEPS.some(deferred) ? '仍有数据待检查' : legacyComplete ? '本轮不训练 · 先预演 5 条' : '已采齐 · 请进入模型训练') : cur.id ? '已摘下并重新戴好'
+    : have(cur) > 0 && cur.label !== 'loose' ? `补录 ${cur.n - have(cur)} 条` : `开始这组 · ${cur.n - have(cur)} 条（空格）`;
+  if (diagnostic || factorCheck) {
+    $('hint').textContent = cur.hint + ' 低频异常会标记后保存供检查，不代表质量通过。';
+    go.textContent = busy ? '录制中…' : cur.id === 'complete' ? (factorCheck ? '已采齐 · 等待对照分析' : '已采齐 · 等待诊断分析') : cur.id ? (factorCheck ? '前臂放稳，开始这 15 条' : '已重新戴好，开始本轮') : '录这一条（空格）';
+    if (cur.n) $('count').textContent = factorCheck ? `同一次佩戴 · 本动作 ${have(cur)}/5 条` : `第 ${cur.donning}/3 次佩戴 · 本动作 ${have(cur)}/5 条`;
+  }
+  if (rehearsal) {
+    go.hidden = !st.rehearsal?.id;
+    go.textContent = busy ? '录制中…' : cur.id === 'complete' ? '已保存 · 等待预演检查' : '录这一条（空格）';
+    $('count').textContent = `预演 · 已保存 ${Object.values(st.rehearsal?.counts?.['wear-1'] || {}).reduce((a,b)=>a+b,0)} / 5 条 · 不计入训练`;
+  }
+  if (issue?.limit_reached) { go.disabled = true; go.textContent = '已结束本次试录 · 先检查原因'; }
+  $('res').textContent = rehearsal ? '新版单次动作协议 · 五条单独保存 · 所有样本均须检查，不代表质量通过' : factorCheck ? '这 15 条单独保存 · 不改训练 / 验证 / 测试 / 已完成的 45 条诊断' : diagnostic ? '诊断数据单独保存 · 不改原训练 / 验证 / 测试集' : '每条 2 秒原始数据 · 训练 / 验证 / 测试独立保存 · 不使用旧力度样本';
+  $('log').innerHTML = (st.log || []).slice(-6).reverse().map(l => `<div class=${/丢弃|出错/.test(l) ? 'bad' : /收下/.test(l) ? 'ok' : ''}>${l.replace(/</g, '&lt;')}</div>`).join('');
+}
+
+function trainingUnavailable(message) {
+  if (!trainingPage) return;
+  $('trainingPanel').hidden = false;
+  for (const id of ['trainStart','trainEvaluate','trainModel','trainRun']) $(id).disabled = true;
+  $('trainProgress').hidden = true;
+  $('decisionAction').hidden = true;
+  $('trainPhase').textContent = '训练状态暂不可用';
+  $('trainStatus').textContent = message;
+  $('trainNext').textContent = '确认本机采集服务仍在运行且绑定当前工程，然后重新连接。当前不能启动训练或独立验收。';
+  $('wtxt').textContent = '训练状态未连接';
+}
+let cueVersion = 0, refreshing = false;
+async function refresh() {
+  if (refreshing) return;
+  refreshing = true;
+  try {
+  const version = cueVersion;
+  try { const next = await (await fetch(trainingPage ? '/api/emg/state' : '/api/emg/state?view=capture')).json(); if (version !== cueVersion) return; st = next; } catch { $('wtxt').textContent = 'emg_web.py 没在跑'; trainingUnavailable('无法连接本机训练服务'); return; }
+  if ((st.project?.id || '') !== projectId) { $('go').disabled = true; $('cue').textContent = '采集服务已切换工程，请重新连接'; trainingUnavailable('服务绑定了其他工程，请重新连接'); return; }
+  $('projectName').textContent = st.project?.name || '独立采集';
+  $('datasetCounts').textContent = Object.entries(st.gesture_counts || {}).map(([split, counts]) => ({train:'训练',validation:'重戴验证',test:'独立测试'}[split]) + '\n' + ACTIONS.map(([label,,name]) => name + '：' + (counts[label] || 0)).join('   ')).join('\n\n');
+  if (trainingPage) $('wtxt').textContent = '本机训练 · 不占用采集流';
+  else if (st.rig && st.rig.error) $('wtxt').textContent = '未连接：' + st.rig.error;
+  if (current().id === 'wear' && wornNow && Date.now() - wornSince > 2000) mem.set('emg.gesture.worn', '1');
+  render();
+  } finally { refreshing = false; }
+}
+
+$('trainRun').onchange = render;
+$('trainStart').onclick = async () => { const r = await post('/api/emg/gesture-train', {action:'train',model:$('trainModel').value}); if(r.error) showActionError(r.error); refresh(); };
+$('trainEvaluate').onclick = async () => { if(!confirm('将冻结所选模型并打开独立测试集，之后不再用这批测试数据选模型。继续？')) return; const r = await post('/api/emg/gesture-train', {action:'evaluate',run_id:$('trainRun').value}); if(r.error) showActionError(r.error); refresh(); };
+$('go').onclick = async () => {
+  const cur = current(); let r;
+  if (factorCheck && cur.id === 'factorWear') {
+    const r = await post('/api/emg/factor-check', {action:'wear', donning:1});
+    if (r.error) showActionError(r.error); return refresh();
+  }
+  if (diagnostic && cur.id?.startsWith('diagnosticWear')) {
+    const r = await post('/api/emg/diagnostic', {action:'wear', donning:cur.donning});
+    if (r.error) showActionError(r.error); return refresh();
+  }
+  if (cur.id === 'wear') { mem.set('emg.gesture.worn', '1'); return refresh(); }
+  if (cur.id === 'complete') return;
+  if (cur.id) { mem.set('emg.rewear.'+cur.id, '1'); return refresh(); }
+  r = await post('/api/emg/record', { task:rehearsal?'rehearsal':factorCheck?'factor-check':diagnostic?'diagnostic':'gestures', label:cur.label, count:(rehearsal || factorCheck || diagnostic) ? 1 :st.capture_issue?.label === cur.label && st.capture_issue?.split === cur.set ? 1 : cur.n-have(cur), set:cur.set, session:$('session').value, donning:(rehearsal || factorCheck) ? 1 : {train:1,validation:2,test:3}[cur.set], wear:'high' });
+  if (r.error) showActionError(r.error); refresh();
+};
+// Only the page's own progress marks reset here; takes on disk stay (delete emg-data/ by hand to really start over).
+$('reset').onclick = e => { e.preventDefault(); for (const k of ['emg.gesture.worn', 'emg.rewear.validationWear', 'emg.rewear.testWear']) mem.set(k, ''); wornSince = Date.now(); refresh(); };
+addEventListener('keydown', e => { if (!scope && !trainingPage && params.get('view') !== 'data' && e.code === 'Space' && !['INPUT','TEXTAREA','SELECT','BUTTON','SUMMARY','A'].includes(e.target.tagName)) { e.preventDefault(); if (!$('go').disabled) $('go').click(); } });
+
+// Live meter: the same clean → envelope chain the PULSE page uses, fed by the server's copy of the stream.
+const MV = 3600 / 4096;
+let env = new Envelope(envelopeMs), cleaner = new Cleaner(50), shown = 0, lastSignal = 0;
+const traces = [[], [], []];
+function drawSignals() {
+  const canvas = $('traces'), w = canvas.clientWidth || 500, h = Math.max(210, canvas.clientHeight || (scope ? 480 : 300)), dpr = devicePixelRatio || 1;
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== h * dpr) { canvas.width = Math.round(w * dpr); canvas.height = h * dpr; }
+  const ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  const stale = Date.now() - lastSignal > 500;
+  $('signalStatus').textContent = frozen ? '画面已冻结 · 后台继续接收实时信号' : stale ? '等待新信号 · 曲线已暂停' : st.busy && st.progress?.phase === 'NOW' ? '录制中 · 实时波形'  : '实时更新 · 20 Hz 高通 + 50 Hz 及谐波陷波';
+  ctx.globalAlpha = stale ? .4 : 1;
+  const names = ['原始波形', '滤波波形 · 黄色 / RMS 包络 · 青色', `力度包络 · RMS ${envelopeMs} ms`];
+  const colors = ['#C44752', '#A67C00', '#21806B'];
+  const left = 48, right = w - 12, width = right - left;
+  const visible = visibleTraces();
+  visible.forEach((values, row) => {
+    const rowHeight=h/3, top=row*rowHeight, y0=top+25, y1=top+rowHeight-22;
+    const peak=Math.max(1,...values.map(Math.abs),...(row===1 ? visible[2] : []));
+    const rawLow=values.length ? Math.min(...values) : 0, rawHigh=values.length ? Math.max(...values) : 4095;
+    if ($('autoScale').checked) {
+      const pad=Math.max(5,(rawHigh-rawLow)*.12);
+      plotRanges[row]=row===0 ? [rawLow-pad,rawHigh+pad] : row===1 ? [-peak*1.12,peak*1.12] : [0,peak*1.12];
+    }
+    const [lo,hi]=plotRanges[row], y=v=>y1-(v-lo)/(hi-lo)*(y1-y0);
+    ctx.fillStyle='#F4F6F3';ctx.fillRect(left,y0,width,y1-y0);
+    ctx.font='600 11px sans-serif';ctx.fillStyle=colors[row];ctx.textAlign='left';
+    ctx.fillText(names[row],left,top+14);
+    ctx.font='10px monospace';ctx.fillStyle='#65736B';ctx.textAlign='right';
+    ctx.fillText('ADC · '+($('autoScale').checked ? '自动量程' : '量程已锁定'),right,top+14);
+    for(let tick=0;tick<=20;tick++) {
+      const x=left+tick*width/20;
+      ctx.strokeStyle=tick%5===0 ? '#D3DCD4' : '#E6EBE5';ctx.lineWidth=.6;
+      ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y1);ctx.stroke();
+      if(tick%5===0){ctx.fillStyle='#65736B';ctx.textAlign=tick===20?'right':tick===0?'left':'center';ctx.fillText(((tick/20-1)*windowSamples/1000).toFixed(1)+' s',x,y1+15);}
+    }
+    for(let tick=0;tick<=8;tick++) {
+      const yy=y0+tick*(y1-y0)/8;
+      ctx.strokeStyle=tick%2===0 ? '#D3DCD4' : '#E6EBE5';ctx.lineWidth=.6;
+      ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(right,yy);ctx.stroke();
+      if(tick%2===0){ctx.fillStyle='#65736B';ctx.textAlign='right';ctx.fillText(String(Math.round(hi-tick*(hi-lo)/8)),left-6,yy+3);}
+    }
+    ctx.save();ctx.beginPath();ctx.rect(left,y0,width,y1-y0);ctx.clip();
+    if(lo<0 && hi>0){ctx.strokeStyle='#A8B6AA';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y(0));ctx.lineTo(right,y(0));ctx.stroke();}
+    ctx.beginPath();
+    values.forEach((v,i)=>{const x=left+(windowSamples-values.length+i)/(windowSamples-1)*width;if(i)ctx.lineTo(x,y(v));else ctx.moveTo(x,y(v));});
+    ctx.strokeStyle=colors[row];ctx.lineWidth=1.2;ctx.stroke();
+    if(row===1){
+      ctx.beginPath();
+      visible[2].forEach((v,i)=>{const x=left+(windowSamples-visible[2].length+i)/(windowSamples-1)*width;if(i)ctx.lineTo(x,y(v));else ctx.moveTo(x,y(v));});
+      ctx.strokeStyle='#21806B';ctx.lineWidth=2;ctx.stroke();
+    }
+    if(row===2 && values.length){ctx.lineTo(right,y(0));ctx.lineTo(left+(windowSamples-values.length)/(windowSamples-1)*width,y(0));ctx.closePath();ctx.fillStyle='#21806B18';ctx.fill();}
+    ctx.restore();
+  });
+  ctx.textAlign='left';
+  ctx.globalAlpha = 1;
+}
+let rehearsalCueStart = null, rehearsalCuePhase = '';
+const streamTiming = new StreamTiming();
+const timingNow = () => typeof performance === 'undefined' ? Date.now() : performance.now();
+const timingPhase = () => document.hidden ? 'hidden' : st.progress?.phase === 'NOW' ? 'recording' : 'idle';
+globalThis.emgTimingReport = () => ({
+  scope: 'Browser callback intervals only; no optical or device-to-screen latency',
+  paused: !!frozen, visible: !document.hidden, stats: streamTiming.snapshot()
+});
+function connect() {
+  const sse = new EventSource('/api/emg/stream');
+  sse.onmessage = ev => {
+    if (ev.data.startsWith('CUE ')) {
+      const cue = JSON.parse(ev.data.slice(4));
+      if (rehearsal && cue.phase === 'NOW') { rehearsalCueStart = timingNow(); rehearsalCuePhase = ''; }
+      cueVersion++; st.progress = cue; st.busy = st.busy || '录制中'; render();
+      if (!rehearsal && cue.phase === 'NOW' && cue.recording_ack_host_ns != null)
+        fetch('/api/emg/cue-shown', {method:'POST', headers: H, body: JSON.stringify({shown_ms: Date.now(), recording_ack_host_ns: String(cue.recording_ack_host_ns)})});
+      return;
+    }
+    const p = parseLine(ev.data); if (!p) return;
+    streamTiming.observe('sse', timingNow(), timingPhase());
+    if (Date.now() - lastSignal > 500) { traces.forEach(a => a.length = 0); env = new Envelope(envelopeMs); cleaner = new Cleaner(50); }
+    lastSignal = Date.now();
+    let e = 0;
+    for (const v of p.samples) {
+      const filtered = cleaner.push(v - MID); e = env.push(filtered + MID);
+      traces[0].push(v); traces[1].push(filtered); traces[2].push(e);
+    }
+    traces.forEach(a => { const limit=scope ? 10000 : 2000; if (a.length > limit) a.splice(0, a.length - limit); });
+    const worn = p.worn >= 8;
+    if (worn && !wornNow) wornSince = Date.now(); wornNow = worn;
+    shown = e * MV;
+  };
+  sse.onerror = () => { sse.close(); lastSignal = 0; wornNow = false; setTimeout(connect, 2000); };
+}
+function updateWearStatus() {
+  if (trainingPage) { $('wtxt').textContent = '本机模型训练'; return; }
+  if (params.get('view') === 'data') { $('wtxt').textContent = '本工程数据 · 只读'; return; }
+  const fresh = lastSignal > 0 && Date.now() - lastSignal <= 500;
+  if (!fresh) wornNow = false;
+  $('wdot').className = 'dot ' + (fresh ? (wornNow ? 'on' : 'bad') : '');
+  $('wtxt').textContent = !fresh ? '等待实时信号 · 无法判断接触' : wornNow ? '电极贴着' : '接触检测未通过';
+}
+function paintRehearsalCue() {
+  if (!rehearsal || st.progress?.phase !== 'NOW' || rehearsalCueStart === null) return;
+  const elapsed = timingNow() - rehearsalCueStart;
+  const phase = elapsed < 400 ? 'relax' : elapsed < 1400 ? 'action' : 'release';
+  $('big').textContent = st.progress.label === 'rest' ? '保持放松' : phase === 'relax' ? '先放松' : phase === 'action' ? '做！' : '松开';
+  if (phase !== rehearsalCuePhase) {
+    rehearsalCuePhase = phase;
+    fetch('/api/emg/cue-shown', {method:'POST',headers:H,body:JSON.stringify({shown_ms:Date.now(),phase,recording_ack_host_ns:String(st.progress.recording_ack_host_ns)})});
+  }
+}
+function paintFrame() {
+  streamTiming.observe('paint', timingNow(), timingPhase());
+  // log scale: 1 mV (resting noise) at the bottom, ~1500 mV (full swing) at the top
+  const f = Math.max(0, Math.min(1, Math.log10(Math.max(shown, 1)) / Math.log10(1500)));
+  $('fill').style.height = (f * 100) + '%'; $('mv').textContent = shown.toFixed(shown < 10 ? 1 : 0);
+  updateWearStatus();
+  drawSignals();
+  paintRehearsalCue();
+  requestAnimationFrame(paintFrame);
+}
+$('envelopeWindow').onchange = () => {
+  envelopeMs = Number($('envelopeWindow').value);
+  env = new Envelope(envelopeMs);
+  traces.forEach(a => a.length = 0);
+  frozen = null; shown = 0;
+  $('freeze').textContent = '暂停显示';
+};
+if (params.get('view') !== 'data' && !trainingPage) requestAnimationFrame(paintFrame);
+if (params.get('view') !== 'data' && !trainingPage) connect(); setInterval(refresh, 400); refresh();
+</script>

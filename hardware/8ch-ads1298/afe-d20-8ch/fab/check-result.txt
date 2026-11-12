@@ -1,0 +1,2 @@
+自检 通过 {"files": 14, "layers": 11, "board": "43.10×36.50", "pth": 249, "npth": 4, "min_drill": 0.3, "smt": {"bom_parts": 76, "bom_lines": 24, "cpl": 76}, "opens": {"F_Paste.gtp": 305, "B_Paste.gbp": 0, "F_Mask.gts": 307, "B_Mask.gbs": 0}, "drc.json": {"violations": 0, "unconnected_items": 0, "lib_notes": 51}, "drc-refill.json": {"violations": 0, "unconnected_items": 0, "lib_notes": 51}, "smt_dfm": {"courtyard_bad": 0, "no_courtyard": 0, "spacing_pairs": 0, "spacing_parts": 0, "checked": 53, "skipped": 23}, "thermal": 8}
+阳性对照 16/16 判红 

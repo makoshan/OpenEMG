@@ -1,0 +1,46 @@
+/* 从 PrintThings app/v3/v3.css 摘出肌电页要的基础变量和两条公用类，颜色仍只来自 tokens.css */
+.v3 {
+  --paper: var(--pt-surface-paper); --panel: var(--pt-surface-panel); --line: var(--pt-border-default); --dot: var(--pt-canvas-dot);
+  --ink: var(--pt-text-primary); --dim: var(--pt-text-secondary); --bad: var(--pt-state-danger); --warn: var(--pt-state-attention);
+  --go: var(--pt-action-primary); --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  position: fixed; inset: 0; overflow: auto; display: flex; flex-direction: column;
+  background: var(--paper); color: var(--ink); font: 14px/22px -apple-system, "PingFang SC", system-ui, sans-serif;
+}
+.v3 * { box-sizing: border-box; }
+.v3-area { padding: 16px; }
+.v3-note { font-size: 12px; color: var(--dim); background: var(--pt-surface-panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 12px; }
+.v3-note.warn { color: var(--warn); background: color-mix(in srgb, var(--pt-state-attention) 7%, var(--pt-surface-panel)); border-color: color-mix(in srgb, var(--pt-state-attention) 24%, var(--pt-surface-panel)); }
+
+
+/* 云端上传：顶栏小标签 + 同意书弹层 */
+.cloud-chip { font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--pt-surface-panel); color: var(--dim); cursor: pointer; white-space: nowrap; }
+.cloud-chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--pt-state-attention) 40%, var(--pt-surface-panel)); }
+.cloud-mask { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--pt-text-primary) 35%, transparent); display: grid; place-items: center; padding: 16px; }
+.cloud-panel { width: min(560px, 100%); max-height: 90vh; overflow: auto; background: var(--pt-surface-panel); color: var(--ink); border-radius: 12px; padding: 20px 22px; box-shadow: 0 12px 40px rgba(0, 0, 0, .18); }
+.cloud-panel h3 { margin: 0 0 12px; font-size: 17px; }
+.cloud-consent { margin: 0 0 14px; display: grid; gap: 8px; }
+.cloud-consent div { display: grid; grid-template-columns: 6em 1fr; gap: 10px; }
+.cloud-consent dt { color: var(--dim); font-size: 13px; }
+.cloud-consent dd { margin: 0; font-size: 14px; }
+.cloud-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.cloud-actions button { font: inherit; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--pt-surface-panel); color: var(--ink); cursor: pointer; }
+.cloud-actions button.primary { background: var(--go); border-color: var(--go); color: var(--pt-surface-panel); }
+.cloud-actions button.danger { color: var(--bad); }
+.cloud-actions button:disabled { opacity: .5; cursor: default; }
+.cloud-foot { font-size: 11px; color: var(--dim); margin: 8px 0 0; }
+
+/* 网页版录制 */
+.web-rec { background: var(--pt-surface-panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.web-rec h3 { margin: 0 0 10px; font-size: 15px; }
+.web-rec-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.web-rec-row input[type=number] { width: 4.5em; font: inherit; }
+.web-rec button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--pt-surface-panel); color: var(--ink); cursor: pointer; }
+.web-rec button.primary { background: var(--go); border-color: var(--go); color: var(--pt-surface-panel); }
+.web-rec button.danger { color: var(--bad); }
+.web-rec button:disabled { opacity: .5; cursor: default; }
+.web-consent { margin: 0 0 12px; }
+.web-consent summary { cursor: pointer; color: var(--dim); margin-bottom: 8px; }
+.web-takes { margin: 10px 0 0; padding-left: 1.5em; font-size: 13px; color: var(--dim); }
+.web-takes li[data-state=ok] { color: var(--ink); }
+.web-takes li[data-state=retry], .web-takes li[data-state=rejected] { color: var(--warn); }
+.web-takes button { margin-left: 8px; padding: 2px 8px; font-size: 12px; }

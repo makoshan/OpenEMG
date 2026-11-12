@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- OpenEMG App 图标：黑底圆角方块 + logo.svg 同一图形；改图后跑 scripts/render-icon.cjs + iconutil 重出 icon.icns -->
+  <defs><mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="#fff"/><rect x="900" y="559" width="354" height="205" fill="#000"/></mask></defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="#070A0F"/>
+  <g transform="translate(512 512) scale(0.53) translate(-654 -640)"><g fill="none" stroke="#78EAF5"><circle cx="621" cy="640" r="480" stroke-width="114" mask="url(#gap)"/><path d="M245,832 C330,818 375,775 410,712 L526,470 Q559,400 592,470 L688,770 Q720,872 752,770 L800,600 Q850,455 900,590 Q940,668 1000,670 L1177,670" stroke-width="94" stroke-linecap="round" stroke-linejoin="round"/></g></g>
+</svg>

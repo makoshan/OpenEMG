@@ -1,0 +1,4353 @@
+{
+  "plan": "emg/v12/PLAN.md v6 (2026-09-30)",
+  "parts": [
+    {
+      "ref": "U1",
+      "value": "ADS1298IPAGR",
+      "lcsc": "C527440",
+      "sym": "ADS1298",
+      "fp": null,
+      "pins": {
+        "15": "ADS_IN1N",
+        "16": "ADS_IN1P",
+        "13": "ADS_IN2N",
+        "14": "ADS_IN2P",
+        "11": "ADS_IN3N",
+        "12": "ADS_IN3P",
+        "9": "ADS_IN4N",
+        "10": "ADS_IN4P",
+        "7": "ADS_IN5N",
+        "8": "ADS_IN5P",
+        "5": "ADS_IN6N",
+        "6": "ADS_IN6P",
+        "3": "ADS_IN7N",
+        "4": "ADS_IN7P",
+        "1": "ADS_IN8N",
+        "2": "ADS_IN8P",
+        "17": "AVDD",
+        "18": "AVDD",
+        "19": "AVDD",
+        "21": "AVDD",
+        "22": "AVDD",
+        "54": "AVDD",
+        "56": "AVDD",
+        "59": "AVDD",
+        "20": "GND",
+        "23": "GND",
+        "32": "GND",
+        "53": "GND",
+        "57": "GND",
+        "58": "GND",
+        "24": "VREFP",
+        "25": "GND",
+        "26": "VCAP4",
+        "27": null,
+        "28": "VCAP1",
+        "29": null,
+        "30": "VCAP2",
+        "31": "GND",
+        "33": "GND",
+        "34": "ADS_DIN",
+        "35": "ADS_PWDN",
+        "36": "ADS_RESET",
+        "37": "ADS_CLK",
+        "38": "GND",
+        "39": "ADS_CS",
+        "40": "ADS_SCLK",
+        "41": "GND",
+        "42": "ADS_GPIO1",
+        "43": "ADS_DOUT",
+        "44": "ADS_GPIO2",
+        "45": "ADS_GPIO3",
+        "46": "ADS_GPIO4",
+        "47": "ADS_DRDY",
+        "48": "DVDD",
+        "49": "GND",
+        "50": "DVDD",
+        "51": "GND",
+        "52": "ADS_CLKSEL",
+        "55": "VCAP3",
+        "60": "RLDREF",
+        "61": "RLDINV",
+        "62": "AVDD",
+        "63": "RLDOUT",
+        "64": null
+      },
+      "sheet": "ADS",
+      "block": "ADC",
+      "note": "RLDIN未用接AVDD；固件必须禁止RLD_MEAS及CHnSET的RLDIN路由。",
+      "footprint": "Package_QFP:TQFP-64_10x10mm_P0.5mm",
+      "footprint_source": "TI ADS1298IPAGR / PAG0064A / ads1298.pdf",
+      "dnp": false,
+      "source_ref": "U1"
+    },
+    {
+      "ref": "C1",
+      "value": "10uF",
+      "lcsc": "C19702",
+      "sym": "CAP",
+      "fp": "C0603",
+      "pins": {
+        "1": "VREFP",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C1"
+    },
+    {
+      "ref": "C2",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VREFP",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C2"
+    },
+    {
+      "ref": "C3",
+      "value": "22uF",
+      "lcsc": "C59461",
+      "sym": "CAP",
+      "fp": "C0603",
+      "pins": {
+        "1": "VCAP1",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "有效电容/压电噪声待核",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C3"
+    },
+    {
+      "ref": "C4",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VCAP2",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C4"
+    },
+    {
+      "ref": "C5",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VCAP3",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C5"
+    },
+    {
+      "ref": "C6",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VCAP3",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C6"
+    },
+    {
+      "ref": "C7",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VCAP4",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "VREF_VCAP",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C7"
+    },
+    {
+      "ref": "C8",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 19/21/22",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C8"
+    },
+    {
+      "ref": "C9",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 19/21/22",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C9"
+    },
+    {
+      "ref": "C10",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 54 AVDD1",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C10"
+    },
+    {
+      "ref": "C11",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 54 AVDD1",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C11"
+    },
+    {
+      "ref": "C12",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 56/59",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C12"
+    },
+    {
+      "ref": "C13",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "AVDD 脚 56/59",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C13"
+    },
+    {
+      "ref": "C14",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "DVDD 脚 48",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C14"
+    },
+    {
+      "ref": "C15",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "DVDD 脚 50",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C15"
+    },
+    {
+      "ref": "C16",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DECOUPLE",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C16"
+    },
+    {
+      "ref": "R1",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "RLDREF"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1"
+    },
+    {
+      "ref": "R2",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "RLDREF",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2"
+    },
+    {
+      "ref": "C17",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "RLDREF",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C17"
+    },
+    {
+      "ref": "R3",
+      "value": "200k",
+      "lcsc": "C25764",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "RLDOUT",
+        "2": "RLD_FB"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3"
+    },
+    {
+      "ref": "R4",
+      "value": "200k",
+      "lcsc": "C25764",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "RLD_FB",
+        "2": "RLDINV"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4"
+    },
+    {
+      "ref": "C18",
+      "value": "10nF",
+      "lcsc": "C15195",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "RLDOUT",
+        "2": "RLDINV"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C18"
+    },
+    {
+      "ref": "R5",
+      "value": "200k",
+      "lcsc": "C25764",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "RLDOUT",
+        "2": "RLD_MID"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5"
+    },
+    {
+      "ref": "R6",
+      "value": "200k",
+      "lcsc": "C25764",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "RLD_MID",
+        "2": "E_RLD"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6"
+    },
+    {
+      "ref": "R7",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E_RLD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7"
+    },
+    {
+      "ref": "ESD17",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E_RLD",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "RLD",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD17"
+    },
+    {
+      "ref": "R8",
+      "value": "33R",
+      "lcsc": "C25105",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "SCLK_B",
+        "2": "ADS_SCLK"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8"
+    },
+    {
+      "ref": "R9",
+      "value": "33R",
+      "lcsc": "C25105",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "DIN_B",
+        "2": "ADS_DIN"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R9"
+    },
+    {
+      "ref": "R10",
+      "value": "33R",
+      "lcsc": "C25105",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_DOUT",
+        "2": "DOUT_B"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R10"
+    },
+    {
+      "ref": "R11",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_CS",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R11"
+    },
+    {
+      "ref": "R12",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_SCLK",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R12"
+    },
+    {
+      "ref": "R13",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_DIN",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R13"
+    },
+    {
+      "ref": "R14",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_RESET",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R14"
+    },
+    {
+      "ref": "R15",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_CLKSEL",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R15"
+    },
+    {
+      "ref": "R16",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_GPIO1",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R16"
+    },
+    {
+      "ref": "R17",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_GPIO2",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R17"
+    },
+    {
+      "ref": "R18",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_GPIO3",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R18"
+    },
+    {
+      "ref": "R19",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_GPIO4",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R19"
+    },
+    {
+      "ref": "R20",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_CLK",
+        "2": "GND"
+      },
+      "sheet": "ADS",
+      "block": "DIGITAL",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R20"
+    },
+    {
+      "ref": "ESD1",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E1P",
+        "2": "GND"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD1"
+    },
+    {
+      "ref": "R101",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E1P",
+        "2": "L1P1"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PA"
+    },
+    {
+      "ref": "R102",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1P1",
+        "2": "L1P2"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PB"
+    },
+    {
+      "ref": "R103",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1P2",
+        "2": "L1P3"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PC"
+    },
+    {
+      "ref": "R104",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1P3",
+        "2": "ADS_IN1P"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PD"
+    },
+    {
+      "ref": "R105",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN1P",
+        "2": "L1PB"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PE"
+    },
+    {
+      "ref": "R106",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1PB",
+        "2": "GND"
+      },
+      "sheet": "CH1",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1PF"
+    },
+    {
+      "ref": "ESD2",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E1N",
+        "2": "GND"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD2"
+    },
+    {
+      "ref": "R107",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E1N",
+        "2": "L1N1"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1NA"
+    },
+    {
+      "ref": "R108",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1N1",
+        "2": "L1N2"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1NB"
+    },
+    {
+      "ref": "R109",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1N2",
+        "2": "L1N3"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1NC"
+    },
+    {
+      "ref": "R110",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1N3",
+        "2": "ADS_IN1N"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1ND"
+    },
+    {
+      "ref": "R111",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN1N",
+        "2": "L1NB"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1NE"
+    },
+    {
+      "ref": "R112",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L1NB",
+        "2": "GND"
+      },
+      "sheet": "CH1",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R1NF"
+    },
+    {
+      "ref": "ESD3",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E2P",
+        "2": "GND"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD3"
+    },
+    {
+      "ref": "R113",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E2P",
+        "2": "L2P1"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PA"
+    },
+    {
+      "ref": "R114",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2P1",
+        "2": "L2P2"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PB"
+    },
+    {
+      "ref": "R115",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2P2",
+        "2": "L2P3"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PC"
+    },
+    {
+      "ref": "R116",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2P3",
+        "2": "ADS_IN2P"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PD"
+    },
+    {
+      "ref": "R117",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN2P",
+        "2": "L2PB"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PE"
+    },
+    {
+      "ref": "R118",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2PB",
+        "2": "GND"
+      },
+      "sheet": "CH2",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2PF"
+    },
+    {
+      "ref": "ESD4",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E2N",
+        "2": "GND"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD4"
+    },
+    {
+      "ref": "R119",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E2N",
+        "2": "L2N1"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2NA"
+    },
+    {
+      "ref": "R120",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2N1",
+        "2": "L2N2"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2NB"
+    },
+    {
+      "ref": "R121",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2N2",
+        "2": "L2N3"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2NC"
+    },
+    {
+      "ref": "R122",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2N3",
+        "2": "ADS_IN2N"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2ND"
+    },
+    {
+      "ref": "R123",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN2N",
+        "2": "L2NB"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2NE"
+    },
+    {
+      "ref": "R124",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L2NB",
+        "2": "GND"
+      },
+      "sheet": "CH2",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R2NF"
+    },
+    {
+      "ref": "ESD5",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E3P",
+        "2": "GND"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD5"
+    },
+    {
+      "ref": "R125",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E3P",
+        "2": "L3P1"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PA"
+    },
+    {
+      "ref": "R126",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3P1",
+        "2": "L3P2"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PB"
+    },
+    {
+      "ref": "R127",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3P2",
+        "2": "L3P3"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PC"
+    },
+    {
+      "ref": "R128",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3P3",
+        "2": "ADS_IN3P"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PD"
+    },
+    {
+      "ref": "R129",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN3P",
+        "2": "L3PB"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PE"
+    },
+    {
+      "ref": "R130",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3PB",
+        "2": "GND"
+      },
+      "sheet": "CH3",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3PF"
+    },
+    {
+      "ref": "ESD6",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E3N",
+        "2": "GND"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD6"
+    },
+    {
+      "ref": "R131",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E3N",
+        "2": "L3N1"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3NA"
+    },
+    {
+      "ref": "R132",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3N1",
+        "2": "L3N2"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3NB"
+    },
+    {
+      "ref": "R133",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3N2",
+        "2": "L3N3"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3NC"
+    },
+    {
+      "ref": "R134",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3N3",
+        "2": "ADS_IN3N"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3ND"
+    },
+    {
+      "ref": "R135",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN3N",
+        "2": "L3NB"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3NE"
+    },
+    {
+      "ref": "R136",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L3NB",
+        "2": "GND"
+      },
+      "sheet": "CH3",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R3NF"
+    },
+    {
+      "ref": "ESD7",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E4P",
+        "2": "GND"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD7"
+    },
+    {
+      "ref": "R137",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E4P",
+        "2": "L4P1"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PA"
+    },
+    {
+      "ref": "R138",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4P1",
+        "2": "L4P2"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PB"
+    },
+    {
+      "ref": "R139",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4P2",
+        "2": "L4P3"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PC"
+    },
+    {
+      "ref": "R140",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4P3",
+        "2": "ADS_IN4P"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PD"
+    },
+    {
+      "ref": "R141",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN4P",
+        "2": "L4PB"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PE"
+    },
+    {
+      "ref": "R142",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4PB",
+        "2": "GND"
+      },
+      "sheet": "CH4",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4PF"
+    },
+    {
+      "ref": "ESD8",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E4N",
+        "2": "GND"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD8"
+    },
+    {
+      "ref": "R143",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E4N",
+        "2": "L4N1"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4NA"
+    },
+    {
+      "ref": "R144",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4N1",
+        "2": "L4N2"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4NB"
+    },
+    {
+      "ref": "R145",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4N2",
+        "2": "L4N3"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4NC"
+    },
+    {
+      "ref": "R146",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4N3",
+        "2": "ADS_IN4N"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4ND"
+    },
+    {
+      "ref": "R147",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN4N",
+        "2": "L4NB"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4NE"
+    },
+    {
+      "ref": "R148",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L4NB",
+        "2": "GND"
+      },
+      "sheet": "CH4",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R4NF"
+    },
+    {
+      "ref": "ESD9",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E5P",
+        "2": "GND"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD9"
+    },
+    {
+      "ref": "R149",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E5P",
+        "2": "L5P1"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PA"
+    },
+    {
+      "ref": "R150",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5P1",
+        "2": "L5P2"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PB"
+    },
+    {
+      "ref": "R151",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5P2",
+        "2": "L5P3"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PC"
+    },
+    {
+      "ref": "R152",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5P3",
+        "2": "ADS_IN5P"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PD"
+    },
+    {
+      "ref": "R153",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN5P",
+        "2": "L5PB"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PE"
+    },
+    {
+      "ref": "R154",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5PB",
+        "2": "GND"
+      },
+      "sheet": "CH5",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5PF"
+    },
+    {
+      "ref": "ESD10",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E5N",
+        "2": "GND"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD10"
+    },
+    {
+      "ref": "R155",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E5N",
+        "2": "L5N1"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5NA"
+    },
+    {
+      "ref": "R156",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5N1",
+        "2": "L5N2"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5NB"
+    },
+    {
+      "ref": "R157",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5N2",
+        "2": "L5N3"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5NC"
+    },
+    {
+      "ref": "R158",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5N3",
+        "2": "ADS_IN5N"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5ND"
+    },
+    {
+      "ref": "R159",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN5N",
+        "2": "L5NB"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5NE"
+    },
+    {
+      "ref": "R160",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L5NB",
+        "2": "GND"
+      },
+      "sheet": "CH5",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R5NF"
+    },
+    {
+      "ref": "ESD11",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E6P",
+        "2": "GND"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD11"
+    },
+    {
+      "ref": "R161",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E6P",
+        "2": "L6P1"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PA"
+    },
+    {
+      "ref": "R162",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6P1",
+        "2": "L6P2"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PB"
+    },
+    {
+      "ref": "R163",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6P2",
+        "2": "L6P3"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PC"
+    },
+    {
+      "ref": "R164",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6P3",
+        "2": "ADS_IN6P"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PD"
+    },
+    {
+      "ref": "R165",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN6P",
+        "2": "L6PB"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PE"
+    },
+    {
+      "ref": "R166",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6PB",
+        "2": "GND"
+      },
+      "sheet": "CH6",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6PF"
+    },
+    {
+      "ref": "ESD12",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E6N",
+        "2": "GND"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD12"
+    },
+    {
+      "ref": "R167",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E6N",
+        "2": "L6N1"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6NA"
+    },
+    {
+      "ref": "R168",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6N1",
+        "2": "L6N2"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6NB"
+    },
+    {
+      "ref": "R169",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6N2",
+        "2": "L6N3"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6NC"
+    },
+    {
+      "ref": "R170",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6N3",
+        "2": "ADS_IN6N"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6ND"
+    },
+    {
+      "ref": "R171",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN6N",
+        "2": "L6NB"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6NE"
+    },
+    {
+      "ref": "R172",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L6NB",
+        "2": "GND"
+      },
+      "sheet": "CH6",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R6NF"
+    },
+    {
+      "ref": "ESD13",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E7P",
+        "2": "GND"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD13"
+    },
+    {
+      "ref": "R173",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E7P",
+        "2": "L7P1"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PA"
+    },
+    {
+      "ref": "R174",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7P1",
+        "2": "L7P2"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PB"
+    },
+    {
+      "ref": "R175",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7P2",
+        "2": "L7P3"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PC"
+    },
+    {
+      "ref": "R176",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7P3",
+        "2": "ADS_IN7P"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PD"
+    },
+    {
+      "ref": "R177",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN7P",
+        "2": "L7PB"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PE"
+    },
+    {
+      "ref": "R178",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7PB",
+        "2": "GND"
+      },
+      "sheet": "CH7",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7PF"
+    },
+    {
+      "ref": "ESD14",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E7N",
+        "2": "GND"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD14"
+    },
+    {
+      "ref": "R179",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E7N",
+        "2": "L7N1"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7NA"
+    },
+    {
+      "ref": "R180",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7N1",
+        "2": "L7N2"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7NB"
+    },
+    {
+      "ref": "R181",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7N2",
+        "2": "L7N3"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7NC"
+    },
+    {
+      "ref": "R182",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7N3",
+        "2": "ADS_IN7N"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7ND"
+    },
+    {
+      "ref": "R183",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN7N",
+        "2": "L7NB"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7NE"
+    },
+    {
+      "ref": "R184",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L7NB",
+        "2": "GND"
+      },
+      "sheet": "CH7",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R7NF"
+    },
+    {
+      "ref": "ESD15",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E8P",
+        "2": "GND"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD15"
+    },
+    {
+      "ref": "R185",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E8P",
+        "2": "L8P1"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PA"
+    },
+    {
+      "ref": "R186",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8P1",
+        "2": "L8P2"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PB"
+    },
+    {
+      "ref": "R187",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8P2",
+        "2": "L8P3"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PC"
+    },
+    {
+      "ref": "R188",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8P3",
+        "2": "ADS_IN8P"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PD"
+    },
+    {
+      "ref": "R189",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN8P",
+        "2": "L8PB"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PE"
+    },
+    {
+      "ref": "R190",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8PB",
+        "2": "GND"
+      },
+      "sheet": "CH8",
+      "block": "P",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8PF"
+    },
+    {
+      "ref": "ESD16",
+      "value": "ESD501DPYR",
+      "lcsc": "C42409135",
+      "sym": "ESD501",
+      "fp": null,
+      "pins": {
+        "1": "E8N",
+        "2": "GND"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "footprint": "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm",
+      "footprint_source": "TI ESD501DPYR / DPY0002A / esd501.pdf",
+      "dnp": false,
+      "source_ref": "ESD16"
+    },
+    {
+      "ref": "R191",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "E8N",
+        "2": "L8N1"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "value_q": "100k",
+      "lcsc_q": "C25741",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8NA"
+    },
+    {
+      "ref": "R192",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8N1",
+        "2": "L8N2"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8NB"
+    },
+    {
+      "ref": "R193",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8N2",
+        "2": "L8N3"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8NC"
+    },
+    {
+      "ref": "R194",
+      "value": "1M",
+      "lcsc": "C26083",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8N3",
+        "2": "ADS_IN8N"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "value_q": "0R",
+      "lcsc_q": "C17168",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8ND"
+    },
+    {
+      "ref": "R195",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ADS_IN8N",
+        "2": "L8NB"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8NE"
+    },
+    {
+      "ref": "R196",
+      "value": "10M",
+      "lcsc": "C2933065",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "L8NB",
+        "2": "GND"
+      },
+      "sheet": "CH8",
+      "block": "N",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R8NF"
+    },
+    {
+      "ref": "U7",
+      "value": "TPS63802DLAR",
+      "lcsc": "C2845237",
+      "sym": "TPS63802",
+      "fp": null,
+      "pins": {
+        "1": "U7_EN",
+        "2": "VBAT",
+        "3": "GND",
+        "4": "U7_FB",
+        "5": "PG",
+        "6": "AVDD",
+        "7": "U7_L2",
+        "8": "GND",
+        "9": "U7_L1",
+        "10": "VBAT"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "MODE 接 VIN = 强制 PWM",
+      "footprint": "V12Parts:TI_DLA0010A",
+      "footprint_source": "TI tps63802.pdf p36 DLA0010A 4223750/D 03/2019",
+      "dnp": false,
+      "source_ref": "U7"
+    },
+    {
+      "ref": "L1",
+      "value": "470nH",
+      "lcsc": "C5832340",
+      "sym": "IND",
+      "fp": null,
+      "pins": {
+        "1": "U7_L1",
+        "2": "U7_L2"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "",
+      "footprint": "V12Parts:FTC201610S",
+      "footprint_source": "FTC201610SR47MBCA C5832340；厂家FT_Catalouge p5",
+      "dnp": false,
+      "source_ref": "L1"
+    },
+    {
+      "ref": "C19",
+      "value": "10uF",
+      "lcsc": "C19702",
+      "sym": "CAP",
+      "fp": "C0603",
+      "pins": {
+        "1": "VBAT",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C19"
+    },
+    {
+      "ref": "C20",
+      "value": "22uF",
+      "lcsc": "C109314",
+      "sym": "CAP",
+      "fp": null,
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "0805 10V；5V 偏压有效电容待核",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "footprint_source": "C109314 / 0805 / 原设计10V22uF；直流偏压有效电容仍待验证",
+      "dnp": false,
+      "source_ref": "C20"
+    },
+    {
+      "ref": "C21",
+      "value": "22uF",
+      "lcsc": "C109314",
+      "sym": "CAP",
+      "fp": null,
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "0805 10V",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "footprint_source": "C109314 / 0805 / 原设计10V22uF；直流偏压有效电容仍待验证",
+      "dnp": false,
+      "source_ref": "C21"
+    },
+    {
+      "ref": "R21",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "U7_FB"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "0.5V×(1+100k/11k)=5.045V",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R21"
+    },
+    {
+      "ref": "R22",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "U7_FB",
+        "2": "U7_FBL"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R22"
+    },
+    {
+      "ref": "R23",
+      "value": "1k",
+      "lcsc": "C11702",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "U7_FBL",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "BUCKBOOST",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R23"
+    },
+    {
+      "ref": "U9",
+      "value": "TPS7A2018PDBVR",
+      "lcsc": "C963430",
+      "sym": "TPS7A2018",
+      "fp": null,
+      "pins": {
+        "1": "AVDD",
+        "2": "GND",
+        "3": "AVDD",
+        "4": null,
+        "5": "DVDD"
+      },
+      "sheet": "POWER",
+      "block": "LDO",
+      "note": "EN 接 IN；具体后缀待核",
+      "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+      "footprint_source": "TI TPS7A2018PDBVR / DBV0005A",
+      "dnp": false,
+      "source_ref": "U9"
+    },
+    {
+      "ref": "C22",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "LDO",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C22"
+    },
+    {
+      "ref": "C23",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "LDO",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C23"
+    },
+    {
+      "ref": "D1",
+      "value": "B5819WS",
+      "lcsc": "C7420331",
+      "sym": "B5819WS",
+      "fp": null,
+      "pins": {
+        "1": "AVDD",
+        "2": "DVDD"
+      },
+      "sheet": "POWER",
+      "block": "LDO",
+      "note": "R+O B5819WS，SOD-323；原图逻辑1=A/2=K，本候选物理1=K/2=A。",
+      "footprint": "Diode_SMD:D_SOD-323",
+      "footprint_source": "R+O B5819WS C7420331 / 物理1K2A；候选已转换原逻辑脚号",
+      "dnp": false,
+      "source_ref": "D1"
+    },
+    {
+      "ref": "R24",
+      "value": "47k",
+      "lcsc": "C25792",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ANA_EN",
+        "2": "U7_EN"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R24"
+    },
+    {
+      "ref": "R25",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "U7_EN",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R25"
+    },
+    {
+      "ref": "C24",
+      "value": "1uF",
+      "lcsc": "C52923",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "EN_RC",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C24"
+    },
+    {
+      "ref": "Q1",
+      "value": "AO3400A",
+      "lcsc": "C20917",
+      "sym": "AO3400A",
+      "fp": null,
+      "pins": {
+        "1": "VBUS",
+        "2": "GND",
+        "3": "ILK_D"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "VBUS 在 → 拉低 U7.EN",
+      "footprint": "Package_TO_SOT_SMD:SOT-23",
+      "footprint_source": "AOS AO3400A / 1G 2S 3D",
+      "dnp": false,
+      "source_ref": "Q1"
+    },
+    {
+      "ref": "R26",
+      "value": "0R",
+      "lcsc": "C17168",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "ILK_D",
+        "2": "U7_EN"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "互锁跳线：默认装，仅离体台架拆",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R26"
+    },
+    {
+      "ref": "R27",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "VBUS",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "草案新增：Q1 栅极下拉，拔 USB 后 VBUS 脚不悬空",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R27"
+    },
+    {
+      "ref": "R28",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "PG",
+        "2": "DVDD"
+      },
+      "sheet": "POWER",
+      "block": "ENABLE",
+      "note": "U7 PG 上拉 DVDD → U10/U11（E01）",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R28"
+    },
+    {
+      "ref": "R29",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVDD",
+        "2": "AVS1"
+      },
+      "sheet": "POWER",
+      "block": "SENSE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R29"
+    },
+    {
+      "ref": "R30",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVS1",
+        "2": "AVS2"
+      },
+      "sheet": "POWER",
+      "block": "SENSE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R30"
+    },
+    {
+      "ref": "R31",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVS2",
+        "2": "AVDD_SENSE"
+      },
+      "sheet": "POWER",
+      "block": "SENSE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R31"
+    },
+    {
+      "ref": "R32",
+      "value": "100k",
+      "lcsc": "C25741",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "AVDD_SENSE",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "SENSE",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R32"
+    },
+    {
+      "ref": "C25",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "AVDD_SENSE",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "SENSE",
+      "note": "",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C25"
+    },
+    {
+      "ref": "U2",
+      "value": "SN74AXC8T245RHLR",
+      "lcsc": "C2677358",
+      "sym": "SN74AXC8T245",
+      "fp": null,
+      "pins": {
+        "1": "3V3",
+        "2": "3V3",
+        "11": "GND",
+        "22": "OE_N",
+        "23": "DVDD",
+        "24": "DVDD",
+        "12": "GND",
+        "13": "GND",
+        "25": "GND",
+        "3": "XIAO_CS",
+        "4": "XIAO_SCLK",
+        "5": "XIAO_MOSI",
+        "6": "XIAO_RESET",
+        "7": "XIAO_CLKSEL",
+        "8": "XIAO_PWDN",
+        "9": "GND",
+        "10": "GND",
+        "21": "ADS_CS",
+        "20": "SCLK_B",
+        "19": "DIN_B",
+        "18": "ADS_RESET",
+        "17": "ADS_CLKSEL",
+        "16": "ADS_PWDN",
+        "15": null,
+        "14": null
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "DIR1=H DIR2=L：8 位 A→B（XIAO→ADS）；未用 A 输入接地",
+      "footprint": "V12Parts:TI_RHL0024A",
+      "footprint_source": "TI sn74axc8t245.pdf p37 RHL0024A 4225250/C 06/2026",
+      "dnp": false,
+      "source_ref": "U2"
+    },
+    {
+      "ref": "U3",
+      "value": "SN74AXC8T245RHLR",
+      "lcsc": "C2677358",
+      "sym": "SN74AXC8T245",
+      "fp": null,
+      "pins": {
+        "1": "3V3",
+        "2": "GND",
+        "11": "GND",
+        "22": "OE_N",
+        "23": "DVDD",
+        "24": "DVDD",
+        "12": "GND",
+        "13": "GND",
+        "25": "GND",
+        "21": "DOUT_B",
+        "20": "ADS_DRDY",
+        "19": "GND",
+        "18": "GND",
+        "17": "GND",
+        "16": "GND",
+        "15": "GND",
+        "14": "GND",
+        "3": "XIAO_MISO",
+        "4": "XIAO_DRDY",
+        "5": null,
+        "6": null,
+        "7": null,
+        "8": null,
+        "9": null,
+        "10": null
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "DIR1=L DIR2=L：8 位 B→A（ADS→XIAO）；未用 B 输入接地",
+      "footprint": "V12Parts:TI_RHL0024A",
+      "footprint_source": "TI sn74axc8t245.pdf p37 RHL0024A 4225250/C 06/2026",
+      "dnp": false,
+      "source_ref": "U3"
+    },
+    {
+      "ref": "C26",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "3V3",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "U2 VCCA",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C26"
+    },
+    {
+      "ref": "C27",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "U2 VCCB",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C27"
+    },
+    {
+      "ref": "C28",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "3V3",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "U3 VCCA",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C28"
+    },
+    {
+      "ref": "C29",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "DVDD",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "LEVEL",
+      "note": "U3 VCCB",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C29"
+    },
+    {
+      "ref": "R33",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "OE_N",
+        "2": "3V3"
+      },
+      "sheet": "IF",
+      "block": "OE",
+      "note": "草案：OE 默认高 = 高阻",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R33"
+    },
+    {
+      "ref": "U10",
+      "value": "SN74AUP1T14DCKR",
+      "lcsc": "",
+      "sym": "SN74AUP1T14",
+      "fp": null,
+      "pins": {
+        "1": null,
+        "2": "PG",
+        "3": "GND",
+        "4": "OE_N",
+        "5": "3V3"
+      },
+      "sheet": "IF",
+      "block": "OE",
+      "note": "PG由DVDD上拉；3V3供电，施密特输入；设计温度限定−40…85°C。",
+      "footprint": "Package_TO_SOT_SMD:SOT-353_SC-70-5",
+      "footprint_source": "TI SN74AUP1T14DCKR / DCK0005A / SCES802",
+      "dnp": false,
+      "source_ref": "U10"
+    },
+    {
+      "ref": "C30",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "3V3",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "OE",
+      "note": "U10 VCC",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C30"
+    },
+    {
+      "ref": "C31",
+      "value": "100nF",
+      "lcsc": "C1525",
+      "sym": "CAP",
+      "fp": "C0402",
+      "pins": {
+        "1": "VBAT",
+        "2": "GND"
+      },
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "U12电池供电去耦，复用被删除U11的100nF位号。",
+      "footprint": "Capacitor_SMD:C_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "C31"
+    },
+    {
+      "ref": "R34",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "XIAO_CS",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "XIAO_PD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R34"
+    },
+    {
+      "ref": "R35",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "XIAO_SCLK",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "XIAO_PD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R35"
+    },
+    {
+      "ref": "R36",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "XIAO_MOSI",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "XIAO_PD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R36"
+    },
+    {
+      "ref": "R37",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "XIAO_RESET",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "XIAO_PD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R37"
+    },
+    {
+      "ref": "R38",
+      "value": "10k",
+      "lcsc": "C25744",
+      "sym": "RES",
+      "fp": "R0402",
+      "pins": {
+        "1": "XIAO_CLKSEL",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "XIAO_PD",
+      "note": "",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R38"
+    },
+    {
+      "ref": "J1",
+      "value": "XIAO_16P",
+      "lcsc": "",
+      "sym": "J1_XIAO",
+      "fp": null,
+      "pins": {
+        "1": "3V3",
+        "2": "GND",
+        "3": "XIAO_SCLK",
+        "4": "XIAO_MISO",
+        "5": "XIAO_MOSI",
+        "6": "XIAO_CS",
+        "7": "XIAO_DRDY",
+        "8": "XIAO_RESET",
+        "9": "XIAO_CLKSEL",
+        "10": "ANA_EN",
+        "11": "AVDD_SENSE",
+        "12": "VBUS",
+        "13": "VBAT",
+        "14": "GND",
+        "15": "XIAO_PWDN",
+        "16": "OE_N"
+      },
+      "sheet": "IF",
+      "block": "CONN",
+      "note": "原14脚保持；15=D4/PWDN，16=D5/OE_N状态，D5仅输入且不启用内部上下拉。",
+      "mpn": "TST-108-01-L-D",
+      "footprint": "V12Parts:Samtec_TST-108-01-L-D",
+      "footprint_source": "Samtec tst_c.pdf / 2x8 P2.54 / 键控垂直，配套线束待确认",
+      "dnp": false,
+      "source_ref": "J1"
+    },
+    {
+      "ref": "J2",
+      "value": "BAT_2P",
+      "lcsc": "",
+      "sym": "J2_BAT",
+      "fp": null,
+      "pins": {
+        "1": "VBAT",
+        "2": "GND"
+      },
+      "sheet": "IF",
+      "block": "CONN",
+      "note": "电池 BAT± 分支到 U7 与 XIAO；型号/极性标记待定",
+      "mpn": "B2B-PH-K-S",
+      "footprint": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+      "footprint_source": "JST ePH.pdf / B2B-PH-K-S + PHR-2",
+      "dnp": false,
+      "source_ref": "J2"
+    },
+    {
+      "ref": "J3",
+      "value": "ELECTRODE_17P",
+      "lcsc": "",
+      "sym": "J3_ELEC",
+      "fp": null,
+      "pins": {
+        "1": "E1P",
+        "2": "E1N",
+        "3": "E2P",
+        "4": "E2N",
+        "5": "E3P",
+        "6": "E3N",
+        "7": "E4P",
+        "8": "E4N",
+        "9": "E5P",
+        "10": "E5N",
+        "11": "E6P",
+        "12": "E6N",
+        "13": "E7P",
+        "14": "E7N",
+        "15": "E8P",
+        "16": "E8N",
+        "17": "E_RLD",
+        "18": null,
+        "19": null,
+        "20": null
+      },
+      "sheet": "IF",
+      "block": "CONN",
+      "note": "Micro-Fit20针，1–17保留原逻辑；18–20不接。仅离体调试板，未确认实际线束。",
+      "mpn": "43045-2012",
+      "footprint": "Connector_Molex:Molex_Micro-Fit_3.0_43045-2012_2x10_P3.00mm_Vertical",
+      "footprint_source": "Molex 43045-2012 + 43025-2000；1–17原逻辑，18–20NC",
+      "dnp": false,
+      "source_ref": "J3"
+    },
+    {
+      "ref": "R39",
+      "value": "10k",
+      "pins": {
+        "1": "XIAO_PWDN",
+        "2": "GND"
+      },
+      "sym": "RES",
+      "sheet": "IF",
+      "block": "R01",
+      "note": "",
+      "lcsc": "C25744",
+      "fp": "R0402",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R39"
+    },
+    {
+      "ref": "R40",
+      "value": "10k",
+      "pins": {
+        "1": "ADS_PWDN",
+        "2": "GND"
+      },
+      "sym": "RES",
+      "sheet": "ADS",
+      "block": "R01",
+      "note": "",
+      "lcsc": "C25744",
+      "fp": "R0402",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R40"
+    },
+    {
+      "ref": "U12",
+      "value": "TPS3808G33DBVR",
+      "pins": {
+        "1": "U7_EN",
+        "2": "GND",
+        "3": "VBAT",
+        "4": null,
+        "5": "3V3",
+        "6": "VBAT"
+      },
+      "sym": "TPS3808G33",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "CT悬空，12–28ms释放延时；RESET不加独立上拉，避免MCU复位时自行开AFE。",
+      "lcsc": "",
+      "fp": null,
+      "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+      "footprint_source": "TI TPS3808G33DBVR / DBV0006A",
+      "dnp": false,
+      "source_ref": "U12"
+    },
+    {
+      "ref": "R41",
+      "value": "4.7k",
+      "pins": {
+        "1": "U7_EN",
+        "2": "EN_RC"
+      },
+      "sym": "RES",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "1%；C24最坏放电加ANA_EN电流<1mA，使TPS3808的VOL保证条件适用。",
+      "lcsc": "C25900",
+      "fp": "R0402",
+      "footprint": "Resistor_SMD:R_0402_1005Metric",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "R41"
+    },
+    {
+      "ref": "TP1",
+      "value": "AVDD",
+      "pins": {
+        "1": "AVDD"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP1"
+    },
+    {
+      "ref": "TP2",
+      "value": "DVDD",
+      "pins": {
+        "1": "DVDD"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP2"
+    },
+    {
+      "ref": "TP3",
+      "value": "PG",
+      "pins": {
+        "1": "PG"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP3"
+    },
+    {
+      "ref": "TP4",
+      "value": "OE_N",
+      "pins": {
+        "1": "OE_N"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP4"
+    },
+    {
+      "ref": "TP5",
+      "value": "ADS_PWDN",
+      "pins": {
+        "1": "ADS_PWDN"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP5"
+    },
+    {
+      "ref": "TP6",
+      "value": "ADS_RESET",
+      "pins": {
+        "1": "ADS_RESET"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP6"
+    },
+    {
+      "ref": "TP7",
+      "value": "ADS_CLKSEL",
+      "pins": {
+        "1": "ADS_CLKSEL"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP7"
+    },
+    {
+      "ref": "TP8",
+      "value": "VCAP1",
+      "pins": {
+        "1": "VCAP1"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP8"
+    },
+    {
+      "ref": "TP9",
+      "value": "U7_EN",
+      "pins": {
+        "1": "U7_EN"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP9"
+    },
+    {
+      "ref": "TP10",
+      "value": "GND",
+      "pins": {
+        "1": "GND"
+      },
+      "sym": "TESTPOINT",
+      "sheet": "POWER",
+      "block": "R01",
+      "note": "仅离体示波/逻辑分析探测；探头电容对VCAP1的影响须记录。",
+      "lcsc": "",
+      "fp": "TESTPOINT",
+      "footprint": "TestPoint:TestPoint_Pad_D1.0mm",
+      "footprint_source": "继承原设计尺寸；KiCad10.0.6封装库，物料额定值另验",
+      "dnp": false,
+      "source_ref": "TP10"
+    }
+  ],
+  "pinnames": {
+    "ADS1298": {
+      "1": "IN8N",
+      "2": "IN8P",
+      "3": "IN7N",
+      "4": "IN7P",
+      "5": "IN6N",
+      "6": "IN6P",
+      "7": "IN5N",
+      "8": "IN5P",
+      "9": "IN4N",
+      "10": "IN4P",
+      "11": "IN3N",
+      "12": "IN3P",
+      "13": "IN2N",
+      "14": "IN2P",
+      "15": "IN1N",
+      "16": "IN1P",
+      "17": "TESTP_PACE_OUT1",
+      "18": "TESTN_PACE_OUT2",
+      "19": "AVDD",
+      "20": "AVSS",
+      "21": "AVDD",
+      "22": "AVDD",
+      "23": "AVSS",
+      "24": "VREFP",
+      "25": "VREFN",
+      "26": "VCAP4",
+      "27": "NC",
+      "28": "VCAP1",
+      "29": "NC",
+      "30": "VCAP2",
+      "31": "RESV1",
+      "32": "AVSS",
+      "33": "DGND",
+      "34": "DIN",
+      "35": "PWDN#",
+      "36": "RESET#",
+      "37": "CLK",
+      "38": "START",
+      "39": "CS#",
+      "40": "SCLK",
+      "41": "DAISY_IN",
+      "42": "GPIO1",
+      "43": "DOUT",
+      "44": "GPIO2",
+      "45": "GPIO3",
+      "46": "GPIO4",
+      "47": "DRDY#",
+      "48": "DVDD",
+      "49": "DGND",
+      "50": "DVDD",
+      "51": "DGND",
+      "52": "CLKSEL",
+      "53": "AVSS1",
+      "54": "AVDD1",
+      "55": "VCAP3",
+      "56": "AVDD",
+      "57": "AVSS",
+      "58": "AVSS",
+      "59": "AVDD",
+      "60": "RLDREF",
+      "61": "RLDINV",
+      "62": "RLDIN",
+      "63": "RLDOUT",
+      "64": "WCT"
+    },
+    "TPS63802": {
+      "1": "EN",
+      "2": "MODE",
+      "3": "AGND",
+      "4": "FB",
+      "5": "PG",
+      "6": "VOUT",
+      "7": "L2",
+      "8": "GND",
+      "9": "L1",
+      "10": "VIN"
+    },
+    "TPS7A2018": {
+      "1": "IN",
+      "2": "GND",
+      "3": "EN",
+      "4": "N/C",
+      "5": "OUT"
+    },
+    "SN74AXC8T245": {
+      "1": "VCCA",
+      "2": "DIR1",
+      "3": "A1",
+      "4": "A2",
+      "5": "A3",
+      "6": "A4",
+      "7": "A5",
+      "8": "A6",
+      "9": "A7",
+      "10": "A8",
+      "11": "DIR2",
+      "12": "GND",
+      "13": "GND",
+      "14": "B8",
+      "15": "B7",
+      "16": "B6",
+      "17": "B5",
+      "18": "B4",
+      "19": "B3",
+      "20": "B2",
+      "21": "B1",
+      "22": "OE#",
+      "23": "VCCB",
+      "24": "VCCB",
+      "25": "EP"
+    },
+    "AO3400A": {
+      "3": "D",
+      "1": "G",
+      "2": "S"
+    },
+    "B5819WS": {
+      "1": "K",
+      "2": "A"
+    },
+    "SN74LV1T04": {
+      "1": "NC",
+      "2": "A",
+      "3": "GND",
+      "4": "Y",
+      "5": "VCC"
+    },
+    "SN74LV1T34": {
+      "1": "NC",
+      "2": "A",
+      "3": "GND",
+      "4": "Y",
+      "5": "VCC"
+    },
+    "ESD501": {
+      "1": "IO",
+      "2": "GND"
+    },
+    "J1_XIAO": {
+      "1": "3V3",
+      "2": "GND",
+      "3": "D8_SCK",
+      "4": "D9_MISO",
+      "5": "D10_MOSI",
+      "6": "D7_CS",
+      "7": "D6_DRDY",
+      "8": "D2_RESET",
+      "9": "D1_CLKSEL",
+      "10": "D0_ANA_EN",
+      "11": "D3_AVDD_SENSE",
+      "12": "VBUS_SENSE",
+      "13": "BAT+",
+      "14": "GND",
+      "15": "D4_PWDN",
+      "16": "D5_NOT_READY"
+    },
+    "J2_BAT": {
+      "1": "BAT+",
+      "2": "BAT-"
+    },
+    "J3_ELEC": {
+      "1": "E1P",
+      "2": "E1N",
+      "3": "E2P",
+      "4": "E2N",
+      "5": "E3P",
+      "6": "E3N",
+      "7": "E4P",
+      "8": "E4N",
+      "9": "E5P",
+      "10": "E5N",
+      "11": "E6P",
+      "12": "E6N",
+      "13": "E7P",
+      "14": "E7N",
+      "15": "E8P",
+      "16": "E8N",
+      "17": "E_RLD",
+      "18": "NC",
+      "19": "NC",
+      "20": "NC"
+    },
+    "SN74AUP1T14": {
+      "1": "NC",
+      "2": "A",
+      "3": "GND",
+      "4": "Y",
+      "5": "VCC"
+    },
+    "TPS3808G33": {
+      "1": "~{RESET}",
+      "2": "GND",
+      "3": "~{MR}",
+      "4": "CT",
+      "5": "SENSE",
+      "6": "VDD"
+    }
+  },
+  "power": [
+    "GND",
+    "AVDD",
+    "DVDD",
+    "3V3",
+    "VBAT",
+    "VBUS"
+  ],
+  "revision": "V12-R01",
+  "status": "OFF_BODY_CANDIDATE_NOT_RELEASED",
+  "manufacturing_ready": false,
+  "human_test_ready": false,
+  "default_variant": "S",
+  "q_variant": "仅离体噪声对照",
+  "operating_temperature_C": [
+    -40,
+    85
+  ],
+  "source_sha256": "ccf844626367520eebdf03494f2c680cbcf91c0f7d2eb1a161b42939a047c948",
+  "reference_aliases": {
+    "R1PA": "R101",
+    "R1PB": "R102",
+    "R1PC": "R103",
+    "R1PD": "R104",
+    "R1PE": "R105",
+    "R1PF": "R106",
+    "R1NA": "R107",
+    "R1NB": "R108",
+    "R1NC": "R109",
+    "R1ND": "R110",
+    "R1NE": "R111",
+    "R1NF": "R112",
+    "R2PA": "R113",
+    "R2PB": "R114",
+    "R2PC": "R115",
+    "R2PD": "R116",
+    "R2PE": "R117",
+    "R2PF": "R118",
+    "R2NA": "R119",
+    "R2NB": "R120",
+    "R2NC": "R121",
+    "R2ND": "R122",
+    "R2NE": "R123",
+    "R2NF": "R124",
+    "R3PA": "R125",
+    "R3PB": "R126",
+    "R3PC": "R127",
+    "R3PD": "R128",
+    "R3PE": "R129",
+    "R3PF": "R130",
+    "R3NA": "R131",
+    "R3NB": "R132",
+    "R3NC": "R133",
+    "R3ND": "R134",
+    "R3NE": "R135",
+    "R3NF": "R136",
+    "R4PA": "R137",
+    "R4PB": "R138",
+    "R4PC": "R139",
+    "R4PD": "R140",
+    "R4PE": "R141",
+    "R4PF": "R142",
+    "R4NA": "R143",
+    "R4NB": "R144",
+    "R4NC": "R145",
+    "R4ND": "R146",
+    "R4NE": "R147",
+    "R4NF": "R148",
+    "R5PA": "R149",
+    "R5PB": "R150",
+    "R5PC": "R151",
+    "R5PD": "R152",
+    "R5PE": "R153",
+    "R5PF": "R154",
+    "R5NA": "R155",
+    "R5NB": "R156",
+    "R5NC": "R157",
+    "R5ND": "R158",
+    "R5NE": "R159",
+    "R5NF": "R160",
+    "R6PA": "R161",
+    "R6PB": "R162",
+    "R6PC": "R163",
+    "R6PD": "R164",
+    "R6PE": "R165",
+    "R6PF": "R166",
+    "R6NA": "R167",
+    "R6NB": "R168",
+    "R6NC": "R169",
+    "R6ND": "R170",
+    "R6NE": "R171",
+    "R6NF": "R172",
+    "R7PA": "R173",
+    "R7PB": "R174",
+    "R7PC": "R175",
+    "R7PD": "R176",
+    "R7PE": "R177",
+    "R7PF": "R178",
+    "R7NA": "R179",
+    "R7NB": "R180",
+    "R7NC": "R181",
+    "R7ND": "R182",
+    "R7NE": "R183",
+    "R7NF": "R184",
+    "R8PA": "R185",
+    "R8PB": "R186",
+    "R8PC": "R187",
+    "R8PD": "R188",
+    "R8PE": "R189",
+    "R8PF": "R190",
+    "R8NA": "R191",
+    "R8NB": "R192",
+    "R8NC": "R193",
+    "R8ND": "R194",
+    "R8NE": "R195",
+    "R8NF": "R196"
+  },
+  "open_gates": [
+    "实际供电/掉电波形",
+    "真实接口与电池确认",
+    "工厂工艺/物料与独立制造包复核",
+    "人体路径安全复核",
+    "真实信号/无线/装配验收"
+  ]
+}

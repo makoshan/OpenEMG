@@ -1,0 +1,20 @@
+{
+ "件": 18,
+ "线": 799,
+ "飞线": 0,
+ "DRC": {
+  "Netlist Error|Netlist Error": 1
+ },
+ "注入短路后": {
+  "Clearance Error|Track to Track": 2,
+  "Clearance Error|SMD Pad to Track": 1,
+  "Connection Error|Track": 1,
+  "Connection Error|SMD Pad": 1,
+  "Netlist Error|Netlist Error": 1
+ },
+ "压在网": "E1N",
+ "删除后": {
+  "Netlist Error|Netlist Error": 1
+ },
+ "删除后线": 799
+}

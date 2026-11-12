@@ -1,0 +1,152 @@
+{
+ "board": "./46a432fc-9b3d-4ee8-94df-873ab9575418/scratchpad/fpcd2/v12/c08b-strap-fpc-d2-20261111/strap-a.kicad_pcb",
+ "summary": {
+  "odd_angle": 0,
+  "sharp": 0,
+  "tee_acute": 0,
+  "tee_90": 0,
+  "width_jump": 0,
+  "dangling": 0,
+  "pad_exit": 0,
+  "pad_exit_side": 14,
+  "pad_exit_rotated": 0,
+  "multi_width": 0
+ },
+ "odd_angle": [],
+ "sharp": [],
+ "tee_acute": [],
+ "tee_90": [],
+ "width_jump": [],
+ "dangling": [],
+ "pad_exit": [],
+ "pad_exit_side": [
+  {
+   "pad": "TAIL_A.7",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    44.75
+   ]
+  },
+  {
+   "pad": "TAIL_A.8",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    45.25
+   ]
+  },
+  {
+   "pad": "TAIL_A.1",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    41.75
+   ]
+  },
+  {
+   "pad": "TAIL_A.4",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    43.25
+   ]
+  },
+  {
+   "pad": "TAIL_A.17",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    49.75
+   ]
+  },
+  {
+   "pad": "TAIL_A.18",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    50.25
+   ]
+  },
+  {
+   "pad": "TAIL_A.30",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    56.25
+   ]
+  },
+  {
+   "pad": "TAIL_A.31",
+   "net": "AGND",
+   "layer": "F.Cu",
+   "at": [
+    30.46,
+    56.75
+   ]
+  },
+  {
+   "pad": "R33.1",
+   "net": "BIAS_DRV1",
+   "layer": "B.Cu",
+   "at": [
+    58.575,
+    58.6
+   ]
+  },
+  {
+   "pad": "R33.2",
+   "net": "BIAS_DRV1_E",
+   "layer": "B.Cu",
+   "at": [
+    60.225,
+    58.6
+   ]
+  },
+  {
+   "pad": "R2.1",
+   "net": "CH1_N",
+   "layer": "B.Cu",
+   "at": [
+    51.01,
+    39.5
+   ]
+  },
+  {
+   "pad": "R1.1",
+   "net": "CH1_P",
+   "layer": "B.Cu",
+   "at": [
+    51.01,
+    60.5
+   ]
+  },
+  {
+   "pad": "R4.1",
+   "net": "CH2_N",
+   "layer": "B.Cu",
+   "at": [
+    64.99,
+    39.5
+   ]
+  },
+  {
+   "pad": "R3.1",
+   "net": "CH2_P",
+   "layer": "B.Cu",
+   "at": [
+    64.99,
+    60.5
+   ]
+  }
+ ],
+ "pad_exit_rotated": [],
+ "multi_width": {}
+}

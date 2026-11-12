@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/hardware_profile.schema.json",
+  "title": "HardwareProfile",
+  "description": "Same-hardware fingerprint for the data commons. Fields listed in x-pool-fields change what a window means; only bundles with the same pool_key are pooled. board_rev / firmware_build are recorded but do not split the pool.",
+  "type": "object",
+  "additionalProperties": false,
+  "x-pool-fields": ["family", "afe", "channels", "fs_hz", "gain", "electrode", "placement", "chain_ver", "window_ms", "hop_ms", "norm_scale_uV"],
+  "required": ["schema_version", "family", "afe", "channels", "fs_hz", "gain", "electrode", "placement", "chain_ver", "window_ms", "hop_ms", "norm_scale_uV", "board_rev", "firmware_build"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "family": { "type": "string", "enum": ["emg-ads1292-1ch"] },
+    "afe": { "type": "string", "enum": ["ADS1292", "ADS1292R"] },
+    "channels": { "type": "integer", "const": 1 },
+    "fs_hz": { "type": "number", "exclusiveMinimum": 0 },
+    "gain": { "type": "integer", "enum": [1, 2, 3, 4, 6, 8, 12] },
+    "electrode": { "type": "string", "enum": ["ag_agcl_gel", "dry_steel", "dry_silver", "textile"] },
+    "placement": { "type": "string", "enum": ["forearm_flexor", "forearm_extensor", "wrist_band"] },
+    "chain_ver": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "window_ms": { "type": "number", "exclusiveMinimum": 0 },
+    "hop_ms": { "type": "number", "exclusiveMinimum": 0 },
+    "norm_scale_uV": { "type": "number", "exclusiveMinimum": 0 },
+    "board_rev": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,32}$" },
+    "firmware_build": { "type": "string", "pattern": "^[A-Za-z0-9._+-]{1,64}$" }
+  }
+}

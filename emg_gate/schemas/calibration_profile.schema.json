@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/calibration_profile.schema.json",
+  "title": "CalibrationProfile",
+  "description": "P1 on-device self-calibration table (ADR-2026-09-23-EMG §2.2). This is P1, NOT P3 Personalization. Local only; never uploaded.",
+  "type": "object",
+  "required": ["schema_version", "user_id", "device_id", "chain_ver", "thresholds", "created_at"],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "user_id": { "type": "string", "minLength": 1 },
+    "device_id": { "type": "string", "minLength": 1 },
+    "donning_id": { "type": "string", "minLength": 1 },
+    "chain_ver": { "type": "string", "minLength": 1 },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["th_loose_max", "th_hard_min"],
+      "properties": {
+        "th_loose_max": { "type": "number", "minimum": 0, "maximum": 1 },
+        "th_hard_min": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "stale": { "type": "boolean", "default": false },
+    "prev_profile_ref": {
+      "description": "Archive filename of the previously active profile; enables rollback.",
+      "type": "string",
+      "minLength": 1
+    },
+    "calibration_debug": {
+      "description": "Non-contract diagnostics (percentiles, negatives check). May be dropped.",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

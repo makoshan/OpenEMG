@@ -1,0 +1,30 @@
+// Production renderer and full route via synthetic gestures. Test/god modes isolate cinematic verification; no hardware access.
+const {app,BrowserWindow}=require('electron'),fs=require('node:fs'),path=require('node:path');
+const reduced=process.env.ENDING_REDUCED==='1',out=path.resolve(__dirname,reduced?'build/game-ending-reduced':'build/game-ending');app.setPath('userData',path.join(out,'userdata'));
+const wait=ms=>new Promise(r=>setTimeout(r,ms)),check=(v,m)=>{if(!v)throw Error(m)};
+app.whenReady().then(async()=>{
+ fs.mkdirSync(out,{recursive:true});const win=new BrowserWindow({width:1440,height:900,show:false,webPreferences:{sandbox:true,contextIsolation:true,backgroundThrottling:false}}),errors=[];
+ win.webContents.on('console-message',(_e,...args)=>{const msg=args.find(x=>typeof x==='object'&&x.message)?.message||args[1];if(/ERROR|Error|shader.*error|VALIDATE_STATUS.*false/i.test(String(msg)))errors.push(String(msg));});
+ 
+ await win.loadFile(path.join(__dirname,'game/tianjie/index.html'));
+ if(reduced){win.webContents.debugger.attach('1.3');await win.webContents.debugger.sendCommand('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});}
+ const js=s=>win.webContents.executeJavaScript(s),click=id=>js(`document.getElementById('${id}').click()`),diag=()=>js('TianjieGame.diagnostics()'),snap=()=>js('TianjieGame.snapshot()'),save=async n=>fs.writeFileSync(path.join(out,n+'.png'),(await win.capturePage()).toPNG());
+ for(let i=0;i<150&&!(await diag().catch(()=>({}))).ready;i++)await wait(100);check((await diag()).ready,'load timeout');
+ await click('quickstart');for(const id of ['godmode','testmode'])await js(`{const b=document.getElementById('${id}');if(b.getAttribute('aria-pressed')!=='true')b.click()}`);
+ for(let i=0;i<1800;i++){const s=await snap();if(s.paused)await click('pause');if(s.phase==='victory')break;if(s.phase==='combat')await js("TianjieGame.input({gesture:'guard',confidence:.95});TianjieGame.input({gesture:'thunder',confidence:.95});TianjieGame.input({gesture:'sword',confidence:.95})");await wait(65);}
+ check((await snap()).phase==='victory','route failed');check((await snap()).kills===12,'did not clear four levels');check(await js('!document.getElementById("ascension").hidden'),'cinematic missing');
+ const stamps=[];
+ for(const [at,name]of (reduced?[[.7,'01-reduced-final-composition']]:[[.8,'00-stillness'],[3.8,'01-sky-crack'],[4.85,'02-skybreak'],[6.6,'03-opening'],[9.9,'04-palace'],[13.8,'05-logo']])){
+  for(let i=0;i<300&&(await diag()).ending.time<at;i++)await wait(40);
+  await click('ending-pause');const before=(await diag()).ending;if(reduced)check(before.pull===1&&before.flash===0,'reduced motion animates camera/flash');check(before.bandRestored,'cinematic split the wrist band');if(!reduced&&at<6)check(before.handVisible,'hand missing during scene handoff');await wait(180);const after=(await diag()).ending;check(after.time===before.time,'pause did not freeze ending');check(JSON.stringify(after.handPosition)===JSON.stringify(before.handPosition),'paused hand moved');check(JSON.stringify(after.cloudPosition)===JSON.stringify(before.cloudPosition),'paused clouds moved');await save(name);stamps.push(before);await click('ending-pause');
+ }
+ if(!reduced){check(stamps[1].riftOpening===0,'sky opened before palm push');check(stamps[3].riftOpening>.7,'palm did not open sky');check(stamps[4].heavenLoaded&&stamps[4].beaconLight>0,'palace response missing');check(stamps[1].skyTime!==stamps[3].skyTime,'cloud shader is static');check(JSON.stringify(stamps[1].cloudPosition)!==JSON.stringify(stamps[3].cloudPosition),'cloud veil is static');check(JSON.stringify(stamps[1].camera)!==JSON.stringify(stamps[3].camera),'cloud camera is static');}
+ for(let i=0;i<200&&(await diag()).ending.done!==true;i++)await wait(40);await wait(100);
+ check(await js('!document.getElementById("result").hidden'),'settlement missing');check(await js('document.getElementById("result-title").textContent')==='诸天重明','old settlement');await save('05-result');
+ check((await diag()).ending.darken===1,'brand background missing');check((await diag()).ending.lightCurrents===7,'feather currents missing');check(await js('getComputedStyle(document.getElementById("ending-brand")).display!=="none" && document.getElementById("ending-brand").querySelector("img").naturalWidth>0 && getComputedStyle(document.getElementById("ending-brand").querySelector("img")).opacity==="1"'),'final logo missing');
+ await click('ending-replay');await wait(220);check((await diag()).ending.time<1,'replay did not restart');check(await js('document.getElementById("result").hidden'),'result obscures replay');check((await snap()).kills===12,'replay changed combat');
+ await click('ending-skip');await wait(100);check((await diag()).ending.done,'skip failed');check(await js('!document.getElementById("result").hidden'),'skip did not settle');
+ win.setContentSize(390,844);await wait(200);await save('06-mobile');check(await js('["retry","return","ending-replay"].every(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight})'),'mobile controls overflow');
+ await click('retry');await wait(150);check(!(await diag()).ending.active,'retry leaked finale');check((await snap()).phase==='combat','retry failed');check(await js('document.body.dataset.ending')==='false','cinematic layout leaked');check((await diag()).daylight===0,'retry did not restore night');check((await diag()).ending.bandRestored,'retry did not restore broken band');check((await diag()).ending.handYaw===0,'retry leaked cinematic hand yaw');
+ check(errors.length===0,'renderer errors '+errors.join('\n'));fs.writeFileSync(path.join(out,'result.json'),JSON.stringify({ok:true,stamps,errors,checks:['four scenes 12 enemies','victory only','clock pause','unsealing and feather ascent','dawn and logo','settlement','replay','skip','mobile controls','retry restores gameplay']},null,2));console.log('Ending flow passed:',out);app.exit(0);
+}).catch(e=>{console.error(e);app.exit(1)});

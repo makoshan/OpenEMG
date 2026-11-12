@@ -1,0 +1,87 @@
+{
+  "tpu-carrier": {
+    "watertight": true,
+    "components": 1,
+    "volume_mm3": 534.0043556643346,
+    "bounds_mm": [
+      [
+        -7.800000190734863,
+        -14.0,
+        0.0
+      ],
+      [
+        7.800000190734863,
+        14.0,
+        3.00600004196167
+      ]
+    ]
+  },
+  "petg-support": {
+    "watertight": true,
+    "components": 1,
+    "volume_mm3": 123.38623218628707,
+    "bounds_mm": [
+      [
+        -6.0,
+        -12.5,
+        0.0
+      ],
+      [
+        6.0,
+        12.5,
+        1.6360000371932983
+      ]
+    ]
+  },
+  "petg-guide": {
+    "watertight": true,
+    "components": 1,
+    "volume_mm3": 213.05,
+    "bounds_mm": [
+      [
+        -6.0,
+        -12.5,
+        0.0
+      ],
+      [
+        6.0,
+        12.5,
+        2.956
+      ]
+    ]
+  },
+  "rld-support": {
+    "watertight": true,
+    "components": 1,
+    "volume_mm3": 121.44553233568882,
+    "bounds_mm": [
+      [
+        -6.0,
+        -12.5,
+        0.0
+      ],
+      [
+        6.0,
+        12.5,
+        1.6360000371932983
+      ]
+    ]
+  },
+  "rld-guide": {
+    "watertight": true,
+    "components": 1,
+    "volume_mm3": 229.085,
+    "bounds_mm": [
+      [
+        -6.0,
+        -12.5,
+        0.0
+      ],
+      [
+        6.0,
+        12.5,
+        2.956
+      ]
+    ]
+  }
+}

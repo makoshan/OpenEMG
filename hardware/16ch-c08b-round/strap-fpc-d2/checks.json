@@ -1,0 +1,1766 @@
+{
+ "status": "已实现未验收：本机 DRC/几何/脚序/对孔检查结果见各项；未打样、未焊铜片、未插实物、未贴肤",
+ "board_sha256": {
+  "a": "3656028295ee5df66a6f9ee198d6b1b87e2abab06f9c93f2d8d537d11f2b83a1",
+  "b": "7c229f21ac1b0005cbcd1b2eac82f34a28684d30a4a32c95617ebcfb08a5f640"
+ },
+ "pins_a": {
+  "ok": true,
+  "connector": "V4_FPC1",
+  "pads": 34,
+  "errors_vs_d17": [],
+  "d17_sha256_ok": true,
+  "signal_pins_differ_from_r12": [],
+  "finger_geometry_differs_from_r12": [],
+  "pin1_y": 41.75,
+  "pin34_y": 58.25,
+  "finger_face": "F",
+  "negative_mirror_errors": 22
+ },
+ "pins_b": {
+  "ok": true,
+  "connector": "V4_FPC3",
+  "pads": 34,
+  "errors_vs_d17": [],
+  "d17_sha256_ok": true,
+  "signal_pins_differ_from_r12": [],
+  "finger_geometry_differs_from_r12": [],
+  "pin1_y": 58.25,
+  "pin34_y": 41.75,
+  "finger_face": "F",
+  "negative_mirror_errors": 22
+ },
+ "pin_order_negative": {
+  "ok": true,
+  "a_swap_19_20": {
+   "errors": 2,
+   "pins": [
+    19,
+    20
+   ]
+  },
+  "b_swap_6_7": {
+   "errors": 2,
+   "pins": [
+    6,
+    7
+   ]
+  }
+ },
+ "contacts_d2": {
+  "ok": true,
+  "strap_contacts": 28,
+  "counts": {
+   "a": {
+    "contacts": 12,
+    "resistors": 17
+   },
+   "b": {
+    "contacts": 16,
+    "resistors": 17
+   }
+  },
+  "pad": "表带 28 个：F 面 SMD 圆 Φ6.5、无孔、F.Cu/F.Mask/F.Paste、阻焊开窗 = 焊盘（本地 0、全板 pad_to_mask 0）",
+  "bad_pads": {},
+  "topology_errors": [],
+  "pair_spacing_mm": {
+   "3": 18.0,
+   "4": 18.0,
+   "5": 18.0,
+   "6": 18.0,
+   "7": 18.0,
+   "8": 18.0,
+   "9": 18.0,
+   "10": 18.0,
+   "11": 18.0,
+   "12": 18.0,
+   "13": 18.0,
+   "14": 18.0,
+   "15": 18.0,
+   "16": 18.0
+  },
+  "contact_x": {
+   "3": 24.0,
+   "4": 16.0,
+   "5": 90.0,
+   "6": 98.0,
+   "7": 106.0,
+   "8": 114.0,
+   "9": 122.0,
+   "10": 130.0,
+   "11": 138.0,
+   "12": 146.0,
+   "13": 154.0,
+   "14": 162.0,
+   "15": 170.0,
+   "16": 178.0
+  },
+  "board_mask_margin": 0.0
+ },
+ "tpu_hole_alignment": {
+  "ok": true,
+  "tpu_build": "v12/c08b-strap-layer-d2-20261111/build.py",
+  "tpu_sha256": "8f58a5d3cc8ad68a318fdb4d5b896558142c37e260a28266c9ac923533dc6f81",
+  "holes": 28,
+  "matched": 28,
+  "north_ys_expected": [
+   34.0,
+   42.0
+  ],
+  "north_ys_in_tpu_file": [
+   34.0,
+   42.0
+  ],
+  "tpu_file_north_matches": true,
+  "worst_err_mm": 0.0,
+  "tpu_hole_d": 6.5,
+  "pad_d": 6.5,
+  "disc_d": 6.0,
+  "note": "焊盘 Φ6.5 = 铜片 Φ6 + 2×0.25；TPU 孔 Φ6.5（铜片 + 0.5 套装余量），两者同径同心",
+  "table": [
+   {
+    "ref": "E10N",
+    "strap_xy": [
+     9.0,
+     -72.0
+    ],
+    "hole": [
+     9.0,
+     -72.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E10P",
+    "strap_xy": [
+     -9.0,
+     -72.0
+    ],
+    "hole": [
+     -9.0,
+     -72.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E11N",
+    "strap_xy": [
+     9.0,
+     -80.0
+    ],
+    "hole": [
+     9.0,
+     -80.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E11P",
+    "strap_xy": [
+     -9.0,
+     -80.0
+    ],
+    "hole": [
+     -9.0,
+     -80.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E12N",
+    "strap_xy": [
+     9.0,
+     -88.0
+    ],
+    "hole": [
+     9.0,
+     -88.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E12P",
+    "strap_xy": [
+     -9.0,
+     -88.0
+    ],
+    "hole": [
+     -9.0,
+     -88.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E13N",
+    "strap_xy": [
+     9.0,
+     -96.0
+    ],
+    "hole": [
+     9.0,
+     -96.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E13P",
+    "strap_xy": [
+     -9.0,
+     -96.0
+    ],
+    "hole": [
+     -9.0,
+     -96.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E14N",
+    "strap_xy": [
+     9.0,
+     -104.0
+    ],
+    "hole": [
+     9.0,
+     -104.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E14P",
+    "strap_xy": [
+     -9.0,
+     -104.0
+    ],
+    "hole": [
+     -9.0,
+     -104.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E15N",
+    "strap_xy": [
+     9.0,
+     -112.0
+    ],
+    "hole": [
+     9.0,
+     -112.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E15P",
+    "strap_xy": [
+     -9.0,
+     -112.0
+    ],
+    "hole": [
+     -9.0,
+     -112.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E16N",
+    "strap_xy": [
+     9.0,
+     -120.0
+    ],
+    "hole": [
+     9.0,
+     -120.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E16P",
+    "strap_xy": [
+     -9.0,
+     -120.0
+    ],
+    "hole": [
+     -9.0,
+     -120.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E3N",
+    "strap_xy": [
+     9.0,
+     34.0
+    ],
+    "hole": [
+     9.0,
+     34.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E3P",
+    "strap_xy": [
+     -9.0,
+     34.0
+    ],
+    "hole": [
+     -9.0,
+     34.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E4N",
+    "strap_xy": [
+     9.0,
+     42.0
+    ],
+    "hole": [
+     9.0,
+     42.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E4P",
+    "strap_xy": [
+     -9.0,
+     42.0
+    ],
+    "hole": [
+     -9.0,
+     42.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E5N",
+    "strap_xy": [
+     9.0,
+     -32.0
+    ],
+    "hole": [
+     9.0,
+     -32.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E5P",
+    "strap_xy": [
+     -9.0,
+     -32.0
+    ],
+    "hole": [
+     -9.0,
+     -32.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E6N",
+    "strap_xy": [
+     9.0,
+     -40.0
+    ],
+    "hole": [
+     9.0,
+     -40.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E6P",
+    "strap_xy": [
+     -9.0,
+     -40.0
+    ],
+    "hole": [
+     -9.0,
+     -40.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E7N",
+    "strap_xy": [
+     9.0,
+     -48.0
+    ],
+    "hole": [
+     9.0,
+     -48.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E7P",
+    "strap_xy": [
+     -9.0,
+     -48.0
+    ],
+    "hole": [
+     -9.0,
+     -48.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E8N",
+    "strap_xy": [
+     9.0,
+     -56.0
+    ],
+    "hole": [
+     9.0,
+     -56.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E8P",
+    "strap_xy": [
+     -9.0,
+     -56.0
+    ],
+    "hole": [
+     -9.0,
+     -56.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E9N",
+    "strap_xy": [
+     9.0,
+     -64.0
+    ],
+    "hole": [
+     9.0,
+     -64.0
+    ],
+    "err_mm": 0.0
+   },
+   {
+    "ref": "E9P",
+    "strap_xy": [
+     -9.0,
+     -64.0
+    ],
+    "hole": [
+     -9.0,
+     -64.0
+    ],
+    "err_mm": 0.0
+   }
+  ]
+ },
+ "box_vs_r15": {
+  "ok": true,
+  "same": true,
+  "bad": [],
+  "contacts": [
+   {
+    "piece": "a",
+    "ref": "E1N",
+    "net": "CH1_N_E",
+    "board": [
+     50.5,
+     42.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "piece": "a",
+    "ref": "E1P",
+    "net": "CH1_P_E",
+    "board": [
+     50.5,
+     58.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "piece": "a",
+    "ref": "E2N",
+    "net": "CH2_N_E",
+    "board": [
+     65.5,
+     42.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "piece": "a",
+    "ref": "E2P",
+    "net": "CH2_P_E",
+    "board": [
+     65.5,
+     58.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 6.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "piece": "a",
+    "ref": "EB1",
+    "net": "BIAS_DRV1_E",
+    "board": [
+     65.5,
+     50.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 4.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   },
+   {
+    "piece": "b",
+    "ref": "EB2",
+    "net": "BIAS_DRV12_E",
+    "board": [
+     50.5,
+     50.0
+    ],
+    "err_vs_r15_mm": 0.0,
+    "d": 4.5,
+    "drill": 0.0,
+    "layers": [
+     "F.Cu",
+     "F.Mask",
+     "F.Paste"
+    ]
+   }
+  ],
+  "resistors": {
+   "R1": {
+    "value": "100k",
+    "nets": [
+     "CH1_P",
+     "CH1_P_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     50.5,
+     60.5
+    ],
+    "r15_at": [
+     50.5,
+     56.2
+    ],
+    "moved_mm": 4.3
+   },
+   "R2": {
+    "value": "100k",
+    "nets": [
+     "CH1_N",
+     "CH1_N_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     50.5,
+     39.5
+    ],
+    "r15_at": [
+     50.5,
+     43.6
+    ],
+    "moved_mm": 4.1
+   },
+   "R3": {
+    "value": "100k",
+    "nets": [
+     "CH2_P",
+     "CH2_P_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     65.5,
+     60.5
+    ],
+    "r15_at": [
+     65.5,
+     56.2
+    ],
+    "moved_mm": 4.3
+   },
+   "R4": {
+    "value": "100k",
+    "nets": [
+     "CH2_N",
+     "CH2_N_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     65.5,
+     39.5
+    ],
+    "r15_at": [
+     65.5,
+     43.6
+    ],
+    "moved_mm": 4.1
+   },
+   "R33": {
+    "value": "200k",
+    "nets": [
+     "BIAS_DRV1",
+     "BIAS_DRV1_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     59.4,
+     58.6
+    ],
+    "r15_at": [
+     69.0,
+     54.8
+    ],
+    "moved_mm": 10.3247
+   },
+   "R34": {
+    "value": "200k",
+    "nets": [
+     "BIAS_DRV12",
+     "BIAS_DRV12_E"
+    ],
+    "layer": "B.Cu",
+    "at": [
+     45.5,
+     50.0
+    ],
+    "r15_at": [
+     53.5,
+     50.0
+    ],
+    "moved_mm": 8.0
+   }
+  },
+  "negatives_red": {
+   "E1N 右移 0.05": true,
+   "R33 值改 100k": true,
+   "R4 尾侧网改 CH1_N": true,
+   "EB1 焊盘改 Φ1.8": true
+  },
+  "note": "胶囊底 6 个触点（CH1/CH2 两对 + EB1/EB2）中心与 R15 同位（≤ 0.01），F 面 SMD 圆、无孔、开窗 = 焊盘，直径 CH1/CH2 Φ6.5、EB1/EB2 Φ4.5；串阻 R1–R4（100k）、R33/R34（200k）与 R15 同值同网、仍在 B 面，位置可变（resistors.moved_mm 报告变化量）"
+ },
+ "tail_vs_r12": {
+  "ok": true,
+  "a": {
+   "tip_x": 28.86,
+   "width_d2": 17.5,
+   "width_r12": 17.5,
+   "stiffener_len": 2.5,
+   "stiffener_side": "B（金手指背面）",
+   "tip_x_r12": 30.16,
+   "extension_mm": 1.3
+  },
+  "b": {
+   "tip_x": 31.09,
+   "width_d2": 17.5,
+   "width_r12": 17.5,
+   "stiffener_len": 2.5,
+   "stiffener_side": "B（金手指背面）",
+   "tip_x_r12": 32.39,
+   "extension_mm": 1.3
+  }
+ },
+ "drc_a": {
+  "ok": true,
+  "violations": 0,
+  "unconnected": 0,
+  "kicad": "10.0.6",
+  "rules": "strap-a.kicad_dru",
+  "after_refill_zones": {
+   "violations": 0,
+   "unconnected": 0
+  }
+ },
+ "drc_b": {
+  "ok": true,
+  "violations": 0,
+  "unconnected": 0,
+  "kicad": "10.0.6",
+  "rules": "strap-b.kicad_dru",
+  "after_refill_zones": {
+   "violations": 0,
+   "unconnected": 0
+  }
+ },
+ "drc_negative_controls": {
+  "ok": true,
+  "short_CH5_N_to_CH5_P": [
+   "tracks_crossing"
+  ],
+  "center_0.40_CH13_P_vs_CH12_N": [
+   "clearance :D2 不同网走线中心距0.47",
+   "track_dangling"
+  ],
+  "positive_center_0.47_same_place": [
+   "track_dangling"
+  ],
+  "via_in_dynamic_A_bridge1": [
+   "clearance :D2 铜间距",
+   "items_not_allowed :动态区禁孔-A桥1"
+  ]
+ },
+ "route_lint_a": {
+  "ok": true,
+  "hard": 0,
+  "hard_items": {
+   "odd_angle": 0,
+   "sharp": 0,
+   "tee_acute": 0,
+   "width_jump": 0,
+   "dangling": 0,
+   "pad_exit": 0
+  },
+  "report_only": {
+   "pad_exit_side": 14,
+   "tee_90": 0,
+   "pad_exit_rotated": 0
+  }
+ },
+ "route_lint_b": {
+  "ok": true,
+  "hard": 0,
+  "hard_items": {
+   "odd_angle": 0,
+   "sharp": 0,
+   "tee_acute": 0,
+   "width_jump": 0,
+   "dangling": 0,
+   "pad_exit": 0
+  },
+  "report_only": {
+   "pad_exit_side": 8,
+   "tee_90": 0,
+   "pad_exit_rotated": 0
+  }
+ },
+ "length_match": {
+  "ok": true,
+  "segments": 32,
+  "worst_diff_mil": 0.0,
+  "worst_at": "A CH1 尾→串阻",
+  "nonzero": [],
+  "limit_mil": 10,
+  "table": "lengths.csv"
+ },
+ "geometry_a": {
+  "ok": true,
+  "min_center_between_different_nets_mm": 0.495,
+  "at": {
+   "nets": [
+    "AGND",
+    "BIAS_DRV1"
+   ],
+   "layer": "F.Cu",
+   "at": [
+    35.205,
+    58.25
+   ]
+  },
+  "min_center_within_pair_mm": 0.3,
+  "within_pair_at": {
+   "nets": [
+    "CH1_N",
+    "CH1_P"
+   ],
+   "layer": "B.Cu",
+   "at": [
+    53.538,
+    47.15
+   ]
+  },
+  "min_track_copper_to_outline_mm": 0.315,
+  "min_track_copper_to_hole_edge_mm": null,
+  "min_via_copper_to_outline_mm": 0.5278,
+  "vias": 68,
+  "vias_in_dynamic_zones": 0,
+  "dyn_via_list": [],
+  "track_widths": [
+   0.15
+  ]
+ },
+ "res_pad_to_contact_a_report_only": {
+  "min_gap_mm": -1.057,
+  "note": "表带串阻与触点同在 F 面（TPU 槽由 skinside_res_envelope 管）；胶囊底 R1–R4 在 B 面、投影落在同路 Φ6.5 焊盘圆内（异面，负值 = 投影重叠，不相连）；只报告"
+ },
+ "tail_vias_a": {
+  "ok": true,
+  "finger_face": "F",
+  "via_copper_to_finger_copper_mm": 3.82,
+  "via_hole_edge_to_finger_pad_mm": 3.945,
+  "nearest": {
+   "via": [
+    24.99,
+    53.56
+   ],
+   "via_net": "CH3_P",
+   "finger": "TAIL_A.25"
+  },
+  "finger_end_x": 30.56
+ },
+ "stiffener_a": {
+  "ok": true,
+  "island_contacts": 12,
+  "note": "每个 Φ6.5 触点背面一块 Φ7.2 PI，整圆 100% 盖住；串阻焊盘（F 面）投影被盖 0",
+  "layers": {
+   "User.2": {
+    "pieces": 13,
+    "area_mm2": 531.98,
+    "island_contacts_backed": 12,
+    "min_contact_coverage": 1.0,
+    "res_pads_covered": 0
+   }
+  },
+  "fingers_backed_on_opposite_face": true
+ },
+ "stiffener_inside_island_a": {
+  "ok": true,
+  "stiffener_shapes": 13,
+  "expect": 13,
+  "oversize": [],
+  "island_half_width": 3.6
+ },
+ "gnd_planes_a": {
+  "ok": true,
+  "In1.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "A北支",
+     "copper_vs_board": 0.437,
+     "copper_vs_copperable": 0.517
+    },
+    {
+     "zone": "A桥1",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.595
+    },
+    {
+     "zone": "A岛间20",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    },
+    {
+     "zone": "A尾折弯",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.552
+    },
+    {
+     "zone": "A带根",
+     "copper_vs_board": 0.439,
+     "copper_vs_copperable": 0.529
+    },
+    {
+     "zone": "A桥3",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A桥2",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    }
+   ],
+   "max_copper_vs_copperable": 0.595,
+   "min_copper_vs_copperable": 0.517,
+   "mean_copper_vs_copperable": 0.566,
+   "holes_in_copper": 996,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  },
+  "In2.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "A北支",
+     "copper_vs_board": 0.437,
+     "copper_vs_copperable": 0.517
+    },
+    {
+     "zone": "A桥1",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.595
+    },
+    {
+     "zone": "A岛间20",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    },
+    {
+     "zone": "A尾折弯",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.552
+    },
+    {
+     "zone": "A带根",
+     "copper_vs_board": 0.439,
+     "copper_vs_copperable": 0.529
+    },
+    {
+     "zone": "A桥3",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "A桥2",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    }
+   ],
+   "max_copper_vs_copperable": 0.595,
+   "min_copper_vs_copperable": 0.517,
+   "mean_copper_vs_copperable": 0.566,
+   "holes_in_copper": 996,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  }
+ },
+ "pad_edge_and_no_via_in_pad_a": {
+  "ok": true,
+  "contact_pad_to_outline_min_mm": 0.35,
+  "via_to_contact_pad_min_mm": 0.2483,
+  "nearest": {
+   "via": [
+    46.8,
+    58.6
+   ],
+   "pad": "E1P"
+  },
+  "via_to_rect_pad_min_mm": 0.17,
+  "nearest_rect": "R5.1"
+ },
+ "geometry_b": {
+  "ok": true,
+  "min_center_between_different_nets_mm": 0.495,
+  "at": {
+   "nets": [
+    "AGND",
+    "CH16_N"
+   ],
+   "layer": "F.Cu",
+   "at": [
+    36.17,
+    43.25
+   ]
+  },
+  "min_center_within_pair_mm": 0.3,
+  "within_pair_at": {
+   "nets": [
+    "CH14_N",
+    "CH14_P"
+   ],
+   "layer": "F.Cu",
+   "at": [
+    158.231,
+    49.081
+   ]
+  },
+  "min_track_copper_to_outline_mm": 0.3124,
+  "min_track_copper_to_hole_edge_mm": null,
+  "min_via_copper_to_outline_mm": 0.4,
+  "vias": 44,
+  "vias_in_dynamic_zones": 0,
+  "dyn_via_list": [],
+  "track_widths": [
+   0.15
+  ]
+ },
+ "res_pad_to_contact_b_report_only": {
+  "min_gap_mm": 1.189,
+  "note": "表带串阻与触点同在 F 面（TPU 槽由 skinside_res_envelope 管）；胶囊底 R1–R4 在 B 面、投影落在同路 Φ6.5 焊盘圆内（异面，负值 = 投影重叠，不相连）；只报告"
+ },
+ "tail_vias_b": {
+  "ok": true,
+  "finger_face": "F",
+  "via_copper_to_finger_copper_mm": 7.26,
+  "via_hole_edge_to_finger_pad_mm": 7.385,
+  "nearest": {
+   "via": [
+    40.3,
+    43.25
+   ],
+   "via_net": "AGND",
+   "finger": "TAIL_B.31"
+  },
+  "finger_end_x": 32.79
+ },
+ "stiffener_b": {
+  "ok": true,
+  "island_contacts": 16,
+  "note": "每个 Φ6.5 触点背面一块 Φ7.2 PI，整圆 100% 盖住；串阻焊盘（F 面）投影被盖 0",
+  "layers": {
+   "User.2": {
+    "pieces": 17,
+    "area_mm2": 694.73,
+    "island_contacts_backed": 16,
+    "min_contact_coverage": 1.0,
+    "res_pads_covered": 0
+   }
+  },
+  "fingers_backed_on_opposite_face": true
+ },
+ "stiffener_inside_island_b": {
+  "ok": true,
+  "stiffener_shapes": 17,
+  "expect": 17,
+  "oversize": [],
+  "island_half_width": 3.6
+ },
+ "gnd_planes_b": {
+  "ok": true,
+  "In1.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "B岛间142",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B带根",
+     "copper_vs_board": 0.488,
+     "copper_vs_copperable": 0.535
+    },
+    {
+     "zone": "B过A桥4",
+     "copper_vs_board": 0.544,
+     "copper_vs_copperable": 0.593
+    },
+    {
+     "zone": "B岛间174",
+     "copper_vs_board": 0.529,
+     "copper_vs_copperable": 0.591
+    },
+    {
+     "zone": "B岛间134",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    },
+    {
+     "zone": "B岛间150",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.594
+    },
+    {
+     "zone": "B过A桥3",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B岛间166",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B岛间158",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B过A桥2",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B过A桥1",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B岛间126",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B尾折弯",
+     "copper_vs_board": 0.545,
+     "copper_vs_copperable": 0.565
+    }
+   ],
+   "max_copper_vs_copperable": 0.594,
+   "min_copper_vs_copperable": 0.535,
+   "mean_copper_vs_copperable": 0.583,
+   "holes_in_copper": 1299,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  },
+  "In2.Cu": {
+   "copper_pieces": 1,
+   "orphan_pieces": 0,
+   "orphan_list": [],
+   "pieces_under_0p5mm2": 0,
+   "regions": [
+    {
+     "zone": "B岛间142",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B带根",
+     "copper_vs_board": 0.488,
+     "copper_vs_copperable": 0.535
+    },
+    {
+     "zone": "B过A桥4",
+     "copper_vs_board": 0.544,
+     "copper_vs_copperable": 0.593
+    },
+    {
+     "zone": "B岛间174",
+     "copper_vs_board": 0.529,
+     "copper_vs_copperable": 0.591
+    },
+    {
+     "zone": "B岛间134",
+     "copper_vs_board": 0.53,
+     "copper_vs_copperable": 0.592
+    },
+    {
+     "zone": "B岛间150",
+     "copper_vs_board": 0.532,
+     "copper_vs_copperable": 0.594
+    },
+    {
+     "zone": "B过A桥3",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B岛间166",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B岛间158",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B过A桥2",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B过A桥1",
+     "copper_vs_board": 0.533,
+     "copper_vs_copperable": 0.585
+    },
+    {
+     "zone": "B岛间126",
+     "copper_vs_board": 0.528,
+     "copper_vs_copperable": 0.59
+    },
+    {
+     "zone": "B尾折弯",
+     "copper_vs_board": 0.545,
+     "copper_vs_copperable": 0.565
+    }
+   ],
+   "max_copper_vs_copperable": 0.594,
+   "min_copper_vs_copperable": 0.535,
+   "mean_copper_vs_copperable": 0.583,
+   "holes_in_copper": 1299,
+   "min_void_width_4A_over_P": 0.42,
+   "voids_narrower_than_0p15": 0,
+   "narrow_voids_at": []
+  }
+ },
+ "pad_edge_and_no_via_in_pad_b": {
+  "ok": true,
+  "contact_pad_to_outline_min_mm": 0.35,
+  "via_to_contact_pad_min_mm": 0.5,
+  "nearest": {
+   "via": [
+    47.5,
+    50.0
+   ],
+   "pad": "EB2"
+  },
+  "via_to_rect_pad_min_mm": 0.17,
+  "nearest_rect": "R18.1"
+ },
+ "bands_report_only": {
+  "note": "R15 的「逐段 ≥ R12、同槽 A+B 并排总宽 > R12」门不再适用（D2 里 B 在 A 背后叠放，不并排）。截面只报告，间距/铜到边由 geometry 门和 DRC 管",
+  "table": "widths.csv",
+  "sections": [
+   {
+    "piece": "A",
+    "segment": "尾（插接尾，A 折弯区）",
+    "x": 35.0,
+    "y": "41.25–58.75",
+    "width": 17.5,
+    "pairs": 8,
+    "min_center_diff_net": 0.5,
+    "pair_pitch": "1.5–2.0",
+    "edge_copper": "1.425/0.425"
+   },
+   {
+    "piece": "A",
+    "segment": "A 北支",
+    "x": 33.0,
+    "y": "36.9–40.85",
+    "width": 3.95,
+    "pairs": 2,
+    "min_center_diff_net": 1.675,
+    "pair_pitch": "1.975",
+    "edge_copper": "0.762/0.762"
+   },
+   {
+    "piece": "A",
+    "segment": "A 北岛间 CH4|CH3",
+    "x": 20.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 1,
+    "min_center_diff_net": null,
+    "pair_pitch": "",
+    "edge_copper": "0.762/17.101"
+   },
+   {
+    "piece": "A",
+    "segment": "A 出盒带（带根）",
+    "x": 80.0,
+    "y": "50.46–54.1",
+    "width": 3.64,
+    "pairs": 4,
+    "min_center_diff_net": 0.553,
+    "pair_pitch": "0.853",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "A",
+    "segment": "A 桥1（CH5|CH6）",
+    "x": 94.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 3,
+    "min_center_diff_net": 0.913,
+    "pair_pitch": "1.213",
+    "edge_copper": "13.942/1.495"
+   },
+   {
+    "piece": "A",
+    "segment": "A 桥2",
+    "x": 102.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 2,
+    "min_center_diff_net": 1.52,
+    "pair_pitch": "1.82",
+    "edge_copper": "14.245/1.798"
+   },
+   {
+    "piece": "A",
+    "segment": "A 桥3",
+    "x": 110.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 1,
+    "min_center_diff_net": null,
+    "pair_pitch": "",
+    "edge_copper": "13.875/3.988"
+   },
+   {
+    "piece": "B",
+    "segment": "尾（插接尾，B 折弯区）",
+    "x": 36.5,
+    "y": "41.25–58.75",
+    "width": 17.5,
+    "pairs": 8,
+    "min_center_diff_net": 0.5,
+    "pair_pitch": "1.5–2.0",
+    "edge_copper": "0.425/1.425"
+   },
+   {
+    "piece": "B",
+    "segment": "B 盒内头部",
+    "x": 60.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 带根（垫在 A 背后）",
+    "x": 80.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 过 A 桥1",
+    "x": 94.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 过 A 桥2",
+    "x": 102.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 过 A 桥3",
+    "x": 110.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 过 A 桥4",
+    "x": 118.0,
+    "y": "46.32–53.2",
+    "width": 6.88,
+    "pairs": 8,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "0.315/0.315"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥1",
+    "x": 126.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 7,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "9.735/3.129"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥2",
+    "x": 134.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 6,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "9.735/3.93"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥3",
+    "x": 142.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 5,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–0.995",
+    "edge_copper": "9.735/4.731"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥4",
+    "x": 150.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 4,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–1.488",
+    "edge_copper": "9.735/4.988"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥5",
+    "x": 158.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 3,
+    "min_center_diff_net": 0.501,
+    "pair_pitch": "0.801–1.501",
+    "edge_copper": "9.735/5.764"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥6",
+    "x": 166.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 2,
+    "min_center_diff_net": 1.139,
+    "pair_pitch": "1.501",
+    "edge_copper": "9.735/6.565"
+   },
+   {
+    "piece": "B",
+    "segment": "B 桥7",
+    "x": 174.1,
+    "y": "36.9–55.2132",
+    "width": 18.313,
+    "pairs": 1,
+    "min_center_diff_net": null,
+    "pair_pitch": "",
+    "edge_copper": "10.373/7.366"
+   }
+  ]
+ },
+ "stack_clearance": {
+  "ok": true,
+  "note": "带符号间隙：正 = 对方材料不压在该件上；门限 0.2",
+  "B 外形 vs A 的串阻焊盘（A 的 B 面胶囊串阻 + F 面表带串阻投影）": {
+   "min_gap_mm": 0.3,
+   "at": "R12.1",
+   "nearest": [
+    {
+     "pad": "R12.1",
+     "net": "CH6_N",
+     "gap_mm": 0.3,
+     "where": "板外"
+    },
+    {
+     "pad": "R12.2",
+     "net": "CH6_N_E",
+     "gap_mm": 0.3,
+     "where": "板外"
+    },
+    {
+     "pad": "R16.1",
+     "net": "CH8_N",
+     "gap_mm": 0.3,
+     "where": "板外"
+    },
+    {
+     "pad": "R16.2",
+     "net": "CH8_N_E",
+     "gap_mm": 0.3,
+     "where": "板外"
+    }
+   ],
+   "pads": 34
+  },
+  "B 外形 vs A 的 PI 补强圆片": {
+   "min_gap_mm": 0.8,
+   "nearest": [
+    {
+     "at": [
+      114.0,
+      41.0
+     ],
+     "gap_mm": 0.8
+    },
+    {
+     "at": [
+      114.0,
+      59.0
+     ],
+     "gap_mm": 0.8
+    },
+    {
+     "at": [
+      90.0,
+      41.0
+     ],
+     "gap_mm": 1.72
+    }
+   ],
+   "discs": 12
+  }
+ },
+ "eb2_joint": {
+  "ok": true,
+  "off_mm": 0.0,
+  "da": 4.5,
+  "db": 4.5,
+  "drill": 0.8,
+  "pth": true,
+  "net_a": "BIAS_DRV12_E",
+  "net_b": "BIAS_DRV12_E",
+  "layers": [
+   "B.Cu",
+   "B.Mask",
+   "F.Cu",
+   "F.Mask",
+   "In1.Cu",
+   "In10.Cu",
+   "In11.Cu",
+   "In12.Cu",
+   "In13.Cu",
+   "In14.Cu",
+   "In15.Cu",
+   "In16.Cu",
+   "In17.Cu",
+   "In18.Cu",
+   "In19.Cu",
+   "In2.Cu",
+   "In20.Cu",
+   "In21.Cu",
+   "In22.Cu",
+   "In23.Cu",
+   "In24.Cu",
+   "In25.Cu",
+   "In26.Cu",
+   "In27.Cu",
+   "In28.Cu",
+   "In29.Cu",
+   "In3.Cu",
+   "In30.Cu",
+   "In4.Cu",
+   "In5.Cu",
+   "In6.Cu",
+   "In7.Cu",
+   "In8.Cu",
+   "In9.Cu"
+  ],
+  "a_edge_holes_near": [],
+  "joint_ok": true,
+  "negatives_red": {
+   "EB2A 右移 0.05": true,
+   "EB2A 网改 AGND": true,
+   "EB2A 孔 1.2": true,
+   "B 片 EB2 下移 0.05": true
+  },
+  "note": "A 片 EB2A 与 B 片 EB2 同心（≤ 0.01）、同 Φ4.5、同网 BIAS_DRV12_E；A 片是金属化孔 0.6–1.0、两面开窗；A 片此处无板边孔（原 Φ4.9 让位孔已撤）"
+ },
+ "backside_tracks_report_only": {
+  "a": {
+   "pad_net_pairs": 0,
+   "pads": 0,
+   "resistors": [],
+   "list": []
+  },
+  "b": {
+   "pad_net_pairs": 0,
+   "pads": 0,
+   "resistors": [],
+   "list": []
+  }
+ },
+ "strapside_flat": {
+  "ok": true,
+  "note": "表带侧（B 面一侧）每岛最高物：PI 补强厚度读板上注释、叠在下面的另一片取其板厚、B 面元件按 0402 高 0.35；只算表带 14 岛（胶囊底 CH1/CH2 不在表带上），差 ≤ 0.01，表带上 B 面元件 0",
+  "islands": 14,
+  "top_min_mm": 0.2,
+  "top_max_mm": 0.203,
+  "spread_mm": 0.003,
+  "strapside_components": [],
+  "box_b_side_parts_report_only": [
+   "A:R1 (50.50, 60.50) 胶囊底，不在表带上",
+   "A:R4 (65.50, 39.50) 胶囊底，不在表带上",
+   "A:R2 (50.50, 39.50) 胶囊底，不在表带上",
+   "A:R33 (59.40, 58.60) 胶囊底，不在表带上",
+   "A:R3 (65.50, 60.50) 胶囊底，不在表带上",
+   "B:R34 (45.50, 50.00) 胶囊底，不在表带上"
+  ],
+  "board_thickness_mm": {
+   "a": 0.203,
+   "b": 0.203
+  },
+  "per_island": [
+   "A CH3: 0.2（PI 补强（A 片 B 面） 0.2）",
+   "A CH4: 0.2（PI 补强（A 片 B 面） 0.2）",
+   "A CH5: 0.203（PI 补强（A 片 B 面） 0.2、叠在下面的 B 片（板厚） 0.203）",
+   "A CH6: 0.203（PI 补强（A 片 B 面） 0.2、叠在下面的 B 片（板厚） 0.203）",
+   "A CH7: 0.203（PI 补强（A 片 B 面） 0.2、叠在下面的 B 片（板厚） 0.203）",
+   "A CH8: 0.203（PI 补强（A 片 B 面） 0.2、叠在下面的 B 片（板厚） 0.203）",
+   "B CH9: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH10: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH11: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH12: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH13: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH14: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH15: 0.2（PI 补强（B 片 B 面） 0.2）",
+   "B CH16: 0.2（PI 补强（B 片 B 面） 0.2）"
+  ],
+  "negatives": {
+   "R10（A CH5 R_N）翻到 B 面": {
+    "red": true,
+    "spread_mm": 0.15,
+    "top_max_mm": 0.35,
+    "strapside_components": [
+     "A:R10"
+    ]
+   },
+   "A 片触点 PI 改回 0.15": {
+    "red": true,
+    "spread_mm": 0.053,
+    "top_max_mm": 0.203,
+    "strapside_components": []
+   }
+  }
+ },
+ "skinside_res_envelope": {
+  "ok": true,
+  "note": "每颗 F 面 100k：焊盘外框 ∪ 0402 本体 1.0×0.5（假设）外扩 0.3 = TPU 背面浅槽；槽离 Φ6.5 焊盘 ≥ 0.25；只含表带 28 颗（胶囊底 R1–R4 在 B 面，不进 TPU 槽）；矩形写进 geometry.json 的 f_res_pockets（板坐标 + 表带坐标 X = 50 − 板 y、Y = 58 − 板 x）",
+  "pockets": 28,
+  "worst_gap_to_contact_pad_mm": 0.8516,
+  "worst_at": "A:R12→E6N",
+  "sizes": [
+   [
+    2.16,
+    1.24
+   ]
+  ],
+  "negatives": {
+   "R10 往焊盘挪 0.8": {
+    "red": true,
+    "worst_gap_mm": 0.0568,
+    "at": "A:R10→E5N"
+   },
+   "R17 往焊盘挪 0.8": {
+    "red": true,
+    "worst_gap_mm": 0.0568,
+    "at": "B:R17→E9P"
+   }
+  }
+ },
+ "box_height": {
+  "ok": true,
+  "note": "胶囊段在 R13 底壳外（Z ≤ 0.15，底板顶 1.00 以下），D17 底面件（最低 U2 Z 1.24）下方不再有 FPC；壳内只剩两条尾，经 tray_tail_slot 穿底板；尾竖直段对底面件 ≥ 0.05（B 尾插 V4_FPC3 本身不算）；尾巴插座高度取座子包围盒中线（假设）",
+  "tray_tail_slot": {
+   "x0": -8.95,
+   "x1": 8.95,
+   "y0": 17.99,
+   "y1": 18.996
+  },
+  "tails": {
+   "a": {
+    "ok": true,
+    "components": [
+     {
+      "tail": false,
+      "y_at_bend": [
+       36.9,
+       41.155
+      ],
+      "box_x_at_bend": [
+       -13.1,
+       -8.845
+      ]
+     },
+     {
+      "tail": true,
+      "y_at_bend": [
+       41.545,
+       58.75
+      ],
+      "box_x_at_bend": [
+       -8.455,
+       8.75
+      ]
+     }
+    ]
+   },
+   "b": {
+    "ok": true,
+    "components": [
+     {
+      "tail": true,
+      "y_at_bend": [
+       41.25,
+       58.75
+      ],
+      "box_x_at_bend": [
+       -8.75,
+       8.75
+      ]
+     }
+    ]
+   }
+  },
+  "tail_vs_bottom_parts_min": [
+   {
+    "tail": "A",
+    "part": "V4_FPC3",
+    "gap": 0.703
+   },
+   {
+    "tail": "B",
+    "part": "D946",
+    "gap": 5.683
+   },
+   {
+    "tail": "B",
+    "part": "D942",
+    "gap": 5.683
+   },
+   {
+    "tail": "B",
+    "part": "D936",
+    "gap": 5.683
+   }
+  ],
+  "capsule_area_outside_shell_mm2": {
+   "a": 911.88,
+   "b": 386.63
+  },
+  "negatives_red": {
+   "A 北支与尾之间缝补上": true,
+   "B 尾加宽到 y 60.0": true
+  }
+ },
+ "boards_unchanged_by_check": {
+  "ok": true,
+  "note": "检查全程只读两块板（反例都在临时副本上做）"
+ },
+ "fails": []
+}

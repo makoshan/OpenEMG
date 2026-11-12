@@ -1,0 +1,403 @@
+{
+"E1": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"E2": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"E3": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"E4": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"E5": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"E6": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"R1": {
+"lcsc": "C22935",
+"dnp": false,
+"pin_names": {}
+},
+"D1": {
+"lcsc": "C43177583",
+"dnp": false,
+"pin_names": {
+"1": "1",
+"2": "2"
+}
+},
+"R2": {
+"lcsc": "C26083",
+"dnp": false,
+"pin_names": {}
+},
+"R3": {
+"lcsc": "C22935",
+"dnp": false,
+"pin_names": {}
+},
+"D2": {
+"lcsc": "C43177583",
+"dnp": false,
+"pin_names": {
+"1": "1",
+"2": "2"
+}
+},
+"R4": {
+"lcsc": "C26083",
+"dnp": false,
+"pin_names": {}
+},
+"R5": {
+"lcsc": "C22935",
+"dnp": false,
+"pin_names": {}
+},
+"D4": {
+"lcsc": "C43177583",
+"dnp": false,
+"pin_names": {
+"1": "1",
+"2": "2"
+}
+},
+"R6": {
+"lcsc": "C26083",
+"dnp": false,
+"pin_names": {}
+},
+"R7": {
+"lcsc": "C22935",
+"dnp": false,
+"pin_names": {}
+},
+"D5": {
+"lcsc": "C43177583",
+"dnp": false,
+"pin_names": {
+"1": "1",
+"2": "2"
+}
+},
+"R8": {
+"lcsc": "C26083",
+"dnp": false,
+"pin_names": {}
+},
+"R13": {
+"lcsc": "C23024",
+"dnp": false,
+"pin_names": {}
+},
+"D3": {
+"lcsc": "C43177583",
+"dnp": false,
+"pin_names": {
+"1": "1",
+"2": "2"
+}
+},
+"R14": {
+"lcsc": "C23219",
+"dnp": false,
+"pin_names": {}
+},
+"R16": {
+"lcsc": "C23219",
+"dnp": false,
+"pin_names": {}
+},
+"R15": {
+"lcsc": "C26083",
+"dnp": false,
+"pin_names": {}
+},
+"C3": {
+"lcsc": "C23967",
+"dnp": false,
+"pin_names": {}
+},
+"R27": {
+"lcsc": "C25741",
+"dnp": false,
+"pin_names": {}
+},
+"U1": {
+"lcsc": "C2651570",
+"dnp": false,
+"pin_names": {
+"1": "PGA1N",
+"2": "PGA1P",
+"3": "IN1N",
+"4": "IN1P",
+"5": "IN2N",
+"6": "IN2P",
+"7": "PGA2N",
+"8": "PGA2P",
+"9": "VREFP",
+"10": "VREFN",
+"11": "VCAP1",
+"12": "AVDD",
+"13": "AVSS",
+"14": "CLKSEL",
+"15": "PWDN/RESET",
+"16": "START",
+"17": "CLK",
+"18": "CS",
+"19": "DIN",
+"20": "SCLK",
+"21": "DOUT",
+"22": "DRDY",
+"23": "DVDD",
+"24": "DGND",
+"25": "GPIO2",
+"26": "GPIO1",
+"27": "VCAP2",
+"28": "RLDINV",
+"29": "RLDIN/RLDREF",
+"30": "RLDOUT",
+"31": "IN3P",
+"32": "IN3N"
+}
+},
+"C4": {
+"lcsc": "C1538",
+"dnp": false,
+"pin_names": {}
+},
+"C5": {
+"lcsc": "C1538",
+"dnp": false,
+"pin_names": {}
+},
+"C6": {
+"lcsc": "C1525",
+"dnp": false,
+"pin_names": {}
+},
+"C7": {
+"lcsc": "C19702",
+"dnp": false,
+"pin_names": {}
+},
+"C8": {
+"lcsc": "C52923",
+"dnp": false,
+"pin_names": {}
+},
+"C9": {
+"lcsc": "C52923",
+"dnp": false,
+"pin_names": {}
+},
+"C10": {
+"lcsc": "C1525",
+"dnp": false,
+"pin_names": {}
+},
+"C11": {
+"lcsc": "C15525",
+"dnp": false,
+"pin_names": {}
+},
+"C12": {
+"lcsc": "C1525",
+"dnp": false,
+"pin_names": {}
+},
+"C13": {
+"lcsc": "C15525",
+"dnp": false,
+"pin_names": {}
+},
+"L1": {
+"lcsc": "C14709",
+"dnp": false,
+"pin_names": {}
+},
+"R18": {
+"lcsc": "C25792",
+"dnp": false,
+"pin_names": {}
+},
+"R19": {
+"lcsc": "C25792",
+"dnp": false,
+"pin_names": {}
+},
+"R20": {
+"lcsc": "C25792",
+"dnp": false,
+"pin_names": {}
+},
+"R21": {
+"lcsc": "C25792",
+"dnp": false,
+"pin_names": {}
+},
+"R22": {
+"lcsc": "C25792",
+"dnp": false,
+"pin_names": {}
+},
+"R23": {
+"lcsc": "C25105",
+"dnp": false,
+"pin_names": {}
+},
+"R31": {
+"lcsc": "C25900",
+"dnp": false,
+"pin_names": {}
+},
+"J2": {
+"lcsc": "C2802370",
+"dnp": false,
+"pin_names": {
+"1": "GND",
+"2": "5V",
+"3": "DRDY_B",
+"4": "-",
+"5": "MOSI",
+"6": "PWDN_N",
+"7": "-",
+"8": "-",
+"9": "START",
+"10": "CS_A",
+"11": "SCLK",
+"12": "GND",
+"13": "GND",
+"14": "GND",
+"15": "MISO",
+"16": "-",
+"17": "DRDY_A",
+"18": "-",
+"19": "3V3",
+"20": "3V3",
+"21": "SH1",
+"22": "SH2"
+}
+},
+"C16": {
+"lcsc": "C19702",
+"dnp": false,
+"pin_names": {}
+},
+"U3": {
+"lcsc": "C963429",
+"dnp": false,
+"pin_names": {
+"1": "IN",
+"2": "GND",
+"3": "EN",
+"4": "NC",
+"5": "OUT"
+}
+},
+"C14": {
+"lcsc": "C52923",
+"dnp": false,
+"pin_names": {}
+},
+"C15": {
+"lcsc": "C52923",
+"dnp": false,
+"pin_names": {}
+},
+"R32": {
+"lcsc": "C17168",
+"dnp": false,
+"pin_names": {}
+},
+"Q1": {
+"lcsc": "C20917",
+"dnp": false,
+"pin_names": {
+"1": "G",
+"2": "S",
+"3": "D"
+}
+},
+"R25": {
+"lcsc": "C25744",
+"dnp": false,
+"pin_names": {}
+},
+"R26": {
+"lcsc": "C25741",
+"dnp": false,
+"pin_names": {}
+},
+"TP1": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"TP2": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"TP3": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"TP8": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"H1": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"H2": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"H3": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"H4": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"FID1": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"FID2": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+},
+"FID3": {
+"lcsc": null,
+"dnp": false,
+"pin_names": {}
+}
+}

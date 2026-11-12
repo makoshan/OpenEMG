@@ -1,0 +1,5 @@
+(footprint "ELECTRODE_PAD_AUX" (version 20240108) (generator "mako") (layer "F.Cu") (attr smd)
+ (property "Reference" "E?" (at 0 -3 0) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+ (property "Value" "ELECTRODE" (at 0 3 0) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))
+ (fp_circle (center 0 0) (end 1.7 0) (layer "F.CrtYd") (stroke (width 0.05) (type solid)) (fill none))
+ (pad "1" smd circle (at 0 0) (size 3 3) (layers "F.Cu" "F.Mask" "F.Paste") (clearance 0.5)))

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-hw.local/emg/commons_model_card.schema.json",
+  "title": "CommonsModelCard",
+  "description": "A model trained on one commons snapshot. The gate re-trains from the snapshot and must reproduce the parameters; evaluation is on held-out contributors only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_id",
+    "kind",
+    "snapshot_id",
+    "pool_key",
+    "source",
+    "params",
+    "train",
+    "license"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "model_id": {
+      "type": "string",
+      "pattern": "^m_[0-9a-f]{16}$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "emg_band_thresholds"
+      ]
+    },
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^s_[0-9a-f]{16}$"
+    },
+    "pool_key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "recorded",
+        "synthetic"
+      ]
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "th_loose_max",
+        "th_hard_min"
+      ],
+      "properties": {
+        "th_loose_max": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "th_hard_min": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "train": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "n_contributors",
+        "n_windows",
+        "excluded"
+      ],
+      "properties": {
+        "n_contributors": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "n_windows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "contributor",
+              "reason"
+            ],
+            "properties": {
+              "contributor": {
+                "type": "string",
+                "pattern": "^c_[0-9a-f]{16}$"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "median_of_contributors",
+            "pooled"
+          ]
+        }
+      }
+    },
+    "license": {
+      "type": "string",
+      "enum": [
+        "Apache-2.0",
+        "MIT",
+        "CC-BY-4.0"
+      ]
+    }
+  }
+}

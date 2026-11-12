@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="64 50 1180 1180">
+  <!-- OpenEMG Logo：圆环 + 肌电波形，2026-10-16 按幻灯片 v9 封面原图（1254px）描成矢量 -->
+  <defs><mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="1254" height="1254"><rect width="1254" height="1254" fill="#fff"/><rect x="900" y="559" width="354" height="205" fill="#000"/></mask></defs>
+  <g fill="none" stroke="#78EAF5"><circle cx="621" cy="640" r="480" stroke-width="114" mask="url(#gap)"/><path d="M245,832 C330,818 375,775 410,712 L526,470 Q559,400 592,470 L688,770 Q720,872 752,770 L800,600 Q850,455 900,590 Q940,668 1000,670 L1177,670" stroke-width="94" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

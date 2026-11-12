@@ -1,0 +1,567 @@
+{
+  "thumb-four": {
+    "name": "拇指四向滑动",
+    "labels": [
+      "thumb_rest",
+      "thumb_up",
+      "thumb_down",
+      "thumb_left",
+      "thumb_right"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "gestures": {
+      "thumb_rest": {
+        "name": "静止",
+        "icon": "○",
+        "color": "#94A3B8",
+        "cue": "手腕和食指不动，拇指轻贴食指，保持放松。"
+      },
+      "thumb_up": {
+        "name": "拇指上滑",
+        "icon": "↑",
+        "color": "#22C55E",
+        "cue": "拇指沿食指朝指尖滑一次，再抬起复位。"
+      },
+      "thumb_down": {
+        "name": "拇指下滑",
+        "icon": "↓",
+        "color": "#EF4444",
+        "cue": "拇指沿食指朝指根滑一次，再抬起复位。"
+      },
+      "thumb_left": {
+        "name": "拇指左滑",
+        "icon": "←",
+        "color": "#3B82F6",
+        "cue": "手背朝上、指尖朝前；拇指在食指接触面向你的左侧滑一次，再抬起复位。"
+      },
+      "thumb_right": {
+        "name": "拇指右滑",
+        "icon": "→",
+        "color": "#A855F7",
+        "cue": "手背朝上、指尖朝前；拇指在食指接触面向你的右侧滑一次，再抬起复位。"
+      }
+    }
+  },
+  "grasp": {
+    "name": "捏合 / 握拳",
+    "labels": [
+      "rest",
+      "pinch",
+      "fist"
+    ],
+    "captureLabels": [
+      "rest",
+      "pinch",
+      "fist",
+      "rub"
+    ],
+    "minTrain": 3,
+    "minRewear": 0
+  },
+  "meta-taps": {
+    "name": "Meta 专训 · 点按与双击",
+    "labels": [
+      "meta_rest",
+      "meta_index",
+      "meta_middle",
+      "meta_side",
+      "meta_other"
+    ],
+    "captureLabels": [
+      "meta_rest",
+      "meta_index",
+      "meta_middle",
+      "meta_side",
+      "meta_other",
+      "meta_index_tap",
+      "meta_middle_tap",
+      "meta_middle_double",
+      "meta_middle_long",
+      "meta_side_double"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 200,
+    "protocol": "taps",
+    "gestures": {
+      "meta_rest": {
+        "name": "放松基线",
+        "icon": "○",
+        "color": "#256A60",
+        "cue": "手指分开，前臂有支撑，保持放松 2 秒。",
+        "kind": "rest"
+      },
+      "meta_index": {
+        "name": "食指接触基础",
+        "icon": "1",
+        "color": "#256A60",
+        "cue": "食指指腹轻捏拇指，保持 2 秒。这里学习接触状态，实际点按在下一步练习。",
+        "kind": "hold"
+      },
+      "meta_middle": {
+        "name": "中指接触基础",
+        "icon": "2",
+        "color": "#256A60",
+        "cue": "中指指腹轻捏拇指，食指放松，保持 2 秒。",
+        "kind": "hold"
+      },
+      "meta_side": {
+        "name": "食指侧面接触基础",
+        "icon": "侧",
+        "color": "#256A60",
+        "cue": "拇指轻压食指侧面，保持 2 秒；与指腹捏合分开录。",
+        "kind": "hold"
+      },
+      "meta_other": {
+        "name": "日常动作／不触发",
+        "icon": "—",
+        "color": "#256A60",
+        "cue": "手指分开，轻转腕或自然张合手，保持不捏合。",
+        "kind": "other"
+      },
+      "meta_index_tap": {
+        "name": "食指点按 · 选择",
+        "icon": "1",
+        "color": "#256A60",
+        "cue": "看到“做！”后，食指与拇指轻碰一次，立即分开。",
+        "kind": "tap"
+      },
+      "meta_middle_tap": {
+        "name": "中指点按 · 返回",
+        "icon": "2",
+        "color": "#256A60",
+        "cue": "中指与拇指轻碰一次，立即分开；不要连碰。",
+        "kind": "tap"
+      },
+      "meta_middle_double": {
+        "name": "中指双击 · 唤醒",
+        "icon": "2×",
+        "color": "#256A60",
+        "cue": "中指与拇指轻碰两次，两次间隔约 0.2 秒，每次都分开。",
+        "kind": "double"
+      },
+      "meta_middle_long": {
+        "name": "中指长按 · 启动器",
+        "icon": "按",
+        "color": "#256A60",
+        "cue": "中指与拇指轻捏，保持至少 0.7 秒，再松开。",
+        "kind": "long"
+      },
+      "meta_side_double": {
+        "name": "拇指侧面双击 · AI",
+        "icon": "侧×2",
+        "color": "#256A60",
+        "cue": "拇指在食指侧面轻点两次；不要滑动，每次都抬起。",
+        "kind": "double"
+      }
+    }
+  },
+  "meta-motion": {
+    "name": "Meta 专训 · 捏住转动与滚动",
+    "labels": [
+      "motion_rest",
+      "motion_hold",
+      "motion_other"
+    ],
+    "captureLabels": [
+      "motion_rest",
+      "motion_hold",
+      "motion_other",
+      "motion_cw",
+      "motion_ccw",
+      "motion_up",
+      "motion_down",
+      "motion_left",
+      "motion_right"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 200,
+    "protocol": "motion",
+    "gestures": {
+      "motion_rest": {
+        "name": "放松基线",
+        "icon": "○",
+        "color": "#256A60",
+        "cue": "手指分开，手腕不动，保持放松 2 秒。",
+        "kind": "rest"
+      },
+      "motion_hold": {
+        "name": "食指捏住基础",
+        "icon": "捏",
+        "color": "#256A60",
+        "cue": "食指与拇指轻捏，手腕不动，保持 2 秒。",
+        "kind": "hold"
+      },
+      "motion_other": {
+        "name": "不捏合转腕／误触",
+        "icon": "—",
+        "color": "#256A60",
+        "cue": "食指与拇指分开，自然转动手腕；不能被判为捏住。",
+        "kind": "other"
+      },
+      "motion_cw": {
+        "name": "捏住顺时针 · 增加",
+        "icon": "↻",
+        "color": "#256A60",
+        "cue": "先捏住，看到“做！”后按你的视角顺时针转腕约 20°；停住，松开后再复位。",
+        "kind": "rotate"
+      },
+      "motion_ccw": {
+        "name": "捏住逆时针 · 减少",
+        "icon": "↺",
+        "color": "#256A60",
+        "cue": "先捏住，看到“做！”后按你的视角逆时针转腕约 20°；停住，松开后再复位。",
+        "kind": "rotate"
+      },
+      "motion_up": {
+        "name": "捏住上移 · 滚动",
+        "icon": "↑",
+        "color": "#256A60",
+        "cue": "先捏住，以肘部为支点，小幅向上摆动前臂；停住，松开后复位。",
+        "kind": "move"
+      },
+      "motion_down": {
+        "name": "捏住下移 · 滚动",
+        "icon": "↓",
+        "color": "#256A60",
+        "cue": "先捏住，以肘部为支点，小幅向下摆动前臂；停住，松开后复位。",
+        "kind": "move"
+      },
+      "motion_left": {
+        "name": "捏住左移 · 滚动",
+        "icon": "←",
+        "color": "#256A60",
+        "cue": "先捏住，以肘部为支点，小幅向你的左侧摆动前臂；松开后复位。",
+        "kind": "move"
+      },
+      "motion_right": {
+        "name": "捏住右移 · 滚动",
+        "icon": "→",
+        "color": "#256A60",
+        "cue": "先捏住，以肘部为支点，小幅向你的右侧摆动前臂；松开后复位。",
+        "kind": "move"
+      }
+    }
+  },
+  "meta-mouse": {
+    "name": "Meta 专训 · 鼠标五类（每次佩戴校准）",
+    "labels": [
+      "mouse_rest",
+      "mouse_index",
+      "mouse_middle",
+      "mouse_swipe",
+      "mouse_right"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 1000,
+    "protocol": "mouse",
+    "gestures": {
+      "mouse_rest": {
+        "name": "放松基线",
+        "icon": "○",
+        "color": "#256A60",
+        "cue": "松握拳，食指弯着，拇指搭在食指侧面不动，前臂有支撑，放松 2 秒。",
+        "kind": "rest"
+      },
+      "mouse_index": {
+        "name": "食指点按 · 左键",
+        "icon": "1",
+        "color": "#256A60",
+        "cue": "看到“做！”后，食指尖与拇指尖轻碰一次，立即分开（手指可以张开）。",
+        "kind": "tap"
+      },
+      "mouse_middle": {
+        "name": "中指点按 · 右键",
+        "icon": "2",
+        "color": "#256A60",
+        "cue": "看到“做！”后，中指尖与拇指尖轻碰一次，立即分开；食指放松。",
+        "kind": "tap"
+      },
+      "mouse_swipe": {
+        "name": "拇指拨动 · 滚动",
+        "icon": "⇅",
+        "color": "#256A60",
+        "cue": "松握拳，拇指搭在食指侧面；看到“做！”后沿食指朝指尖、指根或你的左边拨一下（怎么顺手怎么来，别朝右），再抬起复位。",
+        "kind": "swipe",
+        "note": "2026-10-10 Mako 决定：上 / 下 / 左合成一类。第 12 / 13 次佩戴七类留一 77% / 86%，错分几乎全在这三者之间；三类内部八路电极只 0.47–0.67、样本翻倍不涨；合成后五类留一 1.000 / 0.987。见 yuanli-band evidence/2026-10-10-calib14-wear12-13.md。"
+      },
+      "mouse_side": {
+        "name": "拇指点按 · 未绑定",
+        "icon": "侧",
+        "color": "#256A60",
+        "cue": "松握拳；看到“做！”后，拇指在食指侧面轻点一次，立即抬起，不要滑动。",
+        "kind": "tap",
+        "note": "2026-10-08 Mako 决定从训练类别里拿掉：未绑定功能且与上滑互混（第 7 次佩戴留一 8 类 76% → 7 类 82%）。已录数据保留，定义留着以便加回。"
+      },
+      "mouse_up": {
+        "name": "拇指上滑 · 未绑定",
+        "icon": "↑",
+        "color": "#256A60",
+        "cue": "松握拳，拇指搭在食指根；看到“做！”后沿食指侧面朝指尖拨一下，再抬起复位。",
+        "kind": "swipe",
+        "note": "2026-10-10 Mako 决定从训练类别里拿掉：与另两个方向互混（见 mouse_swipe）。已录数据保留，定义留着以便加回。"
+      },
+      "mouse_down": {
+        "name": "拇指下滑 · 未绑定",
+        "icon": "↓",
+        "color": "#256A60",
+        "cue": "松握拳，拇指搭在食指中节；看到“做！”后沿食指侧面朝指根拨一下，再抬起复位。",
+        "kind": "swipe",
+        "note": "2026-10-10 Mako 决定从训练类别里拿掉：与另两个方向互混（见 mouse_swipe）。已录数据保留，定义留着以便加回。"
+      },
+      "mouse_left": {
+        "name": "拇指左滑 · 未绑定",
+        "icon": "←",
+        "color": "#256A60",
+        "cue": "松握拳，拇指搭在食指中节；看到“做！”后横越食指朝你的左边拨一下，再抬起复位。",
+        "kind": "swipe",
+        "note": "2026-10-10 Mako 决定从训练类别里拿掉：与另两个方向互混（见 mouse_swipe）。已录数据保留，定义留着以便加回。"
+      },
+      "mouse_right": {
+        "name": "拇指右滑",
+        "icon": "→",
+        "color": "#256A60",
+        "cue": "松握拳，拇指搭在食指中节；看到“做！”后横越食指朝你的右边拨一下，再抬起复位。",
+        "kind": "swipe"
+      }
+    },
+    "calibrate": {
+      "rounds": 5,
+      "minRatio": 2.5,
+      "minTrain": 3
+    }
+  },
+  "ai-select": {
+    "name": "AI 选择 · 六类（每次佩戴校准）",
+    "labels": ["ai_rest", "ai_summon", "ai_up", "ai_down", "ai_left", "ai_right"],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 1000,
+    "protocol": "select",
+    "gestures": {
+      "ai_rest": {
+        "name": "放松",
+        "icon": "○",
+        "color": "#94A3B8",
+        "cue": "听着，手放松。松握拳，拇指搭在食指侧面不动，前臂有支撑。",
+        "kind": "rest"
+      },
+      "ai_summon": {
+        "name": "唤起",
+        "icon": "2",
+        "color": "#A855F7",
+        "cue": "看到“做！”后，中指尖与拇指尖轻碰一次，立即分开。这一下用来唤起，不挪鼠标。",
+        "kind": "tap"
+      },
+      "ai_up": {
+        "name": "上滑",
+        "icon": "↑",
+        "color": "#3B82F6",
+        "cue": "看到“做！”后，拇指沿食指朝指尖拨一下，再抬起复位。用来选上一项。",
+        "kind": "swipe"
+      },
+      "ai_down": {
+        "name": "下滑",
+        "icon": "↓",
+        "color": "#F59E0B",
+        "cue": "看到“做！”后，拇指沿食指朝指根拨一下，再抬起复位。用来选下一项。",
+        "kind": "swipe"
+      },
+      "ai_left": {
+        "name": "左滑",
+        "icon": "←",
+        "color": "#22C55E",
+        "cue": "看到“做！”后，拇指横越食指朝你的左边拨一下，再抬起复位。这一版只认，不挪鼠标。",
+        "kind": "swipe"
+      },
+      "ai_right": {
+        "name": "右滑",
+        "icon": "→",
+        "color": "#EF4444",
+        "cue": "看到“做！”后，拇指横越食指朝你的右边拨一下，再抬起复位。这一版只认，不挪鼠标。",
+        "kind": "swipe"
+      }
+    },
+    "calibrate": { "rounds": 5, "minRatio": 2.5, "minTrain": 3 }
+  },
+  "finger-sixteen": {
+    "name": "手指十六类（可选）",
+    "labels": ["finger_rest", "finger_all", "finger_thumb", "finger_index", "finger_middle", "finger_little", "finger_index_middle", "finger_index_little", "finger_thumb_index_middle", "finger_middle_ring_little", "finger_index_middle_ring_little", "finger_pinch_index", "finger_pinch_middle", "finger_pinch_ring", "finger_pinch_little", "finger_middle_ring", "finger_index_middle_ring"],
+    "minTrain": 3,
+    "minRewear": 0,
+    "layout": "cards",
+    "gestures": {
+      "finger_rest": {"name": "放松", "icon": "○", "color": "#94A3B8", "cue": "手指分开，前臂有支撑，保持放松。"},
+      "finger_all": {"name": "全手屈伸", "icon": "1", "color": "#22C55E", "cue": "看到「做！」后五指一起屈一次再伸开。"},
+      "finger_thumb": {"name": "大拇指屈伸", "icon": "2", "color": "#3B82F6", "cue": "只屈伸大拇指一次，其余手指放松。"},
+      "finger_index": {"name": "食指屈伸", "icon": "3", "color": "#EF4444", "cue": "只屈伸食指一次。"},
+      "finger_middle": {"name": "中指屈伸", "icon": "4", "color": "#A855F7", "cue": "只屈伸中指一次。"},
+      "finger_little": {"name": "小指伸屈", "icon": "5", "color": "#F59E0B", "cue": "只屈伸小指一次。"},
+      "finger_index_middle": {"name": "食中伸屈", "icon": "6", "color": "#22C55E", "cue": "食指和中指一起屈伸一次。"},
+      "finger_index_little": {"name": "食小伸屈", "icon": "7", "color": "#3B82F6", "cue": "食指和小指一起屈伸一次。"},
+      "finger_thumb_index_middle": {"name": "大食中伸屈", "icon": "8", "color": "#EF4444", "cue": "拇指、食指、中指一起屈伸一次。"},
+      "finger_middle_ring_little": {"name": "中无名小伸屈", "icon": "9", "color": "#A855F7", "cue": "中指、无名指、小指一起屈伸一次。"},
+      "finger_index_middle_ring_little": {"name": "食中无名小伸屈", "icon": "10", "color": "#F59E0B", "cue": "除拇指外四指一起屈伸一次。"},
+      "finger_pinch_index": {"name": "捏食指", "icon": "11", "color": "#22C55E", "cue": "拇指与食指指腹轻捏一次后分开。"},
+      "finger_pinch_middle": {"name": "捏中指", "icon": "12", "color": "#3B82F6", "cue": "拇指与中指指腹轻捏一次后分开。"},
+      "finger_pinch_ring": {"name": "捏无名指", "icon": "13", "color": "#EF4444", "cue": "拇指与无名指指腹轻捏一次后分开。"},
+      "finger_pinch_little": {"name": "捏小指", "icon": "14", "color": "#A855F7", "cue": "拇指与小指指腹轻捏一次后分开。"},
+      "finger_middle_ring": {"name": "中无名屈伸", "icon": "15", "color": "#F59E0B", "cue": "中指和无名指一起屈伸一次。"},
+      "finger_index_middle_ring": {"name": "食中无名屈伸", "icon": "16", "color": "#06B6D4", "cue": "食指、中指、无名指一起屈伸一次。"}
+    }
+  },
+  "ghost-seals": {
+    "name": "幽灵线 · 结印（每次佩戴校准）",
+    "labels": [
+      "seal_rest",
+      "seal_poxie",
+      "seal_daozhi",
+      "seal_wulei"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 1000,
+    "game": "tianjie",
+    "protocol": "select",
+    "calibrate": {
+      "rounds": 5,
+      "minRatio": 2.5,
+      "minTrain": 3
+    },
+    "gestures": {
+      "seal_rest": {
+        "name": "放松",
+        "icon": "○",
+        "color": "#94A3B8",
+        "cue": "手自然放松，五指微弯，前臂有支撑。",
+        "kind": "rest",
+        "voice": "保持放松"
+      },
+      "seal_poxie": {
+        "name": "破邪印",
+        "icon": "风",
+        "color": "#38BDF8",
+        "cue": "看到“做！”后，手背朝上，食指和中指并拢伸直，无名指、小指弯下，拇指从侧面压住这两指；保持到提示结束。",
+        "kind": "hold",
+        "voice": "破邪印，拇指压住"
+      },
+      "seal_daozhi": {
+        "name": "道指",
+        "icon": "水",
+        "color": "#818CF8",
+        "cue": "看到“做！”后，掌心朝上，食指和小指伸直张开，中指、无名指弯下，拇指压在它们的指甲上；保持到提示结束。",
+        "kind": "hold",
+        "voice": "道指，掌心朝上"
+      },
+      "seal_wulei": {
+        "name": "五雷诀",
+        "icon": "雷",
+        "color": "#F59E0B",
+        "cue": "看到“做！”后，手背朝上，四指握紧，拇指在拳外横扣在食指、中指上（不收进拳里）；保持到提示结束。",
+        "kind": "hold",
+        "voice": "五雷诀，拇指在外"
+      }
+    }
+  },
+  "egoemg-six": {
+    "name": "EgoEMG 六手势（穿插录制）",
+    "labels": [
+      "ego_rest",
+      "ego_pinch_middle",
+      "ego_thumb_slide",
+      "ego_index_bow",
+      "ego_ring_thumb",
+      "ego_claw5"
+    ],
+    "minTrain": 5,
+    "minRewear": 3,
+    "windowMs": 1000,
+    "protocol": "select",
+    "calibrate": {
+      "rounds": 10,
+      "minRatio": 2.5,
+      "minTrain": 3,
+      "shuffle": true
+    },
+    "gestures": {
+      "ego_rest": {
+        "name": "放松",
+        "icon": "○",
+        "color": "#94A3B8",
+        "cue": "手自然放松，手指微弯，互不接触，前臂有支撑。",
+        "kind": "rest",
+        "voice": "保持放松"
+      },
+      "ego_pinch_middle": {
+        "name": "唤起",
+        "icon": "中",
+        "color": "#256A60",
+        "cue": "看到“做！”后，中指尖碰拇指尖，捏住保持到提示结束。",
+        "kind": "hold",
+        "voice": "中指碰拇指，捏住"
+      },
+      "ego_thumb_slide": {
+        "name": "拇指滑",
+        "icon": "滑",
+        "color": "#38BDF8",
+        "cue": "看到“做！”后，拇指贴着食指侧面来回滑，其余四指不动；约每 1 到 1.5 秒一个来回，一直做到提示结束。",
+        "kind": "cont",
+        "voice": "拇指来回滑"
+      },
+      "ego_index_bow": {
+        "name": "食指屈伸",
+        "icon": "1",
+        "color": "#818CF8",
+        "cue": "看到“做！”后，只弯食指中间关节再伸直，其余手指不动；约每 1 到 1.5 秒一次，一直做到提示结束。",
+        "kind": "cont",
+        "voice": "食指来回弯"
+      },
+      "ego_ring_thumb": {
+        "name": "无名指碰拇指",
+        "icon": "无",
+        "color": "#F59E0B",
+        "cue": "看到“做！”后，无名指尖碰拇指尖，食指、中指、小指伸直，保持到提示结束。",
+        "kind": "hold",
+        "voice": "无名指碰拇指"
+      },
+      "ego_claw5": {
+        "name": "五指爪",
+        "icon": "爪",
+        "color": "#B63D36",
+        "cue": "看到“做！”后，五指都弯成爪、张开，不握拳，保持到提示结束。",
+        "kind": "hold",
+        "voice": "五指成爪"
+      }
+    }
+  },
+  "classic-16": {
+    "name": "经典 16（唯理流程）",
+    "labels": ["classic_rest", "classic_move", "classic_1", "classic_2", "classic_3", "classic_4", "classic_5", "classic_6", "classic_7", "classic_8", "classic_9", "classic_10", "classic_11", "classic_12", "classic_13", "classic_14", "classic_15", "classic_16"],
+    "minTrain": 3,
+    "minRewear": 3,
+    "layout": "classic",
+    "gestures": {
+      "classic_rest": {"name": "放松", "icon": "0", "color": "#94A3B8", "cue": "手自然放松，前臂有支撑。", "kind": "rest"},
+      "classic_move": {"name": "随意动手", "icon": "~", "color": "#64748B", "cue": "随便动手：转转腕、握一握、拿东西、看手机、调坐姿……别做动作 1–16。", "kind": "other"},
+      "classic_1": {"name": "动作1", "icon": "1", "color": "#22C55E", "cue": "看到「做！」后做动作1，保持到提示结束。"},
+      "classic_2": {"name": "动作2", "icon": "2", "color": "#3B82F6", "cue": "看到「做！」后做动作2，保持到提示结束。"},
+      "classic_3": {"name": "动作3", "icon": "3", "color": "#EF4444", "cue": "看到「做！」后做动作3，保持到提示结束。"},
+      "classic_4": {"name": "动作4", "icon": "4", "color": "#A855F7", "cue": "看到「做！」后做动作4，保持到提示结束。"},
+      "classic_5": {"name": "动作5", "icon": "5", "color": "#F59E0B", "cue": "看到「做！」后做动作5，保持到提示结束。"},
+      "classic_6": {"name": "动作6", "icon": "6", "color": "#06B6D4", "cue": "看到「做！」后做动作6，保持到提示结束。"},
+      "classic_7": {"name": "动作7", "icon": "7", "color": "#F97316", "cue": "看到「做！」后做动作7，保持到提示结束。"},
+      "classic_8": {"name": "动作8", "icon": "8", "color": "#6366F1", "cue": "看到「做！」后做动作8，保持到提示结束。"},
+      "classic_9": {"name": "动作9", "icon": "9", "color": "#22C55E", "cue": "看到「做！」后做动作9，保持到提示结束。"},
+      "classic_10": {"name": "动作10", "icon": "10", "color": "#3B82F6", "cue": "看到「做！」后做动作10，保持到提示结束。"},
+      "classic_11": {"name": "动作11", "icon": "11", "color": "#EF4444", "cue": "看到「做！」后做动作11，保持到提示结束。"},
+      "classic_12": {"name": "动作12", "icon": "12", "color": "#A855F7", "cue": "看到「做！」后做动作12，保持到提示结束。"},
+      "classic_13": {"name": "动作13", "icon": "13", "color": "#F59E0B", "cue": "看到「做！」后做动作13，保持到提示结束。"},
+      "classic_14": {"name": "动作14", "icon": "14", "color": "#06B6D4", "cue": "看到「做！」后做动作14，保持到提示结束。"},
+      "classic_15": {"name": "动作15", "icon": "15", "color": "#F97316", "cue": "看到「做！」后做动作15，保持到提示结束。"},
+      "classic_16": {"name": "动作16", "icon": "16", "color": "#6366F1", "cue": "看到「做！」后做动作16，保持到提示结束。"}
+    }
+  }
+}

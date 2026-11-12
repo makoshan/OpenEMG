@@ -1,0 +1,2198 @@
+{
+ "new16": {
+  "object_xy_span_mm": {
+   "47": [
+    22.8,
+    194.3
+   ],
+   "58": [
+    23.1,
+    31.8
+   ]
+  },
+  "bridges": {
+   "1.0": {
+    "bridge_len_mm": 3692.5,
+    "frac_along_Y": 0.975,
+    "frac_along_X": 0.011,
+    "longest_single_move_mm": 95.57
+   },
+   "1.16": {
+    "bridge_len_mm": 1131.8,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.971,
+    "longest_single_move_mm": 13.29
+   },
+   "1.32": {
+    "bridge_len_mm": 3238.6,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.006,
+    "longest_single_move_mm": 27.07
+   },
+   "2.12": {
+    "bridge_len_mm": 972.8,
+    "frac_along_Y": 0.443,
+    "frac_along_X": 0.273,
+    "longest_single_move_mm": 4.27
+   },
+   "2.28": {
+    "bridge_len_mm": 471.2,
+    "frac_along_Y": 0.954,
+    "frac_along_X": 0.044,
+    "longest_single_move_mm": 8.32
+   },
+   "4.52": {
+    "bridge_len_mm": 233.4,
+    "frac_along_Y": 0.033,
+    "frac_along_X": 0.077,
+    "longest_single_move_mm": 8.64
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  },
+  "north_bridges": {
+   "1.0": {
+    "bridge_len_mm": 844.9,
+    "frac_along_Y": 0.014,
+    "frac_along_X": 0.979,
+    "longest_single_move_mm": 21.82
+   },
+   "2.12": {
+    "bridge_len_mm": 169.4,
+    "frac_along_Y": 0.243,
+    "frac_along_X": 0.656,
+    "longest_single_move_mm": 4.27
+   },
+   "2.28": {
+    "bridge_len_mm": 493.7,
+    "frac_along_Y": 0.958,
+    "frac_along_X": 0.042,
+    "longest_single_move_mm": 9.07
+   },
+   "4.52": {
+    "bridge_len_mm": 261.7,
+    "frac_along_Y": 0.03,
+    "frac_along_X": 0.071,
+    "longest_single_move_mm": 9.7
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  },
+  "probes": {
+   "south_lip_X7_Y-69": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Sparse infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_lip_X10.2_Y-69": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_slot_X0_Y-69": {
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_relief_X0_Y-45": {
+    "1.16": [
+     "Bridge"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_contact_X9_Y-65": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "1.0": [
+     "Inner wall",
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Bridge"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_entry_A_X7_Y-28.9": {
+    "0.2": [
+     "Inner wall"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge",
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Inner wall"
+    ],
+    "1.32": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.8": [
+     "Inner wall"
+    ],
+    "1.96": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Inner wall"
+    ],
+    "2.28": [
+     "Bridge"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Internal solid infill"
+    ],
+    "2.92": [
+     "Internal solid infill"
+    ],
+    "3.08": [
+     "Top surface"
+    ]
+   },
+   "south_root_lip_X7_Y-28.5": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "1.0": [
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Outer wall"
+    ],
+    "2.28": [
+     "Bridge"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Internal solid infill"
+    ],
+    "2.92": [
+     "Internal solid infill"
+    ],
+    "3.08": [
+     "Inner wall"
+    ]
+   },
+   "south_root_lip_X-9.5_Y-28.5": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "1.0": [
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Outer wall"
+    ],
+    "2.28": [
+     "Bridge"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.92": [
+     "Internal solid infill"
+    ],
+    "3.08": [
+     "Gap infill",
+     "Inner wall",
+     "Top surface"
+    ]
+   },
+   "south_coupon_lip_X7_Y-45": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Sparse infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "north_lip_X-7_Y39": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "north_slot_X0_Y39": {
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   }
+  },
+  "roof": {
+   "roof_layer_z_bed": 1.0,
+   "bridge_segments": 926,
+   "roof_probe": "south_slot_X0_Y-69",
+   "bridge_len_near_probe_y": {
+    "max": 6.01,
+    "median": 0.1
+   },
+   "bridge_angle_deg_hist": [
+    5,
+    18,
+    16,
+    23,
+    5
+   ],
+   "bridge_x_extent_near_probe_y": [
+    -10.26,
+    10.78
+   ]
+  }
+ },
+ "new08": {
+  "object_xy_span_mm": {
+   "47": [
+    22.8,
+    194.3
+   ],
+   "58": [
+    23.1,
+    31.8
+   ]
+  },
+  "bridges": {
+   "0.84": {
+    "bridge_len_mm": 3439.8,
+    "frac_along_Y": 0.971,
+    "frac_along_X": 0.012,
+    "longest_single_move_mm": 96.04
+   },
+   "1.08": {
+    "bridge_len_mm": 1085.7,
+    "frac_along_Y": 0.029,
+    "frac_along_X": 0.97,
+    "longest_single_move_mm": 13.38
+   },
+   "1.56": {
+    "bridge_len_mm": 3232.9,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.006,
+    "longest_single_move_mm": 27.48
+   },
+   "2.04": {
+    "bridge_len_mm": 3868.8,
+    "frac_along_Y": 0.072,
+    "frac_along_X": 0.089,
+    "longest_single_move_mm": 33.24
+   },
+   "2.2": {
+    "bridge_len_mm": 439.7,
+    "frac_along_Y": 0.952,
+    "frac_along_X": 0.047,
+    "longest_single_move_mm": 8.35
+   },
+   "4.52": {
+    "bridge_len_mm": 99.3,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.32
+   },
+   "4.76": {
+    "bridge_len_mm": 231.0,
+    "frac_along_Y": 0.034,
+    "frac_along_X": 0.07,
+    "longest_single_move_mm": 12.85
+   }
+  },
+  "north_bridges": {
+   "0.84": {
+    "bridge_len_mm": 799.6,
+    "frac_along_Y": 0.014,
+    "frac_along_X": 0.975,
+    "longest_single_move_mm": 21.77
+   },
+   "2.04": {
+    "bridge_len_mm": 675.4,
+    "frac_along_Y": 0.018,
+    "frac_along_X": 0.108,
+    "longest_single_move_mm": 19.92
+   },
+   "2.2": {
+    "bridge_len_mm": 476.7,
+    "frac_along_Y": 0.956,
+    "frac_along_X": 0.044,
+    "longest_single_move_mm": 9.1
+   },
+   "4.52": {
+    "bridge_len_mm": 99.3,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.32
+   },
+   "4.76": {
+    "bridge_len_mm": 262.8,
+    "frac_along_Y": 0.03,
+    "frac_along_X": 0.069,
+    "longest_single_move_mm": 11.88
+   }
+  },
+  "probes": {
+   "south_lip_X7_Y-69": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.28": [
+     "Internal solid infill"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_lip_X10.2_Y-69": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.28": [
+     "Internal solid infill"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.96": [
+     "Gap infill",
+     "Sparse infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_slot_X0_Y-69": {
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.4": [
+     "Sparse infill"
+    ],
+    "1.48": [
+     "Sparse infill"
+    ],
+    "1.56": [
+     "Sparse infill"
+    ],
+    "1.64": [
+     "Sparse infill"
+    ],
+    "1.72": [
+     "Sparse infill"
+    ],
+    "1.88": [
+     "Sparse infill"
+    ],
+    "1.96": [
+     "Sparse infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_relief_X0_Y-45": {
+    "1.08": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.4": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.56": [
+     "Internal solid infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_contact_X9_Y-65": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.28": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "0.84": [
+     "Inner wall",
+     "Overhang wall"
+    ],
+    "0.92": [
+     "Outer wall"
+    ],
+    "1.0": [
+     "Outer wall"
+    ],
+    "1.08": [
+     "Outer wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.24": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.4": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.56": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.72": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.88": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_entry_A_X7_Y-28.9": {
+    "0.2": [
+     "Inner wall",
+     "Outer wall"
+    ],
+    "0.28": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "0.84": [
+     "Bridge",
+     "Overhang wall"
+    ],
+    "0.92": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.4": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.48": [
+     "Inner wall"
+    ],
+    "1.56": [
+     "Inner wall"
+    ],
+    "1.64": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.72": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.8": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.88": [
+     "Inner wall",
+     "Sparse infill"
+    ],
+    "1.96": [
+     "Inner wall"
+    ],
+    "2.04": [
+     "Inner wall"
+    ],
+    "2.12": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Bridge"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Internal solid infill"
+    ],
+    "2.84": [
+     "Floating vertical shell"
+    ],
+    "2.92": [
+     "Floating vertical shell"
+    ],
+    "3.0": [
+     "Floating vertical shell"
+    ],
+    "3.08": [
+     "Top surface"
+    ],
+    "3.16": [
+     "Inner wall"
+    ]
+   },
+   "south_root_lip_X7_Y-28.5": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.28": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "0.84": [
+     "Overhang wall"
+    ],
+    "0.92": [
+     "Outer wall"
+    ],
+    "1.0": [
+     "Outer wall"
+    ],
+    "1.08": [
+     "Outer wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.24": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.4": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.56": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.72": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.88": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.04": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Outer wall"
+    ],
+    "2.2": [
+     "Bridge"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Internal solid infill"
+    ],
+    "2.84": [
+     "Floating vertical shell"
+    ],
+    "2.92": [
+     "Floating vertical shell"
+    ],
+    "3.0": [
+     "Floating vertical shell"
+    ],
+    "3.08": [
+     "Inner wall"
+    ],
+    "3.16": [
+     "Floating vertical shell"
+    ]
+   },
+   "south_root_lip_X-9.5_Y-28.5": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.28": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall",
+     "Top surface"
+    ],
+    "0.84": [
+     "Overhang wall"
+    ],
+    "0.92": [
+     "Outer wall"
+    ],
+    "1.0": [
+     "Outer wall"
+    ],
+    "1.08": [
+     "Outer wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.24": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.4": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.56": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.72": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.88": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.04": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Outer wall"
+    ],
+    "2.2": [
+     "Bridge"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.84": [
+     "Floating vertical shell"
+    ],
+    "2.92": [
+     "Floating vertical shell"
+    ],
+    "3.0": [
+     "Floating vertical shell"
+    ],
+    "3.08": [
+     "Inner wall"
+    ],
+    "3.16": [
+     "Floating vertical shell"
+    ]
+   },
+   "south_coupon_lip_X7_Y-45": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.28": [
+     "Internal solid infill"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "north_lip_X-7_Y39": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.28": [
+     "Internal solid infill"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.4": [
+     "Sparse infill"
+    ],
+    "1.48": [
+     "Sparse infill"
+    ],
+    "1.56": [
+     "Sparse infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "north_slot_X0_Y39": {
+    "0.84": [
+     "Bridge"
+    ],
+    "0.92": [
+     "Internal solid infill"
+    ],
+    "1.0": [
+     "Internal solid infill"
+    ],
+    "1.08": [
+     "Internal solid infill"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.24": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.4": [
+     "Sparse infill"
+    ],
+    "1.48": [
+     "Sparse infill"
+    ],
+    "2.04": [
+     "Bridge"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.2": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.36": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.52": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.68": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   }
+  },
+  "roof": {
+   "roof_layer_z_bed": 0.84,
+   "bridge_segments": 1106,
+   "roof_probe": "south_slot_X0_Y-69",
+   "bridge_len_near_probe_y": {
+    "max": 6.71,
+    "median": 0.09
+   },
+   "bridge_angle_deg_hist": [
+    9,
+    21,
+    16,
+    30,
+    7
+   ],
+   "bridge_x_extent_near_probe_y": [
+    -10.76,
+    10.76
+   ]
+  }
+ },
+ "old16": {
+  "object_xy_span_mm": {
+   "47": [
+    22.8,
+    118.3
+   ],
+   "58": [
+    23.1,
+    31.8
+   ]
+  },
+  "bridges": {
+   "1.32": {
+    "bridge_len_mm": 431.4,
+    "frac_along_Y": 0.025,
+    "frac_along_X": 0.041,
+    "longest_single_move_mm": 16.18
+   },
+   "1.8": {
+    "bridge_len_mm": 4719.4,
+    "frac_along_Y": 0.98,
+    "frac_along_X": 0.009,
+    "longest_single_move_mm": 96.59
+   },
+   "2.12": {
+    "bridge_len_mm": 988.5,
+    "frac_along_Y": 0.236,
+    "frac_along_X": 0.448,
+    "longest_single_move_mm": 4.27
+   },
+   "2.28": {
+    "bridge_len_mm": 471.2,
+    "frac_along_Y": 0.954,
+    "frac_along_X": 0.044,
+    "longest_single_move_mm": 8.32
+   },
+   "4.52": {
+    "bridge_len_mm": 233.4,
+    "frac_along_Y": 0.033,
+    "frac_along_X": 0.077,
+    "longest_single_move_mm": 8.64
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  },
+  "north_bridges": {
+   "1.0": {
+    "bridge_len_mm": 844.9,
+    "frac_along_Y": 0.014,
+    "frac_along_X": 0.979,
+    "longest_single_move_mm": 21.82
+   },
+   "2.12": {
+    "bridge_len_mm": 169.4,
+    "frac_along_Y": 0.243,
+    "frac_along_X": 0.656,
+    "longest_single_move_mm": 4.27
+   },
+   "2.28": {
+    "bridge_len_mm": 493.7,
+    "frac_along_Y": 0.958,
+    "frac_along_X": 0.042,
+    "longest_single_move_mm": 9.07
+   },
+   "4.52": {
+    "bridge_len_mm": 261.7,
+    "frac_along_Y": 0.03,
+    "frac_along_X": 0.071,
+    "longest_single_move_mm": 9.7
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  }
+ },
+ "new16a180": {
+  "object_xy_span_mm": {
+   "47": [
+    22.8,
+    194.3
+   ],
+   "58": [
+    23.1,
+    31.8
+   ]
+  },
+  "bridges": {
+   "1.0": {
+    "bridge_len_mm": 3747.6,
+    "frac_along_Y": 0.026,
+    "frac_along_X": 0.964,
+    "longest_single_move_mm": 21.3
+   },
+   "1.16": {
+    "bridge_len_mm": 1131.8,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.971,
+    "longest_single_move_mm": 13.29
+   },
+   "1.32": {
+    "bridge_len_mm": 3238.6,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.006,
+    "longest_single_move_mm": 27.07
+   },
+   "2.12": {
+    "bridge_len_mm": 1006.7,
+    "frac_along_Y": 0.039,
+    "frac_along_X": 0.862,
+    "longest_single_move_mm": 3.78
+   },
+   "2.28": {
+    "bridge_len_mm": 453.1,
+    "frac_along_Y": 0.018,
+    "frac_along_X": 0.981,
+    "longest_single_move_mm": 20.93
+   },
+   "4.52": {
+    "bridge_len_mm": 233.4,
+    "frac_along_Y": 0.033,
+    "frac_along_X": 0.077,
+    "longest_single_move_mm": 8.64
+   },
+   "4.68": {
+    "bridge_len_mm": 96.3,
+    "frac_along_Y": 0.043,
+    "frac_along_X": 0.957,
+    "longest_single_move_mm": 12.79
+   }
+  },
+  "north_bridges": {
+   "1.0": {
+    "bridge_len_mm": 843.4,
+    "frac_along_Y": 0.014,
+    "frac_along_X": 0.977,
+    "longest_single_move_mm": 21.82
+   },
+   "2.12": {
+    "bridge_len_mm": 171.7,
+    "frac_along_Y": 0.034,
+    "frac_along_X": 0.865,
+    "longest_single_move_mm": 4.13
+   },
+   "2.28": {
+    "bridge_len_mm": 494.1,
+    "frac_along_Y": 0.018,
+    "frac_along_X": 0.981,
+    "longest_single_move_mm": 20.92
+   },
+   "4.52": {
+    "bridge_len_mm": 261.7,
+    "frac_along_Y": 0.03,
+    "frac_along_X": 0.071,
+    "longest_single_move_mm": 9.7
+   },
+   "4.68": {
+    "bridge_len_mm": 96.3,
+    "frac_along_Y": 0.043,
+    "frac_along_X": 0.957,
+    "longest_single_move_mm": 12.79
+   }
+  }
+ },
+ "new16lr": {
+  "object_xy_span_mm": {
+   "47": [
+    22.8,
+    194.3
+   ],
+   "58": [
+    23.1,
+    31.8
+   ]
+  },
+  "bridges": {
+   "1.0": {
+    "bridge_len_mm": 3746.9,
+    "frac_along_Y": 0.026,
+    "frac_along_X": 0.963,
+    "longest_single_move_mm": 21.3
+   },
+   "1.16": {
+    "bridge_len_mm": 1131.8,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.971,
+    "longest_single_move_mm": 13.29
+   },
+   "1.32": {
+    "bridge_len_mm": 3238.6,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.006,
+    "longest_single_move_mm": 27.07
+   },
+   "2.12": {
+    "bridge_len_mm": 992.3,
+    "frac_along_Y": 0.205,
+    "frac_along_X": 0.624,
+    "longest_single_move_mm": 4.27
+   },
+   "2.28": {
+    "bridge_len_mm": 471.2,
+    "frac_along_Y": 0.954,
+    "frac_along_X": 0.044,
+    "longest_single_move_mm": 8.32
+   },
+   "4.52": {
+    "bridge_len_mm": 233.4,
+    "frac_along_Y": 0.033,
+    "frac_along_X": 0.077,
+    "longest_single_move_mm": 8.64
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  },
+  "north_bridges": {
+   "1.0": {
+    "bridge_len_mm": 843.6,
+    "frac_along_Y": 0.014,
+    "frac_along_X": 0.978,
+    "longest_single_move_mm": 21.82
+   },
+   "2.12": {
+    "bridge_len_mm": 171.6,
+    "frac_along_Y": 0.033,
+    "frac_along_X": 0.865,
+    "longest_single_move_mm": 4.13
+   },
+   "2.28": {
+    "bridge_len_mm": 493.7,
+    "frac_along_Y": 0.958,
+    "frac_along_X": 0.042,
+    "longest_single_move_mm": 9.07
+   },
+   "4.52": {
+    "bridge_len_mm": 261.7,
+    "frac_along_Y": 0.03,
+    "frac_along_X": 0.071,
+    "longest_single_move_mm": 9.7
+   },
+   "4.68": {
+    "bridge_len_mm": 100.0,
+    "frac_along_Y": 0.848,
+    "frac_along_X": 0.152,
+    "longest_single_move_mm": 2.28
+   }
+  }
+ },
+ "coupon16": {
+  "object_xy_span_mm": {
+   "0": [
+    22.8,
+    41.4
+   ]
+  },
+  "bridges": {
+   "1.0": {
+    "bridge_len_mm": 1059.7,
+    "frac_along_Y": 0.946,
+    "frac_along_X": 0.027,
+    "longest_single_move_mm": 39.9
+   },
+   "1.16": {
+    "bridge_len_mm": 1131.8,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.971,
+    "longest_single_move_mm": 13.29
+   },
+   "2.12": {
+    "bridge_len_mm": 394.4,
+    "frac_along_Y": 0.788,
+    "frac_along_X": 0.111,
+    "longest_single_move_mm": 4.27
+   }
+  },
+  "north_bridges": {}
+ },
+ "coupon16lr": {
+  "object_xy_span_mm": {
+   "0": [
+    22.8,
+    41.4
+   ]
+  },
+  "bridges": {
+   "1.0": {
+    "bridge_len_mm": 1015.8,
+    "frac_along_Y": 0.059,
+    "frac_along_X": 0.926,
+    "longest_single_move_mm": 21.47
+   },
+   "1.16": {
+    "bridge_len_mm": 1131.8,
+    "frac_along_Y": 0.027,
+    "frac_along_X": 0.971,
+    "longest_single_move_mm": 13.29
+   },
+   "2.12": {
+    "bridge_len_mm": 416.5,
+    "frac_along_Y": 0.12,
+    "frac_along_X": 0.783,
+    "longest_single_move_mm": 4.27
+   }
+  },
+  "north_bridges": {},
+  "probes": {
+   "south_lip_X7_Y-69": {
+    "0.2": [
+     "Inner wall"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_lip_X10.2_Y-69": {
+    "0.2": [
+     "Inner wall"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Sparse infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_slot_X0_Y-69": {
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_relief_X0_Y-45": {
+    "1.16": [
+     "Bridge"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.64": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_contact_X9_Y-65": {
+    "0.2": [
+     "Outer wall"
+    ],
+    "0.36": [
+     "Outer wall"
+    ],
+    "1.0": [
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Outer wall"
+    ],
+    "1.32": [
+     "Outer wall"
+    ],
+    "1.48": [
+     "Outer wall"
+    ],
+    "1.64": [
+     "Outer wall"
+    ],
+    "1.8": [
+     "Outer wall"
+    ],
+    "1.96": [
+     "Outer wall"
+    ],
+    "2.12": [
+     "Bridge"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   },
+   "south_entry_A_X7_Y-28.9": {
+    "0.2": [
+     "Inner wall",
+     "Outer wall"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge",
+     "Overhang wall"
+    ],
+    "1.16": [
+     "Inner wall"
+    ],
+    "1.32": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Inner wall"
+    ],
+    "1.64": [
+     "Inner wall"
+    ],
+    "1.8": [
+     "Inner wall"
+    ],
+    "1.96": [
+     "Inner wall"
+    ],
+    "2.12": [
+     "Inner wall"
+    ],
+    "2.28": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Inner wall"
+    ],
+    "2.6": [
+     "Inner wall",
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Gap infill",
+     "Inner wall"
+    ],
+    "2.92": [
+     "Inner wall"
+    ],
+    "3.08": [
+     "Gap infill",
+     "Top surface"
+    ]
+   },
+   "south_coupon_lip_X7_Y-45": {
+    "0.2": [
+     "Bottom surface"
+    ],
+    "0.36": [
+     "Top surface"
+    ],
+    "1.0": [
+     "Bridge"
+    ],
+    "1.16": [
+     "Internal solid infill"
+    ],
+    "1.32": [
+     "Internal solid infill"
+    ],
+    "1.48": [
+     "Internal solid infill"
+    ],
+    "1.8": [
+     "Floating vertical shell"
+    ],
+    "1.96": [
+     "Internal solid infill"
+    ],
+    "2.12": [
+     "Internal solid infill"
+    ],
+    "2.28": [
+     "Internal solid infill"
+    ],
+    "2.44": [
+     "Internal solid infill"
+    ],
+    "2.6": [
+     "Internal solid infill"
+    ],
+    "2.76": [
+     "Top surface"
+    ]
+   }
+  },
+  "roof": {
+   "roof_layer_z_bed": 1.0,
+   "bridge_segments": 613,
+   "roof_probe": "south_slot_X0_Y-69",
+   "bridge_len_near_probe_y": {
+    "max": 21.47,
+    "median": 0.1
+   },
+   "bridge_angle_deg_hist": [
+    16,
+    8,
+    9,
+    14,
+    3
+   ],
+   "bridge_x_extent_near_probe_y": [
+    -10.82,
+    10.65
+   ]
+  },
+  "estimate": {
+   "time": "16m 59s",
+   "filament_g": "2.67"
+  }
+ }
+}

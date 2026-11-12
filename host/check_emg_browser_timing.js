@@ -1,0 +1,15 @@
+const assert = require('node:assert/strict');
+const {StreamTiming} = require('./emg_demo.js');
+const t = new StreamTiming();
+t.observe('sse', 0); t.observe('paint', 0);
+t.observe('sse', 10, 'recording');t.observe('sse', 20, 'recording');
+t.observe('paint', 120, 'recording');
+assert.equal(t.snapshot()['recording:sse'].maxGapMs, 10);
+assert.equal(t.snapshot()['recording:paint'].maxGapMs, 120);
+t.observe('paint', 1120, 'hidden');
+assert.equal(t.snapshot()['recording:paint'].maxGapMs, 120);
+assert.equal(t.snapshot()['hidden:paint'].maxGapMs, 1000);
+const snapshot=t.snapshot();snapshot['recording:paint'].maxGapMs=0;
+assert.equal(t.snapshot()['recording:paint'].maxGapMs,120);
+assert.throws(()=>t.observe('sse',NaN));
+console.log('PASS: drawing stall distinct from SSE; background tagged; snapshot isolated; NaN rejected');

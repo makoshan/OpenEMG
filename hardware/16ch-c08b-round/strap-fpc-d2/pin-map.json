@@ -1,0 +1,490 @@
+{
+ "a": {
+  "connector": "V4_FPC1",
+  "d17_sha256": "87a6863f5c5b5d8de2264e6370b0c6d1670f891305c9b7820c71986956f011cb",
+  "table": [
+   {
+    "pin": 1,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 41.75
+   },
+   {
+    "pin": 2,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 42.25
+   },
+   {
+    "pin": 3,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 42.75
+   },
+   {
+    "pin": 4,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 43.25
+   },
+   {
+    "pin": 5,
+    "board_net": "CH1_P",
+    "d17_net": "V4_$2N83",
+    "expect": "CH1_P",
+    "y": 43.75
+   },
+   {
+    "pin": 6,
+    "board_net": "CH1_N",
+    "d17_net": "V4_$2N85",
+    "expect": "CH1_N",
+    "y": 44.25
+   },
+   {
+    "pin": 7,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 44.75
+   },
+   {
+    "pin": 8,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 45.25
+   },
+   {
+    "pin": 9,
+    "board_net": "CH2_P",
+    "d17_net": "V4_$2N86",
+    "expect": "CH2_P",
+    "y": 45.75
+   },
+   {
+    "pin": 10,
+    "board_net": "CH2_N",
+    "d17_net": "V4_$2N87",
+    "expect": "CH2_N",
+    "y": 46.25
+   },
+   {
+    "pin": 11,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 46.75
+   },
+   {
+    "pin": 12,
+    "board_net": "CH3_P",
+    "d17_net": "V4_$2N118",
+    "expect": "CH3_P",
+    "y": 47.25
+   },
+   {
+    "pin": 13,
+    "board_net": "CH3_N",
+    "d17_net": "V4_$2N119",
+    "expect": "CH3_N",
+    "y": 47.75
+   },
+   {
+    "pin": 14,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 48.25
+   },
+   {
+    "pin": 15,
+    "board_net": "CH4_P",
+    "d17_net": "V4_$2N90",
+    "expect": "CH4_P",
+    "y": 48.75
+   },
+   {
+    "pin": 16,
+    "board_net": "CH4_N",
+    "d17_net": "V4_$2N120",
+    "expect": "CH4_N",
+    "y": 49.25
+   },
+   {
+    "pin": 17,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 49.75
+   },
+   {
+    "pin": 18,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 50.25
+   },
+   {
+    "pin": 19,
+    "board_net": "CH5_P",
+    "d17_net": "V4_$2N111",
+    "expect": "CH5_P",
+    "y": 50.75
+   },
+   {
+    "pin": 20,
+    "board_net": "CH5_N",
+    "d17_net": "V4_$2N93",
+    "expect": "CH5_N",
+    "y": 51.25
+   },
+   {
+    "pin": 21,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 51.75
+   },
+   {
+    "pin": 22,
+    "board_net": "CH6_P",
+    "d17_net": "V4_$2N94",
+    "expect": "CH6_P",
+    "y": 52.25
+   },
+   {
+    "pin": 23,
+    "board_net": "CH6_N",
+    "d17_net": "V4_$2N95",
+    "expect": "CH6_N",
+    "y": 52.75
+   },
+   {
+    "pin": 24,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 53.25
+   },
+   {
+    "pin": 25,
+    "board_net": "CH7_P",
+    "d17_net": "V4_$2N96",
+    "expect": "CH7_P",
+    "y": 53.75
+   },
+   {
+    "pin": 26,
+    "board_net": "CH7_N",
+    "d17_net": "V4_$2N97",
+    "expect": "CH7_N",
+    "y": 54.25
+   },
+   {
+    "pin": 27,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 54.75
+   },
+   {
+    "pin": 28,
+    "board_net": "CH8_P",
+    "d17_net": "V4_$2N98",
+    "expect": "CH8_P",
+    "y": 55.25
+   },
+   {
+    "pin": 29,
+    "board_net": "CH8_N",
+    "d17_net": "V4_$2N121",
+    "expect": "CH8_N",
+    "y": 55.75
+   },
+   {
+    "pin": 30,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 56.25
+   },
+   {
+    "pin": 31,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 56.75
+   },
+   {
+    "pin": 32,
+    "board_net": "WCT",
+    "d17_net": "V4_WCT",
+    "expect": "WCT",
+    "y": 57.25
+   },
+   {
+    "pin": 33,
+    "board_net": "BIAS_DRV1",
+    "d17_net": "V4_BIAS_DRV1",
+    "expect": "BIAS_DRV1",
+    "y": 57.75
+   },
+   {
+    "pin": 34,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 58.25
+   }
+  ]
+ },
+ "b": {
+  "connector": "V4_FPC3",
+  "d17_sha256": "87a6863f5c5b5d8de2264e6370b0c6d1670f891305c9b7820c71986956f011cb",
+  "table": [
+   {
+    "pin": 1,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 58.25
+   },
+   {
+    "pin": 2,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 57.75
+   },
+   {
+    "pin": 3,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 57.25
+   },
+   {
+    "pin": 4,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 56.75
+   },
+   {
+    "pin": 5,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 56.25
+   },
+   {
+    "pin": 6,
+    "board_net": "CH9_P",
+    "d17_net": "V4_$2N341",
+    "expect": "CH9_P",
+    "y": 55.75
+   },
+   {
+    "pin": 7,
+    "board_net": "CH9_N",
+    "d17_net": "V4_$2N340",
+    "expect": "CH9_N",
+    "y": 55.25
+   },
+   {
+    "pin": 8,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 54.75
+   },
+   {
+    "pin": 9,
+    "board_net": "CH10_P",
+    "d17_net": "V4_$2N339",
+    "expect": "CH10_P",
+    "y": 54.25
+   },
+   {
+    "pin": 10,
+    "board_net": "CH10_N",
+    "d17_net": "V4_$2N338",
+    "expect": "CH10_N",
+    "y": 53.75
+   },
+   {
+    "pin": 11,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 53.25
+   },
+   {
+    "pin": 12,
+    "board_net": "CH11_P",
+    "d17_net": "V4_$2N327",
+    "expect": "CH11_P",
+    "y": 52.75
+   },
+   {
+    "pin": 13,
+    "board_net": "CH11_N",
+    "d17_net": "V4_$2N326",
+    "expect": "CH11_N",
+    "y": 52.25
+   },
+   {
+    "pin": 14,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 51.75
+   },
+   {
+    "pin": 15,
+    "board_net": "CH12_P",
+    "d17_net": "V4_$2N337",
+    "expect": "CH12_P",
+    "y": 51.25
+   },
+   {
+    "pin": 16,
+    "board_net": "CH12_N",
+    "d17_net": "V4_$2N325",
+    "expect": "CH12_N",
+    "y": 50.75
+   },
+   {
+    "pin": 17,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 50.25
+   },
+   {
+    "pin": 18,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 49.75
+   },
+   {
+    "pin": 19,
+    "board_net": "CH13_P",
+    "d17_net": "V4_$2N330",
+    "expect": "CH13_P",
+    "y": 49.25
+   },
+   {
+    "pin": 20,
+    "board_net": "CH13_N",
+    "d17_net": "V4_$2N336",
+    "expect": "CH13_N",
+    "y": 48.75
+   },
+   {
+    "pin": 21,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 48.25
+   },
+   {
+    "pin": 22,
+    "board_net": "CH14_P",
+    "d17_net": "V4_$2N335",
+    "expect": "CH14_P",
+    "y": 47.75
+   },
+   {
+    "pin": 23,
+    "board_net": "CH14_N",
+    "d17_net": "V4_$2N334",
+    "expect": "CH14_N",
+    "y": 47.25
+   },
+   {
+    "pin": 24,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 46.75
+   },
+   {
+    "pin": 25,
+    "board_net": "CH15_P",
+    "d17_net": "V4_$2N333",
+    "expect": "CH15_P",
+    "y": 46.25
+   },
+   {
+    "pin": 26,
+    "board_net": "CH15_N",
+    "d17_net": "V4_$2N332",
+    "expect": "CH15_N",
+    "y": 45.75
+   },
+   {
+    "pin": 27,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 45.25
+   },
+   {
+    "pin": 28,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 44.75
+   },
+   {
+    "pin": 29,
+    "board_net": "CH16_P",
+    "d17_net": "V4_$2N331",
+    "expect": "CH16_P",
+    "y": 44.25
+   },
+   {
+    "pin": 30,
+    "board_net": "CH16_N",
+    "d17_net": "V4_$2N324",
+    "expect": "CH16_N",
+    "y": 43.75
+   },
+   {
+    "pin": 31,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 43.25
+   },
+   {
+    "pin": 32,
+    "board_net": "WCT2",
+    "d17_net": "V4_WCT2",
+    "expect": "WCT2",
+    "y": 42.75
+   },
+   {
+    "pin": 33,
+    "board_net": "AGND",
+    "d17_net": "AGND",
+    "expect": "AGND",
+    "y": 42.25
+   },
+   {
+    "pin": 34,
+    "board_net": "BIAS_DRV12",
+    "d17_net": "V4_RLD_OUT2",
+    "expect": "BIAS_DRV12",
+    "y": 41.75
+   }
+  ]
+ }
+}

@@ -1,0 +1,321 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>PULSE · MAKO 单通道</title>
+<style>
+:root{--line:#1a2438;--dim:#7d8aa6;--txt:#d6deee;--cy:#2fc7f0;--gn:#36d07a;--or:#f2c14e;--pk:#f0406f;--pu:#9a6bff}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 30% 20%,#12203a 0%,#070b14 55%,#04060b 100%);color:var(--txt);font:12px/1.4 ui-monospace,Menlo,monospace;display:grid;grid-template-rows:30px 1fr;overflow:hidden}
+#bar{display:flex;align-items:center;gap:14px;background:linear-gradient(#d9dde4,#c3c8d1);color:#2a3140;padding:0 12px;white-space:nowrap;overflow:hidden;font-size:11px}
+#bar .f{display:flex;gap:5px;align-items:center}#bar .f i{font-style:normal;color:#5b6474}#bar .f b{font-weight:600;background:#eef0f4;border:1px solid #a9afba;border-radius:2px;padding:1px 6px;min-width:34px}
+#bar .sp{flex:1}#bar button{background:none;border:none;color:#2a3140;font:600 11px ui-monospace,Menlo,monospace;letter-spacing:.08em;cursor:pointer;padding:3px 7px;border-radius:2px}
+#bar button:hover{background:#b3b9c4}#bar button.on{background:#2a3140;color:#e8ecf3}#bar button:disabled{opacity:.35}
+#st{font-weight:700;color:#2a3140}
+@media (max-width:1100px){#bar .f.opt{display:none}}
+#main{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:2.6fr 1fr;min-height:0}
+.p{position:relative;min-height:0;overflow:hidden;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.p h3{position:absolute;left:14px;top:8px;margin:0;font:600 12px ui-sans-serif,system-ui;color:#c9d3e6;z-index:2}
+.p h3 small{font:400 10px ui-monospace,Menlo,monospace;color:var(--dim);margin-left:8px}
+.p canvas{width:100%;height:100%;display:block}
+#left{display:grid;grid-template-rows:1.75fr 1fr;min-height:0}#right{display:grid;grid-template-rows:.75fr 1.9fr;min-height:0}
+#handNote{position:absolute;left:14px;bottom:10px;color:var(--dim);font-size:10px;z-index:2}
+#energy{position:absolute;inset:34px 16px 12px 16px;display:grid;grid-auto-rows:1fr;align-items:center}
+.row{display:grid;grid-template-columns:78px 1fr 84px;align-items:center;gap:14px}.row .n{font-size:11px;font-weight:600}
+.row .t{height:26px;background:linear-gradient(90deg,#15203a,#0d1528)}.row .f{height:100%;width:0%;transition:width .12s}
+.row .v{text-align:right;color:#c9d3e6;font-size:11px}
+#bottom{grid-column:1/3;border-right:none}
+#legend{position:absolute;right:14px;top:8px;display:flex;gap:16px;color:var(--dim);font-size:10px;z-index:2}#legend span::before{content:'';display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+body.studio{display:block;background:#FAF8F2;color:#24352F;font:14px/1.5 -apple-system,"PingFang SC",sans-serif;overflow:auto}
+body.studio>#bar,body.studio>#main{display:none}
+#studio[hidden]{display:none}#studio{height:100dvh;display:flex;flex-direction:column}
+#studio header{padding:14px 20px;background:#FFFEFB;border-bottom:1px solid #E5E0D7;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+#studio h1{font-size:19px;margin:0}#studioProject{color:#65736B;overflow-wrap:anywhere}
+#studio nav{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px}
+#studio button{font:inherit;padding:9px 16px;border:1px solid #C8D1CA;border-radius:8px;background:#FFFEFB;color:#24352F;cursor:pointer}
+#studio button[aria-current=page]{background:#24352F;color:#FFFEFB}#studio button:disabled{opacity:.45;cursor:default}
+#studio :focus-visible{outline:2px solid #46785D;outline-offset:3px}
+#studioStatus,#studioNote{margin:0;padding:0 20px 10px;font-size:12px;color:#52635B}
+#workspace{border:0;flex:1;width:100%;min-height:480px;background:#FAF8F2}
+@media(max-width:700px){#studio header{padding:10px 12px;gap:4px}#studio nav{padding:10px 12px}#studio button{padding:8px 10px}#workspace{min-height:600px}}
+</style>
+<section id=studio hidden>
+<header><h1>肌电训练工作台</h1><span id=studioProject>读取工程…</span></header>
+<nav aria-label="训练工作台"><button data-page=pulse disabled>手掌与信号</button><button data-page=capture disabled>引导录制</button><button data-page=train disabled>模型训练</button></nav>
+<p id=studioStatus role=status>正在确认设备与工程…</p><p id=studioNote>手掌显示整体力度；逐指位置识别尚未实现。</p>
+<iframe id=workspace title="肌电工作区" hidden></iframe>
+</section>
+<div id=bar>
+  <span class=f><i>Source</i><b id=src>—</b></span><span class="f opt"><i>Rate</i><b>1000 Hz</b></span><span class="f opt"><i>Notch</i><b>50 Hz</b></span>
+  <span class="f opt"><i>Lines</i><b id=nl>0</b></span><span class="f opt"><i>Drop</i><b id=nd>0</b></span><span class=f><i>Floor</i><b id=fl>…</b></span><span class=f><i>Wear</i><b id=wr>—</b></span>
+  <span class=sp></span><span id=st>未连接</span>
+  <button id=bConn>SERIAL</button><button id=bSim>SIM</button><button id=bSrv>PLAY</button><button id=bPause>PAUSE</button><button id=bRec>REC</button><button id=bOpen>OPEN</button><button id=bSave disabled>SAVE</button>
+  <input id=file type=file accept=".csv" hidden>
+</div>
+<div id=main>
+  <div id=left>
+    <div class=p><span id=handNote>单通道 · 五指同亮 = 整手用力，不分手指</span><canvas id=cHand></canvas></div>
+    <div class=p><h3>Spectrum<small id=lgS>陷波前 · 0–500 Hz</small></h3><canvas id=cSpec></canvas></div>
+  </div>
+  <div id=right>
+    <div class=p style="border-right:none"><h3>Force<small>包络 mV</small></h3><div id=legend><span style="--c:var(--cy)">Envelope</span><span style="--c:var(--or)">Gate ×3</span><span style="--c:var(--pk)">Event</span></div><canvas id=cForce></canvas></div>
+    <div class=p style="border-right:none"><h3>Force Energy<small>训练用的同一组特征</small></h3><div id=energy></div></div>
+  </div>
+  <div class=p id=bottom><h3>Wrist sEMG Filtered<small>1 电极拆 16 个频带（20–450 Hz）· 粉线 = 每秒 / 闸门</small></h3><canvas id=cTr></canvas></div>
+</div>
+<script src="emg_demo.js"></script>
+<script>
+const pageParams = new URLSearchParams(location.search);
+if (pageParams.get('view') === 'studio') {
+  document.body.classList.add('studio');
+  document.getElementById('studio').hidden = false;
+  document.title = '肌电训练工作台';
+  const project = pageParams.get('project') || '', frame = document.getElementById('workspace');
+  const buttons = [...document.querySelectorAll('[data-page]')];
+  const expectedKind = pageParams.get('kind');
+  if (expectedKind === 'wl8') {
+    document.title = '八通道手环工作台';
+    document.querySelector('#studio h1').textContent = document.title;
+    buttons.find(b => b.dataset.page === 'capture').textContent = '八通道波形与录制';
+    buttons.find(b => b.dataset.page === 'train').textContent = '电极评估';
+    buttons.find(b => b.dataset.page === 'pulse').textContent = '手掌预览 · CH1';
+    document.getElementById('studioNote').textContent = '八通道独立工作台；不会使用单通道采集页面。逐指位置识别尚未实现。';
+  }
+  let selected = ['pulse','capture','train'].includes(pageParams.get('section')) ? pageParams.get('section') : 'pulse';
+  let kind = '', ready = false, busy = false;
+  function showPage() {
+    if (!ready) return;
+    const q = new URLSearchParams({project, embed:'1'});
+    let path;
+    if (selected === 'pulse') { path = '/pulse'; q.set('kind', kind); }
+    else if (kind === 'wl8') { path = '/'; q.set('view', selected); }
+    else { path = '/guide'; if (selected === 'train') q.set('view', 'train'); }
+    const url = path + '?' + q;
+    if (frame.getAttribute('src') !== url) frame.src = url;
+    frame.hidden = false;
+    for (const b of buttons) { b.disabled = busy; b.setAttribute('aria-current', b.dataset.page === selected ? 'page' : 'false'); }
+  }
+  for (const b of buttons) b.onclick = () => {
+    if (!ready || busy) return;
+    if (frame.contentWindow?.hasUnsavedCapture?.()) { document.getElementById('studioStatus').textContent = '请先停止波形录制并保存 CSV，再切换页签。'; return; }
+    selected = b.dataset.page; showPage();
+  };
+  async function updateStudio() {
+    try {
+      const response = await fetch('/api/emg/state?view=capture');
+      if (!response.ok) throw Error('采集服务暂不可用');
+      const state = await response.json();
+      if ((state.project?.id || '') !== project) throw Error('工程已切换，请从当前工程重新打开工作台');
+      document.getElementById('studioProject').textContent = state.project?.name || '独立采集工程';
+      const nextKind = state.rig?.kind || 'emg';
+      if (expectedKind && nextKind !== expectedKind) throw Error('设备不匹配：本页需要八通道手环，当前采集服务不是八通道。请连接八通道手环后重试；单通道请使用原引导采集 UI。');
+      if (ready && nextKind !== kind) frame.removeAttribute('src');
+      kind = nextKind; ready = true; busy = !!state.busy;
+      const fake = /fake/i.test(state.rig?.banner || '') || state.rig?.port === 'fake';
+      document.getElementById('studioStatus').textContent = (fake ? '模拟台架 · ' : '') + (kind === 'wl8' ? '八通道腕带' : '单通道肌电') + ' · ' + (state.rig?.streaming ? '信号流开启' : '信号流未开启') + (busy ? ' · '+state.busy : '');
+      document.getElementById('studioNote').textContent = kind === 'wl8'
+        ? '录制保存八通道；手掌预览仅使用 CH1，不能表示逐指位置。训练页使用已有 LDA 电极扫描与重戴评估。'
+        : '手掌显示整体力度；录制与五类模型训练共用当前工程。逐指位置识别尚未实现。';
+      showPage();
+    } catch (error) {
+      ready = false; frame.removeAttribute('src'); frame.hidden = true;
+      for (const b of buttons) b.disabled = true;
+      document.getElementById('studioStatus').textContent = error.message;
+    }
+  }
+  updateStudio(); setInterval(updateStudio, 2000);
+} else {
+// 学 OriginFlow PULSE V0.2 的版式：连续手掌轮廓 + 指尖发光、Force 曲线、Force Energy 五条、白线频谱、底部 16 行彩虹波形。
+// 我们只有一路电极：手不分手指（五个指尖一起亮），五条是训练用的特征，16 行是同一路信号拆成 16 个频带。
+const wristband = pageParams.get('kind') === 'wl8';
+const MV = wristband ? 2000 / 2048 / 1000 : 3600 / 4096, NB = 16, SEC = 5, NS = HZ * SEC;
+const env = new Envelope(100), gate = new EffortGate(), hpf = new Highpass(20), cleaner = new Cleaner(50), bank = new BandBank(NB);
+const HP = new Float32Array(10000), EH = new Float32Array(1000), ES = new Float32Array(1000), BANDS = Array.from({ length: NB }, () => new Float32Array(NS));
+let ri = 0, rn = 0, bi = 0, bn = 0, ei = 0, en = 0, chunkNo = 0, events = [];
+let view = { active: false, force: 0, ratio: 1, floor: Infinity }, worn = 0, lastT = 0, lines = 0, dropped = 0;
+let source = 'none', paused = false, spec = null, specAvg = null, specMid = null, specFast = null, specAt = 0, mains = 0, rec = null, lastRec = null, replay = null;
+window.hasUnsavedCapture = () => !!rec || !!lastRec?.length;
+addEventListener('beforeunload', e => { if (window.hasUnsavedCapture()) { e.preventDefault(); e.returnValue = ''; } });
+const $ = id => document.getElementById(id);
+if (pageParams.get('embed') === '1') {
+  for (const id of ['bConn','bSim']) $(id).hidden = true;
+  $('bSrv').textContent = '连接信号';
+}
+if (wristband) $('handNote').textContent = 'CH1 力度预览 · 不代表逐指位置 · 接触状态未知';
+let receivedAt = 0;
+function feed(line) {
+  const p = parseLine(line); if (!p) { dropped++; return; }
+  receivedAt = Date.now();
+  lines++; if (paused) return; if (rec) rec.push(line);
+  worn = p.worn; lastT = p.t;
+  let e;
+  for (const v of p.samples) {
+    const c = cleaner.push(v - MID); e = env.push(c + MID);
+    HP[ri] = hpf.push(v - MID); ri = (ri + 1) % HP.length; rn = Math.min(rn + 1, HP.length);
+    const o = bank.push(c); for (let k = 0; k < NB; k++) BANDS[k][bi] = o[k]; bi = (bi + 1) % NS; bn = Math.min(bn + 1, NS);
+  }
+  const was = view.active; view = gate.update(e, p.worn >= 8 ? p.worn : 0);
+  EH[ei] = e * MV; ES[ei] = (ES[(ei - 1 + ES.length) % ES.length] || 0) * .85 + e * MV * .15; ei = (ei + 1) % EH.length; en = Math.min(en + 1, EH.length); chunkNo++;
+  if (view.active !== was) { events.push({ at: chunkNo, on: view.active }); if (events.length > 200) events.shift(); }
+  if (rn >= 1024 && performance.now() - specAt > 100) {
+    specAt = performance.now(); spec = spectrum(recent(HP, ri, 1024)); mains = mainsShare(spec);
+    const sm = blur(spec.power);                          // PULSE's spectrum is smooth humps, not bin noise
+    if (!specAvg || specAvg.length !== sm.length) { specAvg = Float64Array.from(sm); specMid = Float64Array.from(sm); specFast = Float64Array.from(sm); }
+    for (let i = 0; i < sm.length; i++) { specFast[i] = specFast[i] * .5 + sm[i] * .5; specMid[i] = specMid[i] * .85 + sm[i] * .15; specAvg[i] = specAvg[i] * .96 + sm[i] * .04; }
+  }
+}
+function blur(a, r = 3) { const o = new Float64Array(a.length); for (let i = 0; i < a.length; i++) { let s = 0, w = 0; for (let k = -r; k <= r; k++) { const j = i + k; if (j < 0 || j >= a.length) continue; const g = Math.exp(-k * k / (r * r * .6)); s += a[j] * g; w += g; } o[i] = s / w; } return o; }
+function recent(buf, idx, n) { const out = new Float64Array(n); for (let k = 0; k < n; k++) out[k] = buf[(idx - n + k + buf.length) % buf.length]; return out; }
+
+// ---- sources: serial (Web Serial), server stream (emg_web.py SSE), simulated, CSV replay
+let port, reader, writer, simTimer = null, pressed = false, simT = 0, sse = null;
+function setSource(s) {
+  source = s; $('src').textContent = { none: '—', sim: 'SIM', serial: 'SERIAL', file: 'FILE', server: 'SERVER' }[s];
+  $('bConn').classList.toggle('on', !!port); $('bSim').classList.toggle('on', !!simTimer); $('bSrv').classList.toggle('on', !!sse);
+}
+function stopAll() { clearInterval(simTimer); simTimer = null; clearInterval(replay); replay = null; if (sse) { sse.close(); sse = null; } setSource('none'); }
+async function connect() {
+  if (port) { try { await writer.write(new TextEncoder().encode('s')); await reader.cancel(); await port.close(); } catch (e) {} port = null; setSource('none'); return; }
+  if (!navigator.serial) { $('st').textContent = '要 Chrome / Edge'; return; }
+  try {
+    port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x2886 }] }); await port.open({ baudRate: 115200 });
+    stopAll(); writer = port.writable.getWriter(); setSource('serial'); await writer.write(new TextEncoder().encode('s'));
+    reader = port.readable.pipeThrough(new TextDecoderStream()).getReader(); let buf = '';
+    for (;;) { const { value, done } = await reader.read(); if (done) break; buf += value; const parts = buf.split('\n'); buf = parts.pop(); parts.forEach(feed); }
+  } catch (e) { $('st').textContent = '串口: ' + e.message; port = null; setSource('none'); }
+}
+function startSrv() { if (port) return; stopAll(); sse = new EventSource('/api/emg/stream'); sse.onmessage = e => feed(e.data); setSource('server'); }
+function startSim() { if (port) return; stopAll(); simTimer = setInterval(() => { feed(synthLine(simT, pressed)); simT += CHUNK; }, CHUNK); setSource('sim'); }
+$('bConn').onclick = connect;
+$('bSrv').onclick = () => sse ? stopAll() : startSrv();
+$('bSim').onclick = () => simTimer ? stopAll() : startSim();
+$('bPause').onclick = () => { paused = !paused; $('bPause').classList.toggle('on', paused); };
+$('bRec').onclick = () => { if (rec) { lastRec = rec; rec = null; } else rec = []; $('bRec').classList.toggle('on', !!rec); $('bSave').disabled = !rec && !lastRec; };
+$('bSave').onclick = () => { const rows = rec || lastRec || []; if (!rows.length) return;
+  const csv = (wristband ? '# WL8 CH1 preview only, 1000 Hz, uV=(count-2048)*2000/2048; worn10 is not contact detection\n' : '# MAKO emg_usb stream, 1000 Hz, 12-bit counts, 1.65 V mid\n') + 'ms,worn10,v0,v1,v2,v3,v4,v5,v6,v7,v8,v9\n' + rows.map(l => l.trim().split(/\s+/).slice(1).join(',')).join('\n') + '\n';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `emg-stream-${new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19)}.csv`; a.click(); if (!rec) { lastRec = null; $('bSave').disabled = true; } };
+$('bOpen').onclick = () => $('file').click();
+$('file').onchange = async e => { const f = e.target.files[0]; if (!f) return; const rows = (await f.text()).split('\n').filter(l => l && !l.startsWith('#') && !l.startsWith('ms,'));
+  stopAll(); let i = 0; setSource('file'); replay = setInterval(() => { if (i >= rows.length) return stopAll(); feed('S ' + rows[i++].split(',').join(' ')); }, CHUNK); };
+addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { pressed = true; e.preventDefault(); } });
+addEventListener('keyup', e => { if (e.code === 'Space') pressed = false; });
+
+// ---- drawing helpers
+function fit(cv) { const r = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight; if (cv.width !== w * r || cv.height !== h * r) { cv.width = w * r; cv.height = h * r; } const c = cv.getContext('2d'); c.setTransform(r, 0, 0, r, 0, 0); return [c, w, h]; }
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function smooth(c, pts, close) {                     // Catmull-Rom through points
+  const n = pts.length, P = i => pts[close ? (i + n) % n : Math.max(0, Math.min(n - 1, i))];
+  c.moveTo(...P(0));
+  for (let i = 0; i < (close ? n : n - 1); i++) {
+    const [x0, y0] = P(i - 1), [x1, y1] = P(i), [x2, y2] = P(i + 1), [x3, y3] = P(i + 2);
+    c.bezierCurveTo(x1 + (x2 - x0) / 6, y1 + (y2 - y0) / 6, x2 - (x3 - x1) / 6, y2 - (y3 - y1) / 6, x2, y2);
+  }
+}
+// Open right hand, thumb to the right, re-traced off the PULSE V0.2 screen: unit = hand height, y down, width ≈ .82.
+const HAND = [[.23,.99],[.18,.92],[.14,.80],[.11,.65],[.08,.48],[.03,.30],[.01,.21],[.03,.17],[.06,.17],[.09,.23],[.15,.38],[.19,.44],
+  [.18,.26],[.17,.11],[.19,.06],[.23,.06],[.25,.11],[.26,.31],[.30,.39],
+  [.32,.26],[.35,.05],[.37,.01],[.42,.01],[.43,.06],[.42,.30],[.44,.38],
+  [.48,.29],[.52,.13],[.55,.09],[.58,.10],[.59,.15],[.56,.34],[.54,.51],[.56,.62],
+  [.63,.59],[.72,.56],[.78,.55],[.82,.59],[.80,.64],[.71,.71],[.63,.80],[.54,.90],[.47,.98]];
+const TIPS = [[.035,.20],[.21,.085],[.39,.035],[.565,.12],[.80,.595]];
+function drawHand() {
+  const [c, w, h] = fit($('cHand')), s = Math.min(w * .55 / .82, (h - 44) * .92), ox = w * .52 - s * .41, oy = 24;
+  const f = source === 'none' || Date.now() - receivedAt > 1000 || worn < 8 ? 0 : shown, P = ([x, y]) => [ox + x * s, oy + y * s];
+  c.clearRect(0, 0, w, h);
+  const outline = new Path2D(); { const q = HAND.map(P); const tmp = { moveTo: (...a) => outline.moveTo(...a), bezierCurveTo: (...a) => outline.bezierCurveTo(...a) }; smooth(tmp, q, true); outline.closePath(); }
+  // fingertips painted INSIDE the outline, PULSE style; all five together: one electrode cannot tell fingers apart
+  c.save(); c.clip(outline);
+  for (const t of TIPS) {
+    const [x, y] = P(t), r = s * .05;
+    c.fillStyle = `rgba(232,52,62,${.55 + .45 * f})`; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+  if (f > .05) for (const t of TIPS) {                  // glow only while effort is on
+    const [x, y] = P(t), r = s * (.05 + .06 * f), g = c.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(255,60,80,${.45 * f})`); g.addColorStop(1, 'rgba(255,60,80,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+  c.save(); c.shadowColor = 'rgba(210,225,255,.6)'; c.shadowBlur = 6; c.strokeStyle = '#eef2fa'; c.lineWidth = 2.6; c.lineJoin = 'round';
+  c.stroke(outline); c.restore();
+  c.fillStyle = view.active ? '#ff6b86' : '#9fb0cc'; c.font = '600 14px ui-sans-serif,system-ui'; c.textAlign = 'right';
+  c.fillText(source === 'none' || Date.now() - receivedAt > 1000 ? '等待信号' : worn < 8 ? '电极没贴好' : view.active ? `用力 ${(f * 100).toFixed(0)}%` : '放松', w - 16, h - 14);
+}
+function drawForce() {
+  const [c, w, h] = fit($('cForce')), L = 40, T = 34, B = 10, pw = w - L - 16, ph = h - T - B;
+  c.clearRect(0, 0, w, h); if (!en) return;
+  let mx = .05; for (let k = 0; k < en; k++) mx = Math.max(mx, EH[k]); mx *= 1.15;
+  c.fillStyle = css('--dim'); c.font = '9px ui-monospace'; c.textAlign = 'right';
+  for (let g = 0; g <= 3; g++) { const y = T + ph - ph * g / 3; c.fillText((mx * g / 3).toFixed(g ? 1 : 0), L - 6, y + 3); }
+  c.strokeStyle = css('--cy'); c.lineWidth = 1.8; c.beginPath();
+  const x = k => L + pw * k / (EH.length - 1), first = chunkNo - en;
+  for (let k = 0; k < en; k++) { const v = ES[(ei - en + k + ES.length) % ES.length], px = x(k + EH.length - en), py = T + ph - ph * Math.min(v / mx, 1); k ? c.lineTo(px, py) : c.moveTo(px, py); }
+  c.stroke(); c.lineWidth = 1;
+  for (const ev of events) { if (ev.at < first) continue; const xx = x(ev.at - first + EH.length - en); c.strokeStyle = ev.on ? 'rgba(240,64,111,.9)' : 'rgba(240,64,111,.35)'; c.beginPath(); c.moveTo(xx, T); c.lineTo(xx, T + ph); c.stroke(); }
+  if (isFinite(view.floor)) { const y = T + ph - ph * Math.min(view.floor * MV * gate.on / mx, 1); c.strokeStyle = css('--or'); c.setLineDash([3, 4]); c.beginPath(); c.moveTo(L, y); c.lineTo(L + pw, y); c.stroke(); c.setLineDash([]); }
+}
+function drawSpec() {
+  const [c, w, h] = fit($('cSpec')), L = 30, T = 34, B = 30, pw = w - L - 16, ph = h - T - B;
+  c.clearRect(0, 0, w, h);
+  c.fillStyle = css('--dim'); c.font = '9px ui-monospace'; c.textAlign = 'center';
+  for (let f = 0; f <= 500; f += 100) c.fillText(f === 500 ? '500 Hz' : f, L + pw * f / 500, h - 16);
+  c.fillText('Frequency', L + pw / 2, h - 3);
+  if (!specAvg) return;
+  const n = specAvg.length, hz = spec.hz; let mx = 1e-9; for (const a of [specAvg, specMid, specFast]) for (let i = 2; i < n; i++) mx = Math.max(mx, a[i]);
+  // three time windows overlaid (≈0.2 s / 0.7 s / 2.5 s), the way PULSE overlays channels
+  for (const [a, col, lw] of [[specFast, 'rgba(160,230,190,.55)', 1], [specMid, 'rgba(255,170,200,.65)', 1.1], [specAvg, '#eef2fa', 1.5]]) {
+    c.save(); c.shadowColor = 'rgba(220,230,255,.45)'; c.shadowBlur = 3; c.strokeStyle = col; c.lineWidth = lw; c.beginPath();
+    for (let i = 1; i < n; i++) { const x = L + pw * (i * hz) / 500, yy = T + ph - ph * Math.pow(a[i] / mx, .6); i > 1 ? c.lineTo(x, yy) : c.moveTo(x, yy); }
+    c.stroke(); c.restore();
+  }
+  $('lgS').textContent = `陷波前 · 工频 ${(mains * 100).toFixed(0)}% · 中值 ${spec.medianHz.toFixed(0)} Hz · SMR ${spec.smrDb.toFixed(0)} dB`;
+}
+// Band colours top (16, highest) → bottom (1, lowest), the PULSE rainbow: pink → violet → blue → cyan → green → yellow → orange → red.
+const BCOL = Array.from({ length: NB }, (_, k) => `hsl(${330 * k / (NB - 1)} 85% 62%)`);
+function drawTraces() {
+  const [c, w, h] = fit($('cTr')), L = 96, T = 28, B = 6, rh = (h - T - B) / NB, pw = w - L - 10;
+  c.clearRect(0, 0, w, h);
+  for (let k = NB - 1; k >= 0; k--) {                          // one continuous rainbow strip, thin dark seams
+    const row = NB - 1 - k, y0 = T + row * rh, mid = y0 + rh / 2;
+    c.fillStyle = BCOL[k]; c.fillRect(28, y0, 30, rh + .5);
+    c.fillStyle = 'rgba(5,8,14,.55)'; c.fillRect(28, y0 + rh - .6, 30, .6);
+    c.fillStyle = '#39445a'; c.fillRect(62, mid - .5, 10, 1);
+    c.fillStyle = css('--dim'); c.font = '9px ui-monospace'; c.textAlign = 'right'; c.fillText(k + 1, 90, mid + 3);
+  }
+  c.save(); c.translate(14, T + (h - T - B) / 2); c.rotate(-Math.PI / 2); c.fillStyle = css('--dim'); c.font = '600 10px ui-sans-serif,system-ui'; c.textAlign = 'center'; c.fillText('Band', 0, 0); c.restore();
+  if (!bn) return;
+  const step = Math.max(1, Math.floor(NS / pw));
+  let global = 1e-6;
+  for (let k = 0; k < NB; k++) for (let j = 0; j < bn; j += step) global = Math.max(global, Math.abs(BANDS[k][(bi - bn + j + NS) % NS]));
+  for (let k = 0; k < NB; k++) {
+    const row = NB - 1 - k, mid = T + row * rh + rh / 2, buf = BANDS[k];
+    let mx = 1e-6; for (let j = 0; j < bn; j += step) mx = Math.max(mx, Math.abs(buf[(bi - bn + j + NS) % NS]));
+    const scale = (rh * .6) / Math.max(mx, global * .15);             // each row readable, quiet rows stay quiet
+    c.strokeStyle = BCOL[k]; c.globalAlpha = .85; c.lineWidth = .9; c.beginPath();
+    for (let j = 0; j < bn; j += step) { const v = buf[(bi - bn + j + NS) % NS], x = L + pw * (j + NS - bn) / NS, yy = mid - v * scale; j ? c.lineTo(x, yy) : c.moveTo(x, yy); }
+    c.stroke();
+  }
+  c.globalAlpha = 1;
+  const secNow = lastT / 1000;                                     // a pink line per second, bright on gate events
+  c.strokeStyle = 'rgba(240,110,150,.55)'; c.lineWidth = 4;
+  for (let s = Math.ceil(secNow - SEC); s <= secNow; s++) { const x = L + pw * (1 - (secNow - s) / SEC); c.beginPath(); c.moveTo(x, T); c.lineTo(x, h - B); c.stroke(); }
+  const first = chunkNo - Math.min(en, SEC * 100);
+  for (const ev of events) { if (ev.at < first) continue; const x = L + pw * (1 - (chunkNo - ev.at) / (SEC * 100)); c.strokeStyle = ev.on ? 'rgba(255,61,122,.95)' : 'rgba(255,61,122,.4)'; c.lineWidth = 5; c.beginPath(); c.moveTo(x, T); c.lineTo(x, h - B); c.stroke(); }
+  c.lineWidth = 1;
+}
+// ---- Force Energy: five bars, the features emg_model trains on
+function peak2s() { let m = 0; for (let k = 0; k < Math.min(en, 200); k++) m = Math.max(m, EH[(ei - 1 - k + EH.length) % EH.length]); return m; }
+const FEATS = [['力度 rms', 'mV', '--cy', () => env.value * MV, 0, 1], ['峰值 2 s', 'mV', '--gn', peak2s, 0, 1], ['中值频率', 'Hz', '--or', () => spec ? spec.medianHz : 0, 0, 300],
+  ['底噪比', '×', '--pk', () => view.ratio, 1, 20], ['贴合', '%', '--pu', () => worn * 10, 0, 100]];
+$('energy').innerHTML = FEATS.map((f, i) => `<div class=row><span class=n style="color:var(${f[2]})">${f[0]}</span><div class=t><div class=f id=f${i} style="background:var(${f[2]})"></div></div><span class=v id=v${i}>—</span></div>`).join('');
+let shown = 0;
+function frame() {
+  requestAnimationFrame(frame);
+  shown += (view.force - shown) * .15;
+  drawHand(); drawForce(); drawSpec(); drawTraces();
+  const mvMax = Math.max(1, peak2s() * 1.1);
+  FEATS.forEach((f, i) => { const v = f[3](), hi = f[1] === 'mV' ? mvMax : f[5];
+    $('f' + i).style.width = `${Math.max(0, Math.min(1, (v - f[4]) / (hi - f[4]))) * 100}%`;
+    $('v' + i).textContent = wristband && i === 4 ? '未知' : source === 'none' || Date.now() - receivedAt > 1000 ? '—' : `${v.toFixed(f[1] === 'mV' || f[1] === '×' ? 2 : 0)} ${f[1]}`; });
+  $('nl').textContent = lines; $('nd').textContent = dropped; $('fl').textContent = isFinite(view.floor) ? (view.floor * MV).toFixed(2) + ' mV' : '…';
+  $('wr').textContent = wristband ? '未知' : source === 'none' ? '—' : worn * 10 + '%';
+  $('st').textContent = source === 'none' ? '未连接' : Date.now() - receivedAt > 1000 ? '等待信号' : paused ? '暂停' : worn < 8 ? '电极没贴好' : view.active ? '● 用力' : '○ 放松';
+}
+requestAnimationFrame(frame);
+}
+</script>

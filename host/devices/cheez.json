@@ -1,0 +1,47 @@
+{
+  "id": "cheez",
+  "name": "Cheez sEMG-D 单通道（XIAO）",
+  "transport": {
+    "kind": "serial",
+    "match": {
+      "banner": "EMG",
+      "vid": 11914
+    }
+  },
+  "decoder": "cheez",
+  "n_channels": 1,
+  "fs_Hz": 1000,
+  "fs_options": [
+    1000
+  ],
+  "resolution_bits": 12,
+  "channels": [
+    {
+      "label": "CH1",
+      "sensor": "EMG",
+      "unit": "uV",
+      "offset": 0,
+      "gain": 1.0
+    }
+  ],
+  "imu": {
+    "fs_Hz": 208,
+    "axes": 6
+  },
+  "digital_in": 0,
+  "battery": false,
+  "electrode_layout": "single",
+  "capabilities": {
+    "record": true,
+    "realtime": true,
+    "train": true,
+    "cursor": false,
+    "ab": false,
+    "imu": true
+  },
+  "limits": {
+    "rail_uV": 1650000.0,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  }
+}
