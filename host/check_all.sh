@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export PYTHONDONTWRITEBYTECODE=1
 cd "$(dirname "$0")"
 PY="${PY:-../.venv/bin/python}"
 "$PY" ads1298_regs.py --check
@@ -15,6 +16,7 @@ PY="${PY:-../.venv/bin/python}"
 "$PY" v12_dongle.py selftest
 "$PY" check_v12_imu.py
 "$PY" check_v12_status.py
+"$PY" check_c08b_stream.py
 "$PY" ../firmware/offline-f01/check.py
 "$PY" ../firmware/dsp-f03/check.py
 echo "host 核心自检全部通过"

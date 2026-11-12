@@ -1,0 +1,62 @@
+{
+  "id": "c08b-16ch",
+  "name": "OpenEMG C08B 旗舰 16 通道（L432 + nRF52840 + 双 ADS1298）",
+  "transport": {
+    "kind": "ble",
+    "match": {
+      "name_prefix": "YUANLI-C08B",
+      "service_uuid": "7b24c101-3948-4f03-9d11-12bb9d000001"
+    }
+  },
+  "decoder": "c08b",
+  "n_channels": 16,
+  "fs_Hz": 1000,
+  "fs_options": [
+    500,
+    1000,
+    2000
+  ],
+  "resolution_bits": 24,
+  "channels": [
+    {"label": "CH1", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH2", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH3", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH4", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH5", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH6", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH7", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH8", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH9", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH10", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH11", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH12", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH13", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH14", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH15", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258},
+    {"label": "CH16", "sensor": "EMG", "unit": "uV", "offset": 0, "gain": 0.0476837215129258}
+  ],
+  "imu": {
+    "chip": "LSM6DS3TR-C",
+    "fs_Hz": 104,
+    "axes": ["gx", "gy", "gz", "ax", "ay", "az"],
+    "gyro_dps_per_count": 0.035,
+    "accel_g_per_count": 0.000244
+  },
+  "digital_in": 1,
+  "battery": true,
+  "electrode_layout": "c08b-12-2-2",
+  "capabilities": {
+    "record": false,
+    "realtime": true,
+    "train": true,
+    "cursor": true,
+    "ab": true,
+    "imu": true
+  },
+  "limits": {
+    "rail_uV": 400000.0,
+    "max_drop_rate": 0.0,
+    "min_take_s": 2
+  },
+  "notes": "C08B 共用主控 R4U6/R4U6N + 双面 ADS1298 D17（2.40V 基准 / PGA=6 / F01 v4 54B 帧）；默认硬件锁关闭，record=false 直到台架实测解锁"
+}

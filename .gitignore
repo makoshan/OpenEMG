@@ -7,6 +7,7 @@ app/build/
 app/out/
 apple/openEMG/openEMG.xcodeproj/
 firmware/c08b-bringup/build/
+firmware/c08b-stream/build/
 *.kicad_prl
 *.npz
 *.edf

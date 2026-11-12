@@ -9,7 +9,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEVICES_DIR = HERE / 'devices'
 TRANSPORTS = ('serial', 'ble', 'usb', 'replay', 'fake')
-DECODERS = ('wl8', 'wl18', 'v12', 'cheez')
+DECODERS = ('wl8', 'wl18', 'v12', 'c08b', 'cheez')
 SENSORS = ('EMG', 'ACC', 'GYR', 'CUSTOM')
 CAPABILITIES = ('record', 'realtime', 'train', 'cursor', 'ab', 'imu')
 REQUIRED = ('id', 'name', 'transport', 'decoder', 'n_channels', 'fs_Hz', 'channels')
@@ -136,6 +136,8 @@ def for_rig(rig):
         if getattr(rig, 'replay', None):
             return load('replay')
         return load('fake' if type(rig).__name__.startswith('Fake') else 'wl8')
+    if kind in ('c08b-16ch', 'c08b-8ch', 'c08b-2ch'):
+        return load(kind)
     if type(rig).__name__.endswith('V12Rig'):
         return load('v12')
     return load('cheez')

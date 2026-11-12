@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -63,6 +66,7 @@ jobs:
           cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host
           /tmp/test_c08b_host
           PY=python bash firmware/xiao-ads1292-2ch/check.sh
+          PY=python bash firmware/c08b-stream/check.sh
           c++ -std=c++17 -O2 -Wall -Wextra -Werror hardware/8ch-ads1298/r01-bench/firmware-f05/src/ads1298.cpp hardware/8ch-ads1298/r01-bench/firmware-f05/test_ads1298.cpp -o /tmp/test_ads1298
           /tmp/test_ads1298
 

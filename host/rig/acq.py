@@ -23,6 +23,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent.parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+import c08b_stream  # noqa: E402
 import device_desc  # noqa: E402
 import v12  # noqa: E402
 import wl8  # noqa: E402
@@ -61,6 +62,10 @@ def build_rig(desc, serial=None, replay=None, realtime=False, seed=1):
         if kind == 'ble' and not desc.cap('record'):
             return v12.SynthV12Rig(seed=seed)          # BLE 桥接未接通前只能合成（描述里 record=false）
         return v12.V12Rig(allow_real=True)
+    if desc.decoder == 'c08b':
+        if kind == 'ble' and not desc.cap('record'):
+            return c08b_stream.SynthC08BRig(n_channels=desc.n_channels, fs_Hz=desc.fs_Hz, seed=seed)
+        return c08b_stream.C08BRig(n_channels=desc.n_channels, fs_Hz=desc.fs_Hz, allow_real=True)
     if desc.decoder == 'cheez':
         import emg_web  # 循环依赖，见文件头
         return emg_web.Rig(serial)
@@ -72,8 +77,14 @@ def _cheez_fake(realtime):
     return emg_web.FakeRig(realtime=realtime)
 
 
-RIG_DECODER = {'Wl8Rig': 'wl8', 'FakeWl8Rig': 'wl8', 'ReplayWl8Rig': 'wl8', 'Wl18Rig': 'wl18', 'V12Rig': 'v12', 'SynthV12Rig': 'v12', 'Rig': 'cheez', 'FakeRig': 'cheez'}
-RIG_CHANNELS = {'wl8': 8, 'wl18': 18, 'v12': 8, 'cheez': 1}
+RIG_DECODER = {
+    'Wl8Rig': 'wl8', 'FakeWl8Rig': 'wl8', 'ReplayWl8Rig': 'wl8',
+    'Wl18Rig': 'wl18',
+    'V12Rig': 'v12', 'SynthV12Rig': 'v12',
+    'C08BRig': 'c08b', 'SynthC08BRig': 'c08b',
+    'Rig': 'cheez', 'FakeRig': 'cheez',
+}
+RIG_CHANNELS = {'wl8': 8, 'wl18': 18, 'v12': 8, 'c08b': (2, 8, 16), 'cheez': 1}
 
 
 def check_pair(rig, desc):
@@ -83,8 +94,15 @@ def check_pair(rig, desc):
         raise ValueError(f'未知 rig 类型 {type(rig).__name__}')
     if dec != desc.decoder:
         raise ValueError(f'描述 {desc.id} 的 decoder={desc.decoder}，但 rig 是 {type(rig).__name__}（{dec}）')
-    if desc.n_channels != RIG_CHANNELS[dec]:
-        raise ValueError(f'{dec} 出 {RIG_CHANNELS[dec]} 路，描述 {desc.id} 写了 {desc.n_channels} 路')
+    allowed = RIG_CHANNELS[dec]
+    if isinstance(allowed, tuple):
+        if desc.n_channels not in allowed:
+            raise ValueError(f'{dec} 仅支持 {allowed} 路，描述 {desc.id} 写了 {desc.n_channels} 路')
+        rig_ch = getattr(rig, 'n_channels', None)
+        if rig_ch is not None and rig_ch != desc.n_channels:
+            raise ValueError(f'rig 实例是 {rig_ch} 路，描述 {desc.id} 写了 {desc.n_channels} 路')
+    elif desc.n_channels != allowed:
+        raise ValueError(f'{dec} 出 {allowed} 路，描述 {desc.id} 写了 {desc.n_channels} 路')
 
 
 class AcqHandler:
@@ -126,7 +144,7 @@ class AcqHandler:
             if self._clock is not None:
                 self.rig.unsubscribe(self._clock)
                 self._clock = None
-            if hasattr(self.rig, 'streaming') and type(self.rig).__name__ in ('ReplayWl8Rig', 'SynthV12Rig'):
+            if hasattr(self.rig, 'streaming') and type(self.rig).__name__ in ('ReplayWl8Rig', 'SynthV12Rig', 'SynthC08BRig'):
                 self.rig.streaming = False
             self.state = 'enabled' if getattr(self.rig, 'conn', None) or getattr(self.rig, 'streaming', False) else 'found'
             return self.status()
