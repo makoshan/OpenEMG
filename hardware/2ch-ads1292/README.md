@@ -116,7 +116,7 @@ Mako 11-04 定完整一块，外形和孔同 C08A；11-05 定 XIAO 走转接板�
 
 ## G 固件约束（硬件靠它才成立）
 
-- 新写 ADS1292 驱动；两路补成 V12 的 8 路 27 字节帧，主机加 VREF 2.42 V、增益配置。V4 固件不能直接刷。
+- 新写 ADS1292 驱动（候选流式固件见 [`../../firmware/xiao-ads1292-2ch/`](../../firmware/xiao-ads1292-2ch/README.md)，已通过跨板引脚 20/20 对账、48 项单测与 PIO 编译，默认双硬件锁保持关闭，未上板）；两路补成 V12 的 8 路 27 字节帧，主机加 VREF 2.42 V、增益配置。V4 固件不能直接刷。
 - 脚：D6 DRDY、D3 START、D4 PWDN/RESET、D5 AVDD 回读、D7 CS、D8 SCLK、D9 MISO、D10 MOSI；D0、D2 被 P44e 上拉，不用；D1 空。
 - CONFIG2：开 PDB_REFBUF，VREF_4V=0；RESP2 写 0x07：手册要求 bit2、bit0 写 1（默认 0x02 不满足），bit1（RLDREF_INT）保持 1，写 0 会让 29 脚成正反馈。
 - PDB_RLD 默认关要打开；上电等 1 s 再发复位脉冲；寄存器读写时 SCLK ≤1.024 MHz。

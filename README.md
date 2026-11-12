@@ -63,7 +63,7 @@
 
 | 模块 | 目录 | 说明 |
 |---|---|---|
-| **嵌入式固件与协议** | `firmware/` | `c08b-bringup`（`L432 + nRF52840` 双核固件）、`xiao-f04`（XIAO Sense 8 路固件）、`ble-dongle`（低延迟无线接收器）、`offline-f01`（帧编解码）、`dsp-f03`（定点滤波）、`cheez-s3`（单路入门） |
+| **嵌入式固件与协议** | `firmware/` | `c08b-bringup`（`L432 + nRF52840` 双核自检固件）、`xiao-ads1292-2ch`（`ADS1292 + P44e + XIAO` 2 路 BLE `F01` 流式固件）、`xiao-f04`（XIAO 合成参考流）、`ble-dongle`（低延迟无线接收器）、`offline-f01`（帧编解码）、`dsp-f03`（定点滤波）、`cheez-s3`（单路入门）；8 路真实 AFE + IMU 固件见 `hardware/8ch-ads1298/r01-bench/firmware-f05/` |
 | **电脑端核心服务** | `host/` | Python 多设备统一采集、50 Hz 陷波与 20–400 Hz 带通、Hudgins 特征、收缩 LDA / 自适应重戴识别、指尖按压力估计（`wl8_force.py`）、台架噪声/CMRR 评估与 SMT 门禁工具 |
 | **桌面与网页工作台** | `app/` | Electron + React + Web Serial：支持 1 / 2 / 8 / 16 / 18 通道切换、佩戴底噪红线检查、动作录制、模型训练与陀螺仪光标控制 |
 | **iPhone + Watch 端** | `apple/openEMG/` | SwiftUI iOS + watchOS 源码：BLE 接收 `F01` 数据流、实时八路波形与手表端手势/确认卡联动 |

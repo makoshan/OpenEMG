@@ -70,7 +70,8 @@
    ```
 2. **固件刷写路径**：
    - `nRF52840`（`U13`）：经 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`（`c4d046ab`）。
-   - `STM32L432KC`（`U18`）：`R4U6 / R4U6N` 已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `e20c509d`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+   - `STM32L432KC`（`U18`）：`R4U6 / R4U6N` 已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `7fc800df`，`CFG1292_TEST` 已修正 `RESP2=0x07`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+   - `2CH + P44e + XIAO nRF52840 Sense` 独立 BLE `F01` 流式候选固件：[`firmware/xiao-ads1292-2ch/`](../firmware/xiao-ads1292-2ch/README.md)（`bash check.sh --pio`：20/20 脚对账、6 项必败反例、48 项单测与 `ads1292_2k`/`ads1292_4k` 镜像全绿，默认硬件锁关闭）。
 3. **手机广播与 97 字节报告一键判读（免调试器）**：
    - 手机 nRF Connect 复制 `0xFFFF` 厂商十六进制串：`python3 -B firmware/c08b-bringup/tools/decode_bringup.py --ble-hex "<HEX>"`
    - SWD / GDB 导出 97 字节 `g_report`：`python3 -B firmware/c08b-bringup/tools/decode_bringup.py --report-hex "<HEX>"`
