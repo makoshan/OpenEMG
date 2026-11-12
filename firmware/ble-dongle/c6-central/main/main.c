@@ -20,7 +20,9 @@
 #include "host/ble_hs.h"
 #include "host/util/util.h"
 
+#ifndef TARGET_NAME
 #define TARGET_NAME "MAKO-V12-ADS-2K"
+#endif
 // 7b24c101-3948-4f03-9d11-12bb9d0000NN（与 F05 同一服务；NN = 01 服务、02 数据、03 元数据、04 状态、05 控制）
 #define MAKO_UUID(nn) BLE_UUID128_INIT(nn, 0x00, 0x00, 0x9d, 0xbb, 0x12, 0x11, 0x9d, 0x03, 0x4f, 0x48, 0x39, 0x01, 0xc1, 0x24, 0x7b)
 static const ble_uuid128_t SVC = MAKO_UUID(0x01), DATA = MAKO_UUID(0x02), META = MAKO_UUID(0x03),

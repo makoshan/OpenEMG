@@ -40,4 +40,30 @@ precondition(band.rms.allSatisfy { abs($0 - r200) / r200 < 0.05 }, "RMS 不对�
 let rmsBefore = band.rms[0]
 band.reset(fs: 4000)
 precondition(band.head == 0 && band.rms.allSatisfy { $0 == 0 }, "reset 没清干净")
-print(String(format: "openEMG check 通过：拆包 3 例；滤波 200 Hz %.0f µV、50 Hz %.0f µV（陷波后）；4 kHz 抽点 %d 点、RMS %.0f µV、reset 清零", r200, r50, warm / 20, rmsBefore))
+
+// ADS1292 两路板元数据（F05_ADS1292_2CH_CANDIDATE，vref_mV=2420, gain=6）：识别为真 ADS、刻度为 4.0V 的 2.42/4.0 倍，且拒收坏量程
+let band1292 = Band(bluetooth: false)
+let meta1292: [String: Any] = ["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 2420, "gain": 6]
+precondition(band1292.applyMeta(meta1292) && band1292.source == "", "ADS1292 元数据未识别为真实候选固件")
+precondition(abs(band1292.fullScaleUv - 403_333.34) < 1.0, "ADS1292 满量程不对：\(band1292.fullScaleUv)")
+for i in 0..<6000 {
+    let v = Int32(100000 * sin(2 * .pi * 200 * Double(i) / 2000))
+    band1292.ingest([v, -v, 0, 0, 0, 0, 0, 0])
+}
+let expected1292 = r200 * (2.42 / 4.0)
+let rms1292 = band1292.rms[0]
+precondition(abs(rms1292 - expected1292) / expected1292 < 0.05 && band1292.activeLanes == 2,
+             "ADS1292 两路 RMS 或活跃通道数不对：\(band1292.rms)")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000]), "ADS1292 缺 vref_mV/gain 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 3300, "gain": 6]), "非法 vref_mV 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 2420.5, "gain": 6]), "小数 vref_mV 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 2420.0, "gain": 6]), "浮点 2420.0 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 2420, "gain": 6.0]), "浮点 6.0 没拒")
+let jsonFloat = try! JSONSerialization.jsonObject(with: Data("{\"profile\":\"F05_ADS1292_2CH_CANDIDATE\",\"fs_Hz\":2000.0,\"vref_mV\":2420,\"gain\":6}".utf8)) as! [String: Any]
+precondition(!band1292.applyMeta(jsonFloat), "JSON 浮点 2000.0 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS1292_2CH_CANDIDATE", "fs_Hz": 2000, "vref_mV": 2420, "gain": 5]), "非法 gain 没拒")
+precondition(!band1292.applyMeta(["profile": "F05_ADS_CANDIDATE", "fs_Hz": true]), "布尔 fs_Hz 没拒")
+precondition(band1292.applyMeta(["profile": "F05_ADS_CANDIDATE", "fs_Hz": 2000]) && band1292.source == "" && band1292.fullScaleUv == fullScaleMicrovolt,
+             "切换回 F05_ADS_CANDIDATE 未恢复默认满量程")
+precondition(band1292.applyMeta(["profile": "XIAO_SYNTH_PROBE", "fs_Hz": 2000, "synthetic": true]) && band1292.source == "合成", "合成流未标合成")
+print(String(format: "openEMG check 通过：拆包 3 例；ADS1298 200 Hz %.0f µV、50 Hz %.0f µV；ADS1292(2.42V/6) 200 Hz %.0f µV（活跃 2 路）；4 kHz 抽点 %d 点、reset 清零", r200, r50, rms1292, warm / 20))

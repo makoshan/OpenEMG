@@ -20,7 +20,8 @@ SERVICE, DATA, META, STATUS, CONTROL = (UUID_PREFIX + f'{i:06d}' for i in range(
 IMU_DATA, IMU_STATUS = (UUID_PREFIX + f'{i:06d}' for i in (6, 7))
 # IMU 联合采集要求两路用同一个 MCU 时钟打时间戳：F05（nRF52840）是 TIMER2，F05C（CH585M）是 SysTick。
 IMU_CLOCKS = ('TIMER2_1MHz', 'CH585_SYSTICK')
-COMMANDS = dict(test=b'TST1', short=b'SHT1', external=b'EXT1', rld=b'EXR1')
+COMMANDS = dict(test=b'TST1', short=b'SHT1', external=b'EXT1', rld=b'EXR1', rld_measure=b'RLD1')
+ADS_PROFILES = ('F05_ADS_CANDIDATE', 'F05_ADS1292_2CH_CANDIDATE')
 
 
 def load_codec():
@@ -33,12 +34,24 @@ def load_codec():
 
 def validate_metadata(raw, expected=None):
     meta = json.loads(bytes(raw))
-    if not isinstance(meta, dict) or meta.get('profile') != 'F05_ADS_CANDIDATE':
-        raise ValueError('设备不是 F05 ADS 候选固件')
-    for key, values in dict(protocol=(1, 2, 3), channels=(8,), fs_Hz=(2000, 4000),
-                            spi_Hz=(1000000, 2000000, 4000000, 8000000)).items():
+    if not isinstance(meta, dict) or meta.get('profile') not in ADS_PROFILES:
+        raise ValueError('设备不是受支持的 V12 ADS 候选固件')
+    is_1292 = meta['profile'] == 'F05_ADS1292_2CH_CANDIDATE'
+    spi_allowed = (1000000,) if is_1292 else (1000000, 2000000, 4000000, 8000000)
+    proto_allowed = (1,) if is_1292 else (1, 2, 3)
+    for key, values in dict(protocol=proto_allowed, channels=(8,), fs_Hz=(2000, 4000),
+                            spi_Hz=spi_allowed).items():
         if type(meta.get(key)) is not int or meta[key] not in values:
             raise ValueError(f'固件元数据 {key} 无效')
+    if is_1292:
+        if meta.get('afe') != 'ADS1292':
+            raise ValueError('ADS1292 候选固件元数据 afe 无效')
+        if type(meta.get('active_channels')) is not int or meta['active_channels'] != 2:
+            raise ValueError('ADS1292 候选固件元数据 active_channels 无效')
+        if type(meta.get('vref_mV')) is not int or meta['vref_mV'] not in (2420, 4033):
+            raise ValueError('ADS1292 候选固件元数据 vref_mV 无效')
+        if type(meta.get('gain')) is not int or meta['gain'] not in (1, 2, 3, 4, 6, 8, 12):
+            raise ValueError('ADS1292 候选固件元数据 gain 无效')
     if type(meta.get('bench_measured')) is not bool:
         raise ValueError('固件台架锁字段无效')
     if not isinstance(meta.get('build_id'), str) or not re.fullmatch('[0-9a-f]{16}', meta['build_id']):
@@ -55,17 +68,18 @@ def validate_metadata(raw, expected=None):
 FAULT_NOTES = {
     1: '台架锁未解开 Locked',
     2: '采样参数无效 Argument',
-    3: '模拟电源/互锁异常 Rails：请确认已拔掉 R01 USB 线且电池电压 ≥ 3.7V',
+    3: '模拟电源/互锁异常 Rails：请确认已拔掉 USB 线且电池/3.0V AVDD 正常',
     4: 'ADS1298 芯片 ID 不匹配 Identity',
     5: 'ADS1298 寄存器读回不一致 Readback：EXR1 模式下注意 CONFIG3 bit0 RLD_STAT 只读位若为 1 会触发安全停机',
     6: 'ADS1298 数据帧状态头无效 Frame',
     8: 'DRDY 脉冲等待超时 Timeout',
     9: '采集被取消 Cancelled：采集中插入 USB 触发互锁或连接中断',
+    10: '软件 VBUS 互锁触发 UsbInterlock：检测到 USB VBUS 供电，已拉低 PWDN 安全停机',
 }
 
 
 def format_adc_fault(status, meta):
-    """按 ads1298.h Fault 枚举给出明确中文原因，区分蓝牙链路吞吐过低（故障 7）、电源/互锁（故障 3）与寄存器读回（故障 5）。"""
+    """按 ads1298.h / ads1292.h Fault 枚举给出明确中文原因，区分蓝牙链路吞吐低（7）、互锁（3/10）与读回（5）。"""
     fault = status['fault']
     slots = meta.get('queue_slots', 128)
     pending = status.get('stream_pending', 0)
@@ -76,6 +90,8 @@ def format_adc_fault(status, meta):
         return (f"设备故障码 7（蓝牙链路吞吐低：发送队列峰值 {peak}/{slots}、积压 {pending}，"
                 f"已发 {sent}/{produced} 样；请将接收器移到 0.5m 内且勿隔人体）")
     note = FAULT_NOTES.get(fault)
+    if note and meta.get('afe') == 'ADS1292':
+        note = 'ADS1292 寄存器读回不一致 Readback' if fault == 5 else note.replace('ADS1298', 'ADS1292')
     return f"设备故障码 {fault}（{note}）" if note else f"设备故障码 {fault}"
 
 
@@ -113,6 +129,8 @@ async def capture(client, output, seconds=5, mode=None, allow_real=False, expect
         raise ValueError('设备缺少完整 V12 BLE 服务')
     raw_meta = bytes(await asyncio.wait_for(client.read_gatt_char(META), 10))
     meta = validate_metadata(raw_meta, expected)
+    if mode == 'rld_measure' and meta['profile'] != 'F05_ADS1292_2CH_CANDIDATE':
+        raise ValueError('rld_measure (RLD1) 仅适用于 ADS1292 两路候选固件')
     raw_status = bytes(await asyncio.wait_for(client.read_gatt_char(STATUS), 10))
     initial_status = decode_status(raw_status)
     if initial_status['bench_measured'] != meta['bench_measured']:
@@ -133,9 +151,16 @@ async def capture(client, output, seconds=5, mode=None, allow_real=False, expect
         if initial_imu['active'] or initial_imu['fault']:
             raise ValueError('IMU已活动或有故障，不启动')
 
-    # 协议 2/3 的原包是差分打包，回放要用 codec.decode_pack16；归档里记下协议号。
-    archive = archive_class(output, dict(vref_V=4.0, gain=6, fs_Hz=meta['fs_Hz'], transport_protocol=meta['protocol'],
-                                       reference_verified=False), codec, allow_real)
+    # 协议 2/3 的原包是差分打包，回放要用 codec.decode_pack16；ADS1292 按元数据 vref_mV/gain 归档，防止误按 4.0 V 放大 65.3%。
+    if meta['profile'] == 'F05_ADS1292_2CH_CANDIDATE':
+        archive_profile = dict(afe='ADS1292', active_channels=meta['active_channels'],
+                               vref_V=meta['vref_mV'] / 1000.0, gain=meta['gain'],
+                               fs_Hz=meta['fs_Hz'], transport_protocol=meta['protocol'],
+                               reference_verified=False)
+    else:
+        archive_profile = dict(vref_V=4.0, gain=6, fs_Hz=meta['fs_Hz'],
+                               transport_protocol=meta['protocol'], reference_verified=False)
+    archive = archive_class(output, archive_profile, codec, allow_real)
     diag = None
     rx = codec.Receiver(allow_real=allow_real, decoder=codec.decode if meta['protocol'] == 1 else
                          lambda data, mtu: codec.decode_pack16(data, mtu, meta['protocol']))

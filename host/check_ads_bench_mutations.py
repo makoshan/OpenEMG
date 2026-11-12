@@ -1,4 +1,4 @@
-"""ads1298_regs / bench_analysis 的变异测试：每次只改一处，跑对应 --check，必须失败。
+"""ads1298_regs / ads1292_regs / bench_analysis 的变异测试：每次只改一处，跑对应 --check，必须失败。
 
 先跑一遍不改的基线，必须通过（环境缺 numpy/scipy 时直接报错退出，不会把导入失败当成「抓到」）。
 变异只有在 --check 报出断言或运行错误时才算抓到；导入错误、语法/缩进错误不算。
@@ -11,8 +11,8 @@ import sys
 import tempfile
 
 SRC = pathlib.Path(__file__).resolve().parent
-FILES = ('ads1298_regs.py', 'bench_analysis.py')
-R, B = FILES
+FILES = ('ads1298_regs.py', 'ads1292_regs.py', 'bench_analysis.py')
+R, R2, B = FILES
 M = [
     # ads1298_regs：保留位、字段表、换算、导联、ID、状态字
     (R, "0x16: (0x20, 0x20)", "0x16: (0x20, 0x00)"),
@@ -35,6 +35,19 @@ M = [
     (R, "& ((1 << (hi - lo + 1)) - 1)", "& ((1 << (hi - lo)) - 1)"),
     (R, "if type(ch) is not int or not 1 <= ch <= 8:", "if False:"),
     (R, "if c1['HR'] and c1['DR'] == 0:", "if False:"),
+    # ads1292_regs：ID、保留位、非 R 版 RESP1/RESP2(0x07 vs 0x03)、2.42V/4.033V、RLD 互斥、状态字映射
+    (R2, "if (regs[0x00] & 0xDF) != 0x53:", "if (regs[0x00] & 0xDD) != 0x51:"),
+    (R2, "0x02: (0x84, 0x80),", "0x02: (0x04, 0x00),"),
+    (R2, "0x03: (0x10, 0x10),", "0x03: (0x00, 0x00),"),
+    (R2, "0x09: (0x02, 0x02),", "0x09: (0x02, 0x00),"),
+    (R2, "0x0A: (0x79, 0x01),", "0x0A: (0x78, 0x00),"),
+    (R2, "if d['RESP2']['RESP_FREQ'] != 1:", "if False:"),
+    (R2, "if regs[0x09] != 0x02:", "if False:"),
+    (R2, "if d['RLD_SENS']['PDB_RLD'] and d['RLD_SENS']['RLD_LOFF_SENS']:", "if False:"),
+    (R2, "return 4.033 if c2['VREF_4V'] else 2.42", "return 4.0 if c2['VREF_4V'] else 2.4"),
+    (R2, "return (fclk / 4) / (1 << (10 - c1['DR']))", "return (fclk / 8) / (1 << (10 - c1['DR']))"),
+    (R2, "if w & 0x1FFF:", "if False:"),
+    (R2, "f01 = 0xC00000 | (statp << 12) | (statn << 4) | gpio", "f01 = 0xC00000 | (statn << 12) | (statp << 4) | gpio"),
     # bench_analysis：谱归一化、噪声补齐、谐波、杂散、ENOB/SINAD、CMRR、相干频率
     (B, "p[1:(n + 1) // 2] *= 2", "p[1:(n + 1) // 2] *= 1"),
     (B, "p[1:(n + 1) // 2] *= 2", "p[1:] *= 2"),

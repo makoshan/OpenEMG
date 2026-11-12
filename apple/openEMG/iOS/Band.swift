@@ -9,10 +9,20 @@ let v12Service = CBUUID(string: "7b24c101-3948-4f03-9d11-12bb9d000001")
 let v12Data = CBUUID(string: "7b24c101-3948-4f03-9d11-12bb9d000002")
 let v12Meta = CBUUID(string: "7b24c101-3948-4f03-9d11-12bb9d000003")
 
-let fullScaleMicrovolt: Float = 4.0 / 6 * 1_000_000   // ADS1298 参考 4.0 V、增益 6（同 host/v12_ble.py 归档参数）
+let fullScaleMicrovolt: Float = 4.0 / 6 * 1_000_000   // ADS1298 默认满量程：参考 4.0 V、增益 6（同 host/v12_ble.py 归档默认参数）
 let restMicrovolt: Float = 150
 /// 只有这些固件出的是真 ADS 数据；其余（XIAO_SYNTH_PROBE、F04_SYNTHETIC、以后新加的）一律标「合成」。
-let realProfiles: Set<String> = ["F05_ADS_CANDIDATE", "C01_FIXED_CLOCK_LOCKED"]                          // 8 路都低于它 = 手放松（同桌面版 rest-signal）
+let realProfiles: Set<String> = ["F05_ADS_CANDIDATE", "F05_ADS1292_2CH_CANDIDATE", "C01_FIXED_CLOCK_LOCKED"]
+let allowedVrefMv: Set<Int> = [2400, 2420, 4000, 4033]
+let allowedGains: Set<Int> = [1, 2, 3, 4, 6, 8, 12]
+
+private func strictInt(_ value: Any?) -> Int? {
+    guard let num = value as? NSNumber,
+          CFGetTypeID(num) != CFBooleanGetTypeID(),
+          !CFNumberIsFloatType(num),
+          Double(num.intValue) == num.doubleValue else { return nil }
+    return num.intValue
+}
 
 enum F01 {
     /// 一包 → 每帧八路原始码值；格式不对返回 nil。头 16 字节，之后 帧数×27：3 字节状态 + 8×3 字节大端有符号。
@@ -42,6 +52,7 @@ final class Band: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     private(set) var lanes = [[Float]](repeating: [Float](repeating: 0, count: Band.points), count: 8)
     private(set) var head = 0
     private(set) var rms = [Float](repeating: 0, count: 8)   // µV
+    private(set) var fullScaleUv: Float = fullScaleMicrovolt
 
     private var central: CBCentralManager?
     private var peripheral: CBPeripheral?
@@ -73,7 +84,7 @@ final class Band: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         var out = [Float](repeating: 0, count: 8), ready: Int32 = 0
         guard raw.withUnsafeBufferPointer({ v12_dsp_frame(&dsp, $0.baseAddress, &out, &ready) }) == 0, ready != 0 else { return }
         for ch in 0..<8 {
-            let uv = out[ch] * fullScaleMicrovolt
+            let uv = out[ch] * fullScaleUv
             if abs(uv) > abs(bucket[ch]) { bucket[ch] = uv }
             square[ch] += uv * uv
         }
@@ -96,6 +107,25 @@ final class Band: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         lanes = [[Float]](repeating: [Float](repeating: 0, count: Band.points), count: 8); head = 0
         rms = [Float](repeating: 0, count: 8)
         bucket = [Float](repeating: 0, count: 8); square = [Float](repeating: 0, count: 8); inBucket = 0; inWindow = 0
+        return true
+    }
+
+    /// 解析并套用 v12Meta JSON（采样率、真/合成标记、可选 vref_mV/gain 满量程）；不合法一律拒收，不猜参数。
+    @discardableResult
+    func applyMeta(_ meta: [String: Any]) -> Bool {
+        guard let hz = strictInt(meta["fs_Hz"]) else { return false }
+        let profile = meta["profile"] as? String ?? ""
+        let scale: Float
+        if profile == "F05_ADS1292_2CH_CANDIDATE" || meta["vref_mV"] != nil || meta["gain"] != nil {
+            guard let vrefMv = strictInt(meta["vref_mV"]), allowedVrefMv.contains(vrefMv),
+                  let gain = strictInt(meta["gain"]), allowedGains.contains(gain) else { return false }
+            scale = Float(vrefMv) * 1000.0 / Float(gain)
+        } else {
+            scale = fullScaleMicrovolt
+        }
+        guard reset(fs: hz) else { return false }
+        fullScaleUv = scale
+        source = realProfiles.contains(profile) && (meta["synthetic"] as? Bool != true) ? "" : "合成"
         return true
     }
 
@@ -123,7 +153,8 @@ final class Band: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     func centralManager(_ c: CBCentralManager, didConnect p: CBPeripheral) { p.discoverServices([v12Service]) }
     func centralManager(_ c: CBCentralManager, didFailToConnect p: CBPeripheral, error: Error?) { c.scanForPeripherals(withServices: [v12Service]) }
     func centralManager(_ c: CBCentralManager, didDisconnectPeripheral p: CBPeripheral, error: Error?) {
-        connected = false; live = false; source = ""; rms = [Float](repeating: 0, count: 8)   // 不让旧 RMS 继续冒充放松判定
+        connected = false; live = false; source = ""; fullScaleUv = fullScaleMicrovolt
+        rms = [Float](repeating: 0, count: 8)   // 不让旧 RMS 继续冒充放松判定
         if skipped.contains(p.identifier) { c.scanForPeripherals(withServices: [v12Service]); return }   // 保留「元数据不可用」提示
         status = "已断开，重新扫描…"; c.scanForPeripherals(withServices: [v12Service])
     }
@@ -140,12 +171,11 @@ final class Band: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
 
     func peripheral(_ p: CBPeripheral, didUpdateValueFor c: CBCharacteristic, error: Error?) {
         if c.uuid == v12Meta {
-            // 元数据不对就停在这里并说清楚，不猜采样率（猜错会用错滤波系数）
+            // 元数据不对就停在这里并说清楚，不猜采样率或参考电压（猜错会用错滤波系数和 µV 刻度）
             guard error == nil, let v = c.value, let meta = try? JSONSerialization.jsonObject(with: v) as? [String: Any],
-                  let hz = meta["fs_Hz"] as? Int, reset(fs: hz) else {
+                  applyMeta(meta) else {
                 status = "\(p.name ?? "设备") 元数据不可用，已跳过"; skipped.insert(p.identifier); central?.cancelPeripheralConnection(p); return
             }
-            source = realProfiles.contains(meta["profile"] as? String ?? "") && meta["synthetic"] as? Bool != true ? "" : "合成"
             if let data = c.service?.characteristics?.first(where: { $0.uuid == v12Data }) { p.setNotifyValue(true, for: data) }
             connected = true; status = "\(p.name ?? "手环") · 等数据"
         } else if c.uuid == v12Data, let v = c.value, let frames = F01.frames(v) {

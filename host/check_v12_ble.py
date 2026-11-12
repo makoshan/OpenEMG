@@ -89,6 +89,28 @@ class LateStartClient(FakeClient):
             loop.call_later(.05, self.callback, None, bytearray(packet))
 
 
+class FakeAds1292Client(FakeClient):
+    """按 xiao-ads1292-2ch/src/main.cpp 元数据与 64 字节状态组织（2.42V/增益6/1MHz SPI/两路补八路帧）。"""
+    def __init__(self, packets=(), locked=False, fs=2000, **kwargs):
+        super().__init__(packets=packets, locked=locked, fs=fs, **kwargs)
+        self.metadata = dict(
+            profile='F05_ADS1292_2CH_CANDIDATE', board='ADS1292_2CH_P44E', afe='ADS1292',
+            build_id='0123456789abcdef', fs_Hz=fs, spi_Hz=1000000,
+            channels=8, active_channels=2, vref_mV=2420, gain=6,
+            bench_measured=not locked, protocol=1, clock_tolerance_pct=2.0,
+            usb_interlock='HW_Q1_AND_SW_USBREGSTATUS', clock_source='TIMER2_1MHz',
+        )
+
+
+def packets_1292(fs=2000):
+    codec = app.load_codec()
+    # CH1=+123456、CH2=-654321、CH3..CH8=0；状态头 0xc01021（IN1P=1, IN2N=1, GPIO=1）
+    vals = (123456, -654321, 0, 0, 0, 0, 0, 0)
+    frame = bytes.fromhex('c01021') + b''.join(v.to_bytes(3, 'big', signed=True) for v in vals)
+    return [codec.encode(codec.Packet(0, 10000, 2, (frame,))),
+            codec.encode(codec.Packet(1, 10000 + (1000000 // fs), 0, (frame,)))]
+
+
 class SnapshotClient(FakeClient):
     """新协议136字节：只在传输边界造状态，归档和末值验收走真实入口。"""
     def __init__(self, patch=None):
@@ -222,9 +244,51 @@ def check():
             assert client.writes == []
 
         for mode, command in app.COMMANDS.items():
+            if mode == 'rld_measure':
+                client = FakeClient(packets())
+                drive('r01-refuse-rld1', client, mode=mode, success=False)
+                assert client.writes == []
+                continue
             client = FakeClient(packets())
             drive('mode-'+mode, client, mode=mode)
             assert client.writes == [command, b'STOP']
+
+        # ADS1292+P44e+XIAO 候选固件：5 种模式（含 RLD1）、2.42V 归档刻度、C 离线回放与专有元数据/故障码拦截
+        for mode, command in app.COMMANDS.items():
+            c1292 = FakeAds1292Client(packets_1292())
+            out1292, res1292 = drive('ads1292-mode-' + mode, c1292, mode=mode)
+            assert c1292.writes == [command, b'STOP'] and res1292['valid_samples'] == 2
+            meta1292 = json.loads((out1292 / 'metadata.json').read_text())
+            assert meta1292['voltage_at'] == 'ADS1292 PGA input', meta1292
+            assert meta1292['adc_profile'] == dict(
+                afe='ADS1292', active_channels=2, vref_V=2.42, gain=6,
+                fs_Hz=2000, transport_protocol=1, reference_verified=False), meta1292
+        c1292_4k = FakeAds1292Client(packets_1292(4000), fs=4000)
+        out1292_4k, _ = drive('ads1292-4000', c1292_4k, mode='rld_measure')
+        replay = (app.ROOT / 'firmware/dsp-f03/replay.py' if (app.ROOT / 'firmware/dsp-f03/replay.py').exists()
+                  else app.ROOT / 'v12/dsp-f03/replay.py')
+        rep_refused = subprocess.run([sys.executable, str(replay), str(out1292_4k / 'events.jsonl'),
+                                      str(root / 'ads1292-replay-refused'), '--fs', '4000'],
+                                     capture_output=True, text=True, timeout=30)
+        assert rep_refused.returncode == 2  # 默认不加 --allow-real 必须拒收实采标签
+        rep_run = subprocess.run([sys.executable, str(replay), str(out1292_4k / 'events.jsonl'),
+                                  str(root / 'ads1292-replay'), '--fs', '4000', '--allow-real'],
+                                 capture_output=True, text=True, timeout=30)
+        assert rep_run.returncode == 0, rep_run.stderr
+        rep_res = json.loads((root / 'ads1292-replay/result.json').read_text())
+        assert rep_res['accepted_samples'] == 2 and rep_res['measured_sample_rate'][0]['measured_fs_Hz'] == 4000.0
+        passed += 1
+        for field, value in [('spi_Hz', 2000000), ('afe', 'ADS1298'), ('active_channels', 8),
+                             ('active_channels', True), ('vref_mV', 4000), ('vref_mV', True),
+                             ('gain', 5), ('gain', True), ('protocol', 2)]:
+            bad1292 = FakeAds1292Client(packets_1292())
+            bad1292.metadata[field] = value
+            drive(f'ads1292-bad-{field}-{value}', bad1292, success=False)
+            assert bad1292.writes == []
+        _, f10 = drive('ads1292-fault10-usb', FakeAds1292Client(packets_1292(), fault=10), success=False)
+        assert '设备故障码 10' in f10['error'] and 'UsbInterlock' in f10['error'], f10['error']
+        _, f5 = drive('ads1292-fault5-readback', FakeAds1292Client(packets_1292(), fault=5), success=False)
+        assert 'ADS1292 寄存器读回不一致' in f5['error'] and 'ADS1298' not in f5['error'], f5['error']
         # 坏包后排队的原包也保存；只拒解析，不让证据跟着异常丢失。
         client = FakeClient([b'bad'] + packets())
         out, result = drive('malformed', client, success=False)

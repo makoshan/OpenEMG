@@ -31,10 +31,11 @@ class AdcProfile:
     fs_Hz: int = 2000
 
     def __post_init__(self):
-        if isinstance(self.vref_V, bool) or self.vref_V not in (2.4, 4.0):
-            raise ValueError('候选内部参考电压仅支持 2.4 V 或 4 V')
+        # ADS1298 内部基准为 2.4 / 4.0 V；ADS1292（SBAS502C §7.5）内部基准为 2.42 / 4.033 V。
+        if isinstance(self.vref_V, bool) or self.vref_V not in (2.4, 4.0, 2.42, 4.033):
+            raise ValueError('候选内部参考电压仅支持 2.4 / 4.0 V（ADS1298）或 2.42 / 4.033 V（ADS1292）')
         if type(self.gain) is not int or self.gain not in (1, 2, 3, 4, 6, 8, 12):
-            raise ValueError('ADS1298 增益配置无效')
+            raise ValueError('ADS129x 增益配置无效')
         if type(self.fs_Hz) is not int or self.fs_Hz not in (2000, 4000):
             raise ValueError('候选采样率仅支持 2000 或 4000 Hz')
 
@@ -46,6 +47,8 @@ class AdcProfile:
 
 # 对齐 F05 候选 CONFIG3=0xe0、CHnSET 增益码 000。还没有实板读回/校准证据。
 F05_PROFILE = AdcProfile()
+# 对齐 xiao-ads1292-2ch 候选 CONFIG2=0xA0/0xA3（内部 2.42 V 基准）、CHnSET 增益码 000（增益 6）。
+ADS1292_PROFILE = AdcProfile(vref_V=2.42, gain=6, fs_Hz=2000)
 VREF_V, GAIN = F05_PROFILE.vref_V, F05_PROFILE.gain
 UV_PER_COUNT = F05_PROFILE.uv_per_count
 ADS_STATUS = bytes([0xC0, 0, 0])                     # 帧头 3 字节状态字：高 4 位固定 1100，导联脱落位全 0
