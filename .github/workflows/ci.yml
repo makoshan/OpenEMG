@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # 审查实际提交的文件和历史，避免把 GitHub 临时合并提交的账户信息算进发布内容。
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
 
       - name: Install C99 / Cortex-M4 toolchains
         run: |
