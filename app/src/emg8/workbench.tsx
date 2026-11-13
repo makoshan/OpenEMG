@@ -79,7 +79,7 @@ function DevicePage({ call, dev }: { call: Call; dev: StudioDevice | null }) {
         <tr><td>丢帧</td><td>{dev.dropped}</td></tr></tbody></table> : <p className="emg8-fine">读取中…</p>}
       <p className="emg8-fine">设备描述来自 host/devices/*.json。换设备和改采样率要重启采集服务（B5 才支持热切换）。</p></section>
     <section className="emg8-card"><header><h4>通道名</h4><button onClick={() => { void save(); }} disabled={!cfg} title={grayTitle(!cfg && '通道表还在读')}>保存</button></header>
-      <div className="emg8-form">{names.map((n, i) => <label key={i}><span style={{ color: CH_COLORS[i % 8] }}>CH{i + 1} · {cfg?.channels[i]?.sensor}</span>
+      <div className="emg8-form">{names.map((n, i) => <label key={i}><span style={{ color: CH_COLORS[i % CH_COLORS.length] }}>CH{i + 1} · {cfg?.channels[i]?.sensor}</span>
         <input value={n} maxLength={24} onChange={(e) => setNames(names.map((x, j) => (j === i ? e.target.value : x)))} /></label>)}</div>
       <p className="emg8-fine">通道名写进之后每段 .h5 与导出 .txt 的文件头；只在本次服务运行期间有效。</p></section>
     <ReadoutCard fsHz={dev?.fs_Hz} />
@@ -153,7 +153,7 @@ function DataPage({ call, dev, tick }: { call: Call; dev: StudioDevice | null; t
       {analysis && <p className="emg8-fine">阈值 = 本段包络峰值的固定百分比（无 MVC 文件时）；CSV 已写到导出目录：{analysis.csv}。</p>}</section>}
     <section className="emg8-card"><header><h4>实时统计 · 最近 1 秒</h4><button onClick={() => { void call('stats', { windowS: 1 }).then((s) => s && setStats(s)); }}>刷新</button></header>
       {stats ? <table className="emg8-table"><thead><tr><th>通道</th><th>RMS</th><th>均值</th><th>中位</th><th>最小</th><th>最大</th></tr></thead><tbody>
-        {stats.channels.map((c, i) => <tr key={i}><td style={{ color: CH_COLORS[i % 8] }}>{c.label}</td><td>{c.rms.toFixed(1)}</td><td>{c.mean.toFixed(1)}</td><td>{c.median.toFixed(1)}</td><td>{c.min.toFixed(0)}</td><td>{c.max.toFixed(0)}</td></tr>)}</tbody></table>
+        {stats.channels.map((c, i) => <tr key={i}><td style={{ color: CH_COLORS[i % CH_COLORS.length] }}>{c.label}</td><td>{c.rms.toFixed(1)}</td><td>{c.mean.toFixed(1)}</td><td>{c.median.toFixed(1)}</td><td>{c.min.toFixed(0)}</td><td>{c.max.toFixed(0)}</td></tr>)}</tbody></table>
         : <p className="emg8-fine">单位 µV，未滤波；点刷新读服务端最近 1 秒缓冲。</p>}</section>
   </div>;
 }
@@ -168,9 +168,9 @@ function Plot({ rows, events, fs, labels }: { rows: number[][]; events: [number,
     const ch = rows[0]?.length ?? 0, lane = h / Math.max(ch, 1);
     for (let k = 0; k < ch; k++) {
       const y0 = lane * (k + 0.5), mean = rows.reduce((s, r) => s + r[k], 0) / rows.length;
-      g.strokeStyle = CH_COLORS[k % 8]; g.beginPath();
+      g.strokeStyle = CH_COLORS[k % CH_COLORS.length]; g.beginPath();
       rows.forEach((r, i) => { const x = (i / Math.max(rows.length - 1, 1)) * w, y = y0 - Math.max(-1, Math.min(1, (r[k] - mean) / range)) * lane / 2; if (i) g.lineTo(x, y); else g.moveTo(x, y); });
-      g.stroke(); g.fillStyle = CH_COLORS[k % 8]; g.font = '11px sans-serif'; g.fillText(labels?.[k] ?? `CH${k + 1}`, 4, lane * k + 12);
+      g.stroke(); g.fillStyle = CH_COLORS[k % CH_COLORS.length]; g.font = '11px sans-serif'; g.fillText(labels?.[k] ?? `CH${k + 1}`, 4, lane * k + 12);
     }
     g.fillStyle = '#EF4444';
     for (const [t, l] of events) { const x = (t * fs / rows.length) * w; g.fillRect(x, 0, 1, h); g.fillText(l, x + 3, h - 4); }

@@ -2,15 +2,15 @@
 
 状态：界面和处理链已实现，模拟器验证过；真机已装 测试真机 但未见画面；**手势模型未上手机**（2026-10-17）。
 
-**目前能接到的数据只有合成流**（XIAO 测速固件 `v12/ble-probe/xiao-synth`、F04 合成固件），界面标「合成」：只有元数据 profile 为 `F05_ADS_CANDIDATE` / `F05_ADS1292_2CH_CANDIDATE` / `C01_FIXED_CLOCK_LOCKED` 才算真实设备。 F05 真设备要先往控制特征写 `TST1/EXT1/EXR1/RLD1` 才启动 ADS，而且硬件锁打开后才出数；本 App 不发控制命令，守住硬件锁。
+**目前未解硬件锁时能接到的数据为合成流**（XIAO 测速固件、F04 合成固件、C08B `SYN1` 合成流），界面自动标「合成」：只有元数据 profile 为 `F05_ADS_CANDIDATE` / `F05_ADS1292_2CH_CANDIDATE` / `C08B_DUAL_STREAM_CANDIDATE` / `C01_FIXED_CLOCK_LOCKED` 且包头不带 `SYNTHETIC(bit0)` 才算真实设备。F05 与 C08B 真设备需台架/主机端写 `TST1/EXT1/EXR1/RLD1` 且硬件锁打开后才出真 ADS 数；本 App 不发控制命令，守住硬件锁。
 
 ## A 做什么
 
-`手环 BLE（F01 包）` → `iPhone：v12_dsp 滤波 → 八路波形 + 每路 RMS → 放松判定` → `WatchConnectivity` → `Watch：当前手势 / AI 待确认卡`
+`手环 BLE（F01 v1 8/2 路 或 v4 16 路包）` → `iPhone：v12_dsp / c08b_dsp 滤波 → 2/8/16 路波形 + 每路 RMS → 放松判定` → `WatchConnectivity` → `Watch：当前手势 / AI 待确认卡`
 
 | 屏 | 内容（设计稿 D1 + D3，Mako 2026-10-17 定） |
 |---|---|
-| iPhone 主屏 | 八路滚动波形（约 2 秒），右侧每路 RMS µV；顶部帧率与「手放松 / 在用力 · N 路」；底部当前手势卡 |
+| iPhone 主屏 | 2 / 8 / 16 路自适应滚动波形（约 2 秒），右侧每路 RMS µV；顶部帧率与「手放松 / 在用力 · N 路」；底部当前手势卡 |
 | 点开手势卡 | 六类概率条；模拟手势；模拟一条 AI 待确认、用食指/中指判定 |
 | Watch | 平时大字显示当前手势与置信环；有待确认时切换为倒计时确认卡并震动；判定后显示 3 秒结果 |
 
@@ -18,11 +18,11 @@
 
 | 项 | 来源 |
 |---|---|
-| 波形、RMS、放松判定 | 处理链与真设备相同：F05 同一份 `v12_dsp.c`（HP15/LP600/50 Hz 陷波，经桥接头直接编译），µV 按元数据 `vref_mV` / `gain` 换算（ADS1298 默认 4.0 V / 增益 6，ADS1292 两路板为 2.42 V / 增益 6）；放松线 150 µV 与桌面版一致 |
+| 波形、RMS、放松判定 | 处理链与真设备相同：2000/4000 Hz 直接调 F05 `v12_dsp.c`（HP15/LP600/50 Hz 陷波），500/1000 Hz 与 16 路经 `c08b_dsp.c` 按同公式系数调用 `v12_dsp_frame`；µV 按元数据 `vref_mV` / `gain` 换算（R01 4.0 V/6，C08B ADS1298 2.4 V/6，ADS1292 2.42 V/6）；放松线 150 µV |
 | 六类手势与置信 | **模拟**，界面标出「模拟」；模型还没移植到手机 |
 | AI 待确认 | **模拟**；真钩子在 `host/ai_confirm.py`，还没接到手机 |
-| 数据来源标签 | XIAO 合成流读元数据 `synthetic` 标「合成」；模拟器无蓝牙时用演示数据标「演示」；收到第一帧前显示「等数据 / 未出数」 |
-| 元数据异常 | 读不到、不是 JSON、fs 不是 2000/4000：报错断开并本次跳过这台，不猜采样率、不无限重连 |
+| 数据来源标签 | 元数据 `synthetic` 或 F01 包头 `SYNTHETIC(bit0)` 标「合成」；C08B 冷启动 `afe="NONE"` 显示「待机（未开采集）」；模拟器无蓝牙时标「演示」 |
+| 元数据异常与热切 | 读不到、不是 JSON、采样率/通道拓扑冲突：报错断开并本次跳过；收到 `RECONFIGURE(bit2)` 或待机首包时先锁存并重读 `v12Meta`，绝不用旧采样率或旧参考电压硬解新流 |
 
 ## C 构建与检查
 
@@ -30,10 +30,10 @@
 cd apple/openEMG && xcodegen generate
 ```
 
-自检（Mac 上编 F01 拆包 + v12_dsp）：
+自检（Mac 上编 F01 v1/v4 拆包 + v12_dsp / c08b_dsp）：
 
 ```bash
-cd apple/openEMG && mkdir -p build && swiftc -import-objc-header iOS/Bridging.h -Xcc -I../../hardware/8ch-ads1298/r01-bench/firmware-f05/src -Xcc -ffp-contract=off -o build/check check/main.swift iOS/Band.swift ../../hardware/8ch-ads1298/r01-bench/firmware-f05/src/v12_dsp.c && build/check
+cd apple/openEMG && mkdir -p build && cc -std=c11 -ffp-contract=off -IiOS -I../../hardware/8ch-ads1298/r01-bench/firmware-f05/src -c iOS/c08b_dsp.c -o build/c08b_dsp.o && cc -std=c11 -ffp-contract=off -I../../hardware/8ch-ads1298/r01-bench/firmware-f05/src -c ../../hardware/8ch-ads1298/r01-bench/firmware-f05/src/v12_dsp.c -o build/v12_dsp.o && swiftc -import-objc-header iOS/Bridging.h -Xcc -IiOS -Xcc -I../../hardware/8ch-ads1298/r01-bench/firmware-f05/src -o build/check check/main.swift iOS/Band.swift build/c08b_dsp.o build/v12_dsp.o && build/check
 ```
 
 真机：Xcode 27.1 以上（手表 watchOS 27），构建时传 `DEVELOPMENT_TEAM`；iPhone 装好后，在手机「Watch」App 里给 openEMG 点安装。iOS 17 / watchOS 10 起。

@@ -13,6 +13,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 
 import numpy as np
@@ -601,14 +602,179 @@ def test_studio_acq_and_recording(tmp: Path):
     print('  边界铁律 ✓ 16ch 缺口计入 dropped=3、同连接 RECONFIGURE 自动切段且断连 segment+1 不拼接')
 
 
+class FakeDongleSerial:
+    """模拟刷了 dongle_c08b 档的 XIAO nRF52840 USB 接收器串口字节流（0xA5 帧头）：
+    把 DongleClient 发来的 Q/D/R/W 串口命令转给 FakeC08BBleClient，并把 DATA/IMU_DATA 通知封装为 kind=2/6 串口帧。
+    """
+
+    def __init__(self, ble_dev: FakeC08BBleClient, loop: asyncio.AbstractEventLoop, can_reconnect=True, inject_mid_reconnect=False):
+        self.ble = ble_dev
+        self.loop = loop
+        self.can_reconnect = can_reconnect
+        self.inject_mid_reconnect = inject_mid_reconnect
+        self._lock = threading.Lock()
+        self._rx = bytearray()
+        self._tx_cmd = bytearray()
+        self.dtr = False
+        self.rts = False
+        self.closed = False
+        self.ready = True
+        self.connects = 1
+        self.notifies = 0
+        # 接收器 connect_cb 默认同时订阅 DATA 与 IMU_DATA
+        self.ble.notify_cbs[cs.DATA] = lambda _h, pkt: self._push_frame(2, bytes(pkt))
+        self.ble.notify_cbs[cs.IMU_DATA] = lambda _h, pkt: self._push_frame(6, bytes(pkt))
+
+    def _push_frame(self, kind: int, payload: bytes):
+        if kind in (2, 6):
+            self.notifies += 1
+            if self.inject_mid_reconnect and self.notifies == 3:
+                # 模拟第 3 包到达后 BLE 闪断并被接收器自动重连（connects 自增），主机必须识别并拒收拼接！
+                self.connects += 1
+                self._send_link()
+        hdr = bytes((0xA5, kind)) + struct.pack('<HI', len(payload), 12345)
+        with self._lock:
+            self._rx += hdr + payload
+
+    def _send_link(self):
+        payload = bytearray(26)
+        payload[0] = 1 if self.ready else 0
+        struct.pack_into('<HBHHH', payload, 1, 6, 2, 247 if self.ready else 23, 251, 6)
+        struct.pack_into('<IIII', payload, 10, 0, self.notifies, 512, self.connects)
+        self._push_frame(0x11, bytes(payload))
+
+    def write(self, data: bytes):
+        self._tx_cmd += data
+        while len(self._tx_cmd) >= 4:
+            if self._tx_cmd[0] != 0xA5:
+                del self._tx_cmd[:1]
+                continue
+            plen = self._tx_cmd[2] | (self._tx_cmd[3] << 8)
+            if len(self._tx_cmd) < 4 + plen:
+                break
+            op = self._tx_cmd[1]
+            body = bytes(self._tx_cmd[4:4 + plen])
+            del self._tx_cmd[:4 + plen]
+            self.loop.call_soon_threadsafe(asyncio.create_task, self._handle_op(op, body))
+        return len(data)
+
+    async def _handle_op(self, op: int, body: bytes):
+        if op == ord('Q'):
+            self._send_link()
+            self._push_frame(0x80 | op, b'\x00')
+        elif op == ord('D'):
+            if self.can_reconnect:
+                self.ready = True
+                self.connects += 1
+            else:
+                self.ready = False
+            self._push_frame(0x80 | op, b'\x00')
+        elif op == ord('R') and len(body) == 1 and body[0] in (3, 4):
+            uuid = cs.META if body[0] == 3 else cs.STATUS
+            val = await self.ble.read_gatt_char(uuid)
+            self._push_frame(0x80 | op, b'\x00' + bytes(val))
+        elif op == ord('W'):
+            await self.ble.write_gatt_char(cs.CONTROL, body)
+            self._push_frame(0x80 | op, b'\x00')
+        else:
+            self._push_frame(0x80 | op, b'\x01')
+
+    def read(self, n: int) -> bytes:
+        if self.closed:
+            raise OSError('closed')
+        with self._lock:
+            if self._rx:
+                out = bytes(self._rx[:n])
+                del self._rx[:n]
+                return out
+        time.sleep(0.002)
+        return b''
+
+    def close(self):
+        self.closed = True
+
+
+async def _run_dongle_usb_e2e(tmp: Path):
+    """验证 Mac 主机经 MAKO-DONGLE (dongle_c08b) 0xA5 串口帧跑通 16ch/8ch/2ch + IMU 全链路及断连防拼接反例。"""
+    loop = asyncio.get_running_loop()
+
+    # 1. 正向全链路：解锁台架 16ch(v4) / 8ch(v1) / 2ch(v1) + IMU_DATA 从冷启动 NONE 动态识别、落盘 dongle.json 并回放
+    for board_afe, exp_ch, exp_proto in (
+        ('ADS1298_DUAL', 16, 4),
+        ('ADS1298_SINGLE', 8, 1),
+        ('ADS1292', 2, 1),
+    ):
+        ble_dev = FakeC08BBleClient(board_afe=board_afe, initial_afe='NONE', bench_measured=True)
+        fake_ser = FakeDongleSerial(ble_dev, loop)
+        out_dir = tmp / f'dongle-{board_afe.lower()}'
+        res = await cs.run_dongle_c08b(
+            '/dev/cu.fake_c08b',
+            out_dir,
+            seconds=0.07,
+            mode='test',
+            allow_real=True,
+            expected=BUILD_ID,
+            with_imu=True,
+            open_ser=lambda _p, s=fake_ser: s,
+            reconnect_timeout=1.0,
+        )
+        assert res['transport'] == 'xiao_dongle' and res['afe'] == board_afe and res['protocol'] == exp_proto
+        assert res['active_channels'] == exp_ch and res['imu_samples'] >= 1 and res['stop_confirmed']
+        dongle_ev = json.loads((out_dir / 'dongle.json').read_text())
+        assert dongle_ev['link']['mtu'] == 247 and dongle_ev['junk_bytes'] == 0
+        rep = cs.replay_c08b(out_dir, allow_real=True)
+        assert rep['uv'].shape == (res['valid_samples'], exp_ch) and rep['imu']['samples'] == res['imu_samples']
+    print('  Dongle USB 全链路 ✓ 16ch(v4) / 8ch(v1) / 2ch(v1) + IMU_DATA 经 0xA5 串口帧动态切协议落盘回放全过')
+
+    # 2. 必败反例 A：采集中途 BLE 闪断并被接收器自动重连（connects 自增），必须当场中断报错防跨段拼接！
+    ble_drop = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=True)
+    ser_drop = FakeDongleSerial(ble_drop, loop, inject_mid_reconnect=True)
+    drop_dir = tmp / 'dongle-mid-reconnect'
+    try:
+        await cs.run_dongle_c08b(
+            '/dev/cu.fake_drop',
+            drop_dir,
+            seconds=0.5,
+            mode='test',
+            allow_real=True,
+            expected=BUILD_ID,
+            with_imu=True,
+            open_ser=lambda _p: ser_drop,
+            reconnect_timeout=1.0,
+        )
+        raise AssertionError('接收器中途自动重连未被拦截（发生跨连接拼接风险）')
+    except RuntimeError as err:
+        assert '连接中断或重连' in str(err), err
+        assert (drop_dir / 'dongle.json').exists()
+        print(f'  红 ✓ 接收器中途闪断重连(connects+1)当场拒收防拼接: {err}')
+
+    # 3. 必败反例 B：断开旧连接后未扫到 YUANLI-C08B 广播，按超时干净报错退出
+    ble_unseen = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=False)
+    ser_unseen = FakeDongleSerial(ble_unseen, loop, can_reconnect=False)
+    try:
+        await cs.run_dongle_c08b(
+            '/dev/cu.fake_unseen',
+            tmp / 'dongle-unseen',
+            seconds=0.1,
+            mode='synth',
+            open_ser=lambda _p: ser_unseen,
+            reconnect_timeout=0.08,
+        )
+        raise AssertionError('未扫到 YUANLI-C08B 未超时报错')
+    except RuntimeError as err:
+        assert '未连上 YUANLI-C08B' in str(err), err
+        print(f'  红 ✓ 接收器未扫到 YUANLI-C08B 干净超时退出: {err}')
+
+
 def main():
     with tempfile.TemporaryDirectory(prefix='c08b-stream-check-') as td:
         tmp = Path(td)
         test_c_firmware_parity(tmp)
         test_protocol_negatives()
         asyncio.run(_run_ble_tests(tmp))
+        asyncio.run(_run_dongle_usb_e2e(tmp))
         test_studio_acq_and_recording(tmp)
-    print('check_c08b_stream: C08B 2/8/16ch 跨语言对拍、安全锁红线、冷启动动态识别、BLE 归档回放与 Studio 全链路全部通过')
+    print('check_c08b_stream: C08B 2/8/16ch 跨语言对拍、安全锁红线、冷启动动态识别、BLE/Dongle 双通道归档回放与 Studio 全链路全部通过')
 
 
 if __name__ == '__main__':

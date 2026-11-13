@@ -84,14 +84,18 @@ struct WaveformCard: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 1 / 30)) { _ in
             Canvas { ctx, size in
-                let rowH = size.height / 8, meterW: CGFloat = 64, labelW: CGFloat = 30
+                let count = max(1, min(band.channelCount, min(band.lanes.count, band.rms.count)))
+                let rowH = size.height / CGFloat(count), meterW: CGFloat = 64
+                let labelW: CGFloat = count > 9 ? 34 : 30
+                let fontSize: CGFloat = count > 8 ? 8.5 : 10
+                let barH: CGFloat = count > 8 ? 4.5 : 6
                 let waveW = size.width - meterW - labelW - 8
-                // 八路共用一个量程，通道之间才能比大小；最小 300 µV，免得底噪被放大成满屏
-                let peak = max(300, band.lanes.lazy.flatMap { $0 }.map { abs($0) }.max() ?? 0)
-                for ch in 0..<8 {
+                // 全路共用一个量程，通道之间才能比大小；最小 300 µV，免得底噪被放大成满屏
+                let peak = max(300, band.lanes.prefix(count).lazy.flatMap { $0 }.map { abs($0) }.max() ?? 0)
+                for ch in 0..<count {
                     let midY = rowH * (CGFloat(ch) + 0.5)
-                    ctx.draw(Text("CH\(ch + 1)").font(.system(size: 10, weight: .semibold, design: .monospaced))
-                        .foregroundColor(Palette.dim), at: CGPoint(x: 14, y: midY))
+                    ctx.draw(Text("CH\(ch + 1)").font(.system(size: fontSize, weight: .semibold, design: .monospaced))
+                        .foregroundColor(Palette.dim), at: CGPoint(x: labelW * 0.48, y: midY))
                     var line = Path(), lane = band.lanes[ch]
                     for i in 0..<Band.points {
                         let v = lane[(band.head + i) % Band.points]
@@ -99,16 +103,16 @@ struct WaveformCard: View {
                                         y: midY - CGFloat(v / peak) * rowH * 0.46)
                         i == 0 ? line.move(to: p) : line.addLine(to: p)
                     }
-                    ctx.stroke(line, with: .color(Palette.lane(ch)), lineWidth: 1.1)
+                    ctx.stroke(line, with: .color(Palette.lane(ch, total: count)), lineWidth: count > 8 ? 0.95 : 1.1)
                     // 右侧 RMS 条：对数刻度到 1000 µV，超过放松线变琥珀色
                     let r = band.rms[ch], frac = min(1, log10(1 + r / 10) / log10(101))
-                    let track = CGRect(x: size.width - meterW + 4, y: midY - 3, width: meterW - 30, height: 6)
-                    ctx.fill(Path(roundedRect: track, cornerRadius: 3), with: .color(Palette.line))
-                    ctx.fill(Path(roundedRect: CGRect(x: track.minX, y: track.minY, width: track.width * CGFloat(frac), height: 6), cornerRadius: 3),
+                    let track = CGRect(x: size.width - meterW + 4, y: midY - barH * 0.5, width: meterW - 30, height: barH)
+                    ctx.fill(Path(roundedRect: track, cornerRadius: barH * 0.5), with: .color(Palette.line))
+                    ctx.fill(Path(roundedRect: CGRect(x: track.minX, y: track.minY, width: track.width * CGFloat(frac), height: barH), cornerRadius: barH * 0.5),
                              with: .color(r < restMicrovolt ? Palette.teal : Palette.amber))
-                    ctx.draw(Text("\(Int(r))").font(.system(size: 10, design: .rounded).monospacedDigit()).foregroundColor(Palette.dim),
+                    ctx.draw(Text("\(Int(r))").font(.system(size: fontSize, design: .rounded).monospacedDigit()).foregroundColor(Palette.dim),
                              at: CGPoint(x: size.width - 12, y: midY))
-                    if ch < 7 {
+                    if ch < count - 1 {
                         ctx.fill(Path(CGRect(x: labelW, y: rowH * CGFloat(ch + 1), width: waveW, height: 0.5)), with: .color(Palette.line))
                     }
                 }
@@ -236,7 +240,7 @@ struct DetailSheet: View {
                 }
 
                 Text("手势模型还没移植到手机，这里的手势和确认是模拟的。" + (band.source.isEmpty
-                     ? "波形、RMS 和放松判定来自手环实时数据（v12_dsp 滤波）。"
+                     ? "波形、RMS 和放松判定来自手环实时数据（v12_dsp / c08b_dsp 滤波）。"
                      : "波形来自\(band.source)数据，不是人体肌电；滤波和 RMS 的算法与真实设备相同。"))
                     .font(.caption).foregroundStyle(Palette.dim).padding(.top, 6)
             }

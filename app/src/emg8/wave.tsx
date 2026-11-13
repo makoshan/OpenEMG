@@ -36,24 +36,27 @@ function useRoll(canvas: React.RefObject<HTMLCanvasElement | null>, lines: numbe
   return roll;
 }
 
-export const Waveform = forwardRef<WaveHandle, { rangeUv: number; seconds?: number; rms?: number[]; showGyro?: boolean; channels?: number; unit?: string }>(
-  function Waveform({ rangeUv, seconds = 4, rms, showGyro = true, channels: n = 8, unit = 'µV' }, ref) {
+export const Waveform = forwardRef<WaveHandle, { rangeUv: number; seconds?: number; rms?: number[]; showGyro?: boolean; channels?: number; fsHz?: number; unit?: string }>(
+  function Waveform({ rangeUv, seconds = 4, rms, showGyro = true, channels: n = 8, fsHz = 2000, unit = 'µV' }, ref) {
     const emgCanvas = useRef<HTMLCanvasElement>(null), gyroCanvas = useRef<HTMLCanvasElement>(null);
-    const colors = useMemo(() => CH_COLORS.slice(0, n), [n]);           // 同一数组引用：每次渲染新数组会让 WebGL 反复重建
+    const colors = useMemo(() => Array.from({ length: n }, (_, i) => CH_COLORS[i % CH_COLORS.length]), [n]);   // 同一数组引用：每次渲染新数组会让 WebGL 反复重建
+    const decim = Math.max(1, Math.round(fsHz / DISPLAY_HZ));
     const emg = useRoll(emgCanvas, n, seconds * DISPLAY_HZ, colors);
     const gyro = useRoll(gyroCanvas, 3, seconds * GYRO_HZ, GYRO_COLORS);
     const acc = useRef<{ n: number; best: number[] }>({ n: 0, best: Array.from({ length: n }, () => 0) });
     const range = useRef(rangeUv);
     useEffect(() => { range.current = rangeUv; }, [rangeUv]);
+    useEffect(() => { acc.current = { n: 0, best: Array.from({ length: n }, () => 0) }; }, [n, decim]);
 
     useImperativeHandle(ref, () => ({
       push(frames) {
         const r = emg.current; if (!r) return;
         const out: number[][] = Array.from({ length: n }, () => []);
         const a = acc.current, lane = 2 / n;
+        if (a.best.length !== n) { a.n = 0; a.best = Array.from({ length: n }, () => 0); }
         for (const f of frames) {
           for (let c = 0; c < n; c++) if (Math.abs(f[c]) > Math.abs(a.best[c])) a.best[c] = f[c];
-          if (++a.n < DECIM) continue;
+          if (++a.n < decim) continue;
           for (let c = 0; c < n; c++) {
             const v = Math.max(-1, Math.min(1, a.best[c] / range.current));
             out[c].push(1 - lane * (c + 0.5) + v * lane * 0.45); a.best[c] = 0;
@@ -68,12 +71,12 @@ export const Waveform = forwardRef<WaveHandle, { rangeUv: number; seconds?: numb
         for (const row of rows) for (let k = 0; k < 3; k++) out[k].push(Math.max(-1, Math.min(1, (row[k] * 0.0012) / 2)) * 0.9);   // ±2 rad/s 满量程
         r.roll.addPoints(out);
       },
-    }), [emg, gyro, n]);
+    }), [emg, gyro, n, decim]);
 
     return <div className="emg8-wave">
       <div className="emg8-wave-emg">
         <canvas ref={emgCanvas} aria-label={`${n} 路肌电实时波形`} />
-        <ol className="emg8-lanes">{colors.map((col, c) => <li key={c}><b style={{ color: col }}>CH{c + 1}</b><span>{rms ? `${rms[c].toFixed(0)} ${unit}` : '—'}</span></li>)}</ol>
+        <ol className="emg8-lanes">{colors.map((col, c) => <li key={c}><b style={{ color: col }}>CH{c + 1}</b><span>{rms && rms[c] != null ? `${rms[c].toFixed(0)} ${unit}` : '—'}</span></li>)}</ol>
       </div>
       {showGyro && <div className="emg8-wave-gyro"><canvas ref={gyroCanvas} aria-label="陀螺仪三轴" /><span>陀螺 ±2 rad/s</span></div>}
     </div>;

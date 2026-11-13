@@ -64,7 +64,7 @@ export type CursorTick = { mode: CursorMode; vx: number; vy: number; score?: num
 export type { RigLink };
 export type ServiceState = {
   project: { id: string; name: string } | null;
-  rig: { port: string | null; kind: string; banner: string; streaming: boolean; replay?: string; error?: string; link?: RigLink; link_detail?: string; link_since?: number | null /* 这一段连续出数据从什么时候开始（epoch 秒）；旧服务没有 */ };
+  rig: { port: string | null; kind: string; banner: string; streaming: boolean; n_channels?: number; fs_Hz?: number; replay?: string; error?: string; link?: RigLink; link_detail?: string; link_since?: number | null /* 这一段连续出数据从什么时候开始（epoch 秒）；旧服务没有 */ };
   busy: string | null; progress: { label?: string; take?: number; count?: number; phase?: string };
   log: string[]; counts: Record<string, Record<string, Record<string, number>>>; tiers: string[]; wl8: Wl8State | null;
 };
@@ -175,6 +175,9 @@ export const emg8Bridge = (): Emg8Bridge | undefined =>
 const thumbGestures = Object.assign({}, ...Object.values(PROFILES).map((p) => p.gestures ?? {})) as NonNullable<(typeof PROFILES)['thumb-four']['gestures']>;
 export { LABEL_CN } from './profiles';   // 定义在 profiles.ts：缺数提示也要用，本文件已从那边取 PROFILES，反过来导入会循环
 export const LABEL_ICON: Record<string, string> = { rest: '🖐️', pinch: '🤏', rub: '👌', fist: '✊', left: '👇', right: '👆', click: '🤌', loose: '🩹', ...Object.fromEntries(Object.entries(thumbGestures).map(([k, v]) => [k, v.icon])) };
-export const CH_COLORS = ['#3B82F6', '#F59E0B', '#22C55E', '#EF4444', '#F97316', '#A855F7', '#06B6D4', '#6366F1'];
+export const CH_COLORS = [
+  '#3B82F6', '#F59E0B', '#22C55E', '#EF4444', '#F97316', '#A855F7', '#06B6D4', '#6366F1',
+  '#EC4899', '#14B8A6', '#84CC16', '#EAB308', '#F43F5E', '#8B5CF6', '#0EA5E9', '#10B981',
+];
 export const CLASS_COLORS: Record<string, string> = { rest: '#94A3B8', pinch: '#22C55E', fist: '#EF4444', rub: '#F59E0B', left: '#3B82F6', right: '#A855F7', click: '#06B6D4', ...Object.fromEntries(Object.entries(thumbGestures).map(([k, v]) => [k, v.color])) };
 export const pct = (v: number | null | undefined) => (v == null ? '—' : `${Math.round(v * 100)}%`);

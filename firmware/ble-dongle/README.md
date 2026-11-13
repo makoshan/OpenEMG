@@ -43,6 +43,7 @@ R01 离体板（`firmware-f05-ble-dout`，电池供电，内部测试源 TST1，
 
 - `dongle_r01` 档：目标名 `MAKO-V12-ADS-2K`；IMU 特征改为可选（F05 不开 IMU）；应答缓冲 260→600（F05 元数据超过 260 字节，原来会截断）。
 - `dongle_1292_2k` / `dongle_1292_4k` 档：目标名 `MAKO-V12-1292-2K` / `MAKO-V12-1292-4K`（接 `xiao-ads1292-2ch` 两路板 + P44e + XIAO，同样开 `DONGLE_PEER_MTU` 由外设发起 MTU 247）。
+- `dongle_c08b` 档：目标名 `YUANLI-C08B`（接 `firmware/c08b-stream` 共用双核主控 2/8/16 路流式候选固件；C08B nRF 从机等待中心发起 `MTU=247` 请求，因此本档不加 `DONGLE_PEER_MTU`，并同时转发 `DATA` 与 `IMU_DATA` 通知到 `host/c08b_stream.py --port auto`）。
 - 新增 `D` 命令：每次采集前断开重连。F05 只在新连接上从头开始数据流，同一连接上第二次采集会发“重新配置”边界，新开的主机会话会拒收（实测）。
 - `host/v12_dongle.py`：把接收器串口包装成 `v12_ble.capture` 用到的几个 Bleak 接口，校验、解码、缺失统计全部复用 `v12_ble`。开采后接收器重连计数一变就按断连处理，不拼接两条连接的数据。`python host/v12_dongle.py selftest` 自检切帧。
 - 用法：`python host/v12_dongle.py --port /dev/cu.usbmodemXXX --mode test --seconds 60 --expected <R01 build_id> --out <新目录>`。

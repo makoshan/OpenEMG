@@ -32,9 +32,10 @@ enum Palette {
     static let amber = Color(red: 0.98, green: 0.72, blue: 0.27)
     static let coral = Color(red: 0.96, green: 0.42, blue: 0.36)
     static let dim = Color.white.opacity(0.55)
-    /// 八路从青绿渐到天蓝，相邻通道一眼分得开
-    static func lane(_ i: Int) -> Color {
-        let k = Double(i) / 7
+    /// 2 / 8 / 16 路从青绿渐到天蓝，相邻通道一眼分得开
+    static func lane(_ i: Int, total: Int = 8) -> Color {
+        let denom = Double(max(1, total - 1))
+        let k = min(1.0, max(0.0, Double(i) / denom))
         return Color(red: 0.18 + 0.12 * k, green: 0.82 - 0.10 * k, blue: 0.70 + 0.25 * k)
     }
 }

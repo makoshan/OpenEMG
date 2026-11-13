@@ -89,6 +89,7 @@ jobs:
           npm run check
           npm run check:gesture-library
           node --experimental-transform-types --no-warnings check-seal-game.mjs
+          npm run check:filter-stream
           npm run check:missing-label
           npm run check:wear-hint
           npm run check:rewear-hint

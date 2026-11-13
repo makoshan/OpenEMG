@@ -57,5 +57,38 @@ assert(gain('view', 898) < -4 && gain('view', 902) < -4 && gain('view', 52) < -4
 const stream30 = (chain) => { const s = chain ? new SignalStream(chain) : new SignalStream(); s.push(Array.from({ length: n }, (_, i) => row(100 * Math.sin(2 * Math.PI * 30 * i / 2000))), 1000, n, 0); return s.values()[0]; };
 assert(stream30() > 60 && stream30() < 75 && stream30('view') < 2, 'SignalStream 默认必须是 gate 链');
 assert(gain('view', 60, 60) < -30 && gain('view', 920, 60) > -1.5 && Number.isFinite(gain('view', 990, 60)), '60 Hz 市电下 view 链不对');
+
+// C08B 2ch / 8ch / 16ch @ 1000 Hz 跨路数与防奈奎斯特混叠门禁（正反例）
+const gainFs = (chain, ch, fs, hz) => {
+  const f = new DisplayFilter(50, ch, chain, fs);
+  let s = 0;
+  for (let i = 0; i < 8000; i++) {
+    const y = f.process(Array.from({ length: ch }, (_, c) => Math.sin(2 * Math.PI * hz * i / fs) * (c + 1)))[ch - 1];
+    if (i >= 6000) s += (y / ch) * (y / ch);
+  }
+  return 10 * Math.log10(s / 2000 * 2 + 1e-30);
+};
+assert(gainFs('view', 16, 1000, 50) < -30 && gainFs('view', 16, 1000, 450) < -30 && gainFs('view', 16, 1000, 120) > -1.5, 'C08B 16ch@1kHz view 链异常');
+assert(gainFs('gate', 2, 1000, 50) < -20 && gainFs('gate', 2, 1000, 120) > -0.5, 'C08B 2ch@1kHz gate 链异常');
+for (const ch of [2, 8, 16]) {
+  const st = new SignalStream('gate', ch, 1000);
+  const total = 1500;
+  const rows = Array.from({ length: total }, (_, i) => Array.from({ length: ch }, (_, c) => (c + 1) * 10 * Math.SQRT2 * Math.sin(2 * Math.PI * 120 * i / 1000)));
+  const res = st.push(rows, 1000, total, 0);
+  assert.equal(res.frames.length, total);
+  const vals = st.values();
+  assert(vals && vals.length === ch && Math.abs(vals[ch - 1] - ch * 10) / (ch * 10) < 0.05, `${ch}ch@1kHz RMS 不准: ${JSON.stringify(vals)}`);
+  // 必败反例：喂错通道数帧必须立即触发 boundary 重置并拒收
+  const bad = st.push([Array.from({ length: ch + 1 }, () => 1)], 1050, total + 1, 0);
+  assert(bad.boundary && bad.frames.length === 0 && st.values() === null, `${ch}ch 错长帧未触发边界重置`);
+}
+// setSpec 动态切档（8ch@2kHz -> 16ch@1kHz -> 2ch@1kHz）必须清空旧状态
+const dyn = new SignalStream();
+dyn.push(samples(n), 1000, n, 0);
+assert(dyn.values() !== null);
+assert.equal(dyn.setSpec(16, 1000), true);
+assert(dyn.channelCount === 16 && dyn.sampleRate === 1000 && dyn.values() === null, 'setSpec 未清零旧状态');
+assert.equal(dyn.setSpec(16, 1000), false, '相同参数 setSpec 不应重复重置');
+
 console.log('两条链检查通过：view', JSON.stringify(view), 'gate', JSON.stringify(gate));
-console.log('滤波边界检查通过：连续分块、原值不变、稳态初始化、重连/超时/缺样/丢包/非法数据、准备期不放行不误判噪声、高幅拒绝、低幅恢复');
+console.log('滤波边界检查通过：连续分块、原值不变、稳态初始化、重连/超时/缺样/丢包/非法数据、准备期不放行不误判噪声、高幅拒绝、低幅恢复、C08B 2/8/16ch@1kHz 正反例');

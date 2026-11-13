@@ -24,11 +24,13 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.openemg.openemg
         SWIFT_OBJC_BRIDGING_HEADER: iOS/Bridging.h
-        HEADER_SEARCH_PATHS: $(SRCROOT)/../../hardware/8ch-ads1298/r01-bench/firmware-f05/src
+        HEADER_SEARCH_PATHS:
+          - $(SRCROOT)/iOS
+          - $(SRCROOT)/../../hardware/8ch-ads1298/r01-bench/firmware-f05/src
         GCC_C_LANGUAGE_STANDARD: c11
         OTHER_CFLAGS: -ffp-contract=off
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription: 连接肌电手环，实时接收和处理八路肌电
+        INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription: 连接肌电手环，实时接收和处理多路肌电
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
     dependencies:
       - target: openEMGWatch

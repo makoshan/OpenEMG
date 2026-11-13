@@ -84,7 +84,7 @@ static void scan_cb(ble_gap_evt_adv_report_t *r) {
   if (Bluefruit.Scanner.checkReportForUuid(r, service.uuid)) svc_reports++;
   if (Bluefruit.Scanner.parseReportByType(r, BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, (uint8_t *)name, sizeof name - 1)) {
     name_reports++;
-    if (!strncmp(name, "MAKO", 4)) memcpy(last_name, name, sizeof last_name);
+    if (!strncmp(name, "MAKO", 4) || !strncmp(name, "YUANLI", 6)) memcpy(last_name, name, sizeof last_name);
   }
   if (!strcmp(name, NAME)) {
     connects++;

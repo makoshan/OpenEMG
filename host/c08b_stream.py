@@ -529,6 +529,8 @@ async def capture_c08b(
             probe_deadline = time.monotonic() + max(3.0, seconds)
             probed_meta = meta
             while time.monotonic() < probe_deadline:
+                if not getattr(client, 'is_connected', True):
+                    raise RuntimeError('PRB1 探测过程中 BLE 连接中断或重连（严禁跨连接拼接）')
                 await asyncio.sleep(min(0.05, poll_seconds))
                 raw_m = bytes(await asyncio.wait_for(client.read_gatt_char(META), 10))
                 probed_meta = validate_c08b_metadata(raw_m, expected)
@@ -559,6 +561,8 @@ async def capture_c08b(
             # 等待第 1 包通知入队（L432 上电探测最长约 1.4 s），收到首包后先重读 META 锁定真实子板协议再解码！
             start_deadline = time.monotonic() + max(4.0, seconds)
             while not first_data and time.monotonic() < start_deadline:
+                if not getattr(client, 'is_connected', True):
+                    raise RuntimeError('等待首包期间 BLE 连接中断或重连（严禁跨连接拼接数据）')
                 await asyncio.sleep(min(0.02, poll_seconds))
             if not first_data:
                 st_bytes = bytes(await asyncio.wait_for(client.read_gatt_char(STATUS), 10))
@@ -575,13 +579,20 @@ async def capture_c08b(
 
             run_deadline = first_data[0] + seconds
             while time.monotonic() < run_deadline:
+                if not getattr(client, 'is_connected', True):
+                    drain()
+                    raise RuntimeError('采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）')
                 await asyncio.sleep(min(poll_seconds, max(0.01, run_deadline - time.monotonic())))
                 drain()
+            if not getattr(client, 'is_connected', True):
+                raise RuntimeError('采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）')
 
             await asyncio.wait_for(client.write_gatt_char(CONTROL, STOP_COMMAND, response=True), 10)
             for _ in range(10):
                 await asyncio.sleep(0.02)
                 drain()
+                if not getattr(client, 'is_connected', True):
+                    raise RuntimeError('收尾停机期间 BLE 连接中断或重连（严禁跨连接拼接数据）')
                 st_bytes = bytes(await asyncio.wait_for(client.read_gatt_char(STATUS), 10))
                 final_status = decode_status(st_bytes)
                 if not final_status['active']:
@@ -831,6 +842,10 @@ class C08BRig:
 
     def status(self):
         return dict(
+            port='c08b',
+            kind='wl8',
+            n_channels=self.n_channels,
+            fs_Hz=self.fs_Hz,
             banner=self.banner,
             streaming=self.streaming,
             replay=self.replay,
@@ -900,6 +915,121 @@ class SynthC08BRig(C08BRig):
             time.sleep(max(0.0, t0 + n / self.fs_Hz - time.monotonic()))
 
 
+async def run_dongle_c08b(
+    port,
+    output,
+    seconds=5.0,
+    mode=None,
+    allow_real=False,
+    expected=None,
+    with_imu=False,
+    synth_channels=16,
+    open_ser=None,
+    reconnect_timeout=15.0,
+):
+    """经 XIAO USB 接收器（dongle_c08b 档，MAKO-DONGLE）建立全新 BLE 会话并采集 YUANLI-C08B。"""
+    import v12_dongle  # 按需加载，保持纯离线编解码零串口耦合
+
+    if open_ser is None:
+        import serial
+        open_ser = lambda p: serial.Serial(p, 115200, timeout=0.05)
+
+    out_path = Path(output)
+    ser, client = await v12_dongle.open_ready_dongle(port, open_ser)
+    try:
+        await asyncio.sleep(0.05)
+        before = (client.link or {}).get('connects', 0)
+        await client._cmd(ord('D'))
+        deadline = time.monotonic() + reconnect_timeout
+        while time.monotonic() < deadline:
+            await client._cmd(ord('Q'))
+            if client.ready and (client.link or {}).get('connects', 0) > before:
+                break
+            await asyncio.sleep(min(0.05, max(0.005, reconnect_timeout / 100.0)))
+        if not (client.ready and (client.link or {}).get('connects', 0) > before):
+            raise RuntimeError(
+                f'接收器在 {reconnect_timeout:.1f}s 内未连上 YUANLI-C08B（请确认接收器已刷 dongle_c08b 且手环正在广播）'
+            )
+        client.start_connects = client.link['connects']
+        try:
+            res = await capture_c08b(
+                client,
+                out_path,
+                seconds=seconds,
+                mode=mode,
+                allow_real=allow_real,
+                expected=expected,
+                with_imu=with_imu,
+                synth_channels=synth_channels,
+            )
+            await client._cmd(ord('Q'))
+            await asyncio.sleep(0.05)
+            if not client.is_connected:
+                summary_file = out_path / 'summary.json'
+                if summary_file.exists():
+                    res['ok'] = False
+                    res['aborted_reason'] = 'dongle_tail_disconnected_or_reconnected'
+                    summary_file.write_text(json.dumps(res, ensure_ascii=False, indent=2) + '\n')
+                raise RuntimeError('C08B BLE 收尾链路查询发现中途断连或重连，本段采集作废（禁止重连拼接佩戴段）')
+            res['transport'] = 'xiao_dongle'
+            summary_file = out_path / 'summary.json'
+            if summary_file.exists():
+                summary_file.write_text(json.dumps(res, ensure_ascii=False, indent=2) + '\n')
+            return res
+        finally:
+            query_error = None
+            try:
+                await client._cmd(ord('Q'))
+                await asyncio.sleep(0.05)
+            except Exception as err:
+                query_error = str(err)
+            if out_path.is_dir():
+                evidence = dict(
+                    link=client.link,
+                    history=client.link_history,
+                    junk_bytes=client.parser.junk,
+                    final_query_error=query_error,
+                )
+                (out_path / 'dongle.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
+    finally:
+        client.close()
+        try:
+            ser.close()
+        except OSError:
+            pass
+
+
+async def run_ble_c08b(
+    address,
+    output,
+    seconds=5.0,
+    mode=None,
+    allow_real=False,
+    expected=None,
+    with_imu=False,
+    synth_channels=16,
+):
+    """经 BleakClient 直连 YUANLI-C08B（注：macOS 会话若受 TCC 蓝牙限制请改用 --port 接收器通道）。"""
+    from bleak import BleakClient
+
+    async with BleakClient(address) as client:
+        res = await capture_c08b(
+            client,
+            output,
+            seconds=seconds,
+            mode=mode,
+            allow_real=allow_real,
+            expected=expected,
+            with_imu=with_imu,
+            synth_channels=synth_channels,
+        )
+        res['transport'] = 'bleak_direct'
+        summary_file = Path(output) / 'summary.json'
+        if summary_file.exists():
+            summary_file.write_text(json.dumps(res, ensure_ascii=False, indent=2) + '\n')
+        return res
+
+
 def _self_check():
     for n_ch, proto in ((16, PROTO_V4_16CH), (8, PROTO_V1_8CH), (2, PROTO_V1_8CH)):
         prof = C08BAdcProfile.for_n_channels(n_ch, fs_Hz=1000)
@@ -913,7 +1043,9 @@ def _self_check():
         out = np.concatenate(got, axis=0)
         assert out.shape == (16, n_ch)
         assert np.max(np.abs(out - uv)) < 0.1, f'{n_ch}ch 往返误差过大'
-        assert rig.status()['c08b']['protocol'] == proto
+        st = rig.status()
+        assert st['kind'] == 'wl8' and st['n_channels'] == n_ch and st['fs_Hz'] == 1000
+        assert st['c08b']['protocol'] == proto
     print('c08b_stream --check: 2ch / 8ch / 16ch 编解码冒烟通过')
 
 
@@ -921,7 +1053,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true', help='运行 2/8/16ch 编解码快速自检')
     parser.add_argument('--replay', type=Path, help='离线回放 C08B RawArchive 目录')
-    parser.add_argument('--allow-real', action='store_true', help='回放真实台架归档时显式放行')
+    parser.add_argument('--port', help='MAKO-DONGLE (dongle_c08b 档) USB 串口路径，如 /dev/cu.usbmodemXXX')
+    parser.add_argument('--address', help='BLE 设备地址或 UUID（直连模式）')
+    parser.add_argument('--out', type=Path, help='新采集归档输出目录（拒绝覆盖已有目录）')
+    parser.add_argument(
+        '--mode',
+        choices=('status', *ALL_COMMANDS.keys()),
+        default='status',
+        help='采集模式：status 只读诊断 / synth 双核无电合成流 / probe 只读探测 / test|short|rld_diag|rld|external 台架实采',
+    )
+    parser.add_argument('--seconds', type=float, default=5.0, help='采集时长（秒）')
+    parser.add_argument('--synth-channels', type=int, choices=(2, 8, 16), default=16, help='SYN1 合成流通道档位')
+    parser.add_argument('--with-imu', action='store_true', help='同时订阅并归档 6 轴 IMU_DATA 流')
+    parser.add_argument('--expected', help='真实采集或 PRB1 探测要求的 16 位十六进制固件 build_id')
+    parser.add_argument('--allow-real', action='store_true', help='离体台架真实采集或真实归档回放显式放行开关')
     args = parser.parse_args()
     if args.check:
         _self_check()
@@ -932,6 +1077,36 @@ def main():
         if res_out.get('imu') is not None:
             res_out['imu'] = {k: v for k, v in res_out['imu'].items() if k != 'raw'}
         print(json.dumps(res_out, ensure_ascii=False, indent=2))
+        return 0
+    if args.port or args.address:
+        if args.port and args.address:
+            parser.error('--port 与 --address 只能二选一')
+        if args.out is None:
+            parser.error('在线采集或状态读取必须指定 --out <新归档目录>')
+        capture_mode = None if args.mode == 'status' else args.mode
+        if args.port:
+            res = asyncio.run(run_dongle_c08b(
+                args.port,
+                args.out,
+                seconds=args.seconds,
+                mode=capture_mode,
+                allow_real=args.allow_real,
+                expected=args.expected,
+                with_imu=args.with_imu,
+                synth_channels=args.synth_channels,
+            ))
+        else:
+            res = asyncio.run(run_ble_c08b(
+                args.address,
+                args.out,
+                seconds=args.seconds,
+                mode=capture_mode,
+                allow_real=args.allow_real,
+                expected=args.expected,
+                with_imu=args.with_imu,
+                synth_channels=args.synth_channels,
+            ))
+        print(json.dumps(res, ensure_ascii=False, indent=2))
         return 0
     parser.print_help()
     return 0

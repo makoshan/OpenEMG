@@ -145,6 +145,14 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
     }
   }, [st?.rig.link, reconnect]);
 
+  const rigChannels = st?.rig.n_channels ?? 8;
+  const rigFs = st?.rig.fs_Hz ?? 2000;
+  useEffect(() => {
+    const c1 = signalStream.current.setSpec(rigChannels, rigFs);
+    const c2 = viewStream.current.setSpec(rigChannels, rigFs);
+    if (c1 || c2) { setRms(null); setViewRms(null); setRmsAt(0); }
+  }, [rigChannels, rigFs]);
+
   // 实时数据流
   useEffect(() => {
     if (!bridge) return;
@@ -208,9 +216,9 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
   // 「戴好」的勾要跟着当前信号走：不在录的时候，最近 5 s 每路最低 RMS（样本跨度 ≥4 s）仍超红线 1.2 倍就撤勾（2026-10-12：勾着但 8 路全红）。
   // 窗与余量对齐服务端检查（wl8_ab 测 5 s、滤 19 次谐波；前端只滤 3 次，读数偏高），免得刚检查过又被撤（复核 P2）
   const wearHist = useRef<{ t: number; v: number[] }[]>([]);
-  if (!online || busy) wearHist.current = [];
-  else if (rms && rms.length === 8 && wearHist.current.at(-1)?.v !== rms) { const now = Date.now(); wearHist.current = [...wearHist.current, { t: now, v: rms }].filter((h) => now - h.t <= 5000); }
-  const wh = wearHist.current, liveFloor = wh.length >= 3 && wh[wh.length - 1].t - wh[0].t >= 4000 ? Array.from({ length: 8 }, (_, c) => Math.min(...wh.map((h) => h.v[c]))) : null;
+  if (!online || busy || (wearHist.current[0] && wearHist.current[0].v.length !== rigChannels)) wearHist.current = [];
+  else if (rms && rms.length === rigChannels && wearHist.current.at(-1)?.v !== rms) { const now = Date.now(); wearHist.current = [...wearHist.current, { t: now, v: rms }].filter((h) => now - h.t <= 5000); }
+  const wh = wearHist.current, liveFloor = wh.length >= 3 && wh[wh.length - 1].t - wh[0].t >= 4000 ? Array.from({ length: rigChannels }, (_, c) => Math.min(...wh.map((h) => h.v[c]))) : null;
   const wearStale = !!liveFloor && liveFloor.some((v) => v > NOISE_LIMIT_UV * 1.2);
   const steps = [
     { t: '连上', s: '唤醒手环', done: online },
@@ -224,7 +232,7 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
   if (!guided && tab === 'setup') setTab('capture');                   // 非引导手势组没有连上 / 戴好页
   const onCapture = guided && tab === 'capture';
   const hideNav = guided && quiet;
-  const signal = <section className="emg8-signal"><Waveform ref={wave} rangeUv={range} rms={viewRms ?? undefined} showGyro={!onCapture} /><ElectrodeRing values={viewRms} max={range} hand={hand} label="实时 RMS µV" /></section>;
+  const signal = <section className="emg8-signal"><Waveform ref={wave} rangeUv={range} channels={rigChannels} fsHz={rigFs} rms={viewRms ?? undefined} showGyro={!onCapture} /><ElectrodeRing values={viewRms} max={range} channels={rigChannels} hand={hand} label="实时 RMS µV" /></section>;
 
   now.current = { cable, ch0, linkSince: st?.rig.link_since };   // 包过的 record 读最新值，不重建 bridge
   return <WearContext.Provider value={{ cable, ch0, setCable, setCh0 }}><div className="emg8" data-stage={stage ? 'on' : undefined} data-guided={guided ? 'on' : undefined}>
@@ -254,10 +262,10 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
     </div>)}
     </div>
     {/* 八路段放在钉顶的 chrome 外面：校准页它是左侧整栏（Mako 2026-10-12），其他录动作页跟着内容走 */}
-    {onCapture && <section className="emg8-channels" aria-label="八路实时信号">
-      <div className="emg8-channels-bar"><b>八路</b><label>量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{anyOver && range < WAVE_UV[WAVE_UV.length - 1] && <button type="button" className="emg8-range-up" onClick={() => setRange(WAVE_UV[WAVE_UV.length - 1])}>换到 ±{WAVE_UV[WAVE_UV.length - 1]} µV</button>}</div>
+    {onCapture && <section className="emg8-channels" aria-label={rigChannels === 8 ? '八路实时信号' : `${rigChannels} 路实时信号`}>
+      <div className="emg8-channels-bar"><b>{rigChannels === 8 ? '八路' : `${rigChannels} 路`}</b><label>量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{anyOver && range < WAVE_UV[WAVE_UV.length - 1] && <button type="button" className="emg8-range-up" onClick={() => setRange(WAVE_UV[WAVE_UV.length - 1])}>换到 ±{WAVE_UV[WAVE_UV.length - 1]} µV</button>}</div>
       {/* 采样率顶栏已有，这里不重复；RMS × 3 ≈ 峰值，超过量程的那一路标「超量程」，波形在那条上已顶格（2026-10-12 截图 8 条全是色块） */}
-      <ol className="emg8-ch-readout">{Array.from({ length: 8 }, (_, i) => { const v = viewRms?.[i]; const over = overRange(v, range); return <li key={i} className={over ? 'over' : undefined}><b>CH{i + 1}</b><span>{Number.isFinite(v as number) ? `${Math.round(v as number)} µV` : '—'}{over ? ' · 超量程' : ''}</span></li>; })}<li className="note" title="波形和读数：45 Hz 高通 + 50 Hz 各次谐波陷波（到 900 Hz）。放松检查、戴好检查和 82.5 / 150 µV 两条线用检查口径（20 Hz 高通 + 50 Hz 陷波 Q=5 + 100/150 Hz 陷波 Q=30），不用这里的去噪显示。">已去噪显示 · 检查另用检查口径</li></ol>
+      <ol className="emg8-ch-readout">{Array.from({ length: rigChannels }, (_, i) => { const v = viewRms?.[i]; const over = overRange(v, range); return <li key={i} className={over ? 'over' : undefined}><b>CH{i + 1}</b><span>{Number.isFinite(v as number) ? `${Math.round(v as number)} µV` : '—'}{over ? ' · 超量程' : ''}</span></li>; })}<li className="note" title="波形和读数：45 Hz 高通 + 50 Hz 各次谐波陷波（最高至奈奎斯特安全边界或 900 Hz）。放松检查、戴好检查和 82.5 / 150 µV 两条线用检查口径（20 Hz 高通 + 50 Hz 陷波 Q=5 + 100/150 Hz 陷波 Q=30），不用这里的去噪显示。">已去噪显示 · 检查另用检查口径</li></ol>
       {signal}
     </section>}
     {(err || mismatch || notWl8) && <p className="emg8-warn">{mismatch ? '采集服务绑定的是另一个工程，录制会被拒绝。' : notWl8 ? '采集服务不是八通道模式：用 emg_web.py --wl8 启动。' : err}</p>}
