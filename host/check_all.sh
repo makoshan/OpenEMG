@@ -19,14 +19,18 @@ PY="${PY:-../.venv/bin/python}"
 "$PY" check_c08b_stream.py
 "$PY" ../firmware/offline-f01/check.py
 "$PY" ../firmware/dsp-f03/check.py
-if command -v swiftc >/dev/null && [ -f ../apple/openEMG/check/main.swift ]; then
+if [ -f ../apple/openEMG/iOS/c08b_dsp.c ]; then
   SW_TMP=$(mktemp -d "${TMPDIR:-/tmp}/openemg-swift.XXXXXX")
   trap 'rm -rf "$SW_TMP"' EXIT
   DSP_SRC="../hardware/8ch-ads1298/r01-bench/firmware-f05/src"
-  cc -std=c11 -ffp-contract=off -I../apple/openEMG/iOS -I"$DSP_SRC" -c ../apple/openEMG/iOS/c08b_dsp.c -o "$SW_TMP/c08b_dsp.o"
-  cc -std=c11 -ffp-contract=off -I"$DSP_SRC" -c "$DSP_SRC/v12_dsp.c" -o "$SW_TMP/v12_dsp.o"
-  swiftc -import-objc-header ../apple/openEMG/iOS/Bridging.h -Xcc -I../apple/openEMG/iOS -Xcc -I"$DSP_SRC" \
-    -o "$SW_TMP/openemg_check" ../apple/openEMG/check/main.swift ../apple/openEMG/iOS/Band.swift "$SW_TMP/c08b_dsp.o" "$SW_TMP/v12_dsp.o"
-  "$SW_TMP/openemg_check"
+  cc -std=c11 -ffp-contract=off -Wall -Wextra -Werror -I../apple/openEMG/iOS -I"$DSP_SRC" -c ../apple/openEMG/iOS/c08b_dsp.c -o "$SW_TMP/c08b_dsp.o"
+  cc -std=c11 -ffp-contract=off -Wall -Wextra -Werror -I"$DSP_SRC" -c "$DSP_SRC/v12_dsp.c" -o "$SW_TMP/v12_dsp.o"
+  if [ "$(uname -s)" = "Darwin" ] && command -v swiftc >/dev/null && [ -f ../apple/openEMG/check/main.swift ]; then
+    swiftc -import-objc-header ../apple/openEMG/iOS/Bridging.h -Xcc -I../apple/openEMG/iOS -Xcc -I"$DSP_SRC" \
+      -o "$SW_TMP/openemg_check" ../apple/openEMG/check/main.swift ../apple/openEMG/iOS/Band.swift "$SW_TMP/c08b_dsp.o" "$SW_TMP/v12_dsp.o"
+    "$SW_TMP/openemg_check"
+  else
+    echo "c08b_dsp C11 编译通过（非 macOS 或无 swiftc，跳过 CoreBluetooth Swift 自检）"
+  fi
 fi
 echo "host 核心自检全部通过"
