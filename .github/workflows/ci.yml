@@ -51,6 +51,8 @@ jobs:
 
       - name: Hardware schematic parity & 8ch single-sided BOM verification
         run: |
+          python hardware/16ch-u9-dual30/verify_interface.py
+          (cd hardware/16ch-u9-dual30 && sha256sum -c SHA256SUMS)
           python hardware/common-mainboard/schematics/check_all.py
           python hardware/16ch-c08b-round/schematics-afe/check_all.py
           python hardware/8ch-ads1298/afe-d20-8ch/schematics-8ch/check_all.py
