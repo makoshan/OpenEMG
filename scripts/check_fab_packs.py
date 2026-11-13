@@ -191,6 +191,32 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         gerber_sha_prefix="044240f64b3436a4",
         cu_layers=2,
     ),
+    FabPackSpec(
+        pack_id="12-16ch-u9-mcu-u9",
+        gerber_zip="hardware/16ch-u9-dual30/fab-mcu-u9/Gerber_MCU-U9-panel702.zip",
+        gerber_sha_prefix="4ef92c9fda6d5b58",
+        cu_layers=6,
+        bom_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv",
+        bom_sha_prefix="a20d1163277c3bd6",
+        cpl_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv",
+        cpl_sha_prefix="83420282aec37217",
+        bom_rows=45,
+        top_count=42,
+        bot_count=68,
+    ),
+    FabPackSpec(
+        pack_id="13-16ch-u9-afe-30p",
+        gerber_zip="hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P.zip",
+        gerber_sha_prefix="f46284718f876c0b",
+        cu_layers=4,
+        bom_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv",
+        bom_sha_prefix="e6bd4d63a3211ee4",
+        cpl_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv",
+        cpl_sha_prefix="aec365abf353b885",
+        bom_rows=23,
+        top_count=64,
+        bot_count=50,
+    ),
 )
 
 LCSC_PART_RE = re.compile(r"^C[1-9]\d{2,}$")
@@ -220,7 +246,11 @@ def _check_gerber_zip(zip_path: Path, spec: FabPackSpec) -> list[str]:
 
     has_top_cu = any(n.endswith((".gtl", "f_cu.gbr", "toplayer.gtl")) for n in lower_names)
     has_bot_cu = any(n.endswith((".gbl", "b_cu.gbr", "bottomlayer.gbl")) for n in lower_names)
-    in_cu = [n for n in lower_names if n.endswith((".g1", ".g2", "in1_cu.gbr", "in2_cu.gbr"))]
+    in_cu = [
+        n
+        for n in lower_names
+        if n.endswith((".g1", ".g2", ".g3", ".g4", "in1_cu.gbr", "in2_cu.gbr", "in3_cu.gbr", "in4_cu.gbr"))
+    ]
     cu_found = (1 if has_top_cu else 0) + (1 if has_bot_cu else 0) + len(in_cu)
     if cu_found != spec.cu_layers:
         errs.append(f"{spec.pack_id}: 铜层文件数 {cu_found} != 期望 {spec.cu_layers} ({names})")
@@ -252,7 +282,7 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
     bom_refs: list[str] = []
     for idx, row in enumerate(bom_rows, start=2):
-        lcsc = (row.get("LCSC Part #") or "").strip()
+        lcsc = (row.get("LCSC Part #") or row.get("JLCPCB Part #") or "").strip()
         if not LCSC_PART_RE.match(lcsc):
             errs.append(f"{spec.pack_id}: BOM 第 {idx} 行立创料号非法 '{lcsc}'")
         raw_des = (row.get("Designator") or "").strip()
@@ -311,8 +341,8 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
 def verify_repo(repo_root: Path, check_hashes: bool = True) -> list[str]:
     errs: list[str] = []
-    if len(PACK_SPECS) != 11:
-        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 11")
+    if len(PACK_SPECS) != 13:
+        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 13")
 
     for spec in PACK_SPECS:
         gz = repo_root / spec.gerber_zip
@@ -447,7 +477,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}", file=sys.stderr)
         return 1
-    print(f"嘉立创制造包门禁通过：{target}（全家族 11 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
+    print(f"嘉立创制造包门禁通过：{target}（全家族 13 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
     return 0
 
 

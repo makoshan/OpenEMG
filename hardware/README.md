@@ -1,8 +1,8 @@
 # OpenEMG 模块化硬件家族总览（2ch / 8ch / 16ch 共用主控与壳体）
 
-**新版 16 通道双板**　[U9 圆角主控与双 30 针采集板工程复核版](16ch-u9-dual30/) 使用 20 芯反序排线，制造文件仍待验收。下文 D20 / R4U6 属于双 34 针系列。
+**新版 16 通道双板（已含完整嘉立创生产制造包，DRC 0 / 飞线 0）**　[U9 圆角 6 层主控 `MCU-U9` 与双 30 针 4 层采集板 `AFE-30P`](16ch-u9-dual30/) 使用 20 芯反序排线，已完成电池窗扩窗（`27.40 × 20.90 mm`）、`FPC2.17/18` 对调、`ADS1298` `RESV1=GND` 修正、内层铺铜重建及 Gerber/BOM/CPL 制造包导出。下文 D20 / R4U6 属于双 34 针系列。
 
-本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL，全系 11 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
+本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL，全系 13 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
 
 ### 三维光追渲染预览（[`renders/`](renders/)，基于源工程一键复现，非实物照片）
 
@@ -57,6 +57,7 @@
 
 | 档位与用途 | 工程文件路径 | 说明 |
 |---|---|---|
+| **16ch 新版 6 层圆角主控 `MCU-U9` + 双 30P 采集板 `AFE-30P`** | `16ch-u9-dual30/MCU-U9.epro2`<br>`16ch-u9-dual30/AFE-30P.epro2` | 2026-11-13 开源修订版：6 层 `MCU-U9`（`27.40×20.90 mm` 电池窗）+ 4 层双 30P `AFE-30P`（DRC 0 / 飞线 0，含 `fab-mcu-u9/` 与 `fab-afe-30p/` 制造包） |
 | **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
 | **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |
 | **16ch 采集板独立工程（圆孔 / 缺口）** | `16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20-原理图+PCB+3D.epro2`<br>`16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20N-缺口-原理图+PCB+3D.epro2` | 16ch 双面采集板单板工程（圆孔版与四角缺口版） |

@@ -1,6 +1,6 @@
 # OpenEMG 共用主控家族（2 / 8 / 16 通道）嘉立创制造包与联调总表
 
-本文档提供全系 11 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
+本文档提供全系 13 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
 
 > [!CAUTION]
 > **打样与安全必读**
@@ -23,7 +23,7 @@
 
 ---
 
-## B · 嘉立创直接上传制造包清单（全家族 11 套，按 SHA-256 前 8 位核对）
+## B · 嘉立创直接上传制造包清单（全家族 13 套，按 SHA-256 前 8 位核对）
 
 | 编号 | 板件与版本 | 关键板厂工艺与贴片面 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
 |---|---|---|---|---|
@@ -38,6 +38,8 @@
 | `09` | **16 路表带软板 `D2-B`**（B 片） | 4 层压延铜 FPC（`0.203 mm`，`150.51×26.20 mm`），沉金 `2u"`，实心补强层 `0.10 mm` + `0.20 mm`（16 岛）；全基础库双面贴 **2 种 / 17 颗**（`C25741`×16 + `C25811`×1） | `hardware/16ch-c08b-round/strap-fpc-d2/fab/strap-b-gerber.zip`<br>`hardware/16ch-c08b-round/strap-fpc-d2/fab/strap-b-jlc-bom.csv`<br>`hardware/16ch-c08b-round/strap-fpc-d2/fab/strap-b-jlc-cpl.csv`<br>`hardware/16ch-c08b-round/strap-fpc-d2/fab/strap-b.d356` | `43175156`<br>`cffbbd76`<br>`a45ef4a2`<br>`b91204df` |
 | `10` | **2 路六触点板 `ADS1292-2ch`** | 4 层 `0.8 mm` FR-4，沉金，过孔塞油，自带 `70.20×70.20 mm` 工艺边，**纯顶面单面贴**（22 种 / 47 颗；底面 `E1–E6` 手焊铜片） | `hardware/2ch-ads1292/board/fab/ads1292-2ch-panel-gerber.zip`<br>`hardware/2ch-ads1292/board/fab/jlc_smt_bom.csv`<br>`hardware/2ch-ads1292/board/fab/jlc_smt_cpl.csv` | `bdd44d31`<br>`614e0854`<br>`2a2bc50e` |
 | `11` | **XIAO 转接板 `P44e`** | 2 层 `0.8 mm` FR-4（`17.78×21.00 mm`）光板手焊（不开钢网，不走 SMT） | `hardware/common-mainboard/adapter-p44e-xiao/fab-20261106/p44e-gerber.zip` | `044240f6` |
+| `12` | **新版 6 层圆角主控 `MCU-U9`** | 6 层 `0.8 mm` FR-4，沉金，**树脂塞孔+电镀盖帽**，自带 `70.20×70.20 mm` 工艺边（同时提供单板 `Gerber_MCU-U9.zip` `ec2a2994`），`27.40×20.90 mm` 电池窗，**双面贴**（45 种 / 110 颗：Top 42 + Bottom 68） | `hardware/16ch-u9-dual30/fab-mcu-u9/Gerber_MCU-U9-panel702.zip`<br>`hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv`<br>`hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv` | `4ef92c9f`<br>`a20d1163`<br>`83420282` |
+| `13` | **新版双 30P 采集板 `AFE-30P`** | 4 层 `0.8 mm` FR-4，沉金，过孔盖油，单板 `43.10×36.50 mm`（DRC 0 / 飞线 0），**双面贴**（23 种 / 114 颗：Top 64 + Bottom 50） | `hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P.zip`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv` | `f4628471`<br>`e6bd4d63`<br>`aec365ab` |
 
 ### 下单填表与贴片预览核对要点
 
