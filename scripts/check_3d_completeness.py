@@ -110,10 +110,26 @@ REQUIRED_3D_ASSETS: tuple[str, ...] = (
     "hardware/8ch-ads1298/f04-openback-tpu/shell-print.stl",
     "hardware/8ch-ads1298/f04-openback-tpu/rld-shell.step",
     "hardware/8ch-ads1298/f04-openback-tpu/row.step",
-    # 16ch U9 圆角主控 + 双 30 针采集板配套壳体候选 STEP
+    # 16ch U9 圆角主控 + 超薄双 30 针采集板：整板 3D、双 30P 软板 3D、台架壳 case-30p 与穿戴手表壳 enclosure-u9-watch
+    "hardware/16ch-u9-dual30/mcu-u9-3d.step",
+    "hardware/16ch-u9-dual30/afe-30p-3d.step",
+    "hardware/16ch-u9-dual30/strap-fpc-30p/strap-30p-a-3d.step",
+    "hardware/16ch-u9-dual30/strap-fpc-30p/strap-30p-b-3d.step",
     "hardware/16ch-u9-dual30/case-30p/Case.step",
     "hardware/16ch-u9-dual30/case-30p/Lid.step",
     "hardware/16ch-u9-dual30/case-30p/assembly.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/tray.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/tray.stl",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/cover.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/cover.stl",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/side_button.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/side_button.stl",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/cap_bottom.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/cap_bottom.stl",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/assembly.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/assembly.glb",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/exploded.step",
+    "hardware/16ch-u9-dual30/enclosure-u9-watch/exploded.glb",
 )
 
 STALE_LEGACY_DIRS_RE = re.compile(

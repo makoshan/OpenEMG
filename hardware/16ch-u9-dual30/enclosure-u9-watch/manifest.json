@@ -1,0 +1,128 @@
+{
+  "frame": "OpenEMG watch frame (X East+, Y North+, Z Top+; mm)",
+  "board_stack_z": {
+    "cap_bottom_z": [
+      -1.056,
+      -0.256
+    ],
+    "electrode_tips_z": -2.256,
+    "tray_z": [
+      0.15,
+      6.16
+    ],
+    "afe_30p_substrate_z": [
+      2.45,
+      3.2504
+    ],
+    "battery_302025_z": [
+      4.8,
+      7.6
+    ],
+    "mcu_u9_substrate_z": [
+      6.2,
+      7.8176
+    ],
+    "cover_z": [
+      6.2,
+      10.55
+    ],
+    "shell_body_height_mm": 10.4,
+    "overall_height_with_electrodes_mm": 12.806
+  },
+  "parts": {
+    "tray": {
+      "step": "tray.step",
+      "stl": "tray.stl",
+      "solid_count": 1,
+      "is_valid": true,
+      "volume_mm3": 2576.275,
+      "bbox_min": [
+        -23.4,
+        -22.65,
+        0.15
+      ],
+      "bbox_max": [
+        23.4,
+        23.25,
+        6.16
+      ],
+      "size_mm": [
+        46.8,
+        45.9,
+        6.01
+      ]
+    },
+    "cover": {
+      "step": "cover.step",
+      "stl": "cover.stl",
+      "solid_count": 1,
+      "is_valid": true,
+      "volume_mm3": 2173.249,
+      "bbox_min": [
+        -23.4,
+        -20.0,
+        6.2
+      ],
+      "bbox_max": [
+        23.4,
+        20.0,
+        10.55
+      ],
+      "size_mm": [
+        46.8,
+        40.0,
+        4.35
+      ]
+    },
+    "side_button": {
+      "step": "side_button.step",
+      "stl": "side_button.stl",
+      "solid_count": 1,
+      "is_valid": true,
+      "volume_mm3": 13.87,
+      "bbox_min": [
+        21.74,
+        -13.45,
+        7.32
+      ],
+      "bbox_max": [
+        23.85,
+        -8.77,
+        9.42
+      ],
+      "size_mm": [
+        2.11,
+        4.68,
+        2.1
+      ]
+    },
+    "cap_bottom": {
+      "step": "cap_bottom.step",
+      "stl": "cap_bottom.stl",
+      "solid_count": 1,
+      "is_valid": true,
+      "volume_mm3": 1488.446,
+      "bbox_min": [
+        -24.24,
+        -20.0,
+        -1.056
+      ],
+      "bbox_max": [
+        24.24,
+        20.0,
+        1.45
+      ],
+      "size_mm": [
+        48.48,
+        40.0,
+        2.506
+      ]
+    }
+  },
+  "embedded_board_solids": {
+    "afe_30p": 319,
+    "mcu_u9": 317,
+    "strap_30p_a_capsule": 12,
+    "strap_30p_b_capsule": 2
+  }
+}

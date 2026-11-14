@@ -1,0 +1,80 @@
+{
+ "board": "strap-30p-a.kicad_pcb",
+ "summary": {
+  "odd_angle": 0,
+  "sharp": 0,
+  "tee_acute": 0,
+  "tee_90": 0,
+  "width_jump": 0,
+  "dangling": 0,
+  "pad_exit": 0,
+  "pad_exit_side": 6,
+  "pad_exit_rotated": 0,
+  "multi_width": 0
+ },
+ "odd_angle": [],
+ "sharp": [],
+ "tee_acute": [],
+ "tee_90": [],
+ "width_jump": [],
+ "dangling": [],
+ "pad_exit": [],
+ "pad_exit_side": [
+  {
+   "pad": "R33.1",
+   "net": "BIAS_DRV1",
+   "layer": "B.Cu",
+   "at": [
+    58.575,
+    58.6
+   ]
+  },
+  {
+   "pad": "R33.2",
+   "net": "BIAS_DRV1_E",
+   "layer": "B.Cu",
+   "at": [
+    60.225,
+    58.6
+   ]
+  },
+  {
+   "pad": "R2.1",
+   "net": "CH1_N",
+   "layer": "B.Cu",
+   "at": [
+    51.01,
+    39.5
+   ]
+  },
+  {
+   "pad": "R1.1",
+   "net": "CH1_P",
+   "layer": "B.Cu",
+   "at": [
+    51.01,
+    60.5
+   ]
+  },
+  {
+   "pad": "R4.1",
+   "net": "CH2_N",
+   "layer": "B.Cu",
+   "at": [
+    64.99,
+    39.5
+   ]
+  },
+  {
+   "pad": "R3.1",
+   "net": "CH2_P",
+   "layer": "B.Cu",
+   "at": [
+    64.99,
+    60.5
+   ]
+  }
+ ],
+ "pad_exit_rotated": [],
+ "multi_width": {}
+}

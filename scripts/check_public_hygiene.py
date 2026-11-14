@@ -44,6 +44,7 @@ BLOCKED_TOKEN_SHA256 = {
 
 GENERIC_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("本机绝对用户路径", re.compile(r"/(?:Users|home)/[A-Za-z0-9._-]+/")),
+    ("本机临时工作树路径", re.compile(r"/private/tmp/[A-Za-z0-9._-]+/")),
     ("连字符转义用户路径", re.compile(r"-(?:Users|home)-[A-Za-z0-9._-]+-")),
     ("个人年份工作区路径", re.compile(r"(?:~|\$HOME|Path\.home\(\)\s*/\s*['\"]?)/?go/202\d/")),
     ("PEM 私钥块", re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY[-]----")),
@@ -166,6 +167,8 @@ def scan_repo(root: Path) -> list[str]:
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
         dp = Path(dirpath)
         for fn in sorted(filenames):
+            if fn == ".git":
+                continue
             p = dp / fn
             if p.is_symlink():
                 errors.append(f"不允许符号链接入库: {p.relative_to(root)}")
@@ -211,10 +214,12 @@ def run_selftest() -> int:
 
         canary = "-".join(("openemg", "hygiene", "canary", "fail"))
         u_path = "/" + "Users" + "/alice/workspace/file.py"
-        dash_path = "/private/tmp/claude-501/-" + "Users" + "-alice-work/board.kicad_pcb"
+        tmp_path = "/" + "private/tmp/worktree-99/board.kicad_pcb"
+        dash_path = "/" + "private/tmp/claude-501/-" + "Users" + "-alice-work/board.kicad_pcb"
         pem_hdr = "-----BEGIN " + "PRIVATE KEY-----"
         cases = [
             ("path_leak.txt", u_path, "本机绝对用户路径"),
+            ("tmp_leak.json", tmp_path, "本机临时工作树路径"),
             ("dash_leak.json", dash_path, "连字符转义用户路径"),
             ("key_leak.txt", pem_hdr, "PEM 私钥块"),
             ("hash_leak.json", f'{{"tag": "{canary}"}}', "受限标识摘要命中"),
@@ -267,7 +272,7 @@ def run_selftest() -> int:
             print(f"SELFTEST FAIL: 未拦住非匿名 Git 邮箱，实际返回: {git_errs}", file=sys.stderr)
             return 1
 
-    print("check_public_hygiene selftest: 9/9 必失败反例（含连字符路径与 .epro2/.f3d 压缩包穿透）全部拦截，干净基线通过")
+    print("check_public_hygiene selftest: 10/10 必失败反例（含临时工作树路径、连字符路径与 .epro2/.f3d 压缩包穿透）全部拦截，干净基线通过")
     return 0
 
 

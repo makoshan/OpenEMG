@@ -1,0 +1,44 @@
+{
+ "board": "strap-30p-b.kicad_pcb",
+ "summary": {
+  "odd_angle": 0,
+  "sharp": 0,
+  "tee_acute": 0,
+  "tee_90": 0,
+  "width_jump": 0,
+  "dangling": 0,
+  "pad_exit": 0,
+  "pad_exit_side": 2,
+  "pad_exit_rotated": 0,
+  "multi_width": 0
+ },
+ "odd_angle": [],
+ "sharp": [],
+ "tee_acute": [],
+ "tee_90": [],
+ "width_jump": [],
+ "dangling": [],
+ "pad_exit": [],
+ "pad_exit_side": [
+  {
+   "pad": "R34.1",
+   "net": "BIAS_DRV12",
+   "layer": "B.Cu",
+   "at": [
+    44.675,
+    50.0
+   ]
+  },
+  {
+   "pad": "R34.2",
+   "net": "BIAS_DRV12_E",
+   "layer": "B.Cu",
+   "at": [
+    46.325,
+    50.0
+   ]
+  }
+ ],
+ "pad_exit_rotated": [],
+ "multi_width": {}
+}

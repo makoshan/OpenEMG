@@ -1,24 +1,26 @@
-# 16 通道 U9 圆角主控 + 双 30 针采集板（2026-11-14 开源修订版）
+# 16 通道小型化旗舰：U9 圆角 6 层主控 + 超薄双 30 针采集板 + 四层保护软板 + 圆润手表壳（2026-11-14 开源修订版）
 
-本目录收录 `ProDoc_主控主板_2026-11-13`（6 层圆角挖电池窗主控 `MCU-U9`）与 `采集板_2026-11-13`（4 层双 30 针 `AFE-30P`）配对工程、嘉立创直接上传制造包（单板与 `70.20 × 70.20 mm` 工艺边 Gerber、SMT BOM、逐脚拟合校核 CPL、极性图）及双 30 针壳体总装 STEP，按 [CERN-OHL-S-2.0](../../LICENSE-HARDWARE) 发布。
+本目录收录 `MCU-U9`（6 层圆角扩电池窗双核主控）与 `AFE-30P`（4 层 `0.80 mm` 圆角超薄双 30 针 16 路采集板）配对工程、嘉立创直接上传制造包（单板与 `70.20 × 70.20 mm` 工艺边 Gerber、SMT BOM、224 颗逐脚拟合校核 CPL、极性图）、满载器件整板 STEP、双 30P 四层保护表带软板（`strap-fpc-30p/`）以及圆润无外露螺丝手表壳（`enclosure-u9-watch/`，同时保留台架候选壳 `case-30p/`），按 [CERN-OHL-S-2.0](../../LICENSE-HARDWARE) 发布。
 
 ## 文件清单
 
 | 路径 | 说明 |
 |---|---|
-| `MCU-U9.epro2` | 6 层主控板（`STM32L432KCU6` `U7` + `nRF52840-QFAA` `U8`，`R=1.80 mm` 四角圆角 + `27.40 × 20.90 mm` 电池开窗） |
-| `AFE-30P.epro` / `AFE-30P.epro2` | 4 层 16 路采集板（双 `ADS1298IPAGR` `U1/U2` + 双 30P 表带座 `FPC1/FPC3` + 20P 主控接口 `FPC2`） |
+| `MCU-U9.epro2` / `mcu-u9-3d.step` | 6 层主控板（`STM32L432KCU6` `U7` + `nRF52840-QFAA` `U8`，`43.10 × 36.50 mm` 四角 `R=1.80 mm` + `27.40 × 20.90 mm` 电池开窗）及满载 588 实体 STEP |
+| `AFE-30P.epro` / `AFE-30P.epro2` / `afe-30p-3d.step` | 4 层 `0.80 mm` 16 路圆角采集板（双 `ADS1298IPAGR` `U1/U2` + 双 `1.00 mm` 超薄上下双面触点 30P 座 `FPC1/FPC3` `C324727` + 20P 座 `FPC2`）及满载 338 实体 STEP |
 | `20针接口.csv` | `MCU-U9 FPC1`（1..20）↔ `AFE-30P FPC2`（20..1）逐脚网络锁定表 |
 | `fab-mcu-u9/Gerber_MCU-U9.zip` | `MCU-U9` 6 层单板 Gerber（`GTL, G1..G4, GBL` + `GKO` + `PTH/NPTH`，已剔除 14 处手焊/DNP 钢网开窗） |
 | `fab-mcu-u9/Gerber_MCU-U9-panel702.zip` | `MCU-U9` 自带 `70.20 × 70.20 mm` 工艺边（`2.0 mm` 铣槽 + 四边断口连接筋）一拼一 Gerber |
 | `fab-mcu-u9/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `MCU-U9` 嘉立创 SMT 物料清单与贴片坐标（45 种 / 110 颗：Top 42 + Bottom 68，按平台默认「AD 等其他」逐脚拟合） |
 | `fab-mcu-u9/orientation.csv` / `polarity-*.png` | `MCU-U9` 有极性/多引脚器件 1 脚与阴极坐标核对表及顶/底层粉点核对图 |
-| `fab-afe-30p/Gerber_AFE-30P.zip` | `AFE-30P` 4 层单板 Gerber（`GTL, G1, G2, GBL` + `GKO` + `PTH`） |
-| `fab-afe-30p/Gerber_AFE-30P-panel702.zip` | `AFE-30P` 自带 `70.20 × 70.20 mm` 工艺边（`2.0 mm` 铣槽 + 6 处断口连接筋，完全避开南侧双 30P 与东侧 20P 插口）一拼一 Gerber |
-| `fab-afe-30p/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `AFE-30P` 嘉立创 SMT 物料清单与贴片坐标（23 种 / 114 颗：Top 64 + Bottom 50，100% 现货 `C` 料号） |
+| `fab-afe-30p/Gerber_AFE-30P.zip` | `AFE-30P` 4 层 `0.80 mm` `R=1.80 mm` 圆角单板 Gerber（`GTL, G1, G2, GBL` + `GKO` + `PTH`） |
+| `fab-afe-30p/Gerber_AFE-30P-panel702.zip` | `AFE-30P` 自带 `70.20 × 70.20 mm` 工艺边（同心 `R1.80/R3.80` 圆角 `2.0 mm` 铣槽 + 6 处断口连接筋，完全避开南侧双 30P 与东侧 20P 插口）一拼一 Gerber |
+| `fab-afe-30p/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `AFE-30P` 嘉立创 SMT 物料清单与贴片坐标（23 种 / 114 颗：Top 64 + Bottom 50，100% 现货 `C` 料号，含 `C324727` 与 `R4=C2984407`，按平台默认「AD 等其他」逐脚拟合） |
 | `fab-afe-30p/orientation.csv` / `polarity-*.png` | `AFE-30P` 有极性/多引脚器件 1 脚与阴极坐标核对表及顶/底层粉点核对图 |
-| `case-30p/` | 双 30 针机械候选壳体总装 STEP（`Case.step`、`Lid.step`、`assembly.step`）、`19.67 × 26.59 × 2.78 mm` 电芯干涉报告 `checks.json` 与装配图 |
-| `verify_interface.py` / `SHA256SUMS` | 20P 逐脚对账、双核 39 信号脚固件兼容、224 颗 CPL 逐脚拟合（含背面反例）、铺铜规则与 3D 装配一键自检脚本及 SHA-256 校验表 |
+| `strap-fpc-30p/` | 适配 `FPC1/FPC3` 横向错位 `1.524 mm` 的 **12+2+2 双极四层柔性表带软板**（`strap-30p-a` + `strap-30p-b`）：自带 `32 × 100 kΩ`（`C25741`）采样限流串阻与 `2 × 200 kΩ`（`C25811`）偏置串阻（叠加板上 `15 kΩ` / `392 kΩ` 后总串联阻抗 `115 kΩ` / `592 kΩ`），含 28 项门禁 `check.py`、满载 3D STEP 与 `fab/` 生产包 |
+| `enclosure-u9-watch/` | **穿戴主力圆润无外露螺丝手表壳**（`46.80 × 40.00 × 10.40 mm`，含胶囊底盖 `11.15 mm`）：内柱盲孔 `4 × M1.4` 紧固 + `cap_bottom` 卡扣遮蔽，经 `fit_3d_check.py` 核验满载双板/电芯/双软板共 **23 对三维布尔交叠 `0.000 mm³`** 及 5 项必败反例 |
+| `case-30p/` | 离体台架候选盒总装 STEP（`Case.step`、`Lid.step`、`assembly.step`）、`19.67 × 26.59 × 2.78 mm` 电芯干涉报告 `checks.json` 与装配图 |
+| `verify_interface.py` / `SHA256SUMS` | 20P 逐脚对账、双核 39 信号脚固件兼容、60 脚双 30P 映射、圆角 `0.80 mm` 叠层、224 颗 CPL 逐脚拟合（含背面反例）、铺铜与全套 3D 总装自检脚本及 SHA-256 校验表 |
 
 ## 已修复的工程与制造问题（嘉立创 EDA 专业版 `4.1.93` 原生复核通过）
 
@@ -29,7 +31,8 @@
 - **原理图与 PCB 充电芯片同步**：`U17` 统一为 `LTC4054ES5-4.2#TRPBF`（`SOT-23-5`，立创 `C462648`）。
 - **钢网防连锡处理**：单板与 `70.2 × 70.2 mm` 工艺边 Gerber 已自动剔除 `J301`、`JP701`、`D62`、`BT1`、`ANT1` 等 14 处手焊/空贴焊盘钢网开孔。
 
-### 2. 采集板 `AFE-30P`（4 层，板框中心线 `43.100 × 36.666 mm`）
+### 2. 采集板 `AFE-30P`（4 层 `0.80 mm`，`43.100 × 36.500 mm` 四角 `R=1.80 mm`）
+- **小型化机械与超薄双触点连接器升级**：板框由直角矩形收为与 `MCU-U9` 同心的 **`43.100 × 36.500 mm` 四角 `R=1.800 mm` 圆角板框**，四层叠层设为 **`0.80 mm`（`JLC04081H-3313`）**；正反双面 30P 表带座 `FPC1 / FPC3` 由 `2.00 mm` 高下接座升级为 **`1.00 mm` 超薄上下双面触点广濑 `FH34SRJ-30S-0.5SH(50)`（立创 `C324727`）**，整机叠厚直降 `2.8 mm`。
 - **20P 反序排线 `FPC2.17 / 18` 交叉修复**：`FPC2` 第 17 脚改接 `CS#2`（`U2.39`，对 `MCU-U9 FPC1.4，AFE_CS_B`），第 18 脚改接 `DRDY2#`（`U2.47`，对 `MCU-U9 FPC1.3，AFE_DRDY_B`），过孔 `e1998` 移至 `(1305, 792.3834) mil`。
 - **双 `ADS1298` 第 31 脚 `RESV1` 修正为数字地 `GND`**：依 TI `ADS1298` 数据手册（`RESV1` 必须接 `DGND`），将原理图（`1.esch` `e95/e300`）与 PCB（`U1.31`、`U2.31` 及相连过孔/短线）从 `AGND` 改为 `GND`，消除原理图与 PCB 网表差异（`0 Netlist Error`）。
 - **消除 `Inner1` 负片死铜短路与 13 处热焊盘未连**：将 `Inner2`（`layer 16`）由负片 `PLANE` 转为正片 `SIGNAL` + `POUR e1678 (GND)`，并将铜皮连接规则 `RULE 7` 设为直连（`DIRECT`，`connType=1`），在 `LCEDA-Pro 4.1.93` 重建全部 14 块铺铜（`17` 个 `POURED` 区），彻底消除 `DRDY2#` 过孔与 `Inner1 AGND` 间距报错及 `FPC2`/`LM27762` 热焊盘辐条悬空；原生 DRC **0 错误、0 飞线、0 网表不一致**。
@@ -53,7 +56,7 @@
 
 ## 采集板首板复核
 
-本次核对的单板包为 [Gerber_AFE-30P.zip](fab-afe-30p/Gerber_AFE-30P.zip)，SHA-256 为 `f46284718f876c0b7ef9bad979a3baaa38f291d82a7e797e29c99cee9e1fdcaa`（同源工艺边包为 [Gerber_AFE-30P-panel702.zip](fab-afe-30p/Gerber_AFE-30P-panel702.zip)）。用 KiCad 导入采集板并重铺铜可以复现三项未连；逐层解算交付包的铜图、钻孔与飞针表得到以下结果。
+本次核对的单板包为 [Gerber_AFE-30P.zip](fab-afe-30p/Gerber_AFE-30P.zip)，SHA-256 为 `965942c596c05b91dd55011a9658a36a5c18636fe53cb65c1c0ced8e2c5f4100`（同源工艺边包为 [Gerber_AFE-30P-panel702.zip](fab-afe-30p/Gerber_AFE-30P-panel702.zip)，SHA-256 为 `4c402bec198e1e5c2bda3488af46e8aab3135f23179630ce92dc963385f05886`）。用 KiCad 导入采集板并重铺铜可以复现三项未连；逐层解算交付包的铜图、钻孔与飞针表得到以下结果。
 
 | 转换件报警 | 制造包实查 |
 |---|---|
@@ -72,6 +75,8 @@ R4 使用 Viking ARG02BTC1053（C2984407，105 kΩ，0402，±0.1%，±25 ppm/�
 ## 复核命令
 
 ```bash
-python3 hardware/16ch-u9-dual30/verify_interface.py
+python3 -B hardware/16ch-u9-dual30/verify_interface.py --selftest
+python3 -B hardware/16ch-u9-dual30/verify_interface.py
+python3 -B firmware/c08b-bringup/tools/pins_u9.py --selftest
 (cd hardware/16ch-u9-dual30 && shasum -a 256 -c SHA256SUMS)
 ```

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""OpenEMG 全家族 13 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 5 项必失败反例）。
+"""OpenEMG 全家族 15 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 5 项必失败反例）。
 
 核验范围：
-1. 全家族 13 套直接上传制造包（01..13：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
-   16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、新版双 30P 采集板 AFE-30P）
+1. 全家族 15 套直接上传制造包（01..15：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
+   16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、
+   新版超薄双 30P 采集板 AFE-30P、新版双 30P 四层软板 strap-30p A/B）
    全部在仓内自包含存在，零外部下载目录依赖。
 2. 逐包校验 Gerber.zip、BOM.csv、CPL.csv 与软板 .d356 的 SHA-256 指纹前缀锁定。
 3. 穿透每个 Gerber.zip，核验铜层数（6 层、4 层或 P44e 2 层）、板框层、镀铜钻孔层非空，
-   且 3 套表带四层软板必须包含拆分厚度的 0.10mm 与 0.20mm 实心 PI 补强 Gerber 层。
-4. 解析全部 12 套 SMT 包的 BOM.csv 与 CPL.csv：
+   且 5 套表带四层软板必须包含拆分厚度的 0.10mm 与 0.20mm 实心 PI 补强 Gerber 层。
+4. 解析全部 14 套 SMT 包的 BOM.csv 与 CPL.csv：
    - 核验立创料号格式（Cxxxx）、Quantity 与位号个数一致、零重复位号；
    - 核验 BOM 展开位号集合与 CPL 位号集合 1:1 完全相等（零孤儿、零漏贴）；
    - 核验 Top / Bottom 贴片层颗数精确等于锁定值（单面板断言 Bottom 颗数 = 0）。
@@ -208,15 +209,47 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
     FabPackSpec(
         pack_id="13-16ch-u9-afe-30p",
         gerber_zip="hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P-panel702.zip",
-        gerber_sha_prefix="75b12ecb010dee2c",
+        gerber_sha_prefix="4c402bec198e1e5c",
         cu_layers=4,
         bom_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv",
-        bom_sha_prefix="d5908e917489cbef",
+        bom_sha_prefix="ef1f774aea398df5",
         cpl_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv",
-        cpl_sha_prefix="53cae0ef6d58cc99",
+        cpl_sha_prefix="e388f27ec3d4f487",
         bom_rows=23,
         top_count=64,
         bot_count=50,
+    ),
+    FabPackSpec(
+        pack_id="14-16ch-u9-strap-30p-a",
+        gerber_zip="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-gerber.zip",
+        gerber_sha_prefix="16e9cea8fdf6ae15",
+        cu_layers=4,
+        is_fpc=True,
+        bom_csv="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-jlc-bom.csv",
+        bom_sha_prefix="8f02ec3046a201c5",
+        cpl_csv="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-jlc-cpl.csv",
+        cpl_sha_prefix="d61ce0af6d76d476",
+        d356_file="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a.d356",
+        d356_sha_prefix="e660b6029004d619",
+        bom_rows=2,
+        top_count=12,
+        bot_count=5,
+    ),
+    FabPackSpec(
+        pack_id="15-16ch-u9-strap-30p-b",
+        gerber_zip="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-gerber.zip",
+        gerber_sha_prefix="c0e6164729913a07",
+        cu_layers=4,
+        is_fpc=True,
+        bom_csv="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-jlc-bom.csv",
+        bom_sha_prefix="cffbbd762a43c68c",
+        cpl_csv="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-jlc-cpl.csv",
+        cpl_sha_prefix="a45ef4a26777a4a4",
+        d356_file="hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b.d356",
+        d356_sha_prefix="ff42b45b60e7fcb0",
+        bom_rows=2,
+        top_count=16,
+        bot_count=1,
     ),
 )
 
@@ -342,8 +375,8 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
 def verify_repo(repo_root: Path, check_hashes: bool = True) -> list[str]:
     errs: list[str] = []
-    if len(PACK_SPECS) != 13:
-        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 13")
+    if len(PACK_SPECS) != 15:
+        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 15")
 
     for spec in PACK_SPECS:
         gz = repo_root / spec.gerber_zip
@@ -478,7 +511,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}", file=sys.stderr)
         return 1
-    print(f"嘉立创制造包门禁通过：{target}（全家族 13 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
+    print(f"嘉立创制造包门禁通过：{target}（全家族 15 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
     return 0
 
 

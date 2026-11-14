@@ -1,6 +1,6 @@
 # OpenEMG
 
-**新版 16 通道双板**　[U9 圆角 6 层主控 `MCU-U9` 与双 30 针 4 层采集板 `AFE-30P`](hardware/16ch-u9-dual30/) 使用 20 芯反序排线，已含嘉立创 Gerber / BOM / 逐脚校核 CPL 生产包与双 30 针壳体总装 STEP（实物待打样验收）。下文 D20 / R4U6 属于双 34 针系列。
+**主力推荐 · 新版 16 通道小型化旗舰（`MCU-U9` + `AFE-30P`）**　[U9 圆角 6 层双核主控 `MCU-U9`、超薄 `1.00 mm` 双 30 针 4 层 `0.80 mm` 圆角采集板 `AFE-30P`、双 30P 四层保护软板 `strap-fpc-30p` 与圆润无外露螺丝手表壳 `enclosure-u9-watch`](hardware/16ch-u9-dual30/) 使用 20 芯反序排线直连，已含嘉立创 `70.20 × 70.20 mm` 工艺边 Gerber、100% 现货 `C` 料号 BOM、224 颗逐脚校核 CPL 生产包、满载整板 STEP、双 30P 软板生产包及 23 对三维布尔零干涉手表壳总装（实物待打样验收）。下文 `D20 / R4U6 / 8ch / 2ch` 属于双 34 针及入门参考系列，完整保留供对照复刻。
 
 模块化多通道表面肌电（sEMG）开源研究平台：**同一个上层主控板、同一套 `46 × 40 mm` 圆润外壳家族、同一个跨平台上位机，按需搭配 2 通道、8 通道或 16 通道下层模拟前端采集板**；同时提供 **KiCad 10 原生工程**与**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）完整工程文件**。
 
@@ -61,13 +61,14 @@
 
 | 模块 | 目录 | 板框 / 层数 | EDA 工程格式 | 定位与状态 |
 |---|---|---|---|---|
-| **共用上层主控** | `hardware/common-mainboard/` | `R4U6` / `R4U6N`: `43.1 × 36.5 mm` 4 层<br>`P44e`: `17.8 × 21.0 mm` 2 层 | 嘉立创 `.epcb2` / `.epro2` + KiCad 10 + 满载 `-3d.step` | 旗舰 `R4U6`（圆孔）/ `R4U6N`（缺口）与入门 `P44e`（`XIAO` 转接）任选 |
+| **16 通道小型化旗舰（双 30P）** | `hardware/16ch-u9-dual30/` | `43.1 × 36.5 mm` 四角 `R1.8`（主控 6 层 `0.8 mm` + 采集 4 层 `0.8 mm`） | 嘉立创 `MCU-U9.epro2` / `AFE-30P.epro2` + KiCad 10 四层软板 `strap-fpc-30p` + 满载 `-3d.step` + `enclosure-u9-watch` | **当前 16ch 主力推荐**：`27.4 × 20.9 mm` 扩窗主控 + `1.0 mm` 超薄双 30P 座 `C324727` + `32×100k + 2×200k` 软板 + `46.8 × 40.0 × 10.4 mm` 圆润手表壳 |
+| **共用上层主控（34P/入门系）** | `hardware/common-mainboard/` | `R4U6` / `R4U6N`: `43.1 × 36.5 mm` 4 层<br>`P44e`: `17.8 × 21.0 mm` 2 层 | 嘉立创 `.epcb2` / `.epro2` + KiCad 10 + 满载 `-3d.step` | `R4U6`（圆孔）/ `R4U6N`（缺口）与入门 `P44e`（`XIAO` 转接）任选 |
 | **入门 2 通道叠板** | `hardware/2ch-ads1292/` | `43.1 × 36.5 mm` / 4 层 | KiCad 10 + 嘉立创 `ADS1292-2ch-R9.epro2` + `-3d.step` | `ADS1292` 底面直接集成两排「大—辅—大」六触点，免外部表带排线 |
 | **标准 8 通道叠板 + 台架** | `hardware/8ch-ads1298/` | `43.1 × 36.5 mm`（圆孔 `D20-8CH` / 缺口 `D20N-8CH`）<br>`65.0 × 60.0 mm`（R01 台架） | KiCad 10 + 嘉立创 `C08B-8ch全套汇总(R4U6/R4U6N).epro2` + 单面 `-3d.step` + `strap-fpc-d2-8ch` | 纯单面专属 8 路叠板（背面 0 器件绿油绝缘）+ 单片四层软板 `D2-8CH` + `F04` 背开口 TPU 表带 + 已实测 `R01` 台架板 |
-| **旗舰 16 通道叠板** | `hardware/16ch-c08b-round/` | `43.1 × 36.5 mm` / 4 层（圆孔 `D20` / 缺口 `D20N`） | KiCad 10 + 嘉立创 `C08B-全套汇总(R4U6/R4U6N).epro2` + 双面 `-3d.step` + `pod-d1` | 双 `ADS1298` 同步采样 + 34P 四层柔性表带软板（`D2` / `R15`）+ 独立电极豆 `Pod D1` |
+| **16 通道双 34P 叠板** | `hardware/16ch-c08b-round/` | `43.1 × 36.5 mm` / 4 层（圆孔 `D20` / 缺口 `D20N`） | KiCad 10 + 嘉立创 `C08B-全套汇总(R4U6/R4U6N).epro2` + 双面 `-3d.step` + `pod-d1` | 双 `ADS1298` 同步采样 + 34P 四层柔性表带软板（`D2` / `R15`）+ 独立电极豆 `Pod D1` |
 | **圆润外壳家族** | `hardware/enclosure-46x40/` | `46.0 × 40.0 mm` 外廓 | `build123d` Python + Fusion `.f3d` + STEP + STL + 3MF + GLB | 四角螺丝壳 `R12`（配 `R4U6+D20`）、无螺丝缺口抱柱壳 `R13`（配 `R4U6N+D20N`，附 `.f3d`）、外扣底盖 `D2` 与 2ch 外壳 `R7` |
 
-> **机械对位与嘉立创下单总表**：`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可。架构细节见 [hardware/README.md](hardware/README.md)，**全家族 13 套直接上传 Gerber/BOM/CPL 制造包与 SHA-256 核对表见 [hardware/ORDER-MATRIX.md](hardware/ORDER-MATRIX.md)**。
+> **机械对位与嘉立创下单总表**：`MCU-U9 + AFE-30P` 通过东侧 20P 软排线 U 形正对互联；`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可。架构细节见 [hardware/README.md](hardware/README.md)，**全家族 15 套直接上传 Gerber/BOM/CPL 制造包与 SHA-256 核对表见 [hardware/ORDER-MATRIX.md](hardware/ORDER-MATRIX.md)**。
 
 ---
 

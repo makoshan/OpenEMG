@@ -1,14 +1,19 @@
 # C08B 共用主控上电自检固件 + 台架上电清单（2026-11-12 升级版）
 
-状态：**已实现未验收（能编译、主机端单测与反例全过、引脚逐脚直核 R4U6/R4U6N 板文件；未上板、未刷机）。** 目标是板子到手当天零跳线判断主控与任一下层采集板能不能用。
+状态：**已实现未验收（能编译、主机端单测与反例全过、引脚逐脚直核 `MCU-U9` 6 层旗舰主控与 `R4U6/R4U6N` 4 层主控板文件；未上板、未刷机）。** 目标是板子到手当天零跳线判断主控与任一下层采集板能不能用。
 
-适用主控与下层采集板组合（共用 20P 排线 `J_AFE`，零跳线自动识别）：
+适用主控与下层采集板组合（共用 20P 反序排线，零跳线自动识别）：
 
 | 组合 | 主控板 | 下层采集板 | 自动识别条件 | 全过 `done_mask` |
 |---|---|---|---|---|
-| **16CH 双面** | `R4U6` / `R4U6N` | `D20` / `D20N`（双 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
-| **8CH 单面** | `R4U6` / `R4U6N` | `D20-8CH` / `D20N-8CH`（单 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
-| **2CH 六触点** | `R4U6` / `R4U6N` | `ADS1292-2ch-R9`（单 ADS1292） | `(id_a & 0xDF) == 0x53` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
+| **16CH 旗舰双 30P** | `MCU-U9`（6 层圆角扩窗） | `AFE-30P`（双 ADS1298 + 双 30P `C324727`） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
+| **16CH 双 34P** | `R4U6` / `R4U6N` | `D20` / `D20N`（双 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
+| **8CH 单面** | `R4U6` / `R4U6N`（或 `MCU-U9`） | `D20-8CH` / `D20N-8CH`（单 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
+| **2CH 六触点** | `R4U6` / `R4U6N`（或 `MCU-U9`） | `ADS1292-2ch-R9`（单 ADS1292） | `(id_a & 0xDF) == 0x53` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
+
+> **`MCU-U9` 与 `R4U6 / R4U6N` 位号与下载入口对照**（由 `python3 -B tools/pins_u9.py --selftest` 逐脚对账锁定）：
+> - 两块主控的运行时 GPIO 与 20P 反序排线逻辑功能 **100% 兼容**（零源码分叉共用同一份 `build/l432.hex` 与 `build/nrf.hex`）：`MCU-U9` 上位号为 `U7`（`STM32L432KCU6`）、`U8`（`nRF52840-QFAA`）、`U1`（侧按开关）、`FPC1`（20P 座）、`LED1`（指示灯）。
+> - **唯一启动引脚差异（烧录必读）**：`R4U6 / R4U6N` 将 `STM32L432` 第 31 脚 `PH3-BOOT0` 连至 `VBUS_SENSE`（插 USB 冷开机自动进 ROM DFU）；而 **`MCU-U9` 将 `U7.31` 引至独立 `L_BOOT0` 测试点/下拉电阻**（`VBUS_SENSE` 仅接 `U8` `P0.01`）。因此在 `MCU-U9` 上烧录 `U7` 请走 SWD 焊盘（`SWDIO / SWCLK`），或先将 `L_BOOT0` 拉至 `3.3 V` 再插 USB 上电进入 ROM DFU（`0483:DF11`）。
 
 若 `id_b` 读回非空非全 1 的乱码（如 `0x80`），或 U1 没应答只剩 U2，均判为异常（不误降级为单芯片模式，`ADS_B_ID` 置失败位）。
 
@@ -87,7 +92,8 @@ PY=host/.venv-emg/bin/python zsh check.sh
 make                             # 只编译：build/l432.hex、build/nrf.hex
 ```
 
-- `tools/pins.py` 直接解析定稿板文件 `C08B-main-R4U6.epcb2` 与 `C08B-main-R4U6N.epcb2`（核对 L432 23 个信号脚含 `U18.31 PH3=VBUS_SENSE`、nRF 15 个信号脚），并包含两条必败反例（篡改 `XIAO_CS` 网名 + 喂入缺 `BOOT0=VBUS_SENSE` 的旧版 `r4u2-readback.json`）。
+- `tools/pins.py` 直接解析 `C08B-main-R4U6.epcb2` 与 `C08B-main-R4U6N.epcb2`（核对 L432 23 个信号脚含 `U18.31 PH3=VBUS_SENSE`、nRF 15 个信号脚），并包含两条必败反例（篡改 `XIAO_CS` 网名 + 喂入缺 `BOOT0=VBUS_SENSE` 的旧版 `r4u2-readback.json`）。
+- `tools/pins_u9.py` 直接解析 6 层旗舰主控 `hardware/16ch-u9-dual30/MCU-U9.epro2`，核对 `U7`（`STM32L432KCU6` 23 个运行脚 + 3 个调试/启动脚 `U7.31 PH3=L_BOOT0`）、`U8`（`nRF52840-QFAA` 15 个运行脚）、`U17`（`LTC4054`）与 `FPC1`（20P 座），并含 3 项必败反例（`python3 -B tools/pins_u9.py --selftest`）。
 - `host_test/test_host.c` 覆盖 CRC、16CH/8CH/2CH 模式识别、期望掩码、B 片乱码/单活异常拦截、24 位补码与峰峰值/底噪门限的正反例测试。
 - `tools/decode_bringup.py` 提供零依赖命令行解码（`--ble-hex` 自动兼容 10B 值 / 12B 含公司号 / 23B AD 载荷 / 31B 完整广播 PDU，`--report-hex` 校验并解析 97 字节 `c08b_report_t`，检测 `VBUS=1 & OE_N=0` 互锁旁路危险态；`--self-test` 已纳入 `check.sh` 与云端 CI）。
 

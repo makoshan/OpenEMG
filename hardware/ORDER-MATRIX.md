@@ -1,6 +1,6 @@
 # OpenEMG 共用主控家族（2 / 8 / 16 通道）嘉立创制造包与联调总表
 
-本文档提供全系 13 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
+本文档提供全系 15 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
 
 > [!CAUTION]
 > **打样与安全必读**
@@ -15,7 +15,8 @@
 
 | 档位组合 | 上层主控（二选一外形） | 下层采集板 | 表带 / 电极侧 | 固件自动识别（`afe_mode_t`） | 自检掩码 |
 |---|---|---|---|---|---|
-| **16 通道全腕** | `R4U6`（圆孔）或 `R4U6N`（缺口） | `D20`（圆孔）或 `D20N`（缺口），正反双 `ADS1298` | 双片 4 层软板 `D2`（`strap-a` + `strap-b`，32+2 触点） | `id_a=0x92, id_b=0x92` → `AFE_16CH (16)` | `0x03FF` |
+| **16 通道旗舰（双 30P）** | `MCU-U9`（6 层圆角扩电池窗） | `AFE-30P`（4 层 `0.8 mm` 圆角，双 `ADS1298` + 双 `1.0 mm` 30P `C324727`） | 双片 4 层软板 `strap-fpc-30p`（`strap-30p-a` + `strap-30p-b`，`32×100k + 2×200k` 限流串阻） | `id_a=0x92, id_b=0x92` → `AFE_16CH (16)` | `0x03FF` |
+| **16 通道全腕（双 34P）** | `R4U6`（圆孔）或 `R4U6N`（缺口） | `D20`（圆孔）或 `D20N`（缺口），正反双 `ADS1298` | 双片 4 层软板 `D2`（`strap-a` + `strap-b`，32+2 触点） | `id_a=0x92, id_b=0x92` → `AFE_16CH (16)` | `0x03FF` |
 | **8 通道单面** | `R4U6`（圆孔）或 `R4U6N`（缺口） | `D20-8CH`（圆孔）或 `D20N-8CH`（缺口），纯顶面单颗 `ADS1298` | 单片 4 层软板 `D2-8CH`（`strap-d2-8ch`，16+2 触点，胶囊背带 6 窗 `0.20 mm` PI 垫片） | `id_a=0x92, id_b∈{0x00,0xFF}` → `AFE_8CH (8)` | `0x03F5` |
 | **2 通道一体** | `R4U6` / `R4U6N`；或入门转接板 `P44e` + XIAO | `ADS1292-2ch`（顶面贴件、底面 6 焊盘手焊铜片） | 底面自带两排「大—辅—大」6 触点（免外部表带软板） | `(id_a&0xDF)==0x53, id_b∈{0x00,0xFF}` → `AFE_2CH (2)` | `0x03F5` |
 
@@ -23,7 +24,7 @@
 
 ---
 
-## B · 嘉立创直接上传制造包清单（全家族 13 套，按 SHA-256 前 8 位核对）
+## B · 嘉立创直接上传制造包清单（全家族 15 套，按 SHA-256 前 8 位核对）
 
 | 编号 | 板件与版本 | 关键板厂工艺与贴片面 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
 |---|---|---|---|---|
@@ -39,14 +40,16 @@
 | `10` | **2 路六触点板 `ADS1292-2ch`** | 4 层 `0.8 mm` FR-4，沉金，过孔塞油，自带 `70.20×70.20 mm` 工艺边，**纯顶面单面贴**（22 种 / 47 颗；底面 `E1–E6` 手焊铜片） | `hardware/2ch-ads1292/board/fab/ads1292-2ch-panel-gerber.zip`<br>`hardware/2ch-ads1292/board/fab/jlc_smt_bom.csv`<br>`hardware/2ch-ads1292/board/fab/jlc_smt_cpl.csv` | `bdd44d31`<br>`614e0854`<br>`2a2bc50e` |
 | `11` | **XIAO 转接板 `P44e`** | 2 层 `0.8 mm` FR-4（`17.78×21.00 mm`）光板手焊（不开钢网，不走 SMT） | `hardware/common-mainboard/adapter-p44e-xiao/fab-20261106/p44e-gerber.zip` | `044240f6` |
 | `12` | **新版 6 层圆角主控 `MCU-U9`** | 6 层 `0.8 mm` FR-4，沉金，**树脂塞孔+电镀盖帽**，自带 `70.20×70.20 mm` 工艺边（同时提供单板 `Gerber_MCU-U9.zip` `ec2a2994`），`27.40×20.90 mm` 电池窗，**双面贴**（45 种 / 110 颗：Top 42 + Bottom 68，CPL 保持默认「AD 等其他」） | `hardware/16ch-u9-dual30/fab-mcu-u9/Gerber_MCU-U9-panel702.zip`<br>`hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv`<br>`hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv` | `4ef92c9f`<br>`a20d1163`<br>`f1fc2505` |
-| `13` | **新版双 30P 采集板 `AFE-30P`** | 4 层 `0.8 mm` FR-4，沉金，过孔盖油，自带 `70.20×70.20 mm` 工艺边（同时提供单板 `Gerber_AFE-30P.zip` `f4628471`），**双面贴**（23 种 / 114 颗：Top 64 + Bottom 50，CPL 保持默认「AD 等其他」） | `hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P-panel702.zip`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv` | `75b12ecb`<br>`d5908e91`<br>`53cae0ef` |
+| `13` | **新版超薄双 30P 采集板 `AFE-30P`** | 4 层 `0.8 mm` `JLC04081H-3313`（`43.10×36.50 mm` 四角 `R1.80` 圆角），沉金，过孔盖油，自带 `70.20×70.20 mm` 工艺边（同时提供单板 `Gerber_AFE-30P.zip` `965942c5`），**双面贴**（23 种 / 114 颗：Top 64 + Bottom 50，含双 `1.0 mm` 30P `C324727` 与 `R4=C2984407`，CPL 保持默认「AD 等其他」） | `hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P-panel702.zip`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv`<br>`hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv` | `4c402bec`<br>`ef1f774a`<br>`e388f27e` |
+| `14` | **新版双 30P 表带软板 `strap-30p-a`**（A 片） | 4 层压延铜 FPC（`0.203 mm`，`105.20×26.20 mm`），沉金 `2u"`，实心补强层 `0.10 mm`（尾端）+ `0.20 mm`（12 岛）；全基础库双面贴 **2 种 / 17 颗**（`C25741`×16 + `C25811`×1） | `hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-gerber.zip`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-jlc-bom.csv`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a-jlc-cpl.csv`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-a.d356` | `16e9cea8`<br>`8f02ec30`<br>`d61ce0af`<br>`e660b602` |
+| `15` | **新版双 30P 表带软板 `strap-30p-b`**（B 片） | 4 层压延铜 FPC（`0.203 mm`，`150.51×26.20 mm`，与 A 片横向错位 `1.524 mm`），沉金 `2u"`，实心补强层 `0.10 mm`（尾端）+ `0.20 mm`（16 岛）；全基础库双面贴 **2 种 / 17 颗**（`C25741`×16 + `C25811`×1） | `hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-gerber.zip`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-jlc-bom.csv`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b-jlc-cpl.csv`<br>`hardware/16ch-u9-dual30/strap-fpc-30p/fab/strap-30p-b.d356` | `c0e61647`<br>`cffbbd76`<br>`a45ef4a2`<br>`ff42b45b` |
 
 ### 下单填表与贴片预览核对要点
 
 1. **主控板 `01 / 02`（`R4U6 / R4U6N`）**：单板 Gerber（`43.10 × 36.50 mm`），板厚 **`0.6 mm`** + **双面 SMT** + **树脂塞孔电镀盖帽**，下单页须勾选人工代拼工艺边（`≥ 70 × 70 mm`），并在贴片预览页对照同目录 `polarity-top.png` / `polarity-bottom.png` 逐颗确认极性器件方向。
 2. **采集板 `03 / 04 / 06 / 07` 与 2 路板 `10`**：Gerber 均已自带 `70.20 × 70.20 mm` 一拼一工艺边与光学定位孔，下单选「自带拼板 / 1×1」即可，切勿重复加框；在贴片预览页确认 `ADS1298` / `ADS1292`、ESD 阵列与 FPC 连接器第一脚朝向。
-3. **表带软板 `05 / 08 / 09`**：走嘉立创 **FPC 软板打样**，压缩包内已包含拆分厚度的实心补强层 `*-BOT_STIFF_0p10mm_PI.gbr`（金手指背面 `0.10 mm`）与 `*-BOT_STIFF_0p20mm_PI.gbr`（岛区及 `D2-8CH` 胶囊 6 窗垫片 `0.20 mm`），下单时将同目录 `stiffener-map*.png` 与 `工艺要求.md` 附于工程备注；若随单 SMT 仅贴装限流电阻（`Φ6×2.0` 圆铜片与 `3×3×2` 方铜片收货后二次焊接），工程备注须写明：**「请 CAM 在 SMT 钢网中删去 `F_Paste.gtp` 上的 `Φ6.5 / Φ4.5` 大圆电极开孔，仅保留 0402/0603 电阻焊盘」**。
-4. **新版 16 路双板 `12 / 13`（`MCU-U9` + `AFE-30P`）**：两套 `-panel702.zip` 均已自带 `70.20 × 70.20 mm` 一拼一工艺边（`2.0 mm` 铣槽 + 断口连接筋），下单选「自带拼板 / 1×1」；其中 `MCU-U9` 选 **6 层 `0.8 mm` 沉金 + 树脂塞孔电镀盖帽 + 双面 SMT**（`U7 STM32L432KCU6 C1337280` 视实时库存走邮寄或全球代购，`USB1` 沉板座勾选异形/沉板治具确认），`AFE-30P` 选 **4 层 `0.8 mm` 沉金 + 过孔盖油 + 双面 SMT**。**上传 `jlc_smt_cpl.csv` 时必须保持平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项（切勿改选「嘉立创EDA」）**，并在 2D 预览页对照同目录 `orientation.csv` 与 `polarity-top.png` / `polarity-bottom.png` 逐颗确认顶/底层极性方向。
+3. **表带软板 `05 / 08 / 09 / 14 / 15`**：走嘉立创 **FPC 软板打样**，压缩包内已包含拆分厚度的实心补强层 `*-BOT_STIFF_0p10mm_PI.gbr`（金手指背面 `0.10 mm`）与 `*-BOT_STIFF_0p20mm_PI.gbr`（岛区及 `D2-8CH` 胶囊 6 窗垫片 `0.20 mm`），下单时将同目录 `stiffener-map*.png` 与 `工艺要求.md` 附于工程备注；若随单 SMT 仅贴装限流电阻（`Φ6×2.0` 圆铜片与 `3×3×2` 方铜片收货后二次焊接），工程备注须写明：**「请 CAM 仅在正面 `F_Paste.gtp` 钢网中删去 `Φ6.5 / Φ4.5` 大圆电极开孔并保留正面 0402 电阻焊盘；背面 `B_Paste.gbp` 的 0402/0603 电阻焊盘全部保留」**。
+4. **新版 16 路旗舰双板 `12 / 13`（`MCU-U9` + `AFE-30P`）**：两套 `-panel702.zip` 均已自带 `70.20 × 70.20 mm` 一拼一工艺边（`2.0 mm` 铣槽 + 断口连接筋），下单选「自带拼板 / 1×1」；其中 `MCU-U9` 选 **6 层 `0.8 mm` 沉金 + 树脂塞孔电镀盖帽 + 双面 SMT**（`U7 STM32L432KCU6 C1337280` 视实时库存走邮寄或全球代购，`USB1` 沉板座勾选异形/沉板治具确认），`AFE-30P` 选 **4 层 `0.8 mm` `JLC04081H-3313` 沉金 + 过孔盖油 + 双面 SMT**。**上传 `jlc_smt_cpl.csv` 时必须保持平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项（切勿改选「嘉立创EDA」）**，并在 2D 预览页对照同目录 `orientation.csv` 与 `polarity-top.png` / `polarity-bottom.png` 逐颗确认顶/底层极性方向。
 
 ---
 
@@ -54,6 +57,7 @@
 
 | 适用版本 | 零件 / 纸样 | 规格与打印工艺 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
 |---|---|---|---|---|
+| **16ch 旗舰双 30P 专属** | 圆润无外露螺丝手表壳 `enclosure-u9-watch`（另附台架壳 `case-30p`） | 3D 打印光敏树脂（`tray` / `cover` / `side_button`）+ `TPU 95A`（`cap_bottom`），主体 `46.80×40.00×10.40 mm`，内柱盲孔 **`4 × M1.4`** 锁紧 + 底盖遮蔽，23 对三维布尔 `0.000 mm³` 零干涉 | `hardware/16ch-u9-dual30/enclosure-u9-watch/tray.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/cover.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/side_button.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/cap_bottom.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/assembly.step` | `3032f56b`<br>`966e5816`<br>`17b21493`<br>`5daec2f3`<br>`24dfd44d` |
 | **8ch + 16ch 共用** | 胶囊电极底盖切片包 `cap_d2` | Bambu X2D `TPU 95A HF` 一盘两件（4 圆孔 `Φ6.5` + 2 方孔 `3.5×3.5`） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/cap_d2_x2-X2D-TPU95A.3mf` | `b49b121d` |
 | **8ch + 16ch 共用** | 胶囊底壳外发 STEP `tray_d2` | 3D 打印树脂外发件（8ch 靠胶囊背 6 窗 `0.20 mm` PI 垫片零改模复用） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/tray_d2.step` | `b76c2a66` |
 | **8 通道专属** | 表带 TPU 电极层切片包 `layer_d2_8ch` | Bambu X2D `TPU 95A HF` `0.16mm`（北 `26.2×16.2` + 南 **`26.2×32.2`**，5 层、`10m 2s`、`0.86 g`） | `hardware/8ch-ads1298/strap-fpc-d2-8ch/tpu-layer-d2-8ch/layer_d2_8ch-X2D-TPU95A.3mf` | `6189e957` |
@@ -67,13 +71,16 @@
 
 1. **引脚、主机单测与解码器自检门禁**：
    ```bash
+   python3 -B firmware/c08b-bringup/tools/pins_u9.py --selftest
    python3 firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2
    python3 -B firmware/c08b-bringup/tools/decode_bringup.py --self-test
    cc -std=c11 -O2 -Wall -Wextra -Werror -I firmware/c08b-bringup/common -I firmware/c08b-bringup/l432 -I firmware/c08b-bringup/nrf firmware/c08b-bringup/host_test/test_host.c -o /tmp/test_c08b_host && /tmp/test_c08b_host
    ```
 2. **固件刷写路径**：
-   - `nRF52840`（`U13`）：经 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`（`c4d046ab`）。
-   - `STM32L432KC`（`U18`）：`R4U6 / R4U6N` 已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `7fc800df`，`CFG1292_TEST` 已修正 `RESP2=0x07`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+   - `nRF52840`（`MCU-U9` 上为 **`U8`**，`R4U6/R4U6N` 上为 `U13`）：经顶面 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`（`c4d046ab`）。
+   - `STM32L432KC`（`MCU-U9` 上为 **`U7`**，`R4U6/R4U6N` 上为 `U18`）：
+     - 在 **`MCU-U9`** 上：`U7.31`（`PH3-BOOT0`）连至独立 `L_BOOT0`（经 **`R5 = 10 kΩ`** `C25744` 下拉至 `GND`；注意 `R26` 是安全互锁网络 `U7_EN ↔ ILK_D` 的 `0 Ω` 电阻，切勿改动），推荐直接经顶面 `DEBUG` 焊盘组（`SWCLK / SWDIO / NRST / GND`）用 SWD 探针烧写 `l432.hex`，或上电时将 `DEBUG` 的 `BOOT0` 焊盘临时拉高至 `3.3 V` 进入系统 ROM USB DFU（`0483:DF11`）。
+     - 在 **`R4U6 / R4U6N`** 上：已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `7fc800df`，`CFG1292_TEST` 已修正 `RESP2=0x07`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
    - `2CH + P44e + XIAO nRF52840 Sense` 独立 BLE `F01` 流式候选固件：[`firmware/xiao-ads1292-2ch/`](../firmware/xiao-ads1292-2ch/README.md)（`bash check.sh --pio`：20/20 脚对账、6 项必败反例、48 项单测与 `ads1292_2k`/`ads1292_4k` 镜像全绿，默认硬件锁关闭）。
    - `C08B` 共用双核主控（`R4U6 / R4U6N`：`L432 + nRF52840`）`2/8/16ch` 自动识别实时 BLE `F01 v1/v4 + IMU` 流式候选固件与主机接入契约：[`firmware/c08b-stream/`](../firmware/c08b-stream/README.md) + [`host/c08b_stream.py`](../host/c08b_stream.py)（`bash firmware/c08b-stream/check.sh` & `python3 -B host/check_c08b_stream.py`：`l432.hex` `0e0f6eb9` / `nrf_s140.hex` `a569fdbf` / `nrf_nosd.hex` `ca23b0cc`，默认双硬件锁关闭）。
 3. **手机广播与 97 字节报告一键判读（免调试器）**：

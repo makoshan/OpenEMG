@@ -48,13 +48,14 @@ jobs:
           python scripts/check_3d_completeness.py --selftest
           python scripts/check_3d_completeness.py .
 
-      - name: JLCPCB 11-pack manufacturing gate (5/5 selftest + SHA-256 & BOM/CPL parity)
+      - name: JLCPCB 15-pack manufacturing gate (5/5 selftest + SHA-256 & BOM/CPL parity)
         run: |
           python scripts/check_fab_packs.py --selftest
           python scripts/check_fab_packs.py .
 
       - name: Hardware schematic parity & 8ch single-sided BOM verification
         run: |
+          python hardware/16ch-u9-dual30/verify_interface.py --selftest
           python hardware/16ch-u9-dual30/verify_interface.py
           (cd hardware/16ch-u9-dual30 && sha256sum -c SHA256SUMS)
           python hardware/common-mainboard/schematics/check_all.py
@@ -63,8 +64,9 @@ jobs:
           python hardware/2ch-ads1292/schematics/page1.py
           python hardware/8ch-ads1298/stacked-d20-8ch/verify_8ch_dnp.py
 
-      - name: Firmware pin table & host unit tests (R4U6 + R4U6N + 16/8/2ch + ADS1292/ADS1298 drivers)
+      - name: Firmware pin table & host unit tests (MCU-U9 + R4U6 + R4U6N + 16/8/2ch + ADS1292/ADS1298 drivers)
         run: |
+          python firmware/c08b-bringup/tools/pins_u9.py --selftest
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/r4u6-readback.json
           python firmware/c08b-bringup/tools/pins.py hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2

@@ -1,0 +1,9 @@
+(version 1)
+(rule "30P 线宽" (constraint track_width (min 0.15mm)))
+(rule "30P 铜间距" (constraint clearance (min 0.15mm)))
+(rule "30P 铜到板边 12mil" (constraint edge_clearance (min 0.305mm)))
+(rule "30P 金手指到尾尖" (condition "A.Type == 'Pad' && A.memberOfFootprint('TAIL_*')") (constraint edge_clearance (min 0.15mm)))
+(rule "30P 过孔外径" (condition "A.Type == 'Via'") (constraint via_diameter (min 0.5mm)))
+# 不同网的两条走线（同一差分对 CHn_P/CHn_N 除外）中心距 ≥ 0.47 mm：线宽 0.15 时净距 ≥ 0.32
+(rule "30P 不同网走线中心距0.47" (condition "A.Type == 'Track' && B.Type == 'Track' && A.Net != B.Net && !A.isCoupledDiffPair()")
+ (constraint clearance (min 0.32mm)))
