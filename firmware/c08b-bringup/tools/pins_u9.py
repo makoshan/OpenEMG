@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从旗舰六层双核主控工程 hardware/16ch-u9-dual30/MCU-U9.epro2 逐脚核对：
+"""从旗舰六层双核主控工程 hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2 逐脚核对：
 1. U7（STM32L432KCU6，UFQFN32）全部 25 根信号/调试脚（含第 31 脚 PH3 = L_BOOT0 独立启动脚）；
 2. U8（nRF52840-QFAA，QFN48）全部 GPIO、SWD、晶振与去耦脚，并断言无未登记的多余信号脚；
 3. U17（LTC4054ES5-4.2#TRPBF）充电管理 5 脚与 FPC1（20P 板间座）20 脚；
@@ -16,7 +16,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
 REPO = HERE.parents[1]
-DEFAULT_EPRO2 = REPO / "hardware/16ch-u9-dual30/MCU-U9.epro2"
+DEFAULT_EPRO2 = REPO / "hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2"
 
 L432_PKG = {
     "PC14": 2, "PC15": 3, "NRST": 4,

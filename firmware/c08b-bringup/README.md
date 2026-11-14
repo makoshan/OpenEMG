@@ -6,7 +6,7 @@
 
 | 组合 | 主控板 | 下层采集板 | 自动识别条件 | 全过 `done_mask` |
 |---|---|---|---|---|
-| **16CH 旗舰双 30P** | `MCU-U9`（6 层圆角扩窗） | `AFE-30P`（双 ADS1298 + 双 30P `C324727`） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
+| **16CH 旗舰双 30P** | `MCU-U9`（`Rev0.01` 6 层圆角） | `AFE-30P`（双 ADS1298 + 双 30P `C324727`） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
 | **16CH 双 34P** | `R4U6` / `R4U6N` | `D20` / `D20N`（双 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b` 低 5 位 `=0x12` | `0x03FF` |
 | **8CH 单面** | `R4U6` / `R4U6N`（或 `MCU-U9`） | `D20-8CH` / `D20N-8CH`（单 ADS1298） | `id_a` 低 5 位 `=0x12` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
 | **2CH 六触点** | `R4U6` / `R4U6N`（或 `MCU-U9`） | `ADS1292-2ch-R9`（单 ADS1292） | `(id_a & 0xDF) == 0x53` 且 `id_b ∈ {0x00, 0xFF}` | `0x03F5`（跳过 bit1/bit3） |
@@ -93,7 +93,7 @@ make                             # 只编译：build/l432.hex、build/nrf.hex
 ```
 
 - `tools/pins.py` 直接解析 `C08B-main-R4U6.epcb2` 与 `C08B-main-R4U6N.epcb2`（核对 L432 23 个信号脚含 `U18.31 PH3=VBUS_SENSE`、nRF 15 个信号脚），并包含两条必败反例（篡改 `XIAO_CS` 网名 + 喂入缺 `BOOT0=VBUS_SENSE` 的旧版 `r4u2-readback.json`）。
-- `tools/pins_u9.py` 直接解析 6 层旗舰主控 `hardware/16ch-u9-dual30/MCU-U9.epro2`，核对 `U7`（`STM32L432KCU6` 23 个运行脚 + 3 个调试/启动脚 `U7.31 PH3=L_BOOT0`）、`U8`（`nRF52840-QFAA` 15 个运行脚）、`U17`（`LTC4054`）与 `FPC1`（20P 座），并含 3 项必败反例（`python3 -B tools/pins_u9.py --selftest`）。
+- `tools/pins_u9.py` 直接解析 6 层旗舰主控 `hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`，核对 `U7`（`STM32L432KCU6` 23 个运行脚 + 3 个调试/启动脚 `U7.31 PH3=L_BOOT0`）、`U8`（`nRF52840-QFAA` 15 个运行脚）、`U17`（`LTC4054`）与 `FPC1`（20P 座），并含 3 项必败反例（`python3 -B tools/pins_u9.py --selftest`）。
 - `host_test/test_host.c` 覆盖 CRC、16CH/8CH/2CH 模式识别、期望掩码、B 片乱码/单活异常拦截、24 位补码与峰峰值/底噪门限的正反例测试。
 - `tools/decode_bringup.py` 提供零依赖命令行解码（`--ble-hex` 自动兼容 10B 值 / 12B 含公司号 / 23B AD 载荷 / 31B 完整广播 PDU，`--report-hex` 校验并解析 97 字节 `c08b_report_t`，检测 `VBUS=1 & OE_N=0` 互锁旁路危险态；`--self-test` 已纳入 `check.sh` 与云端 CI）。
 

@@ -190,7 +190,7 @@ def check_afe_fixes(rows: list, dual30: dict[tuple[str, int], str]) -> None:
 
 
 def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
-    with zipfile.ZipFile(P / "MCU-U9.epro2") as z:
+    with zipfile.ZipFile(P / "OpenEMG-C08B-Mainboard-Rev0.01.epro2") as z:
         doc = z.read(next(n for n in z.namelist() if n.endswith(".epru"))).decode("utf-8", "ignore")
     cutout_ok = False
     button_ok = False
@@ -208,7 +208,11 @@ def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
             v, _ = json.JSONDecoder().raw_decode(right)
             pts = v["path"][0]
             xs = [pts[i] for i in range(0, len(pts)) if isinstance(pts[i], (int, float)) and pts[i] > 0]
-            if round(max(xs) - min(xs), 4) == round(1608.3858 - 529.6457, 4):
+            ys = [pts[i] for i in range(0, len(pts)) if isinstance(pts[i], (int, float)) and pts[i] < 0]
+            if (
+                round(max(xs) - min(xs), 4) == round(1578.3858 - 529.6457, 4)
+                and round(max(ys) - min(ys), 4) == round(-534.3307 - (-1357.1653), 4)
+            ):
                 cutout_ok = True
         elif h["type"] == "LINE" and h.get("id") == "aa2a5e4ee3874f57":
             v, _ = json.JSONDecoder().raw_decode(right)
@@ -218,9 +222,9 @@ def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
             pours += 1
         elif h["type"] == "POURED":
             poured += 1
-    assert cutout_ok, "Expected expanded 27.40x20.90 mm battery cutout a6b31685508e342e"
+    assert cutout_ok, "Expected original rectangular 26.64x20.90 mm battery cutout a6b31685508e342e"
     assert button_ok, "Expected BUTTON_N trace aa2a5e4ee3874f57 extended to 324.087"
-    assert pours == 10 and poured >= 10, f"Expected 10 POURs with rebuilt POURED in MCU-U9, got {pours}/{poured}"
+    assert pours == 10 and poured >= 10, f"Expected 10 POURs with rebuilt POURED in OpenEMG-C08B-Mainboard-Rev0.01, got {pours}/{poured}"
     assert "LTC4054ES5-4.2#TRPBF" in doc and "C462648" in doc, "Expected U17 synced to LTC4054ES5-4.2#TRPBF (C462648)"
 
     expected_u7 = {
@@ -263,8 +267,8 @@ def _place_max_err(
 
 def check_cpl_rotations() -> dict[str, tuple]:
     """按嘉立创「AD,99SE,Allegro,PADS(宏)等其他」默认摆法逐脚核验全部 224 颗贴片件，并运行背面反例。"""
-    # 1. MCU-U9
-    with zipfile.ZipFile(P / "MCU-U9.epro2") as z:
+    # 1. OpenEMG-C08B-Mainboard-Rev0.01
+    with zipfile.ZipFile(P / "OpenEMG-C08B-Mainboard-Rev0.01.epro2") as z:
         doc = z.read(next(n for n in z.namelist() if n.endswith(".epru"))).decode("utf-8", "ignore")
     cur_t, cur_u = None, None
     fp_pads, dev_fp, comps, attrs = {}, {}, {}, {}
@@ -442,7 +446,7 @@ def check_3d_and_strap_gates() -> None:
 
 
 def run_all(selftest: bool = False) -> None:
-    main_20, mcu_pads = epru_pads(P / "MCU-U9.epro2", "FPC1")
+    main_20, mcu_pads = epru_pads(P / "OpenEMG-C08B-Mainboard-Rev0.01.epro2", "FPC1")
     afe, rows = afe_pads()
     _, afe2 = epru_pads(P / "AFE-30P.epro2", "FPC2")
     assert afe == afe2, "AFE-30P.epro and AFE-30P.epro2 pad nets diverge"
@@ -458,7 +462,12 @@ def run_all(selftest: bool = False) -> None:
     check_afe_fixes(rows, dual30)
     check_mcu_fixes(mcu_pads)
     afe_cpl_sample = check_cpl_rotations()
-    check_fab_subpack("fab-mcu-u9", 45, 110, ("Gerber_MCU-U9.zip", "Gerber_MCU-U9-panel702.zip"))
+    check_fab_subpack(
+        "fab-mcu-u9",
+        45,
+        110,
+        ("OpenEMG-C08B-Mainboard-Rev0.01-Gerber.zip", "OpenEMG-C08B-Mainboard-Rev0.01-panel702-Gerber.zip"),
+    )
     check_fab_subpack("fab-afe-30p", 23, 114, ("Gerber_AFE-30P.zip", "Gerber_AFE-30P-panel702.zip"))
     check_3d_and_strap_gates()
 

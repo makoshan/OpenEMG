@@ -12,7 +12,7 @@
 3. 5 项必交反例对照（Negative / Positive Collision Controls，全部必须 > 0.05 mm³）：
    - 反例 1：AFE-30P 底面 FPC3 退回旧版 2.00 mm 高连接器 -> 必撞穿 tray 底板；
    - 反例 2：未倒圆角的旧版 43.10 × 36.666 mm 直角板框 -> 必撞 tray 内腔四角圆角；
-   - 反例 3：扩窗前的旧版 MCU-U9 窄电池窗 -> 必撞 302025 锂电池；
+   - 反例 3：超长 28.0 mm 电芯包络 -> 必撞穿主控 26.64 × 20.90 mm 原矩形电池窗；
    - 反例 4：东侧按键帽 side_button 向内 (-X) 按入 0.70 mm 触发行程 -> 必推进 MCU-U9 U1 开关按头（> 0.30 mm³）且与上盖孔壁保持 0.000 mm³ 无卡滞；向外 (+X) 拉拽 0.35 mm -> 内侧防脱翼必被上盖内壁锁止（> 0.20 mm³）；
    - 反例 5：EB1 误装 Φ6 圆片必撞 cap_bottom 3.5×3.5 方孔，且软板沿 X 镜像后非对称 R33 必撞 tray 外底。
 """
@@ -146,9 +146,9 @@ def main() -> int:
     sharp_board = list(mod.box(-21.55, 21.55, -18.333, 18.333, mod.AFE_Z_BASE, mod.AFE_Z_BASE + 0.80).solids())
     neg2_sharp_board_vs_tray = intersect_vol(sharp_board, tray)
 
-    # 反例 3：扩窗前的旧版 MCU-U9 窄电池窗（东梁占到 X_box = +4.85..+7.85）-> 必撞 302025 电池
-    unexpanded_east_web = list(mod.box(4.85, 7.85, -4.40, 14.40, mod.MCU_Z_BASE, mod.MCU_Z_BASE + 1.618).solids())
-    neg3_narrow_cutout_vs_bat = intersect_vol(unexpanded_east_web, bat)
+    # 反例 3：超长 28.0 mm 电芯包络（超出主控 26.64 × 20.90 mm 矩形电池窗 X_box = [-18.788 .. +7.850]）-> 必撞穿 mcu_solids
+    oversized_bat = list(mod.box(-19.80, 8.20, -4.40, 14.40, 4.80, 7.60).solids())
+    neg3_oversized_bat_vs_mcu = intersect_vol(oversized_bat, mcu_solids)
 
     # 反例 4：东侧按键帽向 -X 按入 0.70 mm -> 必推进 U1 开关按头（>0.30 mm³）且不撞 cover（==0.0）；向 +X 外拉 0.35 mm -> 防脱翼必被 cover 内壁锁住（>0.20 mm³）
     btn_pressed = [s.translate((-0.70, 0.0, 0.0)) for s in side_btn]
@@ -167,7 +167,7 @@ def main() -> int:
     all_ctrls_ok = (
         neg1_tall_fpc3_vs_tray > 5.0
         and neg2_sharp_board_vs_tray > 0.20
-        and neg3_narrow_cutout_vs_bat > 5.0
+        and neg3_oversized_bat_vs_mcu > 5.0
         and pos4_press_hits_u1_switch > 0.30
         and pos4_press_vs_cover_clear == 0.0
         and neg4_pullout_captive_stop > 0.20
@@ -185,7 +185,7 @@ def main() -> int:
         "controls_mm3": {
             "neg1_old_2mm_fpc3_vs_tray": neg1_tall_fpc3_vs_tray,
             "neg2_old_sharp_afe_outline_vs_tray": neg2_sharp_board_vs_tray,
-            "neg3_old_narrow_battery_cutout_vs_bat": neg3_narrow_cutout_vs_bat,
+            "neg3_oversized_28mm_bat_vs_mcu": neg3_oversized_bat_vs_mcu,
             "pos4_button_press_0p70mm_actuates_u1_switch": pos4_press_hits_u1_switch,
             "pos4_button_press_0p70mm_vs_cover_clearance": pos4_press_vs_cover_clear,
             "neg4_button_pullout_0p35mm_captive_stop": neg4_pullout_captive_stop,

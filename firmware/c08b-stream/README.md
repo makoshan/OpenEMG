@@ -4,7 +4,7 @@
 
 ## A 双核分工与三档下层板自动识别
 
-共用主控 **`MCU-U9`（6 层圆角扩窗旗舰）/ `C08B-main-R4U6`（圆孔）/ `C08B-main-R4U6N`（四角缺口）** 通过 20P `0.5 mm` 反序排线零跳线自动适配三档采集底板（冷启动未上电探测前 GATT `META` 如实报 `"afe":"NONE","protocol":1,"active_channels":0`，绝不伪装为 16ch）：
+共用主控 **`MCU-U9`（`Rev0.01` 6 层圆角旗舰）/ `C08B-main-R4U6`（圆孔）/ `C08B-main-R4U6N`（四角缺口）** 通过 20P `0.5 mm` 反序排线零跳线自动适配三档采集底板（冷启动未上电探测前 GATT `META` 如实报 `"afe":"NONE","protocol":1,"active_channels":0`，绝不伪装为 16ch）：
 
 | 下层采集底板 | `ID_A / ID_B` | SPI1 速率 | 特殊引脚与寄存器保护 | BLE 数据协议 |
 |---|---|---|---|---|

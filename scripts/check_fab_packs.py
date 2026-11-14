@@ -195,8 +195,8 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
     ),
     FabPackSpec(
         pack_id="12-16ch-u9-mcu-u9",
-        gerber_zip="hardware/16ch-u9-dual30/fab-mcu-u9/Gerber_MCU-U9-panel702.zip",
-        gerber_sha_prefix="4ef92c9fda6d5b58",
+        gerber_zip="hardware/16ch-u9-dual30/fab-mcu-u9/OpenEMG-C08B-Mainboard-Rev0.01-panel702-Gerber.zip",
+        gerber_sha_prefix="f45c32339db15145",
         cu_layers=6,
         bom_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv",
         bom_sha_prefix="a20d1163277c3bd6",
