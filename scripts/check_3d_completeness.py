@@ -110,6 +110,10 @@ REQUIRED_3D_ASSETS: tuple[str, ...] = (
     "hardware/8ch-ads1298/f04-openback-tpu/shell-print.stl",
     "hardware/8ch-ads1298/f04-openback-tpu/rld-shell.step",
     "hardware/8ch-ads1298/f04-openback-tpu/row.step",
+    # 16ch U9 圆角主控 + 双 30 针采集板配套壳体候选 STEP
+    "hardware/16ch-u9-dual30/case-30p/Case.step",
+    "hardware/16ch-u9-dual30/case-30p/Lid.step",
+    "hardware/16ch-u9-dual30/case-30p/assembly.step",
 )
 
 STALE_LEGACY_DIRS_RE = re.compile(

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""OpenEMG 全家族 11 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 5 项必失败反例）。
+"""OpenEMG 全家族 13 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 5 项必失败反例）。
 
 核验范围：
-1. 全家族 11 套直接上传制造包（01..11：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
-   16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e）全部在仓内自包含存在，零外部下载目录依赖。
+1. 全家族 13 套直接上传制造包（01..13：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
+   16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、新版双 30P 采集板 AFE-30P）
+   全部在仓内自包含存在，零外部下载目录依赖。
 2. 逐包校验 Gerber.zip、BOM.csv、CPL.csv 与软板 .d356 的 SHA-256 指纹前缀锁定。
-3. 穿透每个 Gerber.zip，核验铜层数（4 层或 P44e 2 层）、板框层、镀铜钻孔层非空，
+3. 穿透每个 Gerber.zip，核验铜层数（6 层、4 层或 P44e 2 层）、板框层、镀铜钻孔层非空，
    且 3 套表带四层软板必须包含拆分厚度的 0.10mm 与 0.20mm 实心 PI 补强 Gerber 层。
-4. 解析全部 10 套 SMT 包的 BOM.csv 与 CPL.csv：
+4. 解析全部 12 套 SMT 包的 BOM.csv 与 CPL.csv：
    - 核验立创料号格式（Cxxxx）、Quantity 与位号个数一致、零重复位号；
    - 核验 BOM 展开位号集合与 CPL 位号集合 1:1 完全相等（零孤儿、零漏贴）；
    - 核验 Top / Bottom 贴片层颗数精确等于锁定值（单面板断言 Bottom 颗数 = 0）。
@@ -199,20 +200,20 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         bom_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv",
         bom_sha_prefix="a20d1163277c3bd6",
         cpl_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv",
-        cpl_sha_prefix="83420282aec37217",
+        cpl_sha_prefix="f1fc25052719958c",
         bom_rows=45,
         top_count=42,
         bot_count=68,
     ),
     FabPackSpec(
         pack_id="13-16ch-u9-afe-30p",
-        gerber_zip="hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P.zip",
-        gerber_sha_prefix="f46284718f876c0b",
+        gerber_zip="hardware/16ch-u9-dual30/fab-afe-30p/Gerber_AFE-30P-panel702.zip",
+        gerber_sha_prefix="75b12ecb010dee2c",
         cu_layers=4,
         bom_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_bom.csv",
-        bom_sha_prefix="e6bd4d63a3211ee4",
+        bom_sha_prefix="d5908e917489cbef",
         cpl_csv="hardware/16ch-u9-dual30/fab-afe-30p/jlc_smt_cpl.csv",
-        cpl_sha_prefix="aec365abf353b885",
+        cpl_sha_prefix="53cae0ef6d58cc99",
         bom_rows=23,
         top_count=64,
         bot_count=50,
@@ -396,7 +397,7 @@ def run_selftest(repo_root: Path) -> int:
 
     with tempfile.TemporaryDirectory(prefix="fab-selftest-") as td_str:
         td = Path(td_str)
-        # 仅复制 11 套制造包关联的轻量文件到临时沙箱做突变注入
+        # 仅复制 13 套制造包关联的轻量文件到临时沙箱做突变注入
         needed_rels: set[str] = set()
         for sp in PACK_SPECS:
             needed_rels.add(sp.gerber_zip)

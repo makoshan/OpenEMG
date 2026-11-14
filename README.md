@@ -1,6 +1,6 @@
 # OpenEMG
 
-**新版 16 通道双板**　[U9 圆角主控与双 30 针采集板工程复核版](hardware/16ch-u9-dual30/) 使用 20 芯反序排线，制造文件仍待验收。下文 D20 / R4U6 属于双 34 针系列。
+**新版 16 通道双板**　[U9 圆角 6 层主控 `MCU-U9` 与双 30 针 4 层采集板 `AFE-30P`](hardware/16ch-u9-dual30/) 使用 20 芯反序排线，已含嘉立创 Gerber / BOM / 逐脚校核 CPL 生产包与双 30 针壳体总装 STEP（实物待打样验收）。下文 D20 / R4U6 属于双 34 针系列。
 
 模块化多通道表面肌电（sEMG）开源研究平台：**同一个上层主控板、同一套 `46 × 40 mm` 圆润外壳家族、同一个跨平台上位机，按需搭配 2 通道、8 通道或 16 通道下层模拟前端采集板**；同时提供 **KiCad 10 原生工程**与**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）完整工程文件**。
 
@@ -67,7 +67,7 @@
 | **旗舰 16 通道叠板** | `hardware/16ch-c08b-round/` | `43.1 × 36.5 mm` / 4 层（圆孔 `D20` / 缺口 `D20N`） | KiCad 10 + 嘉立创 `C08B-全套汇总(R4U6/R4U6N).epro2` + 双面 `-3d.step` + `pod-d1` | 双 `ADS1298` 同步采样 + 34P 四层柔性表带软板（`D2` / `R15`）+ 独立电极豆 `Pod D1` |
 | **圆润外壳家族** | `hardware/enclosure-46x40/` | `46.0 × 40.0 mm` 外廓 | `build123d` Python + Fusion `.f3d` + STEP + STL + 3MF + GLB | 四角螺丝壳 `R12`（配 `R4U6+D20`）、无螺丝缺口抱柱壳 `R13`（配 `R4U6N+D20N`，附 `.f3d`）、外扣底盖 `D2` 与 2ch 外壳 `R7` |
 
-> **机械对位与嘉立创下单总表**：`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可。架构细节见 [hardware/README.md](hardware/README.md)，**全家族 11 套直接上传 Gerber/BOM/CPL 制造包与 SHA-256 核对表见 [hardware/ORDER-MATRIX.md](hardware/ORDER-MATRIX.md)**。
+> **机械对位与嘉立创下单总表**：`R4U6` 主控 `J_AFE` 与 `8ch/16ch D20` 采集板 `J_AFE` 均位于板心偏东 `+14.34 mm`，上下 **`0.00 mm` 完全正对**；`2ch-ads1292` 载板的 `J2`（`X=+12.00 mm`）与 `P44e` `0.00 mm` 正对，若改配 `R4U6` 叠装横向仅偏 **`2.34 mm`**，用约 `25 mm` 软排线微斜过渡即可。架构细节见 [hardware/README.md](hardware/README.md)，**全家族 13 套直接上传 Gerber/BOM/CPL 制造包与 SHA-256 核对表见 [hardware/ORDER-MATRIX.md](hardware/ORDER-MATRIX.md)**。
 
 ---
 

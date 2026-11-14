@@ -1,0 +1,71 @@
+{
+  "lid_vertical_path_obstructions": {},
+  "component_proxy_hits_mm3": {},
+  "cable_centerline_mm": {
+    "Upper30": 49.94,
+    "Lower30": 37.33,
+    "Link20": 29.37
+  },
+  "overlap_mm3": {
+    "Upper30 / Lower30": 0,
+    "Upper30 / Case": 0,
+    "Upper30 / AFE": 0,
+    "Upper30 / Main": 0,
+    "Upper30 / Lid": 0,
+    "Upper30 / Battery": 0,
+    "Upper30 / Upper30Socket": 0,
+    "Lower30 / Case": 0,
+    "Lower30 / AFE": 0,
+    "Lower30 / Lower30Socket": 0,
+    "Link20 / Case": 0,
+    "Link20 / AFE": 0,
+    "Link20 / Main": 0,
+    "Link20 / Lid": 0,
+    "Link20 / Battery": 0,
+    "Link20 / AFE20": 0,
+    "Link20 / Main20": 0,
+    "Battery / AFE": 0,
+    "Battery / Main": 0,
+    "Battery / Case": 0,
+    "Battery / Lid": 0,
+    "Lid / AFE": 0,
+    "Lid / Main": 0,
+    "Lid / Case": 0,
+    "Lid / USB_envelope": 0,
+    "Case / AFE": 0,
+    "Case / Main": 0,
+    "Case / USB_envelope": 0,
+    "Upper30 / Spacer1": 0,
+    "Upper30 / Spacer2": 0,
+    "Upper30 / Spacer3": 0,
+    "Lower30 / Spacer1": 0,
+    "Lower30 / Spacer2": 0,
+    "Lower30 / Spacer3": 0,
+    "Link20 / Spacer1": 0,
+    "Link20 / Spacer2": 0,
+    "Link20 / Spacer3": 0,
+    "positive_control": 407.95973
+  },
+  "service_proxy_mm3": {
+    "Upper30": {
+      "Case": 0,
+      "Lower30": 0,
+      "MainPart_L4": 0.22
+    },
+    "Lower30": {
+      "Head": 0,
+      "Upper30": 0,
+      "Case": 0
+    },
+    "AFE20": {
+      "Case": 0,
+      "Upper30": 0,
+      "Lower30": 0
+    },
+    "Main20": {
+      "Link20": 0,
+      "Battery": 0
+    }
+  },
+  "contact_count": 34
+}

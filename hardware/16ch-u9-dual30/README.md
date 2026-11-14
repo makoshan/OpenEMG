@@ -1,6 +1,6 @@
-# 16 通道 U9 圆角主控 + 双 30 针采集板（2026-11-13 开源修订版）
+# 16 通道 U9 圆角主控 + 双 30 针采集板（2026-11-14 开源修订版）
 
-本目录收录 `ProDoc_主控主板_2026-11-13`（6 层圆角挖电池窗主控 `MCU-U9`）与 `采集板_2026-11-13`（4 层双 30 针 `AFE-30P`）配对工程及其嘉立创直接上传制造包（Gerber / SMT BOM / CPL），按 [CERN-OHL-S-2.0](../../LICENSE-HARDWARE) 发布。
+本目录收录 `ProDoc_主控主板_2026-11-13`（6 层圆角挖电池窗主控 `MCU-U9`）与 `采集板_2026-11-13`（4 层双 30 针 `AFE-30P`）配对工程、嘉立创直接上传制造包（单板与 `70.20 × 70.20 mm` 工艺边 Gerber、SMT BOM、逐脚拟合校核 CPL、极性图）及双 30 针壳体总装 STEP，按 [CERN-OHL-S-2.0](../../LICENSE-HARDWARE) 发布。
 
 ## 文件清单
 
@@ -8,18 +8,22 @@
 |---|---|
 | `MCU-U9.epro2` | 6 层主控板（`STM32L432KCU6` `U7` + `nRF52840-QFAA` `U8`，`R=1.80 mm` 四角圆角 + `27.40 × 20.90 mm` 电池开窗） |
 | `AFE-30P.epro` / `AFE-30P.epro2` | 4 层 16 路采集板（双 `ADS1298IPAGR` `U1/U2` + 双 30P 表带座 `FPC1/FPC3` + 20P 主控接口 `FPC2`） |
+| `20针接口.csv` | `MCU-U9 FPC1`（1..20）↔ `AFE-30P FPC2`（20..1）逐脚网络锁定表 |
 | `fab-mcu-u9/Gerber_MCU-U9.zip` | `MCU-U9` 6 层单板 Gerber（`GTL, G1..G4, GBL` + `GKO` + `PTH/NPTH`，已剔除 14 处手焊/DNP 钢网开窗） |
 | `fab-mcu-u9/Gerber_MCU-U9-panel702.zip` | `MCU-U9` 自带 `70.20 × 70.20 mm` 工艺边（`2.0 mm` 铣槽 + 四边断口连接筋）一拼一 Gerber |
-| `fab-mcu-u9/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `MCU-U9` 嘉立创 SMT 物料清单与贴片坐标（45 种 / 110 颗：Top 42 + Bottom 68，100% 含立创 `C` 料号） |
+| `fab-mcu-u9/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `MCU-U9` 嘉立创 SMT 物料清单与贴片坐标（45 种 / 110 颗：Top 42 + Bottom 68，按平台默认「AD 等其他」逐脚拟合） |
+| `fab-mcu-u9/orientation.csv` / `polarity-*.png` | `MCU-U9` 有极性/多引脚器件 1 脚与阴极坐标核对表及顶/底层粉点核对图 |
 | `fab-afe-30p/Gerber_AFE-30P.zip` | `AFE-30P` 4 层单板 Gerber（`GTL, G1, G2, GBL` + `GKO` + `PTH`） |
-| `fab-afe-30p/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `AFE-30P` 嘉立创 SMT 物料清单与贴片坐标（23 种 / 114 颗：Top 64 + Bottom 50，100% 含立创 `C` 料号） |
-| `verify_interface.py` | 20P 反序排线逐脚对账、`ADS1298` `RESV1=GND`、铺铜规则与制造包一键自检脚本 |
-| `SHA256SUMS` | 本目录全部开源工程与制造包的 SHA-256 校验表 |
+| `fab-afe-30p/Gerber_AFE-30P-panel702.zip` | `AFE-30P` 自带 `70.20 × 70.20 mm` 工艺边（`2.0 mm` 铣槽 + 6 处断口连接筋，完全避开南侧双 30P 与东侧 20P 插口）一拼一 Gerber |
+| `fab-afe-30p/jlc_smt_bom.csv` / `jlc_smt_cpl.csv` | `AFE-30P` 嘉立创 SMT 物料清单与贴片坐标（23 种 / 114 颗：Top 64 + Bottom 50，100% 现货 `C` 料号） |
+| `fab-afe-30p/orientation.csv` / `polarity-*.png` | `AFE-30P` 有极性/多引脚器件 1 脚与阴极坐标核对表及顶/底层粉点核对图 |
+| `case-30p/` | 双 30 针机械候选壳体总装 STEP（`Case.step`、`Lid.step`、`assembly.step`）、`19.67 × 26.59 × 2.78 mm` 电芯干涉报告 `checks.json` 与装配图 |
+| `verify_interface.py` / `SHA256SUMS` | 20P 逐脚对账、双核 39 信号脚固件兼容、224 颗 CPL 逐脚拟合（含背面反例）、铺铜规则与 3D 装配一键自检脚本及 SHA-256 校验表 |
 
 ## 已修复的工程与制造问题（嘉立创 EDA 专业版 `4.1.93` 原生复核通过）
 
 ### 1. 主控板 `MCU-U9`（6 层，`43.10 × 36.50 mm`）
-- **扩宽电池镂空窗以容纳 `26.59 × 19.67 × 2.78 mm` 电池**：电池开窗 `a6b31685508e342e` 东侧扩至 `X = 40.853 mm`（净开窗 **`27.400 × 20.900 mm`**，东侧梁宽 `2.00 mm`，东南角阶梯避让 `SCREW3`），同步更新 `Inner3/Inner4` 内电层镂空框，并重铺全部 10 块铜皮（`10/10 POURED`）。
+- **扩宽电池镂空窗以容纳 `26.59 × 19.67 × 2.78 mm` 电池**：电池开窗 `a6b31685508e342e` 东侧扩至 `X = 40.853 mm`（净开窗 **`27.400 × 20.900 mm`**，东侧梁宽 `2.00 mm`，东南角 `1.653 × 1.532 mm` 阶梯避让 `SCREW3`），同步更新 `Inner3/Inner4` 内电层镂空框，并重铺全部 10 块铜皮（`10/10 POURED`）。
 - **四角 `R=1.80 mm` 圆角板框与北边拉平**：消除原版北边 `0.166 mm` 倾斜，统一四角圆弧与内电层退缩外框。
 - **消除全部网络飞线与孤立铜皮**：将 `BUTTON_N` 走线 `aa2a5e4ee3874f57` 延伸至 `SW300.1` 焊盘中心 `324.087 mil`，移除 2 处孤立泪滴，西南角地过孔 `cc7fc0d843f8c411` 内移至 `-1303 mil`；原生 DRC **0 间距/几何/连接错误、0 飞线**。
 - **原理图与 PCB 充电芯片同步**：`U17` 统一为 `LTC4054ES5-4.2#TRPBF`（`SOT-23-5`，立创 `C462648`）。
@@ -29,15 +33,27 @@
 - **20P 反序排线 `FPC2.17 / 18` 交叉修复**：`FPC2` 第 17 脚改接 `CS#2`（`U2.39`，对 `MCU-U9 FPC1.4，AFE_CS_B`），第 18 脚改接 `DRDY2#`（`U2.47`，对 `MCU-U9 FPC1.3，AFE_DRDY_B`），过孔 `e1998` 移至 `(1305, 792.3834) mil`。
 - **双 `ADS1298` 第 31 脚 `RESV1` 修正为数字地 `GND`**：依 TI `ADS1298` 数据手册（`RESV1` 必须接 `DGND`），将原理图（`1.esch` `e95/e300`）与 PCB（`U1.31`、`U2.31` 及相连过孔/短线）从 `AGND` 改为 `GND`，消除原理图与 PCB 网表差异（`0 Netlist Error`）。
 - **消除 `Inner1` 负片死铜短路与 13 处热焊盘未连**：将 `Inner2`（`layer 16`）由负片 `PLANE` 转为正片 `SIGNAL` + `POUR e1678 (GND)`，并将铜皮连接规则 `RULE 7` 设为直连（`DIRECT`，`connType=1`），在 `LCEDA-Pro 4.1.93` 重建全部 14 块铺铜（`17` 个 `POURED` 区），彻底消除 `DRDY2#` 过孔与 `Inner1 AGND` 间距报错及 `FPC2`/`LM27762` 热焊盘辐条悬空；原生 DRC **0 错误、0 飞线、0 网表不一致**。
-- **补齐全部 SMT 立创料号**：补齐 `C1, C2`（`22uF` `0402` `C105226`）与 `C4, C34`（`10uF` `0402` `C7472949`），整板 23 种 / 114 颗贴片件 100% 具备有效 `C` 料号。
+- **补齐全部 SMT 立创现货料号**：补齐 `C1, C2`（`22uF` `0402` `C105226`）、`C4, C34`（`10uF` `0402` `C7472949`）并将负轨反馈电阻 `R4` 更新为现货 `105 kΩ ±0.1%`（`C2984407`），整板 23 种 / 114 颗贴片件 100% 具备有效现货 `C` 料号。
 
-## 20 芯反序排线
+### 3. 嘉立创 SMT 贴片坐标（`jlc_smt_cpl.csv`）极性与背面镜像修正
+- 嘉立创 SMT 下单页默认选中 **「AD,99SE,Allegro,PADS(宏)等其他」**（背面按封装先 `X` 取反再旋转 `Rotation` 角），而嘉立创 EDA 内部 `COMPONENT` 背面按 `Y` 取反旋转，二者在背面相差 **`180°`**。
+- `fab-mcu-u9/jlc_smt_cpl.csv` 与 `fab-afe-30p/jlc_smt_cpl.csv` 已统一修正为嘉立创默认上传模式（顶层保持原角，底层加 `180°`），经 `verify_interface.py` 对全部 224 颗贴片件逐脚拟合校验（最大焊盘偏差 **`0.0000 mm`**；`U17`、`FPC1`、`U2`、`FPC3` 减回 `180°` 反例均报 `> 1.5 mm` 错位拦截），且 `0201–0805` 阻容本体最小间距检查 `0` 对 `< 0.10 mm`。
+- **下单必读**：上传 `jlc_smt_cpl.csv` 时**保持平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项，切勿改选「嘉立创EDA」**；在 2D 预览页同时勾选顶层与底层，对照 `orientation.csv` 及 `polarity-top.png` / `polarity-bottom.png` 核对粉点（注：`polarity-bottom.png` 中 `D2` `BAT54C` 标示单脚侧共阴极第 `3` 脚，嘉立创 2D 预览圆点标示双脚侧第 `1` 脚 `(7.992, -6.919)`，由 `SOT-23` 三焊盘不对称三角形唯一锁定 `180°`）。
 
-主控 FPC1 的第 k 脚接采集板 FPC2 的第 21−k 脚。主控 19、20 脚是 3.3 V，接采集板 2、1 脚；主控第 1 脚是 GND，接采集板第 20 脚。首板上电前用万用表逐脚确认实际线材。完整脚序见 [20 针接口表](20针接口.csv)。
+## 20 芯反序排线与三维 U 形装配关系
+
+- 电气映射：主控 `FPC1` 的第 $k$ 脚接采集板 `FPC2` 的第 $21-k$ 脚。主控 `19、20` 脚为受控 `3V3_AFE`，接采集板 `2、1` 脚（`+3.3V`）；主控第 `1` 脚为 `GND`，接采集板第 `20` 脚（`GND`）。完整逐脚映射见 [20 针接口表](20针接口.csv)。
+- 三维叠板走线：`MCU-U9` 底面 `FPC1`（开口朝东，第 `1` 脚在北、第 `20` 脚在南）与下层 `AFE-30P` 顶面 `FPC2`（开口朝东，第 `20` 脚在北、第 `1` 脚在南）南北物理对齐；使用 **20 芯 `0.5 mm` A 型（同面）软排线**向外平折 U 形直插（`Molex 503480-2000` 为双面触点座），无需拧转即可自然实现 `k ↔ 21−k` 连接。台架飞线测试须严格按 `k ↔ 21−k` 连线，严禁 `1 ↔ 1` 直连（否则 `3V3_AFE` 对 `GND` 短路），首板上电前用万用表逐脚复核。
+
+## 固件二进制兼容与烧录路径
+
+`MCU-U9` 的双核信号脚（`U7 STM32L432KCU6` 23 脚 + `U8 nRF52840-QFAA` 16 脚，共 **39 脚**由 `verify_interface.py` 自动断言）可直接运行免改动的 [`firmware/c08b-bringup`](../../firmware/c08b-bringup/README.md) 与 [`firmware/c08b-stream`](../../firmware/c08b-stream/README.md) 固件镜像：其中 38 脚功能分配与 `R4U6 / R4U6N` 完全一致，仅 `U7.31`（`PH3-BOOT0`）在 `MCU-U9` 上接 `L_BOOT0`（经 `R5` `10 kΩ` 下拉至 `GND`，固件配置为无上下拉高阻输入，`L432` 侧 `l432_vbus_present()` 恒读 `0`；USB 电气安全互锁由硬件 `VBUS → R703/R704 → Q3 → U4 → OE_N` 切断隔离器以及 `nRF52840` 侧 `U8.3 P0.01=VBUS_SENSE` / `U8.15 P0.17=OE_N` 完整执行，自检与采集流均正常通过）：
+1. **`nRF52840`（`U8`）**：通过顶面 `J301` 焊盘（`SWDIO / SWDCLK / GND / 3V3`）经 SWD 探针烧写 `nrf.hex` / `nrf_s140.hex`。
+2. **`STM32L432KC`（`U7`）**：顶面已引出独立 `DEBUG` 焊盘组（`SWCLK / SWDIO / NRST / BOOT0 / GND`），推荐直接用 SWD 探针烧写 `l432.hex`；若需走系统 ROM USB DFU（`0483:DF11`），须在上电时将顶面 `DEBUG` 的 `BOOT0` 焊盘临时拉高至 `3V3`（板上 `R213` 另一端 `L_BOOT0_CTL` 为预留孤立焊盘、未连 `VBUS`，单贴 `R213` 不会自动进 DFU）。
 
 ## 采集板首板复核
 
-本次核对的单板包为 [Gerber_AFE-30P.zip](fab-afe-30p/Gerber_AFE-30P.zip)，SHA-256 为 `f46284718f876c0b7ef9bad979a3baaa38f291d82a7e797e29c99cee9e1fdcaa`。用 KiCad 导入采集板并重铺铜可以复现三项未连；逐层解算交付包的铜图、钻孔与飞针表得到以下结果。
+本次核对的单板包为 [Gerber_AFE-30P.zip](fab-afe-30p/Gerber_AFE-30P.zip)，SHA-256 为 `f46284718f876c0b7ef9bad979a3baaa38f291d82a7e797e29c99cee9e1fdcaa`（同源工艺边包为 [Gerber_AFE-30P-panel702.zip](fab-afe-30p/Gerber_AFE-30P-panel702.zip)）。用 KiCad 导入采集板并重铺铜可以复现三项未连；逐层解算交付包的铜图、钻孔与飞针表得到以下结果。
 
 | 转换件报警 | 制造包实查 |
 |---|---|
