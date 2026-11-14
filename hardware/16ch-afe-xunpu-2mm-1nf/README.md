@@ -12,7 +12,7 @@
 
 [嘉立创工程 .epro](AFE-30P.epro) · [嘉立创工程 .epro2](AFE-30P.epro2) · [单板 Gerber（含钻孔与飞针表）](Gerber_AFE-30P.zip) · [贴片 BOM](jlc_smt_bom.csv) · [贴片坐标 CPL](jlc_smt_cpl.csv)
 
-整板 BOM 共 23 种料、114 个贴片位号，顶面 64 个、底面 50 个。负电源反馈 R4 为 105 kΩ（C2984407）。Gerber、BOM、CPL 和装配图请成套使用。
+整板 BOM 共 23 种料、114 个贴片位号，顶面 64 个、底面 50 个。负电源反馈 R4 为 105 kΩ（C2984407）。上传 `jlc_smt_cpl.csv` 时保持嘉立创平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项（底层元件已做 `+180°` 对齐补偿）。Gerber、BOM、CPL 和装配图请成套使用。
 
 ### 待工程师确认
 

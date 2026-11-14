@@ -7,7 +7,7 @@
 344dc71ff24e6153abd45c3339a29244b7ce87e0ac30c882d2b1a8ec16ba21d5  fab-mcu-u9/OpenEMG-C08B-Mainboard-Rev0.01-Gerber.zip
 f45c32339db151455dc352a2c03ebbb13997d27e4037256bccc56b4ca5442ba0  fab-mcu-u9/OpenEMG-C08B-Mainboard-Rev0.01-panel702-Gerber.zip
 a20d1163277c3bd634f533b4d298a519e08d0b0ecc288a6b0ae235eedc26119f  fab-mcu-u9/jlc_smt_bom.csv
-f1fc25052719958caed3b7bf53ef77af749296f3275b999d687753888d8adbf9  fab-mcu-u9/jlc_smt_cpl.csv
+ab8bce02f46100c368243a0c742d7ed86401d99153acde4c018ff47bb10c35c9  fab-mcu-u9/jlc_smt_cpl.csv
 a30dd5135cfde4ccfb5573ea3652e2ef296de6e2281e2ca000d6adbeceb9ca23  fab-mcu-u9/orientation.csv
 e2583044d8b5016442be9d368956ee08e85ed17adb7f4b3270bb39f749b6d45a  fab-mcu-u9/polarity-top.png
 6fd49ac0b98717e569f6742b2e67b87692aec987f02c9a8f994651b84b4f078a  fab-mcu-u9/polarity-bottom.png

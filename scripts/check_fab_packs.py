@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""OpenEMG 全家族 15 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 5 项必失败反例）。
+"""OpenEMG 全家族 17 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 6 项必失败反例）。
 
 核验范围：
-1. 全家族 15 套直接上传制造包（01..15：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
+1. 全家族 17 套直接上传制造包（01..17：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
    16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、
-   新版超薄双 30P 采集板 AFE-30P、新版双 30P 四层软板 strap-30p A/B）
+   新版超薄双 30P 穿戴采集板 AFE-30P、新版双 30P 四层软板 strap-30p A/B、
+   v0.01 广濑 1.0mm 1nF 台架采集板、讯普 2.0mm 1nF 台架采集板）
    全部在仓内自包含存在，零外部下载目录依赖。
 2. 逐包校验 Gerber.zip、BOM.csv、CPL.csv 与软板 .d356 的 SHA-256 指纹前缀锁定。
 3. 穿透每个 Gerber.zip，核验铜层数（6 层、4 层或 P44e 2 层）、板框层、镀铜钻孔层非空，
    且 5 套表带四层软板必须包含拆分厚度的 0.10mm 与 0.20mm 实心 PI 补强 Gerber 层。
-4. 解析全部 14 套 SMT 包的 BOM.csv 与 CPL.csv：
+4. 解析全部 16 套 SMT 包的 BOM.csv 与 CPL.csv：
+   - 严禁出现双回车（\\r\\r\\n）或隔行空行损坏；
    - 核验立创料号格式（Cxxxx）、Quantity 与位号个数一致、零重复位号；
    - 核验 BOM 展开位号集合与 CPL 位号集合 1:1 完全相等（零孤儿、零漏贴）；
    - 核验 Top / Bottom 贴片层颗数精确等于锁定值（单面板断言 Bottom 颗数 = 0）。
@@ -201,7 +203,7 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         bom_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv",
         bom_sha_prefix="a20d1163277c3bd6",
         cpl_csv="hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv",
-        cpl_sha_prefix="f1fc25052719958c",
+        cpl_sha_prefix="ab8bce02f46100c3",
         bom_rows=45,
         top_count=42,
         bot_count=68,
@@ -250,6 +252,32 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         bom_rows=2,
         top_count=16,
         bot_count=1,
+    ),
+    FabPackSpec(
+        pack_id="16-16ch-afe-hirose-1mm-1nf",
+        gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip",
+        gerber_sha_prefix="adab6ae096467496",
+        cu_layers=4,
+        bom_csv="hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_bom.csv",
+        bom_sha_prefix="c9b9a36ac6219c08",
+        cpl_csv="hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_cpl.csv",
+        cpl_sha_prefix="2316380c5cc5699b",
+        bom_rows=23,
+        top_count=64,
+        bot_count=50,
+    ),
+    FabPackSpec(
+        pack_id="17-16ch-afe-xunpu-2mm-1nf",
+        gerber_zip="hardware/16ch-afe-xunpu-2mm-1nf/Gerber_AFE-30P.zip",
+        gerber_sha_prefix="f46284718f876c0b",
+        cu_layers=4,
+        bom_csv="hardware/16ch-afe-xunpu-2mm-1nf/jlc_smt_bom.csv",
+        bom_sha_prefix="d7b21e5b61111c7e",
+        cpl_csv="hardware/16ch-afe-xunpu-2mm-1nf/jlc_smt_cpl.csv",
+        cpl_sha_prefix="e5591b8db684f2e9",
+        bom_rows=23,
+        top_count=64,
+        bot_count=50,
     ),
 )
 
@@ -308,6 +336,10 @@ def _check_gerber_zip(zip_path: Path, spec: FabPackSpec) -> list[str]:
 
 def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[str]:
     errs: list[str] = []
+    if b"\r\r" in bom_path.read_bytes():
+        errs.append(f"{spec.pack_id}: BOM 存在双回车 (\\r\\r\\n) 损坏")
+    if b"\r\r" in cpl_path.read_bytes():
+        errs.append(f"{spec.pack_id}: CPL 存在双回车 (\\r\\r\\n) 损坏")
     bom_rows = list(csv.DictReader(io.StringIO(bom_path.read_text(encoding="utf-8-sig"))))
     cpl_rows = list(csv.DictReader(io.StringIO(cpl_path.read_text(encoding="utf-8-sig"))))
 
@@ -375,8 +407,8 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
 def verify_repo(repo_root: Path, check_hashes: bool = True) -> list[str]:
     errs: list[str] = []
-    if len(PACK_SPECS) != 15:
-        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 15")
+    if len(PACK_SPECS) != 17:
+        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 17")
 
     for spec in PACK_SPECS:
         gz = repo_root / spec.gerber_zip
@@ -493,9 +525,17 @@ def run_selftest(repo_root: Path) -> int:
         assert any("正反面贴片数" in x for x in e5), f"反例 5 未拦截：{e5}"
         cpl03.write_text(orig_cpl03, encoding="utf-8")
 
+        # 反例 6：CSV 注入双回车 (\r\r\n) 隔行损坏，必须触发双回车拦截
+        bom16 = td / (PACK_SPECS[15].bom_csv or "")
+        orig_bom16 = bom16.read_bytes()
+        bom16.write_bytes(orig_bom16.replace(b"\r\n", b"\r\r\n", 1))
+        e6 = verify_repo(td, check_hashes=False)
+        assert any("双回车" in x for x in e6), f"反例 6 未拦截：{e6}"
+        bom16.write_bytes(orig_bom16)
+
         assert verify_repo(td, check_hashes=True) == [], "恢复后沙箱应重新全绿"
 
-    print("check_fab_packs selftest: 5/5 必失败反例（指纹/软板补强层/位号失配/缺C号/单面板串层）全部拦截，干净基线通过")
+    print("check_fab_packs selftest: 6/6 必失败反例（指纹/软板补强层/位号失配/缺C号/单面板串层/双回车损坏）全部拦截，干净基线通过")
     return 0
 
 
@@ -511,7 +551,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}", file=sys.stderr)
         return 1
-    print(f"嘉立创制造包门禁通过：{target}（全家族 15 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
+    print(f"嘉立创制造包门禁通过：{target}（全家族 17 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
     return 0
 
 

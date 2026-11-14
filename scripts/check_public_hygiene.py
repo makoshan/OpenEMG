@@ -155,7 +155,7 @@ def _check_git_metadata(root: Path) -> list[str]:
         if not email:
             continue
         h = hashlib.sha256((HASH_SALT + email).encode("utf-8")).hexdigest()
-        if h in BLOCKED_TOKEN_SHA256 or not email.endswith("noreply.github.com"):
+        if h in BLOCKED_TOKEN_SHA256 or not email.endswith(".noreply.github.com"):
             bad.append(f"Git 提交元数据包含非匿名邮箱: {email}")
     return sorted(set(bad))
 
