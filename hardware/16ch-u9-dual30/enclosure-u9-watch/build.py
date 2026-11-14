@@ -1,28 +1,27 @@
 #!/usr/bin/env python3
-"""OpenEMG 16ch 旗舰双板（MCU-U9 + AFE-30P + 双 30P 表带软板）圆润手表外壳生成器。
+"""OpenEMG 16ch 旗舰双板（MCU-U9 + AFE-30P + 双 30P 表带软板）圆润超薄手表外壳生成器。
 
 设计特征：
-1. 适配升级 1.00 mm 超薄双面接触 30P 连接器（C324727）与 0.80 mm 四层圆角板框后的 AFE-30P，
-   以及 6 层圆角双核主控 OpenEMG-C08B-Mainboard-Rev0.01（含 26.64 × 20.90 mm 原矩形电池镂空窗）。
-2. 俯视 46.80 × 40.00 mm（四角 R3.80 圆角），上盖顶面 R2.40 大圆角，底壳底面 R0.70 圆角；
-   壳体净高 Z = 0.15 .. 10.55 mm（10.40 mm），较 2.00 mm 高连接器方案减薄逾 2.0 mm。
+1. 1:1 匹配真实 0.80 mm 四层圆角采集板 AFE-30P（双 1.00 mm 超薄双面接触 30P 连接器 C324727，306 个贴装实体）
+   与真实 0.80 mm 六层圆角双核主控 OpenEMG-C08B-Mainboard-Rev0.01（26.64 × 20.90 mm 原矩形电池镂空窗，588 个实体）。
+2. 俯视 46.80 × 40.00 mm（四角 R3.80 圆角），上盖顶面 R2.20 大圆角，底壳底面 R0.70 圆角；
+   壳体净高 Z = 0.15 .. 9.75 mm（净高 9.60 mm <= 9.70 mm 小型化目标），且全周结构壁厚 >= 0.80 mm（南生耳槽全高通底补厚 0.85 mm、卡槽底 0.88 mm、顶壁 0.90 mm、按键腔东壁 0.85 mm）。
 3. 隐藏式四角反锁结构：底壳外底四角（|X| >= 19.65 mm，完全避开中间 |X| <= 11.12 mm 软板区）设沉头孔，
-   4 颗 M1.4 螺丝自下而上穿过双板 Ø2.00 mm 安装孔与板间绝缘柱，盲锁入上盖四角下压柱，上盖顶面与四周零外露螺丝孔；
-   外扣六孔贴肤底盖 cap_bottom 扣合后将底面四角螺丝孔一并遮蔽。
-4. 东侧（+X）集成圆角 Type-C 插口（含插头护套沉台）与防脱侧按按键帽 side_button（对齐 MCU-U9 U1 侧按开关，
-   静止间隙 0.198 mm，向内按压 0.70 mm 即可推动开关按头 0.502 mm 满行程）。
+   4 颗 M1.4 螺丝自下而上穿过双板 Ø2.00 mm 安装孔与板间绝缘柱，盲锁入紧贴 0.80 mm 主控顶面（Z=7.00 mm）的上盖下压柱，上盖顶面与四周零外露螺丝孔；外扣六孔贴肤底盖 cap_bottom 扣合后将底面四角螺丝孔一并遮蔽。
+4. 东侧（+X）集成无薄唇圆角贯通 Type-C 窗口（兼容 0.80 mm 主控板上沉板 USB1 底部 Z=5.396 mm 下探包络）与防脱侧按按键帽 side_button（对齐 0.80 mm 主控 U1 侧按开关按头中心 Z=7.80 mm，静止间隙 0.198 mm，向内按压 0.70 mm 即可推动开关按头 0.502 mm 满行程）。
 5. 北侧（+Y）严格按 ../strap-fpc-30p/geometry.json 开双 30P 软板穿底槽与壳内回折袋；
    南北两端继承低剖面 22.30 mm 快拆弹簧棒生耳槽（配标准 22 mm 快拆表带，底部抬高防悬空）。
 
 导出产物：
 - 单实体可打印件（各 1 solid）：tray.{step,stl}, cover.{step,stl}, side_button.{step,stl}, cap_bottom.{step,stl}
-- 整机满载预览与爆炸图（含双板全部 926 个真实 3D 器件实体）：assembly.{step,glb}, exploded.{step,glb}
+- 整机满载预览与爆炸图（含双板全部真实 3D 器件实体）：assembly.{step,glb}, exploded.{step,glb}
 - 结构尺寸与体积清单：manifest.json
 """
 from __future__ import annotations
 
 import copy
 import json
+import re
 from pathlib import Path
 import build123d as b
 
@@ -41,18 +40,18 @@ FLOOR_Z_TOP = 1.00           # 底壳内腔底面 Z（底板实厚 0.85 mm >= 0.
 AFE_Z_BASE = 2.45            # AFE-30P 板底 Z（板顶 3.2504；背面 U2 最低 Z=1.150，背面 FPC3 最低 Z=1.450）
 SPLIT_Z_TRAY = 6.16          # 底壳上沿 Z
 SPLIT_Z_COVER = 6.20         # 上盖下沿 Z（留 0.04 mm 装配分模间隙，布尔零干涉）
-MCU_Z_BASE = 6.20            # MCU-U9 板底 Z（板顶 7.8176；背面器件最低 Z=5.000；正面最高器件 Z=9.468）
-COVER_INNER_Z = 9.65         # 上盖内顶面 Z（距最高器件 9.468 留 0.182 mm 净空）
-COVER_OUTER_Z = 10.55        # 上盖外顶面 Z（顶壁实厚 0.90 mm >= 0.80 mm；壳体净高 10.40 mm）
+MCU_Z_BASE = 6.20            # MCU-U9 6层0.80mm板底 Z（板顶 6.9956；背面器件最低 Z=5.000；沉板 USB1 Z=5.396..8.556；正面最高器件 Z=8.645）
+COVER_INNER_Z = 8.85         # 上盖内顶面 Z（距最高器件 8.645 留 0.205 mm 净空）
+COVER_OUTER_Z = 9.75         # 上盖外顶面 Z（顶壁实厚 0.90 mm >= 0.80 mm；壳体净高 9.60 mm <= 9.70 mm）
 
 BODY_W = 46.80               # 外宽 X: [-23.40 .. +23.40]
 BODY_L = 40.00               # 外长 Y: [-20.00 .. +20.00]
 OUTER_CORNER_R = 3.80        # 俯视四角圆角 R3.80
-INNER_W = 44.40              # 内腔宽 X: [-22.20 .. +22.20]（直壁厚 1.20 mm，距 43.10 板边留 0.65 mm）
-INNER_L = 37.60              # 内腔长 Y: [-18.80 .. +18.80]（直壁厚 1.20 mm，距 36.50 板边留 0.55 mm）
+INNER_W = 44.40              # 内腔宽 X: [-22.20 .. +22.20]（直壁厚 1.20 mm，距 43.075 板边留 0.66 mm）
+INNER_L = 37.60              # 内腔长 Y: [-18.80 .. +18.80]（直壁厚 1.20 mm，距 36.475 板边留 0.56 mm）
 INNER_CORNER_R = 2.20        # 内腔四角圆角 R2.20（包络 R1.80 圆角板框）
-TOP_OUTER_FILLET_R = 2.40    # 上盖顶面四周外圆角 R2.40
-TOP_INNER_FILLET_R = 1.10    # 上盖内腔顶面四周内圆角 R1.10
+TOP_OUTER_FILLET_R = 2.20    # 上盖顶面四周外圆角 R2.20
+TOP_INNER_FILLET_R = 0.85    # 上盖内腔顶面四周内圆角 R0.85
 BOT_OUTER_FILLET_R = 0.70    # 底壳底边四周外圆角 R0.70
 
 # 双板局部坐标 -> 整表坐标系刚体变换基准（绕 Z 旋转 180° + 平移，det(R) = +1）
@@ -91,13 +90,19 @@ CAP_SKIRT_CLEAR = 0.04               # 裙边与底壳外壁滑配间隙
 CAP_SKIRT_T = 0.80
 CAP_SKIRT_HY = 14.80                 # 仅包两侧长边直段
 CAP_SKIRT_TOP_Z = 1.45
-TRAY_GROOVE = (0.88, 1.32, 0.32)     # 底壳外壁卡槽 (z0, z1, depth)，避开底边 R0.70 圆角
+TRAY_GROOVE = (0.88, 1.32, 0.32)     # 底壳外壁卡槽 (z0, z1, depth)，槽底壁厚 23.08-22.20 = 0.88 mm >= 0.80 mm
 CAP_BEAD_Z = (0.94, 1.26)            # 裙边卡棱 Z 范围（上下各留 0.06 mm 间隙）
 CAP_BEAD_TIP_X = BODY_W / 2.0 - 0.24 # 伸入卡槽至 |X|=23.16（咬合量 0.24 mm，距槽底 23.08 留 0.08 mm）
 
 BIG_PADS = {"E1N": (-8.0, 7.5), "E1P": (8.0, 7.5), "E2N": (-8.0, -7.5), "E2P": (8.0, -7.5)}
 AUX_PADS = {"EB1": (0.0, -7.5), "EB2": (0.0, 7.5)}
 HOLE_CLEAR = 0.50
+
+
+def _sanitize_step_file(step_path: Path) -> None:
+    txt = step_path.read_text(encoding="utf-8", errors="replace")
+    txt = re.sub(r"FILE_NAME\s*\(\s*'[^']*'", f"FILE_NAME('{step_path.name}'", txt, count=1)
+    step_path.write_text(txt, encoding="utf-8")
 
 
 def box(x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> b.Part:
@@ -167,8 +172,8 @@ def build_tray() -> b.Part:
     inner_cav = rounded_prism(INNER_W, INNER_L, FLOOR_Z_TOP, SPLIT_Z_TRAY + 0.10, INNER_CORNER_R)
     s = outer - inner_cav
 
-    # 南壁内侧局部补厚至 y=-18.40（Z=1.40..SPLIT_Z_TRAY，距 PCB 南边 -18.25 留 0.15 mm 净空，保南生耳弧槽 -19.25 实壁 0.85 mm）
-    s += box(-12.00, 12.00, -18.85, -18.40, 1.40, SPLIT_Z_TRAY)
+    # 南壁内侧自腔底 FLOOR_Z_TOP (1.00) 起全高通底补厚至 y=-18.40（距 PCB 南边 -18.237 留 0.163 mm 净空，确保南生耳弧槽 -19.25 全高实壁 0.850 mm >= 0.80 mm）
+    s += box(-12.00, 12.00, -18.85, -18.40, FLOOR_Z_TOP, SPLIT_Z_TRAY)
 
     # 南北生耳半圆柱弧槽、敞口槽与两侧 Ø1.20 盲孔
     south_lug_slot = (
@@ -202,10 +207,10 @@ def build_tray() -> b.Part:
     tail_through_slot = box(bx["x0"], bx["x1"], bx["y0"], bx["y1"], TRAY_Z_MIN - 0.10, FLOOR_Z_TOP + 0.05)
     north_fold_pocket = box(-10.60, 8.40, 15.00, ts["north_pocket_y_max_needed"] + 0.004, FLOOR_Z_TOP, 4.55)
 
-    # 东侧 Type-C 插头护套下沿浅沉台（外侧 x=22.55..23.55, y=-6.40..+6.30, z=5.55..SPLIT_Z_TRAY+0.10，内留 0.35mm+1.20mm 实壁）
-    usb_overmold_lower = box(22.55, 23.60, -6.40, 6.30, 5.55, SPLIT_Z_TRAY + 0.10)
+    # 东侧 Type-C 下半贯通口（匹配 0.80 mm MCU-U9 上沉板 USB1 底部 Z=5.396 mm 下探，无薄唇整壁贯通）
+    usb_lower_aperture = box(20.60, 23.60, -6.10, 6.00, 5.20, SPLIT_Z_TRAY + 0.10)
 
-    # 两侧长边外壁卡槽（配外扣六孔底盖 cap_bottom）
+    # 两侧长边外壁卡槽（配外扣六孔底盖 cap_bottom，槽底 X=±23.08 留 0.88 mm 实壁）
     g0, g1, gd = TRAY_GROOVE
     hx = BODY_W / 2.0
     side_grooves = box(-hx - 0.10, -hx + gd, -15.30, 15.30, g0, g1) + box(
@@ -220,7 +225,7 @@ def build_tray() -> b.Part:
         - north_pin_holes
         - tail_through_slot
         - north_fold_pocket
-        - usb_overmold_lower
+        - usb_lower_aperture
         - side_grooves
     )
 
@@ -230,12 +235,10 @@ def build_tray() -> b.Part:
         s -= box(rb["x0"], rb["x1"], rb["y0"], rb["y1"], TRAY_Z_MIN - 0.10, float(r["pocket_z"][1]))
 
     # 四角真实孔位支撑台（Ø3.40 mm, Z=0.95..2.43）+ 穿过 AFE-30P Ø2.00 孔的短定位套（Ø1.72 mm, Z=2.43..3.18）
-    # 外底四角（|X| >= 19.65 mm，完全在胶囊软板 |X|<=11.12 mm 外侧）设 Ø2.80 沉头孔（Z=0.15..1.05）+ Ø1.55 穿钉通孔
     for hx_p, hy_p in MOUNT_HOLES.values():
         s += cyl(hx_p, hy_p, 3.40, 0.95, AFE_Z_BASE - 0.02)
         s += cyl(hx_p, hy_p, 1.72, AFE_Z_BASE - 0.02, AFE_Z_BASE + 0.73)
-        # 裁齐在内腔轮廓之内避免刺破外圆角
-    s = (s & (rounded_prism(BODY_W + 6.0, BODY_L + 10.0, -2.0, SPLIT_Z_TRAY + 0.5, 1.0)))
+    s = s & rounded_prism(BODY_W + 6.0, BODY_L + 10.0, -2.0, SPLIT_Z_TRAY + 0.5, 1.0)
     for hx_p, hy_p in MOUNT_HOLES.values():
         s -= cyl(hx_p, hy_p, 2.80, TRAY_Z_MIN - 0.10, 1.05)
         s -= cyl(hx_p, hy_p, 1.55, 1.00, AFE_Z_BASE + 0.85)
@@ -244,7 +247,7 @@ def build_tray() -> b.Part:
 
 
 def build_cover() -> b.Part:
-    """构建圆润上盖 cover（1 solid，顶面与四周零外露螺丝孔）。"""
+    """构建圆润超薄上盖 cover（1 solid，净顶高 Z=9.75 mm，顶面与四周零外露螺丝孔）。"""
     outer = domed_prism(
         BODY_W, BODY_L, SPLIT_Z_COVER, COVER_OUTER_Z, OUTER_CORNER_R, TOP_OUTER_FILLET_R
     )
@@ -253,63 +256,55 @@ def build_cover() -> b.Part:
     )
     s = outer - inner
 
-    # 四角下压定位柱（Ø3.20 mm, Z=7.84..9.75 熔入上盖顶壁）+ 向下短定位销（Ø1.68 mm, Z=7.00..7.84 插入 MCU-U9 Ø2.00 孔）
-    # 内部预留 Ø1.25 mm 自攻盲孔（Z=6.90..9.55，上盖顶壁保留 1.00 mm 完整无孔外观）
+    # 四角下压定位柱（Ø3.20 mm, Z=7.02..9.15 紧贴 0.80 mm MCU-U9 板顶 Z=6.996 mm）
+    # + 向下短定位销（Ø1.68 mm, Z=6.25..7.02 实插 MCU-U9 Ø2.00 孔）
+    # + 内部 Ø1.25 mm 自攻盲孔（Z=6.20..8.85，顶壁保留 9.75-8.85 = 0.90 mm 完整无孔外观）
     inner_clip = domed_prism(
         INNER_W + 0.40, INNER_L + 0.40, SPLIT_Z_COVER, COVER_OUTER_Z - 0.30, INNER_CORNER_R, TOP_INNER_FILLET_R
     )
     bosses = None
     for hx_p, hy_p in MOUNT_HOLES.values():
-        post = cyl(hx_p, hy_p, 3.20, 7.84, COVER_INNER_Z + 0.35) + cyl(hx_p, hy_p, 1.68, 7.00, 7.84)
+        post = cyl(hx_p, hy_p, 3.20, 7.02, COVER_INNER_Z + 0.30) + cyl(hx_p, hy_p, 1.68, 6.25, 7.02)
         bosses = post if bosses is None else (bosses + post)
     if bosses is not None:
         s = (s + (bosses & inner_clip)).clean()
     for hx_p, hy_p in MOUNT_HOLES.values():
-        s -= cyl(hx_p, hy_p, 1.25, 6.95, 9.55)
+        s -= cyl(hx_p, hy_p, 1.25, 6.20, 8.85)
 
-    # 东侧（+X）USB Type-C 窗口（MCU-U9 USB1 包络 X=[15.07..22.27], Y=[-5.786..+5.664], Z=[6.218..9.379]）
-    # 内贯通口：X=[20.60..23.60], Y=[-5.98..+5.86], Z=[6.10..9.58]；外侧插头塑胶护套沉台：X=[22.55..23.60], Y=[-6.40..+6.30], Z=[6.10..9.95]
-    usb_aperture = box(20.60, 23.60, -5.98, 5.86, SPLIT_Z_COVER - 0.15, 9.58) + box(
-        22.55, 23.60, -6.40, 6.30, SPLIT_Z_COVER - 0.15, 9.95
+    # 东侧（+X）USB Type-C 上半贯通窗口（MCU-U9 USB1 包络 X=[15.07..22.27], Y=[-5.786..+5.664], Z=[5.396..8.556]，无薄唇整壁贯通）
+    usb_upper_aperture = box(20.60, 23.60, -6.10, 6.00, SPLIT_Z_COVER - 0.15, 8.76)
+
+    # 东侧（+X）侧按开关按键孔与内侧防脱翼活动腔（对齐 0.80 mm MCU-U9 U1 开关：壳体 X=[18.042..20.392], 按头 X=[20.392..21.542], Y=[-12.01..-10.21], Z=[7.346..8.246]）
+    # 外穿孔：X=[22.40..23.80], Y=[-12.91..-9.31] (宽 3.60), Z=[6.75..8.80] (高 2.05)
+    # 内侧防脱活动腔：X=[20.50..22.55]（东侧留实壁 23.40-22.55 = 0.85 mm >= 0.80 mm）, Y=[-13.70..-8.52], Z=[6.35..8.83]
+    btn_aperture = box(22.40, 23.80, -12.91, -9.31, 6.75, 8.80) + box(
+        20.50, 22.55, -13.70, -8.52, 6.35, 8.83
     )
 
-    # 东侧（+X）侧按开关按键孔与内侧防脱翼活动腔（对齐 MCU-U9 U1 开关：壳体 X=[18.042..20.392], 按头 X=[20.392..21.542], Y=[-12.01..-10.21], Z=[8.168..9.068]）
-    # 外穿孔：X=[22.40..23.80], Y=[-12.91..-9.31] (宽 3.60), Z=[7.52..9.62] (高 2.10)
-    # 内侧防脱活动腔：X=[20.50..22.55]（东侧留实壁 23.40-22.55 = 0.85 mm >= 0.80 mm）, Y=[-13.70..-8.52], Z=[7.12..9.65]
-    btn_aperture = box(22.40, 23.80, -12.91, -9.31, 7.52, 9.62) + box(
-        20.50, 22.55, -13.70, -8.52, 7.12, 9.65
-    )
-
-    s = (s - usb_aperture - btn_aperture).clean()
+    s = (s - usb_upper_aperture - btn_aperture).clean()
     return s
 
 
 def build_side_button() -> b.Part:
     """构建东侧防脱侧按按键帽 side_button（1 solid）。
     - 外露圆角键帽：X=[21.74..23.85]（凸出东壁 0.45 mm），Y=[-12.71..-9.51]（宽 3.20 mm，距盖孔单边留 0.20 mm 间隙），
-      Z=[7.72..9.42]（高 1.70 mm，距盖孔上下留 0.20 mm 间隙）
-    - 内侧防脱卡翼：X=[21.74..22.34]（厚 0.60 mm），Y=[-13.45..-8.77]（南北各外扩 0.74 mm 锁在盖孔内），Z=[7.32..9.42]
+      Z=[6.95..8.60]（高 1.65 mm，距盖孔 6.75..8.80 上下留 0.20 mm 间隙，居中包覆 U1 按头 Z=7.346..8.246）
+    - 内侧防脱卡翼：X=[21.74..22.34]（厚 0.60 mm），Y=[-13.45..-8.77]（南北各外扩 0.74 mm 锁在盖孔内），Z=[6.55..8.60]
     - 行程核验：静止内端面 X=21.74（距 U1 按头 X=21.542 留 0.198 mm 间隙，防脱翼东面 X=22.34 距活动腔东壁 22.55 留 0.21 mm）；
       向 -X 按入 0.70 mm 时内端面达 X=21.04，将 U1 按头推进 0.502 mm（满行程），且距开关壳体 X=20.392 仍留 0.648 mm 余量。
     """
-    cap = box(21.74, 23.85, -12.71, -9.51, 7.72, 9.42)
+    cap = box(21.74, 23.85, -12.71, -9.51, 6.95, 8.60)
     outer_edges = [
         e for e in cap.edges() if abs(e.bounding_box().min.X - 23.85) < 1e-4 and abs(e.bounding_box().max.X - 23.85) < 1e-4
     ]
     cap = b.fillet(outer_edges, 0.35)
-    flange = box(21.74, 22.34, -13.45, -8.77, 7.32, 9.42)
+    flange = box(21.74, 22.34, -13.45, -8.77, 6.55, 8.60)
     return (cap + flange).clean()
 
 
 def build_cap_bottom() -> b.Part:
-    """构建外扣六孔贴肤底盖 cap_bottom（1 solid，TPU 95A 或韧性树脂）。
-    - 底板：46.80 × 40.00 R3.80，Z=[-1.056 .. -0.256]（厚 0.80 mm）
-    - 两侧长边弹性裙边：|X|=[23.44 .. 24.24]（与底壳外壁 23.40 留 0.04 mm 滑配间隙），Y=[-14.80 .. +14.80]，Z=[-1.056 .. +1.45]
-    - 内凸卡棱：Z=[0.94 .. 1.26]，伸至 |X|=23.16（扣入底壳 Z=[0.88..1.32] 卡槽 0.24 mm，与槽底 23.08 留 0.08 mm 间隙）
-    - 电极开孔：4 × Φ6.50 mm 圆孔（CH1/CH2）+ 2 × 3.50 × 3.50 mm 方孔（BIAS/REF 辅点）
-    """
+    """构建外扣六孔贴肤底盖 cap_bottom（1 solid，TPU 95A 或韧性树脂）。"""
     hx = BODY_W / 2.0
-    hy = BODY_L / 2.0
     s = rounded_prism(BODY_W + 2 * CAP_SKIRT_CLEAR, BODY_L, CAP_Z_MIN, FPC_BOT_Z, OUTER_CORNER_R)
     for sx in (-1.0, 1.0):
         x_in = sx * (hx + CAP_SKIRT_CLEAR)
@@ -346,8 +341,8 @@ def transform_strap_solid_to_box(sol: b.Solid, z_f_step: float = 0.161, dz_extra
 def build_battery_302025() -> b.Solid:
     """构建穿在 OpenEMG-C08B-Mainboard-Rev0.01 原矩形 26.64 × 20.90 mm 电池镂空窗内的 302025 锂电池参考实体（1 solid）。
     整表坐标系下电池窗净开口为 X = [-18.788 .. +7.850] mm（26.638 mm）、Y = [-4.777 .. +16.123] mm（20.900 mm）；
-    电芯体 25.00 × 19.60 × 2.80 mm + 东侧极耳保护板包络（总展长 25.80 mm，四边留 ≥0.377 mm 装配间隙），
-    Z = [4.80 .. 7.60] mm（高于 AFE-30P 顶面 U1 Z=4.5505 留 0.25 mm 缓冲间隙，低于主控顶面 Z=7.818）。
+    电芯体 25.00 × 19.60 × 2.80 mm + 东侧极耳保护板包络（总展长 25.80 mm，四边留 >=0.377 mm 装配间隙），
+    Z = [4.80 .. 7.60] mm（高于 AFE-30P 顶面 U1 Z=4.5505 留 0.25 mm 缓冲间隙，低于上盖内顶 Z=8.85 留 1.25 mm 净空）。
     """
     cell = box(-18.40, 6.60, -4.40, 15.20, 4.80, 7.60)
     pcm = box(-17.00, 7.40, -4.40, 15.20, 4.80, 7.60)
@@ -364,10 +359,8 @@ def build_pcb_standoffs() -> list[tuple[str, b.Solid]]:
 
 
 def build_west_ffc20_loop() -> b.Solid:
-    """构建西侧（-X）连接 AFE-30P FPC2 与 MCU-U9 FPC1 的 20P 0.5mm 反序软排线 U 形回折参考体。"""
-    # 插口在 X = -15.90, Y = [-16.65 .. -6.15]（宽 10.50 mm），向西（-X）伸至 X = -20.80 U 形回折（Z = 3.75 .. 5.75）
-    outer = cyl_y_arch(-20.80, -15.95, -16.65, -6.15, 3.70, 5.80, t=0.18)
-    return outer
+    """构建西侧（-X）连接 AFE-30P FPC2 与 MCU-U9 FPC1 的 20P 0.5mm A型同面软排线 U 形回折参考体。"""
+    return cyl_y_arch(-20.80, -15.95, -16.65, -6.15, 3.70, 5.80, t=0.18)
 
 
 def cyl_y_arch(x_west: float, x_east: float, y0: float, y1: float, z0: float, z1: float, t: float = 0.18) -> b.Solid:
@@ -421,7 +414,7 @@ def export_all() -> dict:
             "tray_z": [round(TRAY_Z_MIN, 3), round(SPLIT_Z_TRAY, 3)],
             "afe_30p_substrate_z": [round(AFE_Z_BASE, 3), round(AFE_Z_BASE + 0.8004, 4)],
             "battery_302025_z": [4.80, 7.60],
-            "mcu_u9_substrate_z": [round(MCU_Z_BASE, 3), round(MCU_Z_BASE + 1.6176, 4)],
+            "mcu_u9_substrate_z": [round(MCU_Z_BASE, 3), round(MCU_Z_BASE + 0.7956, 4)],
             "cover_z": [round(SPLIT_Z_COVER, 3), round(COVER_OUTER_Z, 3)],
             "shell_body_height_mm": round(COVER_OUTER_Z - TRAY_Z_MIN, 3),
             "overall_height_with_electrodes_mm": round(COVER_OUTER_Z - (FPC_BOT_Z - 2.0), 3),
@@ -437,6 +430,7 @@ def export_all() -> dict:
         step_p = HERE / f"{name}.step"
         stl_p = HERE / f"{name}.stl"
         b.export_step(s1, str(step_p))
+        _sanitize_step_file(step_p)
         b.export_stl(s1, str(stl_p), tolerance=0.01, angular_tolerance=0.1)
         bb = s1.bounding_box()
         manifest["parts"][name] = {
@@ -456,7 +450,7 @@ def export_all() -> dict:
 
     def simplify_board_for_preview(raw_solids: list[b.Solid], cx: float, cy: float, z_base: float) -> list[b.Solid]:
         """总装预览轻量化（全量精细布尔干涉由 fit_3d_check.py 直接读取 mcu-u9-3d.step / afe-30p-3d.step 原件执行）：
-        基板（>35mm）与干净几何器件（<=50 面）原样保留，立创云端高面数阻容圆角模型按精确 1:1 三维包围盒呈现，跳过 <0.05mm 丝印贴片。
+        基板（>35mm）与干净几何器件（<=60 面）原样保留，高面数云端模型按精确 1:1 三维包围盒呈现，跳过 <0.05mm 丝印贴片。
         """
         out_sols: list[b.Solid] = []
         for s in raw_solids:
@@ -464,13 +458,12 @@ def export_all() -> dict:
             bb = ts.bounding_box()
             if bb.size.Z < 0.05 and bb.size.X < 0.8 and bb.size.Y < 0.8:
                 continue
-            if bb.size.X > 35.0 or len(ts.faces()) <= 50:
+            if bb.size.X > 35.0 or len(ts.faces()) <= 60:
                 out_sols.append(ts)
             else:
                 out_sols.append(box(bb.min.X, bb.max.X, bb.min.Y, bb.max.Y, bb.min.Z, bb.max.Z).solids()[0])
         return out_sols
 
-    # 加载双板与双 30P 胶囊叠层构建预览总装（全量 338+588 原件布尔求交在 fit_3d_check.py 中独立校验）
     afe_raw = list(b.import_step(str(AFE_STEP_PATH)).solids())
     mcu_raw = list(b.import_step(str(MCU_STEP_PATH)).solids())
     afe_box_solids = simplify_board_for_preview(afe_raw, *AFE_CENTER_XY, AFE_Z_BASE)
@@ -491,7 +484,7 @@ def export_all() -> dict:
         ("cover", parts["cover"].solids()[0], (0.82, 0.90, 0.96, 0.45)),
         ("side_button", parts["side_button"].solids()[0], (0.20, 0.65, 0.95, 0.92)),
         ("cap_bottom", parts["cap_bottom"].solids()[0], (0.22, 0.24, 0.27, 0.88)),
-        ("AFE_30P_full_338", afe_comp, (0.12, 0.46, 0.26, 1.0)),
+        ("AFE_30P_full_306", afe_comp, (0.12, 0.46, 0.26, 1.0)),
         ("MCU_U9_full_588", mcu_comp, (0.14, 0.34, 0.56, 1.0)),
         ("battery_302025", bat_solid, (0.38, 0.58, 0.78, 1.0)),
         ("west_ffc20_reverse_loop", ffc20_solid, (0.88, 0.52, 0.14, 1.0)),
@@ -511,9 +504,11 @@ def export_all() -> dict:
             c.color = b.Color(*rgba)
             children.append(c)
         scene = b.Compound(children=children)
-        b.export_step(scene, str(HERE / f"{stem}.step"))
+        step_p = HERE / f"{stem}.step"
+        b.export_step(scene, str(step_p))
+        _sanitize_step_file(step_p)
         b.export_gltf(scene, str(HERE / f"{stem}.glb"), binary=True, linear_deflection=0.02, angular_deflection=0.2)
-        print(f"[OK] Exported {stem}.step & {stem}.glb (groups={len(children)})", flush=True)
+        print(f"[OK] Exported {stem}.step ({step_p.stat().st_size:,} B) & {stem}.glb (groups={len(children)})", flush=True)
 
     save_scene("assembly", assy_items)
 
@@ -527,7 +522,7 @@ def export_all() -> dict:
         "standoff_SE": (0.0, 0.0, 4.0),
         "standoff_NW": (0.0, 0.0, 4.0),
         "standoff_SW": (0.0, 0.0, 4.0),
-        "AFE_30P_full_338": (0.0, 0.0, 0.0),
+        "AFE_30P_full_306": (0.0, 0.0, 0.0),
         "tray": (0.0, 0.0, -7.0),
         "strap_30p_b_capsule": (0.0, 0.0, -13.0),
         "strap_30p_a_capsule": (0.0, 0.0, -16.5),

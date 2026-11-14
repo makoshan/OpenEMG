@@ -22,11 +22,14 @@ fi
 TMP_DIR="$(mktemp -d)"
 trap '/bin/rm -rf "$TMP_DIR"' EXIT
 
-echo "== 1 引脚逐脚只读对账（R4U6 圆孔 + R4U6N 缺口 + J_AFE 20P 跨板映射 + 3 项必败反例）"
+echo "== 1 引脚逐脚只读对账（R4U6 圆孔 + R4U6N 缺口 + J_AFE 20P 跨板映射 + MCU-U9/AFE-30P 专属映射 + 必败反例）"
 if [[ -n "$BOARD_N" && -f "$BOARD_N" ]]; then "$PY" -B tools/pins.py --check-headers "$BOARD_N"; fi
 if [[ -n "$READBACK" && -f "$READBACK" ]]; then "$PY" -B tools/pins.py --check-headers "$READBACK"; fi
 "$PY" -B tools/pins.py --check-headers "$BOARD"
 "$PY" -B tools/pins.py --check-jafe "$BOARD"
+if [[ -f "$HERE/../../hardware/16ch-u9-dual30/MCU-U9.epro2" ]]; then
+  "$PY" -B tools/pins.py --check-u9 --self-test "$HERE/../../hardware/16ch-u9-dual30/MCU-U9.epro2"
+fi
 
 "$PY" -B - "$BOARD" "$TMP_DIR/bad1.epcb2" "$TMP_DIR/bad2_r4u2.json" "$TMP_DIR/bad3_extra.json" <<'EOF'
 import json, sys

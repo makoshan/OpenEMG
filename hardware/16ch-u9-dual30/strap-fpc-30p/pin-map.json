@@ -1,7 +1,7 @@
 {
  "a": {
   "connector": "FPC1",
-  "afe_epro_sha256": "76a83741c7d73b05c175717a7d8647e2b8c07fef1238c5e7a0c29dc19a9d18b7",
+  "afe_epro_sha256": "3d1cccc46022c3d5c10a9c2f4b3f3f471894b5cb0a47bfc4d1278db2de21630c",
   "center_y_mm": 49.6056,
   "expect_center_y_mm": 49.6057,
   "table": [
@@ -219,7 +219,7 @@
  },
  "b": {
   "connector": "FPC3",
-  "afe_epro_sha256": "76a83741c7d73b05c175717a7d8647e2b8c07fef1238c5e7a0c29dc19a9d18b7",
+  "afe_epro_sha256": "3d1cccc46022c3d5c10a9c2f4b3f3f471894b5cb0a47bfc4d1278db2de21630c",
   "center_y_mm": 48.0816,
   "expect_center_y_mm": 48.0817,
   "table": [

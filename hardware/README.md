@@ -1,6 +1,6 @@
 # OpenEMG 模块化硬件家族总览（2ch / 8ch / 16ch 共用主控与壳体）
 
-**主力推荐 · 新版 16 通道小型化旗舰双板（全套嘉立创制造包 + 双 30P 四层软板 + 圆润手表壳，DRC 0 / 飞线 0）**　[U9 圆角 6 层双核主控 `OpenEMG-C08B-Mainboard-Rev0.01`、超薄双 30P 4 层采集板 `AFE-30P`、双 30P 四层保护软板 `strap-fpc-30p` 与圆润无外露螺丝手表壳 `enclosure-u9-watch`](16ch-u9-dual30/) 使用 20 芯反序排线直连，已完成：① 主控 `Rev0.01` 恢复 `26.64 × 20.90 mm` 原矩形电池窗（东梁宽 `2.76 mm`）、去掉中央 `DEBUG` 线框并整洁重排丝印、32MHz 晶振泪滴与 `BUTTON_N` 飞线清零；② `AFE-30P` 升级 `1.00 mm` 超薄上下双触点 30P 座（`C324727`）、`43.10 × 36.50 mm` 四角 `R1.80` 圆角与 `0.80 mm` 四层板厚、`FPC2.17/18` 交叉修正、`ADS1298` `RESV1=GND` 修正、42 项 BOM/封装冲突清零及 `120/160 px/mm` 铜图光栅门禁；③ 配套 `32×100 kΩ + 2×200 kΩ` 贴肤限流双 30P 四层软板及 `46.80 × 40.00 × 10.40 mm` 圆润手表壳（全系 3D 布尔 `0.000 mm³` 零干涉）。下文 `D20 / R4U6 / 8ch / 2ch` 属于双 34 针及入门参考系列，完整保留供对照复刻。
+**主力推荐 · 新版 16 通道小型化旗舰双板（全套嘉立创制造包 + 双 30P 四层软板 + `9.60 mm` 超薄圆润手表壳，DRC 0 / 飞线 0）**　[U9 圆角 6 层 `0.80 mm` 双核主控 `OpenEMG-C08B-Mainboard-Rev0.01`、超薄双 30P 4 层 `0.80 mm` 采集板 `AFE-30P`、双 30P 四层保护软板 `strap-fpc-30p` 与圆润无外露螺丝手表壳 `enclosure-u9-watch`](16ch-u9-dual30/) 使用东侧 20 芯反序排线直连，已完成：① 主控 `Rev0.01` 恢复 `26.64 × 20.90 mm` 原矩形电池窗（东梁宽 `2.76 mm`）、同步 6 层 `0.80 mm` 真实叠层、去掉中央 `DEBUG` 线框并整洁重排丝印、32MHz 晶振泪滴与 `BUTTON_N` 飞线清零；② `AFE-30P` 升级 `1.00 mm` 超薄上下双触点 30P 座（`C324727`）、`43.10 × 36.50 mm` 四角 `R1.80` 圆角与 `0.80 mm` 四层板厚、`FPC2.17/18` 交叉修正、`ADS1298` `RESV1=GND` 修正、32 颗共模电容空贴 DNP（钢网 64 孔全剥离）+ 16 颗 `22 pF` 差分电容保 CMRR、`C10=1 µF` 飞跨电容、`Inner2` 北数字 `GND`/南模拟 `AGND` 分岛及晶振下完整参考地；③ 配套 `32×100 kΩ + 2×200 kΩ` 贴肤限流双 30P 四层软板及 `46.80 × 40.00 × 9.60 mm` 超薄圆润手表壳（最小壁厚 `0.85 mm`，23 对三维布尔 `0.000 mm³` 零干涉）。下文 `D20 / R4U6 / 8ch / 2ch` 属于双 34 针及入门参考系列，完整保留供对照复刻。
 
 本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL / IPC-D-356，全系 15 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL/GLB）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
 
@@ -80,8 +80,8 @@
 
 | 模块 | 整板 STEP 路径 | 说明 |
 |---|---|---|
-| **16ch 旗舰 6 层双核主控 `MCU-U9`（`Rev0.01`）** | `16ch-u9-dual30/mcu-u9-3d.step` | 含 `STM32L432`、`nRF52840`、沉板 `USB-C`、`26.64×20.90 mm` 原矩形电池窗及双面 110 颗器件实体（588 solids） |
-| **16ch 旗舰超薄双 30P 采集板 `AFE-30P`** | `16ch-u9-dual30/afe-30p-3d.step` | `43.10×36.50 mm` 四角 `R1.80` `0.80 mm` 板框 + 双 `ADS1298` + 双 `1.00 mm` 30P 座 `C324727` 共 114 颗实体（338 solids） |
+| **16ch 旗舰 6 层双核主控 `MCU-U9`（`Rev0.01`）** | `16ch-u9-dual30/mcu-u9-3d.step` | `0.80 mm` 6 层基板 + `STM32L432`、`nRF52840`、沉板 `USB-C`、`26.64×20.90 mm` 原矩形电池窗及双面 110 颗器件实体（588 solids） |
+| **16ch 旗舰超薄双 30P 采集板 `AFE-30P`** | `16ch-u9-dual30/afe-30p-3d.step` | `43.10×36.50 mm` 四角 `R1.80` `0.80 mm` 板框 + 双 `ADS1298` + 双 `1.00 mm` 30P 座 `C324727` 共 82 颗贴片实体（306 solids，已移除 32 颗 DNP 共模电容） |
 | **16ch 旗舰双 30P 四层表带软板（A/B 片）** | `16ch-u9-dual30/strap-fpc-30p/strap-30p-{a,b}-3d.step` | 适配正反 30P 座 `1.524 mm` 错位金手指 + `32×100k + 2×200k` 限流串阻 + 镀金贴肤电极片 |
 | **共用双核主控 `R4U6`（圆孔）** | `common-mainboard/mainboard-r4u6/c08b-mainboard-r4u6-3d.step` | 配螺丝壳 `R12`，含 `STM32L432`、`nRF52840`、沉板 `USB-C`、20P 座等全器件 |
 | **共用双核主控 `R4U6N`（四角缺口）** | `common-mainboard/mainboard-r4u6n/c08b-mainboard-r4u6n-3d.step` | 配无螺丝抱柱壳 `R13`，精确四角缺口轮廓 + 全器件 3D 实体 |
@@ -102,7 +102,7 @@
 
 | 结构套件 | 目录 | 交付格式与内容 |
 |---|---|---|
-| **16ch 旗舰圆润无外露螺丝手表壳 `U9-Watch`** | `16ch-u9-dual30/enclosure-u9-watch/` | `build.py` / `fit_3d_check.py`（全量 23 对三维布尔 `0.000 mm³` 零干涉 + 5 项必败反例）+ 单件 `tray` / `cover` / `side_button` / `cap_bottom` (`.step`/`.stl`) + 满载双板/电池/双软板 `assembly` / `exploded` (`.step`/`.glb`)，主体 `46.80×40.00×10.40 mm` |
+| **16ch 旗舰圆润无外露螺丝手表壳 `U9-Watch`** | `16ch-u9-dual30/enclosure-u9-watch/` | `build.py` / `fit_3d_check.py`（全量 23 对三维布尔 `0.000 mm³` 零干涉 + 9 处三维壁厚探针 `≥ 0.85 mm` + 6 组正反例）+ 单件 `tray` / `cover` / `side_button` / `cap_bottom` (`.step`/`.stl`) + 满载双板/电池/双软板 `assembly` / `exploded` (`.step`/`.glb`)，主体净高 **`46.80×40.00×9.60 mm`** |
 | **8/16ch 四角螺丝柱透明壳 `R12`** | `enclosure-46x40/c08b-shell-r12/` | `build.py` / `check.py` + 单件 `tray` / `cover` / `switch_plunger` / `standoff` (`.step`/`.stl`) + `assembly`/`exploded` (`.step`/`.glb`) + 外扣六孔底盖 `capsule-cap-d2/` (`.step`/`.stl`/`.3mf`) + 一体表带切片 `slice-tpu-x2d-20261109/` (`.3mf`) |
 | **8/16ch 无螺丝缺口抱柱壳 `R13`** | `enclosure-46x40/c08b-shell-r13-notch/` | `build.py` / `check.py` + **Fusion 360 原生源档 `.f3d`** + 单件 `tray` / `cover`（带定位销）/ `switch_plunger`（带导向脚）/ `lug_test_22mm` / 军绿表带 (`.step`/`.stl`) + 总装/爆炸 (`.step`/`.glb`) |
 | **2ch 六触点叠板壳 `R7`** | `enclosure-46x40/ads1292-shell-r7/` | `model.py`（自包含读取 `sources/XIAO-nRF52840-v15.step`）+ 总装 `host.step` + 单件可打印 `shell.step` / `lid.step` / `ads1292-r7-{shell,lid}.stl` + 1:1 纸样 PDF |

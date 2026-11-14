@@ -26,6 +26,7 @@ import json
 import re
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
@@ -262,6 +263,138 @@ def verify_jafe_cross_boards(main_board: Path) -> list[str]:
     return bad
 
 
+# 旗舰 6 层双核主控 MCU-U9 FPC1.k (1..20) <-> 超薄双 30P 采集板 AFE-30P FPC2.(21-k) 独立专属映射真值表
+# 注意：MCU-U9 FPC1 (1=GND, 19/20=3V3_AFE) 与 R4U6 J_AFE (1/2=3V3_AFE, 20=GND) 首尾电源极性相反，严禁跨代混插！
+U9_FPC1_TO_AFE30P_MAP = [
+    (1,  'GND',        20, 'GND'),
+    (2,  '',           19, 'GND'),
+    (3,  'AFE_DRDY_B', 18, 'DRDY2#'),
+    (4,  'AFE_CS_B',   17, 'CS#2'),
+    (5,  'AFE_DIN',    16, 'DIN'),
+    (6,  'AFE_PWDN',   15, 'PWDN#'),
+    (7,  'AFE_RESET',  14, 'RESET#'),
+    (8,  '',           13, 'CLK'),
+    (9,  'AFE_START',  12, 'START'),
+    (10, 'AFE_CS_A',   11, 'CS#'),
+    (11, 'AFE_SCLK',   10, 'SCLK'),
+    (12, 'GND',         9, 'GND'),
+    (13, '',            8, 'GND'),
+    (14, 'GND',         7, 'GND'),
+    (15, 'DOUT_B',      6, 'DOUT'),
+    (16, 'AFE_GPIO3',   5, 'GPIO3'),
+    (17, 'ADS_DRDY_A',  4, 'DRDY#'),
+    (18, '',            3, 'CLKSEL'),
+    (19, '3V3_AFE',     2, '+3.3V'),
+    (20, '3V3_AFE',     1, '+3.3V'),
+]
+
+
+def _load_u9_epro2_nets(epro2_path: Path) -> dict[tuple[str, int], str]:
+    with zipfile.ZipFile(epro2_path) as zf:
+        doc = zf.read(next(n for n in zf.namelist() if n.endswith('.epru'))).decode('utf-8', 'ignore')
+    active = False
+    des_by_cid: dict[str, str] = {}
+    raw_pads: dict[tuple[str, int], str] = {}
+    for line in doc.splitlines():
+        if '||' not in line:
+            continue
+        left, right = line.split('||', 1)
+        right = right.removesuffix('|')
+        if not right:
+            continue
+        h = json.loads(left)
+        if h['type'] not in ('DOCHEAD', 'ATTR', 'PAD_NET'):
+            continue
+        v, _ = json.JSONDecoder().raw_decode(right)
+        if h['type'] == 'DOCHEAD':
+            active = v.get('docType') == 'PCB'
+        elif active and h['type'] == 'ATTR' and v.get('key') == 'Designator':
+            des_by_cid[v['parentId']] = v.get('value', '')
+        elif active and h['type'] == 'PAD_NET':
+            _, cid, pin, _ = json.loads(h['id'])
+            if str(pin).isdigit():
+                raw_pads[(cid, int(pin))] = v.get('padNet', '')
+    return {(des_by_cid[cid], pin): net for (cid, pin), net in raw_pads.items() if cid in des_by_cid}
+
+
+def _load_afe30p_epro_nets(epro_path: Path) -> dict[tuple[str, int], str]:
+    with zipfile.ZipFile(epro_path) as zf:
+        epcbs = [n for n in zf.namelist() if n.endswith('.epcb')]
+        pcb_name = max(epcbs, key=lambda n: zf.getinfo(n).file_size)
+        rows = [json.loads(ln) for ln in zf.read(pcb_name).splitlines() if ln.startswith(b'[')]
+    rows = rows[max(i for i, r in enumerate(rows) if r[:2] == ['DOCTYPE', 'PCB']) :]
+    refs = {r[3]: r[8] for r in rows if r[0] == 'ATTR' and r[7] == 'Designator'}
+    return {
+        (refs[r[1]], int(r[2])): r[3]
+        for r in rows
+        if r[0] == 'PAD_NET' and r[1] in refs and str(r[2]).isdigit()
+    }
+
+
+def verify_u9_stream_compat(u9_epro2: Path, afe30p_epro: Path, selftest: bool = False) -> list[str]:
+    bad: list[str] = []
+    if not u9_epro2.is_file() or not afe30p_epro.is_file():
+        return [f'缺少 MCU-U9.epro2 ({u9_epro2}) 或 AFE-30P.epro ({afe30p_epro})']
+    u9_nets = _load_u9_epro2_nets(u9_epro2)
+    afe_nets = _load_afe30p_epro_nets(afe30p_epro)
+
+    def _check_pair(u9_d: dict[tuple[str, int], str], afe_d: dict[tuple[str, int], str]) -> list[str]:
+        errs: list[str] = []
+        used_u7 = {4, 23, 24}
+        for pin, exp_dbg in ((4, 'L_NRST'), (23, 'L_SWDIO'), (24, 'L_SWCLK')):
+            if u9_d.get(('U7', pin), '') != exp_dbg:
+                errs.append(f'MCU-U9 U7 调试脚 {pin}: 实读 {u9_d.get(("U7", pin))!r} != {exp_dbg!r}')
+        for name, port, net, _ in L432:
+            pin = L432_PKG[port]
+            exp_net = 'L_BOOT0' if name == 'BOOT0' else net
+            got = u9_d.get(('U7', pin), '')
+            if got != exp_net:
+                errs.append(f'MCU-U9 U7 {name} ({port}/脚{pin}): 实读 {got!r} != 期望 {exp_net!r}')
+            used_u7.add(pin)
+        for port, pin in L432_PKG.items():
+            if pin not in used_u7 and u9_d.get(('U7', pin), '') not in ('', 'GND', '3V3'):
+                errs.append(f'MCU-U9 U7 多接未声明信号脚 {pin}({port})={u9_d[("U7", pin)]!r}')
+
+        used_u8 = set()
+        for name, port, net, _ in NRF:
+            pin = NRF_PKG[port]
+            got = u9_d.get(('U8', pin), '')
+            if got != net:
+                errs.append(f'MCU-U9 U8 {name} ({port}/脚{pin}): 实读 {got!r} != 期望 {net!r}')
+            used_u8.add(pin)
+        for port, pin in NRF_PKG.items():
+            if pin not in used_u8 and u9_d.get(('U8', pin), '') not in ('', 'GND', '3V3'):
+                errs.append(f'MCU-U9 U8 多接未声明信号脚 {pin}({port})={u9_d[("U8", pin)]!r}')
+
+        for m_pin, exp_u9, sub_pin, exp_afe in U9_FPC1_TO_AFE30P_MAP:
+            if sub_pin != 21 - m_pin:
+                errs.append(f'U9_FPC1_TO_AFE30P_MAP {m_pin}<->{sub_pin} 不满足 21-k')
+            got_u9 = u9_d.get(('FPC1', m_pin), '')
+            got_afe = afe_d.get(('FPC2', sub_pin), '')
+            if got_u9 != exp_u9:
+                errs.append(f'MCU-U9 FPC1.{m_pin}: 实读 {got_u9!r} != 期望 {exp_u9!r}')
+            if got_afe != exp_afe:
+                errs.append(f'AFE-30P FPC2.{sub_pin}(对 FPC1.{m_pin}): 实读 {got_afe!r} != 期望 {exp_afe!r}')
+        return errs
+
+    bad.extend(_check_pair(u9_nets, afe_nets))
+    if bad:
+        return bad
+
+    if selftest:
+        # 反例 A：模拟 FPC2.17/18 (CS#2 / DRDY2#) 交叉回退
+        bad_swap = dict(afe_nets)
+        bad_swap[('FPC2', 17)], bad_swap[('FPC2', 18)] = bad_swap[('FPC2', 18)], bad_swap[('FPC2', 17)]
+        if len(_check_pair(u9_nets, bad_swap)) < 2:
+            bad.append('U9 selftest 失败：未拦截 AFE-30P FPC2.17/18 交叉')
+        # 反例 B：模拟误将 D20 (20=3V3, 1=GND) 跨代混插到 MCU-U9 FPC1 -> 首尾电源/地必反接报红
+        fake_d20_as_fpc2 = {('FPC2', sub_p): d20_net for _, _, sub_p, d20_net, _ in JAFE_CROSS_MAP}
+        cross_errs = _check_pair(u9_nets, fake_d20_as_fpc2)
+        if not (any('FPC2.20' in e for e in cross_errs) and any('FPC2.1(' in e for e in cross_errs)):
+            bad.append('U9 selftest 失败：未拦截 MCU-U9 与 D20 跨代 20P 电源反接混插')
+    return bad
+
+
 def strip_c_comments(text: str) -> str:
     text = re.sub(r'/\*.*?\*/', '', text, flags=re.S)
     text = re.sub(r'//[^\n]*', '', text)
@@ -391,9 +524,22 @@ def main() -> int:
     ap.add_argument('board', nargs='?', help='.epcb2 或板网表 JSON 路径')
     ap.add_argument('--check-headers', action='store_true', help='只核对已提交的 pins.h 与板网表一致，不改写文件')
     ap.add_argument('--check-jafe', action='store_true', help='核对主控 J_AFE.n <-> D20.(21-n) <-> 2ch J2.(21-n) 全 20 脚跨板物理映射')
+    ap.add_argument('--check-u9', action='store_true', help='只读核对旗舰 MCU-U9 (U7/U8/FPC1) <-> AFE-30P (FPC2) 与流式固件兼容')
     ap.add_argument('--check-safety', action='store_true', help='执行源码安全红线扫描')
-    ap.add_argument('--self-test', action='store_true', help='对源码安全扫描执行变异反例自检')
+    ap.add_argument('--self-test', action='store_true', help='对源码安全扫描或 U9 跨板映射执行必败反例自检')
     args = ap.parse_args()
+
+    if args.check_u9:
+        u9_p = Path(args.board) if args.board else (HERE.parents[1] / 'hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2')
+        afe_p = u9_p.parent / 'AFE-30P.epro'
+        bad = verify_u9_stream_compat(u9_p, afe_p, selftest=args.self_test)
+        if bad:
+            for b_msg in bad:
+                print('MCU-U9 流式固件兼容核对不过：', b_msg, file=sys.stderr)
+            return 1
+        st_note = ' + 2/2 项反例（FPC2.17/18 交叉 + 跨代 D20 电源反接混插）拦截通过' if args.self_test else ''
+        print(f'MCU-U9 流式固件兼容核对通过：U7(23+3脚, PH3=L_BOOT0)、U8(15脚) 与 FPC1.1..20 <-> AFE-30P FPC2.20..1 完全对齐{st_note}')
+        return 0
 
     if args.check_safety:
         if args.self_test:

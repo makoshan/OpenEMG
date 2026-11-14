@@ -1,7 +1,16 @@
 {
   "board_solid_counts": {
-    "afe_30p": 338,
+    "afe_30p": 306,
     "mcu_u9": 588
+  },
+  "shell_body_height_mm": 9.6,
+  "step_file_sizes_bytes": {
+    "tray.step": 466685,
+    "cover.step": 263409,
+    "side_button.step": 43161,
+    "cap_bottom.step": 148963,
+    "assembly.step": 14085048,
+    "exploded.step": 14092678
   },
   "six_electrode_tip_z_mm": [
     -2.256,
@@ -32,6 +41,18 @@
     1.2,
     1.2
   ],
+  "wall_thickness_mm": {
+    "tray_floor_center_z": 0.85,
+    "tray_south_lug_wall_z1p15": 0.85,
+    "tray_south_lug_wall_z3p70": 0.8526,
+    "tray_north_lug_wall_z3p70": 0.8526,
+    "tray_west_groove_root_x": 0.88,
+    "tray_east_below_usb_x": 1.2,
+    "cover_top_ceiling_center_z": 0.9,
+    "cover_blind_boss_top_ne_z": 0.9,
+    "cover_btn_flange_east_wall_x": 0.85
+  },
+  "min_wall_thickness_mm": 0.85,
   "nominal_interference_mm3": {
     "afe_vs_tray": 0.0,
     "afe_vs_cover": 0.0,
@@ -60,12 +81,13 @@
   "controls_mm3": {
     "neg1_old_2mm_fpc3_vs_tray": 25.218534,
     "neg2_old_sharp_afe_outline_vs_tray": 1.326273,
-    "neg3_oversized_28mm_bat_vs_mcu": 35.848569,
-    "pos4_button_press_0p70mm_actuates_u1_switch": 1.971342,
+    "neg3_oversized_28mm_bat_vs_mcu": 20.369888,
+    "pos4_button_press_0p70mm_actuates_u1_switch": 1.850209,
     "pos4_button_press_0p70mm_vs_cover_clearance": 0.0,
-    "neg4_button_pullout_0p35mm_captive_stop": 0.41832,
+    "neg4_button_pullout_0p35mm_captive_stop": 0.41076,
     "neg5_eb1_wrong_round_d6_vs_cap_bottom": 12.819467,
-    "neg5_strap_mirror_x_r33_vs_tray": 0.340369
+    "neg5_strap_mirror_x_r33_vs_tray": 0.340369,
+    "neg6_old_unribbed_south_wall_z1p15_mm": 0.45
   },
   "ok": true
 }

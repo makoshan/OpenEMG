@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """直接从两份嘉立创工程读取板间焊盘、双核 39 信号脚固件兼容、双 30P 超薄连接器 (C324727) 60 脚通道映射、
-圆角 0.80mm 叠层、224 颗 CPL 逐脚拟合（含背面 180° 反例）与全套 3D 装配门禁并逐项核验。
+圆角 0.80mm 叠层（4层 AFE + 6层 MCU）、前端 RC/电荷泵电容与 32 颗 DNP 钢网零残留、
+192 颗 CPL 逐脚拟合（含背面 180° 反例）与全套 3D 装配门禁（9.60 mm 净高 / >=0.85 mm 最小壁厚）并逐项核验。
 
 运行：
   python3 verify_interface.py
@@ -11,12 +12,23 @@ from __future__ import annotations
 import csv
 import json
 import math
+import re
 import sys
 import zipfile
 from pathlib import Path
 
 P = Path(__file__).resolve().parent
 MIL = 0.0254
+
+DNP_CM_CAPS = {
+    "C55",
+    *(f"C{i}" for i in range(57, 72)),
+    *(f"C{i}" for i in range(93, 109)),
+}
+DIFF_22PF_CAPS = {
+    *(f"C{i}" for i in range(72, 80)),
+    *(f"C{i}" for i in range(109, 117)),
+}
 
 
 def rot_up(deg: float, x: float, y: float) -> tuple[float, float]:
@@ -143,31 +155,77 @@ def verify_20p_pairing(main: list[str], afe: dict[tuple[str, int], str]) -> list
 
 
 def check_afe_fixes(rows: list, dual30: dict[tuple[str, int], str]) -> None:
+    assert len(DNP_CM_CAPS) == 32, f"Expected 32 DNP CM caps, got {len(DNP_CM_CAPS)}"
+    assert len(DIFF_22PF_CAPS) == 16, f"Expected 16 diff caps, got {len(DIFF_22PF_CAPS)}"
+
     with zipfile.ZipFile(P / "AFE-30P.epro") as z:
         pj = json.loads(z.read("project.json").decode("utf-8"))
-        sch_name = next(name for name in z.namelist() if name.endswith("1.esch"))
-        sch3_name = next(name for name in z.namelist() if name.endswith("3.esch"))
-        sch1 = z.read(sch_name).decode("utf-8", "ignore")
-        sch3 = z.read(sch3_name).decode("utf-8", "ignore")
+        sch_texts = {
+            Path(name).name: z.read(name).decode("utf-8", "ignore")
+            for name in z.namelist()
+            if name.endswith(".esch")
+        }
+        sch1 = sch_texts["1.esch"]
+        sch3 = sch_texts["3.esch"]
 
+    # 1. Inner2 (L16) 北数字 GND + 南模拟 AGND 分区，删掉晶振 X1 正下方禁止铺铜框 e1680
     layer16 = next((r[2] for r in rows if r[0] == "LAYER" and r[1] == 16), None)
     rule7 = next((r[4][3] for r in rows if r[0] == "RULE" and r[1] == "7" and r[2] == "copperRegion"), None)
     pour_1678 = any(r[0] == "POUR" and r[1] == "e1678" and r[3] == "GND" and r[4] == 16 for r in rows)
+    pour_1687 = any(r[0] == "POUR" and r[1] == "e1687" and r[3] == "AGND" and r[4] == 16 for r in rows)
+    region_1680 = any(r[0] == "REGION" and r[1] == "e1680" for r in rows)
     pours = sum(1 for r in rows if r[0] == "POUR")
     poured = sum(1 for r in rows if r[0] == "POURED")
     assert layer16 == "SIGNAL", f"Expected Inner2 layer 16 SIGNAL, got {layer16}"
     assert rule7 == 1, f"Expected RULE 7 connType=1 (DIRECT), got {rule7}"
-    assert pour_1678 and pours == 14 and poured >= 14, f"Expected 14 POURs with e1678 GND, got {pours}/{poured}"
+    assert not region_1680, "REGION e1680 under crystal X1 should be removed for unbroken GND plane"
+    assert pour_1678 and pour_1687 and pours == 15 and poured >= 15, (
+        f"Expected 15 POURs (L16 North GND e1678 + South AGND e1687) with rebuilt POURED, got {pours}/{poured}"
+    )
+
     assert '["ATTR","e223","e95","Name","GND"' in sch1, "Expected U1.31 net flag e95=GND in 1.esch"
     assert '["ATTR","e814","e300","Name","GND"' in sch1, "Expected U2.31 net flag e300=GND in 1.esch"
     assert "FH34SRJ-30S-0.5SH(50)" in sch3 and "C324727" in sch3, "Expected FH34SRJ-30S-0.5SH(50) (C324727) in 3.esch"
 
-    dev_30p = pj["devices"]["2571ef32fa5163d1"]
-    assert dev_30p["attributes"]["Supplier Part"] == "C324727", f"Expected C324727, got {dev_30p['attributes']}"
-    dev_r4 = pj["devices"]["dfd86c324a67d8ca"]
-    assert dev_r4["attributes"]["Supplier Part"] == "C2984407", f"Expected R4=C2984407 (105k), got {dev_r4['attributes']}"
+    devs = pj["devices"]
+    assert devs["2571ef32fa5163d1"]["attributes"]["Supplier Part"] == "C324727", "Expected C324727 on 30P connectors"
+    assert devs["dfd86c324a67d8ca"]["attributes"]["Supplier Part"] == "C2984407", "Expected R4=C2984407 (105k)"
 
-    # 校验 43.100 x 36.500 mm R1.800 mm 圆角板框与 0.80 mm 四层叠层
+    # 2. 逐件核验 PCB + 原理图的 C10 (1uF C52923)、16 颗差分电容 (22pF C76924) 与 32 颗共模电容 DNP
+    pcb_attrs: dict[str, dict[str, str]] = {}
+    for r in rows:
+        if r[0] == "ATTR":
+            pcb_attrs.setdefault(r[3], {})[r[7]] = str(r[8])
+    pcb_by_des = {at["Designator"]: at for at in pcb_attrs.values() if "Designator" in at}
+
+    def _dev_part(at: dict[str, str]) -> str:
+        if at.get("Supplier Part"):
+            return at["Supplier Part"]
+        did = at.get("Device", "")
+        return devs.get(did, {}).get("attributes", {}).get("Supplier Part", "")
+
+    assert _dev_part(pcb_by_des["C10"]) == "C52923", f"Expected C10=C52923 (1uF), got {pcb_by_des['C10']}"
+    for ref in sorted(DIFF_22PF_CAPS):
+        assert _dev_part(pcb_by_des[ref]) == "C76924", f"Expected {ref}=C76924 (22pF), got {pcb_by_des[ref]}"
+        assert pcb_by_des[ref].get("Add into BOM", "yes").lower() != "no", f"{ref} must stay populated"
+    for ref in sorted(DNP_CM_CAPS):
+        assert pcb_by_des[ref].get("Add into BOM", "").lower() == "no", f"Expected {ref} Add into BOM=no (DNP)"
+
+    sch_attrs: dict[str, dict[str, str]] = {}
+    for sname, stxt in sch_texts.items():
+        for ln in stxt.splitlines():
+            if not ln.startswith('["ATTR"'):
+                continue
+            ar = json.loads(ln)
+            sch_attrs.setdefault(f"{sname}:{ar[2]}", {})[ar[3]] = str(ar[4])
+    sch_by_des = {at["Designator"]: at for at in sch_attrs.values() if "Designator" in at}
+    assert _dev_part(sch_by_des["C10"]) == "C52923", f"Expected sch C10=C52923, got {sch_by_des['C10']}"
+    for ref in sorted(DIFF_22PF_CAPS):
+        assert _dev_part(sch_by_des[ref]) == "C76924", f"Expected sch {ref}=C76924, got {sch_by_des[ref]}"
+    for ref in sorted(DNP_CM_CAPS):
+        assert sch_by_des[ref].get("Add into BOM", "").lower() == "no", f"Expected sch {ref} Add into BOM=no"
+
+    # 3. 校验 43.100 x 36.500 mm R1.800 mm 圆角板框与 0.80 mm 四层叠层
     outline = next((r for r in rows if r[0] == "POLY" and r[1] == "e1904" and r[4] == 11), None)
     assert outline is not None, "Missing board outline POLY e1904 on layer 11"
     rpath = outline[6]
@@ -177,7 +235,7 @@ def check_afe_fixes(rows: list, dual30: dict[tuple[str, int], str]) -> None:
     phys_t = sum(float(r[3]) for r in rows if r[0] == "LAYER_PHYS") * MIL
     assert 0.78 <= phys_t <= 0.83, f"Expected ~0.80 mm 4-layer stackup in AFE-30P, got {phys_t:.4f} mm"
 
-    # 校验 strap-fpc-30p/afe30p-interface.csv 与双 30P 60 脚完全一致
+    # 4. 校验 strap-fpc-30p/afe30p-interface.csv 与双 30P 60 脚完全一致
     iface_csv = P / "strap-fpc-30p/afe30p-interface.csv"
     assert iface_csv.is_file(), "Missing strap-fpc-30p/afe30p-interface.csv"
     irows = list(csv.DictReader(iface_csv.read_text(encoding="utf-8-sig").splitlines()))
@@ -196,6 +254,8 @@ def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
     button_ok = False
     pours = 0
     poured = 0
+    phys_mils = 0.0
+    in_pcb = False
     for line in doc.splitlines():
         if "||" not in line:
             continue
@@ -204,7 +264,14 @@ def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
         if not right:
             continue
         h = json.loads(left)
-        if h["type"] == "FILL" and h.get("id") == "a6b31685508e342e":
+        t = h["type"]
+        if t == "DOCHEAD":
+            v, _ = json.JSONDecoder().raw_decode(right)
+            in_pcb = v.get("docType") == "PCB"
+        elif in_pcb and t == "LAYER_PHYS":
+            v, _ = json.JSONDecoder().raw_decode(right)
+            phys_mils += float(v.get("thickness", 0.0))
+        elif t == "FILL" and h.get("id") == "a6b31685508e342e":
             v, _ = json.JSONDecoder().raw_decode(right)
             pts = v["path"][0]
             xs = [pts[i] for i in range(0, len(pts)) if isinstance(pts[i], (int, float)) and pts[i] > 0]
@@ -214,18 +281,20 @@ def check_mcu_fixes(mcu_pads: dict[tuple[str, int], str]) -> None:
                 and round(max(ys) - min(ys), 4) == round(-534.3307 - (-1357.1653), 4)
             ):
                 cutout_ok = True
-        elif h["type"] == "LINE" and h.get("id") == "aa2a5e4ee3874f57":
+        elif t == "LINE" and h.get("id") == "aa2a5e4ee3874f57":
             v, _ = json.JSONDecoder().raw_decode(right)
             if round(float(v["endX"]), 3) == 324.087 and v.get("netName") == "BUTTON_N":
                 button_ok = True
-        elif h["type"] == "POUR":
+        elif t == "POUR":
             pours += 1
-        elif h["type"] == "POURED":
+        elif t == "POURED":
             poured += 1
     assert cutout_ok, "Expected original rectangular 26.64x20.90 mm battery cutout a6b31685508e342e"
     assert button_ok, "Expected BUTTON_N trace aa2a5e4ee3874f57 extended to 324.087"
-    assert pours == 10 and poured >= 10, f"Expected 10 POURs with rebuilt POURED in OpenEMG-C08B-Mainboard-Rev0.01, got {pours}/{poured}"
+    assert pours == 10 and poured >= 10, f"Expected 10 POURs with rebuilt POURED in MCU-U9, got {pours}/{poured}"
     assert "LTC4054ES5-4.2#TRPBF" in doc and "C462648" in doc, "Expected U17 synced to LTC4054ES5-4.2#TRPBF (C462648)"
+    mcu_phys_mm = phys_mils * MIL
+    assert 0.78 <= mcu_phys_mm <= 0.83, f"Expected ~0.80 mm 6-layer JLC06081H-3313 stackup in MCU-U9, got {mcu_phys_mm:.4f} mm"
 
     expected_u7 = {
         2: "ANA_EN", 6: "AFE_GPIO3", 7: "XIAO_PWDN", 8: "XIAO_DRDY", 9: "AFE_START",
@@ -265,9 +334,9 @@ def _place_max_err(
     return worst
 
 
-def check_cpl_rotations() -> dict[str, tuple]:
-    """按嘉立创「AD,99SE,Allegro,PADS(宏)等其他」默认摆法逐脚核验全部 224 颗贴片件，并运行背面反例。"""
-    # 1. OpenEMG-C08B-Mainboard-Rev0.01
+def check_cpl_rotations() -> tuple[dict[str, tuple], dict[str, tuple]]:
+    """按嘉立创「AD,99SE,Allegro,PADS(宏)等其他」默认摆法逐脚核验全部 192 颗贴片件，并运行背面反例。"""
+    # 1. MCU-U9 (110 颗)
     with zipfile.ZipFile(P / "OpenEMG-C08B-Mainboard-Rev0.01.epro2") as z:
         doc = z.read(next(n for n in z.namelist() if n.endswith(".epru"))).decode("utf-8", "ignore")
     cur_t, cur_u = None, None
@@ -326,7 +395,7 @@ def check_cpl_rotations() -> dict[str, tuple]:
             bad = _place_max_err(pads, bp, cx, cy, (deg + 180.0) % 360.0, bot)
             assert bad > 1.5, f"MCU-U9 {ref} negative control failed: {bad:.4f} mm"
 
-    # 2. AFE-30P
+    # 2. AFE-30P (82 颗贴片，不含 32 颗 DNP 共模电容)
     with zipfile.ZipFile(P / "AFE-30P.epro") as z:
         pcb_lines = z.read(next(n for n in z.namelist() if n.endswith(".epcb"))).decode("utf-8", "ignore").splitlines()
         pj = json.loads(z.read("project.json").decode("utf-8", "ignore"))
@@ -378,6 +447,7 @@ def check_cpl_rotations() -> dict[str, tuple]:
     afe_cpl_sample = {}
     for r in csv.DictReader((P / "fab-afe-30p/jlc_smt_cpl.csv").read_text(encoding="utf-8-sig").splitlines()):
         ref = r["Designator"].strip()
+        assert ref not in DNP_CM_CAPS, f"DNP cap {ref} leaked into jlc_smt_cpl.csv"
         cx = float(r["Mid X"].replace("mm", ""))
         cy = float(r["Mid Y"].replace("mm", ""))
         deg = float(r["Rotation"])
@@ -389,7 +459,84 @@ def check_cpl_rotations() -> dict[str, tuple]:
             bad = _place_max_err(pads, bp, cx, cy, (deg + 180.0) % 360.0, bot)
             assert bad > 5.0, f"AFE-30P {ref} negative control failed: {bad:.4f} mm"
             afe_cpl_sample[ref] = (pads, bp, cx, cy, deg, bot)
-    return afe_cpl_sample
+    return afe_cpl_sample, afe_by_ref
+
+
+_GBR_XY = re.compile(r"X(-?\d+)Y(-?\d+)D0([123])\*")
+
+
+def parse_gerber_paste_centers(gbr_text: str) -> list[tuple[float, float]]:
+    """提取 %FSLAX45Y45*% + %MOMM*% Gerber 钢网层的所有 G36..G37 多边形中心与 D03 闪光点 (mm)。"""
+    assert "%FSLAX45Y45*%" in gbr_text and "%MOMM*%" in gbr_text, "Unexpected Gerber paste format header"
+    centers: list[tuple[float, float]] = []
+    in_poly = False
+    poly_pts: list[tuple[float, float]] = []
+    for raw in gbr_text.splitlines():
+        ln = raw.strip()
+        if ln == "G36*":
+            in_poly = True
+            poly_pts = []
+            continue
+        if ln == "G37*":
+            if poly_pts:
+                xs = [p[0] for p in poly_pts]
+                ys = [p[1] for p in poly_pts]
+                centers.append(((min(xs) + max(xs)) * 0.5, (min(ys) + max(ys)) * 0.5))
+            in_poly = False
+            poly_pts = []
+            continue
+        m = _GBR_XY.search(ln)
+        if not m:
+            continue
+        x_mm = int(m.group(1)) * 1e-5
+        y_mm = int(m.group(2)) * 1e-5
+        dcode = m.group(3)
+        if in_poly:
+            poly_pts.append((x_mm, y_mm))
+        elif dcode == "3":
+            centers.append((x_mm, y_mm))
+    return centers
+
+
+def count_paste_pad_hits(
+    afe_by_ref: dict[str, tuple],
+    refs: set[str],
+    top_centers: list[tuple[float, float]],
+    bot_centers: list[tuple[float, float]],
+    tol_mm: float = 0.15,
+) -> tuple[int, int]:
+    hits = 0
+    total_pads = 0
+    for ref in sorted(refs):
+        _, bp, bot = afe_by_ref[ref]
+        pool = bot_centers if bot else top_centers
+        for pts in bp.values():
+            for px, py in pts:
+                total_pads += 1
+                if any(math.hypot(px - cx, py - cy) <= tol_mm for cx, cy in pool):
+                    hits += 1
+    return hits, total_pads
+
+
+def check_gerber_paste_and_gko(afe_by_ref: dict[str, tuple]) -> tuple[str, str]:
+    """核验双板 Gerber GKO 均带圆角圆弧 (G02/G03)，且 AFE-30P GTP/GBP 已剥离全部 64 个 DNP 焊盘并保留 32 个差分电容焊盘。"""
+    for zrel in ("fab-mcu-u9/OpenEMG-C08B-Mainboard-Rev0.01-Gerber.zip", "fab-afe-30p/Gerber_AFE-30P.zip"):
+        with zipfile.ZipFile(P / zrel) as z:
+            gko = z.read("Gerber_BoardOutlineLayer.GKO").decode("utf-8", "ignore")
+        assert "G02" in gko or "G03" in gko, f"{zrel}: GKO missing G02/G03 corner arcs"
+
+    with zipfile.ZipFile(P / "fab-afe-30p/Gerber_AFE-30P.zip") as z:
+        gtp = z.read("Gerber_TopPasteMaskLayer.GTP").decode("utf-8", "ignore")
+        gbp = z.read("Gerber_BottomPasteMaskLayer.GBP").decode("utf-8", "ignore")
+    top_c = parse_gerber_paste_centers(gtp)
+    bot_c = parse_gerber_paste_centers(gbp)
+
+    dnp_hits, dnp_total = count_paste_pad_hits(afe_by_ref, DNP_CM_CAPS, top_c, bot_c)
+    assert dnp_total == 64 and dnp_hits == 0, f"Expected 0/64 paste openings on 32 DNP CM caps, got {dnp_hits}/{dnp_total}"
+
+    diff_hits, diff_total = count_paste_pad_hits(afe_by_ref, DIFF_22PF_CAPS, top_c, bot_c)
+    assert diff_total == 32 and diff_hits == 32, f"Expected 32/32 paste openings on 16 diff caps, got {diff_hits}/{diff_total}"
+    return gtp, gbp
 
 
 def check_fab_subpack(sub: str, bom_rows: int, smt_total: int, gerber_zips: tuple[str, ...]) -> None:
@@ -411,9 +558,14 @@ def check_fab_subpack(sub: str, bom_rows: int, smt_total: int, gerber_zips: tupl
         code = (r.get("JLCPCB Part #") or r.get("LCSC Part #") or "").strip()
         assert code.startswith("C") and code[1:].isdigit(), f"{sub}: invalid LCSC code {code} on {r['Designator']}"
     if sub == "fab-afe-30p":
+        assert not (b_refs & DNP_CM_CAPS), f"DNP CM caps leaked into BOM: {b_refs & DNP_CM_CAPS}"
         by_code = {(r.get("LCSC Part #") or r.get("JLCPCB Part #") or "").strip(): r for r in b_rows}
         assert "C324727" in by_code and "FPC1" in by_code["C324727"]["Designator"], "Expected C324727 on FPC1,FPC3"
         assert "C2984407" in by_code and by_code["C2984407"]["Designator"].strip() == "R4", "Expected C2984407 on R4"
+        c52923_refs = {x.strip() for x in by_code.get("C52923", {}).get("Designator", "").split(",") if x.strip()}
+        assert "C10" in c52923_refs, f"Expected C52923 (1uF) to include C10, got {c52923_refs}"
+        diff_in_bom = {x.strip() for x in by_code.get("C76924", {}).get("Designator", "").split(",") if x.strip()}
+        assert diff_in_bom == DIFF_22PF_CAPS, f"Expected 16 diff caps on C76924 (22pF), got {diff_in_bom}"
 
 
 def check_3d_and_strap_gates() -> None:
@@ -431,9 +583,10 @@ def check_3d_and_strap_gates() -> None:
             else:
                 assert v == 0, f"Unexpected solid overlap {k}={v}"
 
-    # 2. 满载整板 3D STEP + 双 30P 四层软板 28 项门禁 + 穿戴圆润手表壳 23 对三维布尔零干涉
+    # 2. 满载整板 3D STEP + 双 30P 四层软板 28 项门禁 + 穿戴圆润手表壳 23 对三维布尔零干涉 + <=9.70mm 净高 + >=0.80mm 壁厚
     for stp in ("mcu-u9-3d.step", "afe-30p-3d.step", "strap-fpc-30p/strap-30p-a-3d.step", "strap-fpc-30p/strap-30p-b-3d.step"):
-        assert (P / stp).is_file() and (P / stp).stat().st_size > 100_000, f"Missing 3D STEP {stp}"
+        p_stp = P / stp
+        assert p_stp.is_file() and 100_000 < p_stp.stat().st_size <= 24_500_000, f"Invalid 3D STEP size on {stp}"
     strap_chk = json.loads((P / "strap-fpc-30p/checks.json").read_text(encoding="utf-8"))
     assert strap_chk.get("fails") == [], f"strap-fpc-30p checks failed: {strap_chk.get('fails')}"
 
@@ -443,6 +596,9 @@ def check_3d_and_strap_gates() -> None:
     fit3d = json.loads((wdir / "fit-3d.json").read_text(encoding="utf-8"))
     nom = fit3d.get("nominal_interference_mm3", {})
     assert fit3d.get("ok") is True and len(nom) == 23 and all(v == 0.0 for v in nom.values()), f"enclosure-u9-watch fit-3d failed: {fit3d}"
+    assert float(fit3d.get("shell_body_height_mm", 99.0)) <= 9.70, f"Watch shell height > 9.70 mm: {fit3d.get('shell_body_height_mm')}"
+    assert float(fit3d.get("min_wall_thickness_mm", 0.0)) >= 0.80, f"Watch min wall < 0.80 mm: {fit3d.get('min_wall_thickness_mm')}"
+    assert fit3d.get("board_solid_counts") == {"afe_30p": 306, "mcu_u9": 588}, f"Unexpected board solid counts: {fit3d.get('board_solid_counts')}"
 
 
 def run_all(selftest: bool = False) -> None:
@@ -461,14 +617,10 @@ def run_all(selftest: bool = False) -> None:
 
     check_afe_fixes(rows, dual30)
     check_mcu_fixes(mcu_pads)
-    afe_cpl_sample = check_cpl_rotations()
-    check_fab_subpack(
-        "fab-mcu-u9",
-        45,
-        110,
-        ("OpenEMG-C08B-Mainboard-Rev0.01-Gerber.zip", "OpenEMG-C08B-Mainboard-Rev0.01-panel702-Gerber.zip"),
-    )
-    check_fab_subpack("fab-afe-30p", 23, 114, ("Gerber_AFE-30P.zip", "Gerber_AFE-30P-panel702.zip"))
+    afe_cpl_sample, afe_by_ref = check_cpl_rotations()
+    gtp, gbp = check_gerber_paste_and_gko(afe_by_ref)
+    check_fab_subpack("fab-mcu-u9", 45, 110, ("OpenEMG-C08B-Mainboard-Rev0.01-Gerber.zip", "OpenEMG-C08B-Mainboard-Rev0.01-panel702-Gerber.zip"))
+    check_fab_subpack("fab-afe-30p", 22, 82, ("Gerber_AFE-30P.zip", "Gerber_AFE-30P-panel702.zip"))
     check_3d_and_strap_gates()
 
     if selftest:
@@ -484,11 +636,23 @@ def run_all(selftest: bool = False) -> None:
         # 必败反例 3：背面 FPC3 CPL 漏加 180°（嘉立创内部角 vs AD 默认摆法）
         pads_f3, bp_f3, cx_f3, cy_f3, deg_f3, bot_f3 = afe_cpl_sample["FPC3"]
         assert _place_max_err(pads_f3, bp_f3, cx_f3, cy_f3, (deg_f3 + 180.0) % 360.0, bot_f3) > 5.0
-        print("[SELFTEST PASS] 3/3 必败反例（FPC2.17/18 交叉、FPC1 1..30 镜像、背面 FPC3 CPL 180° 镜像）均准确拦截。")
+        # 必败反例 4：伪造一颗 DNP 共模电容 C55 钢网开口残留
+        _, bp_c55, bot_c55 = afe_by_ref["C55"]
+        px55, py55 = next(iter(bp_c55.values()))[0]
+        ix, iy = int(round(px55 * 1e5)), int(round(py55 * 1e5))
+        fake_poly = f"\nG36*\nG01X{ix-1000}Y{iy-1000}D02*\nG01X{ix+1000}Y{iy+1000}D01*\nG37*\n"
+        bad_gtp = gtp if bot_c55 else (gtp + fake_poly)
+        bad_gbp = (gbp + fake_poly) if bot_c55 else gbp
+        leak_hits, _ = count_paste_pad_hits(
+            afe_by_ref, DNP_CM_CAPS, parse_gerber_paste_centers(bad_gtp), parse_gerber_paste_centers(bad_gbp)
+        )
+        assert leak_hits >= 1, "Selftest failed to catch leaked DNP paste opening on C55"
+        print("[SELFTEST PASS] 4/4 必败反例（FPC2.17/18 交叉、FPC1 1..30 镜像、背面 FPC3 CPL 180° 镜像、DNP 钢网残留）均准确拦截。")
 
     print(
         "20/20 板间脚序、双核 39 信号脚固件兼容、60/60 双 30P 超薄座 (C324727) 通道映射、"
-        "43.10×36.50 R1.80 圆角 0.80mm 叠层、224 颗 CPL 逐脚拟合（含背面反例）、铺铜与全套 3D 总装核验通过。"
+        "双板 0.80mm 叠层、前端 RC/电荷泵修正与 0/64 DNP 钢网零残留、"
+        "192 颗 CPL 逐脚拟合（含背面反例）、15+10 块铺铜与 9.60mm 穿戴总装核验通过。"
     )
 
 

@@ -4,13 +4,13 @@
 
 ## A 双核分工与三档下层板自动识别
 
-共用主控 **`MCU-U9`（`Rev0.01` 6 层圆角旗舰）/ `C08B-main-R4U6`（圆孔）/ `C08B-main-R4U6N`（四角缺口）** 通过 20P `0.5 mm` 反序排线零跳线自动适配三档采集底板（冷启动未上电探测前 GATT `META` 如实报 `"afe":"NONE","protocol":1,"active_channels":0`，绝不伪装为 16ch）：
+双核固件二进制同时兼容 **`MCU-U9`（`OpenEMG-C08B-Mainboard-Rev0.01`，仅限配 `16ch AFE-30P`）** 与 **`C08B-main-R4U6 / R4U6N`（仅限配 `16ch D20/D20N`、`8ch D20-8CH/D20N-8CH`、`2ch ADS1292-2ch-R9`；注意两系列的 20P 座电源首尾极性相反，严禁将 `MCU-U9` 与 `D20/8ch/2ch` 或 `R4U6` 与 `AFE-30P` 跨系列插接！）**。上电探测前 GATT `META` 如实报 `"afe":"NONE","protocol":1,"active_channels":0`，绝不伪装为 16ch：
 
-| 下层采集底板 | `ID_A / ID_B` | SPI1 速率 | 特殊引脚与寄存器保护 | BLE 数据协议 |
+| 主控 ↔ 下层采集底板配对 | `ID_A / ID_B` | SPI1 速率 | 特殊引脚与寄存器保护 | BLE 数据协议 |
 |---|---|---|---|---|
-| **16ch `AFE-30P / D20 / D20N`** | `0x92 / 0x92` | `4.000 MHz` | `LM27762` `±2.5V` 双极供电锁定内部 `2.40 V` 基准（`VREF_4V=0`）；`Pin 60(RLDREF)` 与 `Pin 62(RLDIN)` 硬连 `AGND` 故严禁置 `RLDREF_INT=1`（两步 `0xC0` → `EXR1:0xC4` / `RLD1:0xD4`）；逐帧核对 `DRDY_A/B` 同步 | `F01 v4`（`16B + 4×54B = 232B` 无损双片） |
-| **8ch `D20-8CH / D20N-8CH`** | `0x92 / 0x00\|0xFF` | `4.000 MHz` | `PA4(DRDY_B)` 开内部上拉防浮空；`GPIO1..4` 全设输入（`0x0F`）；同用两步 `RLDREF_INT=0` 规则 | `F01 v1`（`16B + 8×27B = 232B`） |
-| **2ch `ADS1292-2ch-R9`** | `0x53\|0x73 / 0x00\|0xFF` | `1.000 MHz` | 保持 `ADS_PWDN=1` 等满 `>=1050 ms` 建立 `VCAP1=1µF`；先打 `PA8(ADS_RESET)` 测是否 `0x92(ADS1298)`，确认 `id_a != 0x92` 后再对 `PA1(ADS_PWDN -> J2.6 -> R31 -> Pin15 PWDN/RESET)` 发 `20 µs`（`<< 4000 µs` 掉电阈值）纯数字复位脉冲并重读 ID（既补齐 `2ch J2.7=NC` 缺失的复位脉冲，又绝不放掉 `ADS1298` 22µF `VCAP1`）；`PA4` 先 `10 µs` 下拉放净残荷再保持 `P_NONE` 监测 `3.0V AVDD_SENSE`；`RESP2=0x07`；两步开 RLD（`0x20` 等满 `>=150 ms` 再写 `0x23`） | `F01 v1`（`CH1..2` + `CH3..8=0`，状态头映射对齐 `decode_ads_status`） |
+| **`MCU-U9 (Rev0.01)` ↔ `16ch AFE-30P`**<br>或 **`R4U6(N)` ↔ `16ch D20(N)`** | `0x92 / 0x92` | `4.000 MHz` | `LM27762` `±2.5V` 双极供电锁定内部 `2.40 V` 基准（`VREF_4V=0`）；`Pin 60(RLDREF)` 与 `Pin 62(RLDIN)` 硬连 `AGND` 故严禁置 `RLDREF_INT=1`（两步 `0xC0` → `EXR1:0xC4` / `RLD1:0xD4`）；逐帧核对 `DRDY_A/B` 同步 | `F01 v4`（`16B + 4×54B = 232B` 无损双片） |
+| **`R4U6(N)` ↔ `8ch D20(N)-8CH`** | `0x92 / 0x00\|0xFF` | `4.000 MHz` | `PA4(DRDY_B)` 开内部上拉防浮空；`GPIO1..4` 全设输入（`0x0F`）；同用两步 `RLDREF_INT=0` 规则 | `F01 v1`（`16B + 8×27B = 232B`） |
+| **`R4U6(N)` ↔ `2ch ADS1292-2ch-R9`** | `0x53\|0x73 / 0x00\|0xFF` | `1.000 MHz` | 保持 `ADS_PWDN=1` 等满 `>=1050 ms` 建立 `VCAP1=1µF`；先打 `PA8(ADS_RESET)` 测是否 `0x92(ADS1298)`，确认 `id_a != 0x92` 后再对 `PA1(ADS_PWDN -> J2.6 -> R31 -> Pin15 PWDN/RESET)` 发 `20 µs`（`<< 4000 µs` 掉电阈值）纯数字复位脉冲并重读 ID（既补齐 `2ch J2.7=NC` 缺失的复位脉冲，又绝不放掉 `ADS1298` 22µF `VCAP1`）；`PA4` 先 `10 µs` 下拉放净残荷再保持 `P_NONE` 监测 `3.0V AVDD_SENSE`；`RESP2=0x07`；两步开 RLD（`0x20` 等满 `>=150 ms` 再写 `0x23`） | `F01 v1`（`CH1..2` + `CH3..8=0`，状态头映射对齐 `decode_ads_status`） |
 
 ## B 硬件红线与互锁链路（`tools/pins.py --check-safety` 强扫 10 条）
 

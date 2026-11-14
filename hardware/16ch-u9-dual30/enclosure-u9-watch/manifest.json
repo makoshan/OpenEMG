@@ -20,14 +20,14 @@
     ],
     "mcu_u9_substrate_z": [
       6.2,
-      7.8176
+      6.9956
     ],
     "cover_z": [
       6.2,
-      10.55
+      9.75
     ],
-    "shell_body_height_mm": 10.4,
-    "overall_height_with_electrodes_mm": 12.806
+    "shell_body_height_mm": 9.6,
+    "overall_height_with_electrodes_mm": 12.006
   },
   "parts": {
     "tray": {
@@ -35,7 +35,7 @@
       "stl": "tray.stl",
       "solid_count": 1,
       "is_valid": true,
-      "volume_mm3": 2576.275,
+      "volume_mm3": 2572.761,
       "bbox_min": [
         -23.4,
         -22.65,
@@ -57,7 +57,7 @@
       "stl": "cover.stl",
       "solid_count": 1,
       "is_valid": true,
-      "volume_mm3": 2173.249,
+      "volume_mm3": 2048.204,
       "bbox_min": [
         -23.4,
         -20.0,
@@ -66,12 +66,12 @@
       "bbox_max": [
         23.4,
         20.0,
-        10.55
+        9.75
       ],
       "size_mm": [
         46.8,
         40.0,
-        4.35
+        3.55
       ]
     },
     "side_button": {
@@ -79,21 +79,21 @@
       "stl": "side_button.stl",
       "solid_count": 1,
       "is_valid": true,
-      "volume_mm3": 13.87,
+      "volume_mm3": 13.491,
       "bbox_min": [
         21.74,
         -13.45,
-        7.32
+        6.55
       ],
       "bbox_max": [
         23.85,
         -8.77,
-        9.42
+        8.6
       ],
       "size_mm": [
         2.11,
         4.68,
-        2.1
+        2.05
       ]
     },
     "cap_bottom": {
@@ -120,7 +120,7 @@
     }
   },
   "embedded_board_solids": {
-    "afe_30p": 319,
+    "afe_30p": 287,
     "mcu_u9": 317,
     "strap_30p_a_capsule": 12,
     "strap_30p_b_capsule": 2

@@ -1,6 +1,6 @@
 # OpenEMG
 
-**主力推荐 · 新版 16 通道小型化旗舰（`MCU-U9` + `AFE-30P`）**　[U9 圆角 6 层双核主控 `MCU-U9`、超薄 `1.00 mm` 双 30 针 4 层 `0.80 mm` 圆角采集板 `AFE-30P`、双 30P 四层保护软板 `strap-fpc-30p` 与圆润无外露螺丝手表壳 `enclosure-u9-watch`](hardware/16ch-u9-dual30/) 使用 20 芯反序排线直连，已含嘉立创 `70.20 × 70.20 mm` 工艺边 Gerber、100% 现货 `C` 料号 BOM、224 颗逐脚校核 CPL 生产包、满载整板 STEP、双 30P 软板生产包及 23 对三维布尔零干涉手表壳总装（实物待打样验收）。下文 `D20 / R4U6 / 8ch / 2ch` 属于双 34 针及入门参考系列，完整保留供对照复刻。
+**主力推荐 · 新版 16 通道小型化旗舰（`OpenEMG-C08B-Mainboard-Rev0.01` + `AFE-30P`）**　[U9 圆角 6 层 `0.80 mm` 双核主控 `Rev0.01`、超薄 `1.00 mm` 双 30 针 4 层 `0.80 mm` 圆角采集板 `AFE-30P`、双 30P 四层保护软板 `strap-fpc-30p` 与 `9.60 mm` 超薄圆润无外露螺丝手表壳 `enclosure-u9-watch`](hardware/16ch-u9-dual30/) 使用东侧 20 芯反序排线直连，已含嘉立创 `70.20 × 70.20 mm` 工艺边 Gerber、100% 现货 `C` 料号 BOM、192 颗逐脚校核 CPL 生产包（已修正前端 `22 pF` 纯差模滤波、`LM27762` `1 µF` 飞跨电容与内电层数模地分岛）、满载整板 STEP、双 30P 软板生产包及 23 对三维布尔零干涉手表壳总装（实物待打样验收）。下文 `D20 / R4U6 / 8ch / 2ch` 属于双 34 针及入门参考系列，完整保留供对照复刻。
 
 模块化多通道表面肌电（sEMG）开源研究平台：**同一个上层主控板、同一套 `46 × 40 mm` 圆润外壳家族、同一个跨平台上位机，按需搭配 2 通道、8 通道或 16 通道下层模拟前端采集板**；同时提供 **KiCad 10 原生工程**与**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）完整工程文件**。
 
@@ -40,28 +40,23 @@
 三档穿戴采集板统一采用 **`43.10 × 36.50 mm` 四层板框**（同时提供配螺丝壳 `R12` 的**四角圆孔版**与配无螺丝抱柱壳 `R13` 的**四角缺口版**），通过东南角同款 20P `0.5 mm` FPC 座（`FH34SRJ-20S-0.5SH`）与上层主控叠装互联，上电零跳线自动识别 `2ch / 8ch / 16ch` 板型：
 
 ```text
-                ┌── 双核主控 R4U6 / R4U6N（STM32L432 + nRF52840 + 充电/互锁/IMU）
-[上层共用主控] ──┤
-                └── 或 入门转接板 P44e（直焊现成 Seeed XIAO nRF52840）
-                         │
-              20P 0.5mm FPC 统一接口 (J_AFE: 3V3 / SPI / START / DRDY / PWDN)
-                         │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
- [2ch-ads1292]    [8ch-ads1298]   [16ch-c08b-round]
- 单颗 ADS1292     单面贴 1×ADS1298   双面贴 2×ADS1298
- 底面六触点一体    单片 34P 软板D2-8CH 双片 34P 12+2+2 软板
-        │                │                │
-        └────────────────┴────────────────┘
-                         ▼
-       [46 × 40 mm 圆润外壳家族 (enclosure-46x40)]
-                         ▼
-       [统一上位机: host/ + app/ + apple/openEMG]
+[16ch 小型化旗舰独立配对]                           [2ch / 8ch / 16ch 双34P 共用配对]
+  上层 6层主控 Rev0.01 (FPC1 东侧 20P)                上层共用主控 R4U6 / R4U6N 或 入门转接板 P44e
+              │ (严禁与右侧跨系列混插!)                             │ (南侧 J_AFE 20P)
+              ▼                                         ┌──────────┼──────────┐
+  下层 4层超薄双30P采集板 AFE-30P                        ▼          ▼          ▼
+  + 双30P四层保护软板 strap-fpc-30p               [2ch-ads1292] [8ch-ads1298] [16ch-c08b-round]
+              │                                         └──────────┴──────────┘
+              ▼                                                    ▼
+  [9.60 mm 超薄圆润手表壳 enclosure-u9-watch]       [46 × 40 mm 圆润外壳家族 (enclosure-46x40)]
+              └─────────────────────────┬──────────────────────────┘
+                                        ▼
+                       [统一上位机: host/ + app/ + apple/openEMG]
 ```
 
 | 模块 | 目录 | 板框 / 层数 | EDA 工程格式 | 定位与状态 |
 |---|---|---|---|---|
-| **16 通道小型化旗舰（双 30P）** | `hardware/16ch-u9-dual30/` | `43.1 × 36.5 mm` 四角 `R1.8`（主控 6 层 `0.8 mm` + 采集 4 层 `0.8 mm`） | 嘉立创 `OpenEMG-C08B-Mainboard-Rev0.01.epro2` / `AFE-30P.epro2` + KiCad 10 四层软板 `strap-fpc-30p` + 满载 `-3d.step` + `enclosure-u9-watch` | **当前 16ch 主力推荐**：`26.64 × 20.90 mm` 原矩形电池窗主控 `Rev0.01` + `1.0 mm` 超薄双 30P 座 `C324727` + `32×100k + 2×200k` 软板 + `46.8 × 40.0 × 10.4 mm` 圆润手表壳 |
+| **16 通道小型化旗舰（双 30P）** | `hardware/16ch-u9-dual30/` | `43.1 × 36.5 mm` 四角 `R1.8`（主控 6 层 `0.8 mm` + 采集 4 层 `0.8 mm`） | 嘉立创 `OpenEMG-C08B-Mainboard-Rev0.01.epro2` / `AFE-30P.epro2` + KiCad 10 四层软板 `strap-fpc-30p` + 满载 `-3d.step` + `enclosure-u9-watch` | **当前 16ch 主力推荐**：`26.64 × 20.90 mm` 原矩形电池窗主控 `Rev0.01` + `1.0 mm` 超薄双 30P 座 `C324727` + `32×100k + 2×200k` 软板 + `46.8 × 40.0 × 9.6 mm` 超薄圆润手表壳 |
 | **共用上层主控（34P/入门系）** | `hardware/common-mainboard/` | `R4U6` / `R4U6N`: `43.1 × 36.5 mm` 4 层<br>`P44e`: `17.8 × 21.0 mm` 2 层 | 嘉立创 `.epcb2` / `.epro2` + KiCad 10 + 满载 `-3d.step` | `R4U6`（圆孔）/ `R4U6N`（缺口）与入门 `P44e`（`XIAO` 转接）任选 |
 | **入门 2 通道叠板** | `hardware/2ch-ads1292/` | `43.1 × 36.5 mm` / 4 层 | KiCad 10 + 嘉立创 `ADS1292-2ch-R9.epro2` + `-3d.step` | `ADS1292` 底面直接集成两排「大—辅—大」六触点，免外部表带排线 |
 | **标准 8 通道叠板 + 台架** | `hardware/8ch-ads1298/` | `43.1 × 36.5 mm`（圆孔 `D20-8CH` / 缺口 `D20N-8CH`）<br>`65.0 × 60.0 mm`（R01 台架） | KiCad 10 + 嘉立创 `C08B-8ch全套汇总(R4U6/R4U6N).epro2` + 单面 `-3d.step` + `strap-fpc-d2-8ch` | 纯单面专属 8 路叠板（背面 0 器件绿油绝缘）+ 单片四层软板 `D2-8CH` + `F04` 背开口 TPU 表带 + 已实测 `R01` 台架板 |
@@ -102,6 +97,8 @@ uv pip install --python .venv/bin/python -r requirements.txt jsonschema scipy sc
 .venv/bin/python scripts/check_3d_completeness.py .
 .venv/bin/python scripts/check_fab_packs.py --selftest
 .venv/bin/python scripts/check_fab_packs.py .
+.venv/bin/python hardware/16ch-u9-dual30/verify_interface.py --selftest
+.venv/bin/python firmware/c08b-bringup/tools/pins_u9.py --selftest
 .venv/bin/python hardware/common-mainboard/schematics/check_all.py
 .venv/bin/python hardware/16ch-c08b-round/schematics-afe/check_all.py
 .venv/bin/python hardware/8ch-ads1298/stacked-d20-8ch/verify_8ch_dnp.py
