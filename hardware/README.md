@@ -58,6 +58,7 @@
 | 档位与用途 | 工程文件路径 | 说明 |
 |---|---|---|
 | **16ch 旗舰 6 层圆角主控 `Rev0.01` + 超薄双 30P 采集板 `AFE-30P`** | `16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`<br>`16ch-u9-dual30/AFE-30P.epro2` | 主力开源定版：6 层 `OpenEMG-C08B-Mainboard-Rev0.01`（`26.64×20.90 mm` 原矩形电池窗、去中央 DEBUG 框洁净丝印）+ 4 层 `0.80 mm` 圆角 `R1.80` 超薄双 30P（`C324727`）`AFE-30P`（DRC 0 / 飞线 0，含 `fab-mcu-u9/`、`fab-afe-30p/` 与 KiCad 四层软板 `strap-fpc-30p/`） |
+| **16ch `v0.01` 双板合并工程 + 广濑 `1.0 mm` `1 nF` 台架采集板** | `16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2`<br>`16ch-afe-xunpu-2mm-1nf/AFE-30P.epro2` | 工程师修订版双板合并工程（`01 主控板` + `02 采集板` 四角 `R1.80` 圆角、现货 `0603 R4=104kΩ C861070`、广濑 `1.0 mm` 双 30P + `1 nF` 差分网络，含同步单板 Gerber/BOM/CPL）及讯普 `2.0 mm` 对照版 |
 | **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
 | **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |
 | **16ch 采集板独立工程（圆孔 / 缺口）** | `16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20-原理图+PCB+3D.epro2`<br>`16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20N-缺口-原理图+PCB+3D.epro2` | 16ch 双面采集板单板工程（圆孔版与四角缺口版） |
