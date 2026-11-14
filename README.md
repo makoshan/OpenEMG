@@ -2,7 +2,9 @@
 
 OpenEMG 是用于手势研究的表面肌电（sEMG）平台。采集板记录肌电信号，桌面工作台显示波形、录制动作并训练手势分类器。
 
-![三款手环的 CAD 外观，从左到右为 2 通道 R7、8 通道 R12 与电极软板、16 通道 U9 广濑版](hardware/renders/openemg-channel-gallery.png)
+| 2 通道 · R7 | 8 通道 · R12 | 16 通道 · U9 广濑版 |
+|:---:|:---:|:---:|
+| [![R7 外壳与六个贴肤触点](hardware/2ch-ads1292/r7-exterior.png)](hardware/2ch-ads1292/r7-exterior.png) | [![R12 装带整机的侧面与贴肤面](hardware/8ch-ads1298/r12-strap-assembly.png)](hardware/8ch-ads1298/r12-strap-assembly.png) | [![U9 广濑版装带整机的侧面与贴肤面](hardware/16ch-u9-dual30/u9-strap-assembly.png)](hardware/16ch-u9-dual30/u9-strap-assembly.png) |
 
 | 通道 | 硬件工程 | 固件 | 3D 外观 | 实板测试进展 |
 |---|---|---|---|---|
