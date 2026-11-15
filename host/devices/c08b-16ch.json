@@ -58,5 +58,5 @@
     "max_drop_rate": 0.0,
     "min_take_s": 2
   },
-  "notes": "C08B 共用主控 R4U6/R4U6N + 双面 ADS1298 D17（2.40V 基准 / PGA=6 / F01 v4 54B 帧）；默认硬件锁关闭，record=false 直到台架实测解锁"
+  "notes": "OpenEMG v0.01 旗舰 16 通道（MCU-U9 Rev0.01 + 双 ADS1298 AFE-30P 双 30P，经人工工程师审核定版）及 C08B R4U6/R4U6N + D20（2.40V 基准 / PGA=6 / F01 v4 54B 帧）；默认硬件锁关闭，record=false 直到台架实测解锁"
 }

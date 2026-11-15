@@ -44,5 +44,5 @@
     "max_drop_rate": 0.0,
     "min_take_s": 2
   },
-  "notes": "C08B 共用主控 R4U6/R4U6N + ADS1292 六触点底板（2.42V 基准 / PGA=6 / F01 v1 前两路有效）；默认硬件锁关闭，record=false 直到台架实测解锁"
+  "notes": "OpenEMG C08B 入门 2 通道（经典主控 R4U6/R4U6N 或 P44e + XIAO + ADS1292 六触点底板 R9，2.42V 基准 / PGA=6 / F01 v1 前两路有效；严禁混插 MCU-U9 反向 20P 座）；默认硬件锁关闭，record=false 直到台架实测解锁"
 }

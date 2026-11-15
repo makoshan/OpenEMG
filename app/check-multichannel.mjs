@@ -1,10 +1,14 @@
 // 2 / 8 / 16 通道前端核心逻辑回归门禁：信号滤波链、放松门、校准底噪与放过、游戏面板映射。
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { SignalStream } from './src/emg8/signal.ts';
 import { lanePlan, RestSignalGate } from './src/emg8/rest-signal.ts';
 import { canWaive, noiseAdvice, noiseFloor, noiseVerdict } from './src/emg8/calibration.ts';
 import { bandSignal } from './src/emg8/gesture-actions.ts';
+import { wearSteps, wearVerdict } from './src/emg8/placement.ts';
+const require = createRequire(import.meta.url);
+const { studioRoute } = require('./electron/emg8-studio-routes.cjs');
 
 // 1. SignalStream 2 / 8 / 16 通道与 1000 / 2000 Hz 滤波稳态核查
 for (const [nCh, fs] of [[2, 1000], [8, 2000], [8, 1000], [16, 1000]]) {
@@ -99,6 +103,14 @@ for (const tier of ['c08b-16ch', 'wl8', 'c08b-8ch', 'c08b-2ch', 'emg']) {
 const cssSrc = readFileSync(new URL('./src/emg8/emg8.css', import.meta.url), 'utf8');
 for (const n of [2, 8, 16]) {
   assert.ok(cssSrc.includes(`data-channels="${n}"`), `missing CSS rule for data-channels="${n}"`);
+  assert.equal(wearVerdict([], [], n).headline, `${n} 路都贴好了`);
+  assert.ok(wearSteps('left', 'ble', n).some((s) => s.d.includes(n === 8 ? '8 根金属棒' : `${n} 路电极触点`)));
 }
+
+// 6. 首板脚位与上电自检解码 Studio 路由白名单校验
+assert.deepEqual(studioRoute('devicePinout', { deviceId: 'c08b-16ch' }), ['GET', '/api/device/pinout?device_id=c08b-16ch']);
+assert.deepEqual(studioRoute('bringupDecode', { sample: '16ch' }), ['POST', '/api/device/bringup_decode', { sample: '16ch' }]);
+assert.deepEqual(studioRoute('bringupDecode', { hex: 'FFFF01FF03000003C60292D2' }), ['POST', '/api/device/bringup_decode', { hex: 'FFFF01FF03000003C60292D2' }]);
+assert.throws(() => studioRoute('bringupDecode', { hex: 'NOT_HEX_$$$' }), /十六进制/);
 
 console.log('check-multichannel OK (2 / 8 / 16 channels verified)');

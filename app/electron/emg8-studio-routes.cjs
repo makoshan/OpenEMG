@@ -31,6 +31,13 @@ const STUDIO = {
   deviceState: () => ['GET', '/api/device/state'],
   deviceConfig: () => ['GET', '/api/device/config'],
   deviceConfigPut: (a) => ['PUT', '/api/device/config', { channels: (Array.isArray(a?.channels) ? a.channels : []).slice(0, 64).map((c) => ({ index: int(c?.index, 0, 63, -1), label: str(c?.label, 24), enabled: typeof c?.enabled === 'boolean' ? c.enabled : undefined })) }],
+  devicePinout: (a) => ['GET', `/api/device/pinout${a?.deviceId ? `?${q({ device_id: name(a.deviceId) })}` : ''}`],
+  bringupDecode: (a) => {
+    const sample = a?.sample == null || a.sample === '' ? undefined : name(a.sample);
+    const hex = a?.hex == null ? '' : str(a.hex, 512).trim();
+    if (!sample && (!hex || !/^[0-9a-fA-F\s:xX\-]+$/.test(hex))) fail('自检报文只能包含十六进制字符', 'bad-hex');
+    return ['POST', '/api/device/bringup_decode', sample ? { sample } : { hex }];
+  },
   sessionStart: (a) => ['POST', '/api/session/start', { subject: str(a?.subject, 40) || 'S', donning: int(a?.donning, 1, 99, 1), hand: a?.hand === 'right' ? 'right' : 'left', placement: str(a?.placement, 80) || '', notes: str(a?.notes, 200) || '' }],
   sessionStop: () => ['POST', '/api/session/stop', {}],
   takeStart: (a) => ['POST', '/api/take/start', { label: name(a?.label), seconds: a?.seconds == null ? null : num(a.seconds, 0.2, 600, 2) }],

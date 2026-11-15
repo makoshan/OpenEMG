@@ -80,7 +80,7 @@ export function SetupView({ sub, online, hz, dropped, rms, range, hand, donning,
   }
   // N 路都贴好就算过；「Mac 接着充电器」这类条件只提醒，不拦（2026-10-09 走查：8/8 贴好却被挡住，同一句还显示了两遍）
   const passed = !!mine && bad.length === 0 && !stale;
-  const verdict = wearVerdict(bad, mine?.warnings ?? []);   // 文案和「露不露服务端提醒」都在 placement.ts，check-wear-hint.mjs 不开 Electron 就能自检
+  const verdict = wearVerdict(bad, mine?.warnings ?? [], chCount);   // 文案和「露不露服务端提醒」都在 placement.ts，check-wear-hint.mjs 不开 Electron 就能自检
   return <section className="emg8-card ins-stage">
     <div className="ins-corner"><span className="ins-cap">步骤 2 · 佩戴 · 第 {donning} 次</span><span className="ins-cap"><Led state={online ? 'on' : 'off'} /> {online ? `在线 · ${Math.round(hz)} Hz` : '未连接'}</span></div>
     <Dial values={rms} max={range} online={online} hand={hand} channels={chCount} checks={checking == null ? checks : null} limit={NOISE_LIMIT_UV} sweep={sweep}
@@ -89,7 +89,7 @@ export function SetupView({ sub, online, hz, dropped, rms, range, hand, donning,
     <h2 className="ins-headline">{checking != null ? '别动，正在听每一路…' : !mine ? '像戴手表那样戴在手腕' : stale ? '刚才贴好了，现在底噪又高了' : verdict.headline}</h2>
     <p className="ins-sub">{checking != null ? '手放松，前臂搁稳' : stale ? '电极可能被碰松了：沾水压紧，再检查一次' : !mine ? '照下面几条戴好，再检查一遍' : verdict.sub}</p>
     {mine && verdict.warnings.map((w) => <p key={w} className="emg8-warn">{w}</p>)}
-    {checking == null && showWearSteps(!!mine, bad.length) && <ol className="ins-wearlist" aria-label="佩戴提醒">{wearSteps(hand, kind).map((s) => <li key={s.k}><b>{s.t}</b>{s.d}</li>)}</ol>}
+    {checking == null && showWearSteps(!!mine, bad.length) && <ol className="ins-wearlist" aria-label="佩戴提醒">{wearSteps(hand, kind, chCount).map((s) => <li key={s.k}><b>{s.t}</b>{s.d}</li>)}</ol>}
     <div className="ins-actions">
       {passed ? <button className="emg8-primary ins-next" onClick={onNext}>开始录动作 →</button>
         : <button className="emg8-primary" disabled={!online || busy || checking != null} title={grayTitle(!online && '腕带还没连上')} onClick={check}>{mine ? '再检查一次' : '检查贴合 · 5 秒'}</button>}

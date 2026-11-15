@@ -15,4 +15,9 @@ const none = wearVerdict([], warn);
 assert.equal(none.headline, '8 路都贴好了'); assert.deepEqual(none.warnings, warn);
 assert.equal(wearVerdict([], []).sub, '可以开始录动作');
 assert.equal(WHOLE_BAND_BAD, 3);
+// 16 通道与 2 通道佩戴判定
+assert.equal(wearVerdict([], warn, 16).headline, '16 路都贴好了');
+assert.equal(wearVerdict(Array.from({ length: 16 }, (_, i) => i + 1), warn, 16).headline, '16 路都偏高');
+assert.equal(wearVerdict([1, 2], warn, 2).headline, '2 路都偏高');
+assert.equal(wearVerdict([1], warn, 2).headline, '1 路贴好了，CH1 还差一点');
 console.log('check-wear-hint ok');

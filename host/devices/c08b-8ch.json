@@ -50,5 +50,5 @@
     "max_drop_rate": 0.0,
     "min_take_s": 2
   },
-  "notes": "C08B 共用主控 R4U6/R4U6N + 单面 ADS1298 D20（2.40V 基准 / PGA=6 / F01 v1 27B 帧）；默认硬件锁关闭，record=false 直到台架实测解锁"
+  "notes": "OpenEMG C08B 进阶 8 通道（经典主控 R4U6/R4U6N + 单面 ADS1298 D20-8CH，2.40V 基准 / PGA=6 / F01 v1 27B 帧；严禁混插 MCU-U9 反向 20P 座）；默认硬件锁关闭，record=false 直到台架实测解锁"
 }

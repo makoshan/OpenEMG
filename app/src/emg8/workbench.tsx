@@ -4,7 +4,7 @@
 // → 训练（按会话分三集的数据集、LDA / CNN、冻结）→ 规则（识别概率 → 事件、LSL 输出）。旧采集页的录制照旧，同时写 .h5。
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Result } from '../desktop-bridge';
-import type { ChannelStats, EmgAnalysis, Emg8Bridge, FeatureMode, Hand, Rule, StudioConfig, StudioDataset, StudioDevice, StudioEvent, StudioFile, StudioOp, StudioOps, StudioRun, StudioSession, StudioTake, TrainJob } from './contract';
+import type { BringupDecodeResult, ChannelStats, DevicePinout, EmgAnalysis, Emg8Bridge, FeatureMode, Hand, Rule, StudioConfig, StudioDataset, StudioDevice, StudioEvent, StudioFile, StudioOp, StudioOps, StudioRun, StudioSession, StudioTake, TrainJob } from './contract';
 import { CH_COLORS, pct } from './contract';
 import { dataReadout } from './readout';
 import { grayTitle } from './gray-title';
@@ -68,20 +68,62 @@ function ReadoutCard({ fsHz }: { fsHz: number | undefined }) {
 function DevicePage({ call, dev }: { call: Call; dev: StudioDevice | null }) {
   const [cfg, setCfg] = useState<StudioConfig | null>(null);
   const [names, setNames] = useState<string[]>([]);
-  useEffect(() => { void call('deviceConfig').then((c) => { if (c) { setCfg(c); setNames(c.channels.map((x) => x.label)); } }); }, [call]);
+  const [pinout, setPinout] = useState<DevicePinout | null>(null);
+  const [hexIn, setHexIn] = useState('');
+  const [bringup, setBringup] = useState<BringupDecodeResult | null>(null);
+  useEffect(() => {
+    void call('deviceConfig').then((c) => { if (c) { setCfg(c); setNames(c.channels.map((x) => x.label)); } });
+    void call('devicePinout').then((p) => { if (p) setPinout(p); });
+  }, [call, dev?.device_id]);
   const save = async () => { const c = await call('deviceConfigPut', { channels: names.map((label, index) => ({ index, label })) }); if (c) setCfg(c); };
+  const runDecode = async (sample?: '16ch' | '8ch' | '2ch' | 'report16') => {
+    const r = await call('bringupDecode', sample ? { sample } : { hex: hexIn });
+    if (r) { setBringup(r); if (r.input_hex) setHexIn(r.input_hex); }
+  };
   return <div className="emg8-control-grid">
     <section className="emg8-card"><header><h4>设备</h4><span className="emg8-fine">{dev?.device_id}</span></header>
       {dev ? <table className="emg8-table"><tbody>
         <tr><td>名称</td><td>{dev.name}</td></tr><tr><td>连接</td><td>{dev.rig.streaming ? '在线' : dev.state} · {dev.rig.banner.replace(/ @ .*/, '')}</td></tr>
         <tr><td>采样</td><td>{dev.fs_Hz} Hz × {dev.n_channels} 路</td></tr>
         <tr><td>能力</td><td>{Object.entries(dev.capabilities).filter(([, v]) => v).map(([k]) => k).join(' · ')}</td></tr>
+        <tr><td>安全门锁</td><td>{dev.capabilities.record ? '已开启录制' : '默认锁定（record=false，需离体台架实测后解锁）'}</td></tr>
         <tr><td>丢帧</td><td>{dev.dropped}</td></tr></tbody></table> : <p className="emg8-fine">读取中…</p>}
+      {pinout?.notes && <p className="emg8-fine">{pinout.notes}</p>}
       <p className="emg8-fine">设备描述来自 host/devices/*.json。换设备和改采样率要重启采集服务（B5 才支持热切换）。</p></section>
     <section className="emg8-card"><header><h4>通道名</h4><button onClick={() => { void save(); }} disabled={!cfg} title={grayTitle(!cfg && '通道表还在读')}>保存</button></header>
       <div className="emg8-form">{names.map((n, i) => <label key={i}><span style={{ color: CH_COLORS[i % CH_COLORS.length] }}>CH{i + 1} · {cfg?.channels[i]?.sensor}</span>
         <input value={n} maxLength={24} onChange={(e) => setNames(names.map((x, j) => (j === i ? e.target.value : x)))} /></label>)}</div>
       <p className="emg8-fine">通道名写进之后每段 .h5 与导出 .txt 的文件头；只在本次服务运行期间有效。</p></section>
+    <section className="emg8-card"><header><h4>首板上电自检解码 · c08b-bringup</h4>
+      <div className="emg8-row tight">
+        <button onClick={() => { void runDecode('16ch'); }}>示例 16CH</button>
+        <button onClick={() => { void runDecode('8ch'); }}>示例 8CH</button>
+        <button onClick={() => { void runDecode('2ch'); }}>示例 2CH</button>
+      </div></header>
+      <div className="emg8-form">
+        <label className="wide">nRF Connect 0xFFFF 广播串或 97B 内存报告 HEX
+          <input value={hexIn} placeholder="粘贴 10B / 12B / 31B BLE 广播或 97B 报告 HEX" onChange={(e) => setHexIn(e.target.value)} /></label>
+      </div>
+      <div className="emg8-row tight">
+        <button className="primary" disabled={!hexIn.trim()} onClick={() => { void runDecode(); }}>解码十项自检</button>
+      </div>
+      {bringup && <>
+        <p className={bringup.verdict === 'PASS' && !bringup.safety_alerts?.length ? 'emg8-ok' : 'emg8-warn'}>
+          <b>{bringup.verdict}</b> · {bringup.afe_mode_label} · {bringup.led_pattern} · done={bringup.done_mask_hex}/{bringup.expected_done_hex} · fail={bringup.fail_mask_hex}{bringup.vbat_mv_approx ? ` · VBAT≈${bringup.vbat_mv_approx} mV` : ''}
+        </p>
+        {bringup.safety_alerts?.map((a) => <p key={a} className="emg8-warn">{a}</p>)}
+        {bringup.notes?.map((n) => <p key={n} className="emg8-fine">{n}</p>)}
+        <div className="emg8-row tight" style={{ flexWrap: 'wrap', gap: 6 }}>{bringup.items.map((it) => <span key={it.name} className={it.state === 'PASS' ? 'emg8-gate ok' : it.state === 'SKIP' ? 'emg8-fine' : 'emg8-gate bad'}>{it.name}:{it.state}</span>)}</div>
+      </>}
+      <p className="emg8-fine">支持 OpenEMG v0.01（MCU-U9 + AFE-30P）及 R4U6/R4U6N 首板离线对表，无需串口直连。</p></section>
+    {pinout && <section className="emg8-card"><header><h4>硬件通道与座子脚位对线表</h4><span className="emg8-fine">{pinout.device_id}</span></header>
+      <p className="emg8-fine"><b>{pinout.board}</b> · {pinout.interlock}</p>
+      <div style={{ maxHeight: 260, overflow: 'auto' }}>
+        <table className="emg8-table"><thead><tr><th>通道</th><th>连接器脚位</th><th>ESD 保护</th><th>RC / 阻排</th><th>ADC 引脚</th><th>分区</th></tr></thead><tbody>
+          {pinout.rows.map((r) => <tr key={r.ch}><td style={{ color: CH_COLORS[(r.ch - 1) % CH_COLORS.length] }}><b>CH{r.ch}</b></td><td>{r.connector}</td><td>{r.esd}</td><td>{r.filter}</td><td>{r.adc_pin}</td><td>{r.zone}</td></tr>)}
+        </tbody></table>
+      </div>
+      <p className="emg8-fine">{pinout.aux_pins}</p></section>}
     <ReadoutCard fsHz={dev?.fs_Hz} />
   </div>;
 }

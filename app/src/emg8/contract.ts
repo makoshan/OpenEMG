@@ -96,6 +96,27 @@ export type StudioDevice = {
 };
 export type StudioChannel = { label: string; sensor: string; unit: string; enabled?: boolean };
 export type StudioConfig = { id: string; name: string; fs_Hz: number; fs_options: number[]; n_channels: number; channels: StudioChannel[] };
+export type PinoutRow = { ch: number; connector: string; esd: string; filter: string; adc_pin: string; zone: string };
+export type DevicePinout = { device_id: string; board: string; interlock: string; aux_pins: string; notes?: string; record_enabled?: boolean; rows: PinoutRow[] };
+export type BringupItem = { bit: number; name: string; state: 'PASS' | 'FAIL' | 'SKIP' | 'MISSING' | 'WAITING' };
+export type BringupDecodeResult = {
+  source: 'ble_adv' | 'l432_report_97B';
+  input_hex?: string;
+  verdict: 'PASS' | 'FAIL' | 'WAITING_L432';
+  afe_channels: number;
+  afe_mode_label: string;
+  done_mask_hex: string;
+  expected_done_hex: string;
+  fail_mask_hex: string;
+  led_pattern: string;
+  id_a_hex: string;
+  id_b_hex: string;
+  vbat_mv_approx?: number;
+  safety_alerts?: string[];
+  notes?: string[];
+  items: BringupItem[];
+  channels?: { ch: number; sig_pp_uv: number; noise_rms_nv: number }[];
+};
 export type StudioSession = { session: string; device_id: string; subject: string; donning: number; hand: string; placement: string; started: string; ended: string | null; n_takes: number };
 export type StudioTake = { file: string; label: string; seconds: number; gate: Gate; session: string; device_id: string; donning: number; legacy?: string };
 export type StudioFile = { header: { 'sampling rate': number; label: string[] }; from: number; decim: number; n: number; uv: number[][]; events: [number, string, string][] };
@@ -117,6 +138,8 @@ export type StudioOps = {
   deviceState: [undefined, StudioDevice];
   deviceConfig: [undefined, StudioConfig];
   deviceConfigPut: [{ channels: { index: number; label?: string; enabled?: boolean }[] }, StudioConfig];
+  devicePinout: [{ deviceId?: string } | undefined, DevicePinout];
+  bringupDecode: [{ hex?: string; sample?: '16ch' | '8ch' | '2ch' | 'report16' }, BringupDecodeResult];
   sessionStart: [{ subject: string; donning: number; hand: Hand; placement: string; notes?: string }, { session: StudioSession }];
   sessionStop: [undefined, { session: string; takes: unknown[] }];
   takeStart: [{ label: string; seconds: number | null }, { take: { label: string; seconds: number | null } }];

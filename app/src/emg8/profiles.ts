@@ -12,7 +12,8 @@ export const profileId = (value: unknown): ProfileId => typeof value === 'string
 export const matchesProfile = (run: Pick<RunSummary, 'labels'>, profile: Profile) =>
   run.labels.length === profile.labels.length && profile.labels.every((l) => run.labels.includes(l));
 export function trainingBlock(st: ServiceState | null, profile: Profile, projectId: string): string {
-  if (!st || st.project?.id !== projectId || st.rig.kind !== 'wl8') return '先连接本工程的八通道采集服务';
+  const ch = st?.rig.n_channels ?? 8;
+  if (!st || st.project?.id !== projectId || st.rig.kind !== 'wl8') return ch === 8 ? '先连接本工程的八通道采集服务' : `先连接本工程的 ${ch} 通道采集服务`;
   if (st.rig.replay || st.wl8?.replay) return '回放不能训练现场模型';
   if (!profile.labels.every((l) => st.tiers.includes(l))) return '采集服务版本过旧，请重新连接';
   const need = profile.calibrate?.minTrain ?? profile.minTrain;          // 每次佩戴校准每类 3 次就够（服务端同一口径）

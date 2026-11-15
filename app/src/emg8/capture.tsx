@@ -172,7 +172,7 @@ function LegacyCapture({ profile, projectId, bridge, st, ab, hand, donning, setD
         </> : <div className="emg8-cue-idle">
           <b>{steps.find((s) => s.key === step)?.title}</b>
           <span>{steps.find((s) => s.key === step)?.hint}</span>
-          {ab?.last_saved && <small>上一步已保存：{ab.last_saved.step} · {ab.last_saved.completed} 次 · {(ab.last_saved.emg_samples / 2000).toFixed(0)} 秒{ab.last_saved.stopped ? ' · 中途停止' : ''}{ab.last_saved.dropped ? ` · 丢包 ${ab.last_saved.dropped}` : ''}</small>}
+          {ab?.last_saved && <small>上一步已保存：{ab.last_saved.step} · {ab.last_saved.completed} 次 · {(ab.last_saved.emg_samples / (st?.rig.fs_Hz || 2000)).toFixed(0)} 秒{ab.last_saved.stopped ? ' · 中途停止' : ''}{ab.last_saved.dropped ? ` · 丢包 ${ab.last_saved.dropped}` : ''}</small>}
         </div>}
       </section>}
 

@@ -7,6 +7,7 @@
 - 设备热切换（select 到另一个 id）与真扫描属于 B5：这里 scan 只列描述目录，select 只接受当前设备。
 - 事件（gate / rule / train / take）推给 event_subscribers，stream8 把它们转成 SSE 命名事件。
 """
+import importlib.util
 import json
 import threading
 import time
@@ -25,6 +26,18 @@ from plugins import emg_analysis, rules, stats
 from rig import AcqHandler
 
 RING_SECONDS = 5
+_BRINGUP_MOD = None
+
+
+def _bringup_decoder():
+    global _BRINGUP_MOD
+    if _BRINGUP_MOD is None:
+        p = Path(__file__).resolve().parent.parent / 'firmware' / 'c08b-bringup' / 'tools' / 'decode_bringup.py'
+        spec = importlib.util.spec_from_file_location('c08b_decode_bringup', p)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _BRINGUP_MOD = mod
+    return _BRINGUP_MOD
 
 
 class Studio:
@@ -181,6 +194,30 @@ class Studio:
         st['recording'] = bool(self.take)
         st['session'] = self.cur[0]['session'] if self.cur else None
         return st
+
+    def device_pinout(self, q, body):
+        mod = _bringup_decoder()
+        did = str(q.get('device_id') or self.desc.id)
+        out = dict(mod.channel_pinout(did))
+        target_desc = self.desc
+        if did and did != self.desc.id:
+            try:
+                target_desc = device_desc.load(out.get('device_id') or did)
+            except Exception:
+                target_desc = self.desc
+        out['notes'] = target_desc.notes
+        out['record_enabled'] = bool(target_desc.cap('record'))
+        return out
+
+    def device_bringup_decode(self, q, body):
+        mod = _bringup_decoder()
+        sample = body.get('sample')
+        hex_str = mod.sample_hex(str(sample)) if sample else str(body.get('hex') or '').strip()
+        if not hex_str:
+            raise ValueError('请输入 BLE 0xFFFF 广播十六进制串或 97 字节报告十六进制串')
+        res = mod.decode_any_hex(hex_str)
+        res['input_hex'] = hex_str
+        return res
 
     # 会话 / 段
     def session_start(self, q, body):
@@ -387,6 +424,8 @@ ROUTES = {
     ('GET', '/api/device/config'): Studio.device_config_get,
     ('PUT', '/api/device/config'): Studio.device_config_put,
     ('GET', '/api/device/state'): Studio.device_state,
+    ('GET', '/api/device/pinout'): Studio.device_pinout,
+    ('POST', '/api/device/bringup_decode'): Studio.device_bringup_decode,
     ('POST', '/api/session/start'): Studio.session_start,
     ('POST', '/api/session/stop'): Studio.session_stop,
     ('POST', '/api/take/start'): Studio.take_start,
