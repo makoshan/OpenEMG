@@ -264,6 +264,87 @@ int main(void)
         assert((C08B_NF_IMU_SUBSCRIBED & C08B_NF_BLE_SUBSCRIBED) == 0u);
     }
 
-    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、OE_N零帧状态头拦截、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
+    /* 14. 在线寄存器调试（RREG / WREG / CLRO）门禁、安全掩码、280B 帧捎带与 META JSON 正反例 */
+    {
+        assert(c08b_parse_ctrl4((const uint8_t *)"RREG") == C08B_MODE_RREG);
+        assert(c08b_parse_ctrl4((const uint8_t *)"WREG") == C08B_MODE_WREG);
+        assert(c08b_parse_ctrl4((const uint8_t *)"CLRO") == C08B_MODE_CLRO);
+
+        /* 锁定态下 RREG/WREG 必须报 FAULT_LOCKED，CLRO 允许随时清理 */
+        assert(c08b_gate_mode_request(C08B_MODE_RREG, 1000, false, false) == C08B_FAULT_LOCKED);
+        assert(c08b_gate_mode_request(C08B_MODE_WREG, 1000, false, false) == C08B_FAULT_LOCKED);
+        assert(c08b_gate_mode_request(C08B_MODE_CLRO, 1000, false, true)  == C08B_FAULT_NONE);
+        assert(c08b_gate_mode_request(C08B_MODE_RREG, 1000, true,  true)  == C08B_FAULT_INTERLOCK);
+        assert(c08b_gate_mode_request(C08B_MODE_WREG, 1000, true,  true)  == C08B_FAULT_INTERLOCK);
+        assert(c08b_gate_mode_request(C08B_MODE_RREG, 1000, true,  false) == C08B_FAULT_NONE);
+        assert(c08b_gate_mode_request(C08B_MODE_WREG, 1000, true,  false) == C08B_FAULT_NONE);
+
+        /* RREG 地址与芯片范围正反例 */
+        assert(c08b_validate_reg_read(AFE_16CH, C08B_CHIP_BOTH, 0x00u));
+        assert(c08b_validate_reg_read(AFE_16CH, C08B_CHIP_U2,   0x19u));
+        assert(!c08b_validate_reg_read(AFE_16CH, C08B_CHIP_U1,  0x1Au));
+        assert(!c08b_validate_reg_read(AFE_8CH,  C08B_CHIP_U2,  0x05u));
+        assert(c08b_validate_reg_read(AFE_2CH,   C08B_CHIP_U1,  0x0Bu));
+        assert(!c08b_validate_reg_read(AFE_2CH,  C08B_CHIP_U1,  0x0Cu));
+        assert(!c08b_validate_reg_read(AFE_NONE, C08B_CHIP_U1,  0x00u));
+
+        /* WREG 硬件安全掩码：合法调参放行，危险位必拒 */
+        uint8_t vm = 0u;
+        assert(c08b_validate_reg_write(AFE_16CH, 0u, 0x05u, 0x60u, &vm) && vm == 0xFFu); /* CH1 增益 12 正常电极输入 */
+        assert(c08b_validate_reg_write(AFE_16CH, 1u, 0x05u, 0x10u, &vm) && vm == 0xFFu); /* U2 CH9 增益 1 */
+        assert(c08b_validate_reg_write(AFE_16CH, 0u, 0x03u, 0xC4u, &vm) && vm == 0xFEu); /* U1 合法开 PD_RLD */
+        assert(c08b_validate_reg_write(AFE_16CH, 0u, 0x14u, 0x0Fu, &vm) && vm == 0x0Fu); /* GPIO 全输入 */
+
+        /* ADS1298 必败反例：只读寄存器、VREF_4V、RLD_MEAS(Pin62=+2.5V)、RLDREF_INT(Pin60=AGND)、U2 开 RLD、MUX=0x02、GPIO 设输出 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x00u, 0x92u, &vm));
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x12u, 0x00u, &vm));
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x03u, 0xE0u, &vm)); /* VREF_4V=1 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x03u, 0xD4u, &vm)); /* RLD_MEAS=1 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x03u, 0xCCu, &vm)); /* RLDREF_INT=1 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 1u, 0x03u, 0xC4u, &vm)); /* U2 禁开 PD_RLD */
+        assert(!c08b_validate_reg_write(AFE_16CH, 1u, 0x0Du, 0x01u, &vm)); /* U2 禁接 RLD_SENSP */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x05u, 0x02u, &vm)); /* MUX=0x02 RLD_MEASURE */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x05u, 0x70u, &vm)); /* GAIN=111 未定义 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x14u, 0x0Eu, &vm)); /* GPIO1 设输出短路 GND */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x15u, 0x01u, &vm)); /* PACE 外驱 */
+        assert(!c08b_validate_reg_write(AFE_8CH,  1u, 0x05u, 0x60u, &vm)); /* 8CH 无 U2 */
+
+        /* ADS1292 正反例 */
+        assert(c08b_validate_reg_write(AFE_2CH, 0u, 0x04u, 0x60u, &vm) && vm == 0xFFu);
+        assert(c08b_validate_reg_write(AFE_2CH, 0u, 0x02u, 0xE0u, &vm) && vm == 0x7Bu); /* PDB_LOFF_COMP=1 合法 */
+        assert(!c08b_validate_reg_write(AFE_2CH, 0u, 0x02u, 0xB0u, &vm)); /* VREF_4V(bit4)=1 超 3.0V AVDD */
+        assert(!c08b_validate_reg_write(AFE_2CH, 0u, 0x02u, 0xA4u, &vm)); /* bit2 保留位非 0 */
+        assert(!c08b_validate_reg_write(AFE_2CH, 0u, 0x0Au, 0x03u, &vm)); /* RESP2 漏写 bit2 */
+        assert(!c08b_validate_reg_write(AFE_2CH, 0u, 0x0Bu, 0x00u, &vm)); /* GPIO 设输出 */
+
+        /* 280B SPI 帧捎带回读：sample_count < 4 时可提取，sample_count == 4 时不误判样本尾字节 */
+        c08b_link_tx_t rtx;
+        memset(&rtx, 0, sizeof(rtx));
+        rtx.afe_mode = AFE_16CH;
+        rtx.sample_count = 0u;
+        c08b_reg_reply_t rep_in = { .valid = true, .seq = 7u, .addr = 0x05u, .val_a = 0x60u, .val_b = 0x10u, .ovr_count = 2u };
+        c08b_link_tx_put_reg_reply(&rtx, &rep_in);
+        c08b_link_tx_seal(&rtx);
+        assert(c08b_link_tx_ok(&rtx));
+
+        c08b_reg_reply_t rep_out;
+        memset(&rep_out, 0, sizeof(rep_out));
+        assert(c08b_link_tx_get_reg_reply(&rtx, &rep_out));
+        assert(rep_out.valid && rep_out.seq == 7u && rep_out.addr == 0x05u && rep_out.val_a == 0x60u &&
+               rep_out.val_b == 0x10u && rep_out.ovr_count == 2u);
+
+        /* sample_count == 4 时 samples[3] 装满真实 ADC 数据，即使偶然撞上 0x52 也不得当作寄存器回包 */
+        rtx.sample_count = 4u;
+        rtx.samples[3][48] = C08B_REG_REPLY_MAGIC;
+        c08b_link_tx_seal(&rtx);
+        assert(c08b_link_tx_ok(&rtx));
+        assert(!c08b_link_tx_get_reg_reply(&rtx, &rep_out));
+
+        int mlen_ex = c08b_format_meta_json_ex(meta, sizeof(meta), AFE_16CH, 1000, false, true, &rep_in);
+        assert(mlen_ex > 120 && strstr(meta, "\"reg_overrides\":2") &&
+               strstr(meta, "\"last_reg\":{\"seq\":7,\"addr\":5,\"u1\":96,\"u2\":16}"));
+    }
+
+    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、在线RREG/WREG安全掩码、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、OE_N零帧状态头拦截、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
     return 0;
 }

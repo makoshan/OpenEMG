@@ -1,11 +1,12 @@
-// 蓝牙接收器（XIAO ESP32-C6 版）：NimBLE 当中心连 R01（MAKO-V12-ADS-2K），定 7.5 ms / 2M / DLE / MTU 247，
-// 通知经 USB 串口送 Mac。串口协议与 xiao-central（nRF52840 版）逐字节相同，host/v12_dongle.py 不改即可用。
-// 只用开发板当接收器；R01 本体只用电池，不接 USB（见 firmware-f05-ble-dout/README）。
+// 蓝牙接收器（XIAO ESP32-C6 版）：NimBLE 当中心连 R01（MAKO-V12-ADS-2K）或 C08B（YUANLI-C08B），
+// 定 7.5 ms / 2M / DLE / MTU 247，通知经 USB 串口送 Mac。串口协议与 xiao-central（nRF52840 版）逐字节相同，
+// host/v12_dongle.py 与 host/c08b_stream.py 不改即可用。只用开发板当接收器；采集本体只用电池，不接 USB。
 //
 // 设备→电脑：A5 | kind u8 | len u16 LE | t_us u32 LE | payload
-//   2 = 数据特征通知，0x10 = 文本日志，0x11 = 链路信息（26 B），0x80|op = 命令应答（首字节 0 成功）
+//   2 = EMG 数据特征通知，6 = IMU 特征通知（可选），0x10 = 文本日志，0x11 = 链路信息（26 B），0x80|op = 命令应答（首字节 0 成功）
 // 电脑→设备：A5 | op u8 | len u16 LE | payload
-//   'W' 写控制特征（带应答），'R' 读特征（1 字节：3 元数据 / 4 状态，长读），'I' 设连接间隔（u16，1.25 ms），
+//   'W' 写控制特征（带应答，支持 TST1/SHT1/EXT1/EXR1/SYN1/RLD1/PRB1/RREG/WREG/CLRO/STOP），
+//   'R' 读特征（1 字节：3 元数据 / 4 状态，长读），'I' 设连接间隔（u16，1.25 ms），
 //   'Q' 立刻回链路信息，'D' 断开当前连接（之后自动重扫重连）
 #include <string.h>
 #include <stdio.h>
@@ -23,15 +24,18 @@
 #ifndef TARGET_NAME
 #define TARGET_NAME "MAKO-V12-ADS-2K"
 #endif
-// 7b24c101-3948-4f03-9d11-12bb9d0000NN（与 F05 同一服务；NN = 01 服务、02 数据、03 元数据、04 状态、05 控制）
+// 7b24c101-3948-4f03-9d11-12bb9d0000NN（与 V12/C08B 同一服务；NN = 01 服务、02 数据、03 元数据、04 状态、05 控制、06 IMU）
 #define MAKO_UUID(nn) BLE_UUID128_INIT(nn, 0x00, 0x00, 0x9d, 0xbb, 0x12, 0x11, 0x9d, 0x03, 0x4f, 0x48, 0x39, 0x01, 0xc1, 0x24, 0x7b)
 static const ble_uuid128_t SVC = MAKO_UUID(0x01), DATA = MAKO_UUID(0x02), META = MAKO_UUID(0x03),
-                           STATUS = MAKO_UUID(0x04), CONTROL = MAKO_UUID(0x05);
+                           STATUS = MAKO_UUID(0x04), CONTROL = MAKO_UUID(0x05), IMU = MAKO_UUID(0x06);
 
 static uint8_t own_addr_type;
 static volatile uint16_t conn = BLE_HS_CONN_HANDLE_NONE;
 static volatile bool ready = false;
-static uint16_t svc_start, svc_end, h_data, h_meta, h_status, h_control, h_cccd;
+static uint16_t svc_start, svc_end, h_data, h_data_end, h_meta, h_status, h_control, h_imu, h_imu_end;
+static uint16_t h_data_cccd, h_imu_cccd;
+static uint16_t chr_defs[12];
+static uint8_t  chr_def_cnt;
 static volatile uint16_t want_ci = 6, dl_tx = 27;
 static volatile uint32_t connects = 0, notifies = 0, ring_drops = 0, ring_peak = 0;
 
@@ -73,21 +77,70 @@ static void logf_(const char *fmt, ...) {
 static void scan(void);
 static int gap_event(struct ble_gap_event *e, void *arg);
 
-// ---- 连上后依次：找服务 → 找特征 → 找数据特征的 CCCD → 写 0x0001 订阅 → ready（MTU 由 R01 开采时发起）
+// ---- 连上后依次：找服务 → 找特征 → 找数据特征 CCCD（及可选 IMU 特征 CCCD） → 写 0x0001 订阅 → ready
+static uint16_t chr_end_handle(uint16_t val_h) {
+    uint16_t end = svc_end;
+    for (uint8_t i = 0; i < chr_def_cnt; i++) {
+        if (chr_defs[i] > val_h && (uint16_t)(chr_defs[i] - 1u) < end) {
+            end = (uint16_t)(chr_defs[i] - 1u);
+        }
+    }
+    return end;
+}
+
+static int on_imu_subscribed(uint16_t c, const struct ble_gatt_error *err, struct ble_gatt_attr *a, void *arg) {
+    (void)c; (void)a; (void)arg;
+    ready = true;
+    logf_("connected %s (imu=%d)", TARGET_NAME, err->status == 0 ? 1 : 0);
+    return 0;
+}
+
+static int on_imu_dsc(uint16_t c, const struct ble_gatt_error *err, uint16_t chr_val_handle, const struct ble_gatt_dsc *d, void *arg) {
+    (void)chr_val_handle; (void)arg;
+    if (err->status == 0) {
+        if (ble_uuid_u16(&d->uuid.u) == BLE_GATT_DSC_CLT_CFG_UUID16 && !h_imu_cccd) h_imu_cccd = d->handle;
+        return 0;
+    }
+    if (err->status == BLE_HS_EDONE && h_imu_cccd) {
+        static const uint8_t on[2] = {1, 0};
+        if (ble_gattc_write_flat(c, h_imu_cccd, on, 2, on_imu_subscribed, NULL) != 0) {
+            ready = true;
+            logf_("connected %s (imu write err)", TARGET_NAME);
+        }
+    } else {
+        ready = true;
+        logf_("connected %s (imu=0)", TARGET_NAME);
+    }
+    return 0;
+}
+
 static int on_subscribed(uint16_t c, const struct ble_gatt_error *err, struct ble_gatt_attr *a, void *arg) {
-    if (err->status == 0) { ready = true; logf_("connected %s", TARGET_NAME); }
-    else { logf_("subscribe fail %d", err->status); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM); }
+    (void)a; (void)arg;
+    if (err->status != 0) {
+        logf_("subscribe fail %d", err->status);
+        ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
+        return 0;
+    }
+    if (h_imu && h_imu <= h_imu_end) {
+        h_imu_cccd = 0;
+        if (ble_gattc_disc_all_dscs(c, h_imu, h_imu_end, on_imu_dsc, NULL) == 0) return 0;
+    }
+    ready = true;
+    logf_("connected %s", TARGET_NAME);
     return 0;
 }
 
 static int on_dsc(uint16_t c, const struct ble_gatt_error *err, uint16_t chr_val_handle, const struct ble_gatt_dsc *d, void *arg) {
+    (void)chr_val_handle; (void)arg;
     if (err->status == 0) {
-        if (ble_uuid_u16(&d->uuid.u) == BLE_GATT_DSC_CLT_CFG_UUID16 && !h_cccd) h_cccd = d->handle;
+        if (ble_uuid_u16(&d->uuid.u) == BLE_GATT_DSC_CLT_CFG_UUID16 && !h_data_cccd) h_data_cccd = d->handle;
         return 0;
     }
-    if (err->status == BLE_HS_EDONE && h_cccd) {
+    if (err->status == BLE_HS_EDONE && h_data_cccd) {
         static const uint8_t on[2] = {1, 0};
-        ble_gattc_write_flat(c, h_cccd, on, 2, on_subscribed, NULL);
+        if (ble_gattc_write_flat(c, h_data_cccd, on, 2, on_subscribed, NULL) != 0) {
+            logf_("cccd write err"); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
+        }
     } else {
         logf_("no cccd %d", err->status); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
     }
@@ -95,16 +148,25 @@ static int on_dsc(uint16_t c, const struct ble_gatt_error *err, uint16_t chr_val
 }
 
 static int on_chr(uint16_t c, const struct ble_gatt_error *err, const struct ble_gatt_chr *ch, void *arg) {
+    (void)arg;
     if (err->status == 0) {
+        if (chr_def_cnt < (uint8_t)(sizeof(chr_defs) / sizeof(chr_defs[0]))) {
+            chr_defs[chr_def_cnt++] = ch->def_handle;
+        }
         if (!ble_uuid_cmp(&ch->uuid.u, &DATA.u)) h_data = ch->val_handle;
         else if (!ble_uuid_cmp(&ch->uuid.u, &META.u)) h_meta = ch->val_handle;
         else if (!ble_uuid_cmp(&ch->uuid.u, &STATUS.u)) h_status = ch->val_handle;
         else if (!ble_uuid_cmp(&ch->uuid.u, &CONTROL.u)) h_control = ch->val_handle;
+        else if (!ble_uuid_cmp(&ch->uuid.u, &IMU.u)) h_imu = ch->val_handle;
         return 0;
     }
     if (err->status == BLE_HS_EDONE && h_data && h_meta && h_status && h_control) {
-        h_cccd = 0;  // CCCD 在数据特征值句柄之后、下一个特征之前；范围放到服务结尾，第一个 CCCD 就是它的
-        ble_gattc_disc_all_dscs(c, h_data, svc_end, on_dsc, NULL);
+        h_data_end = chr_end_handle(h_data);
+        h_imu_end  = h_imu ? chr_end_handle(h_imu) : 0;
+        h_data_cccd = 0;
+        if (ble_gattc_disc_all_dscs(c, h_data, h_data_end, on_dsc, NULL) != 0) {
+            logf_("dsc disc err"); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
+        }
     } else {
         logf_("chr missing %d", err->status); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
     }
@@ -112,9 +174,12 @@ static int on_chr(uint16_t c, const struct ble_gatt_error *err, const struct ble
 }
 
 static int on_svc(uint16_t c, const struct ble_gatt_error *err, const struct ble_gatt_svc *s, void *arg) {
+    (void)arg;
     if (err->status == 0) { svc_start = s->start_handle; svc_end = s->end_handle; return 0; }
     if (err->status == BLE_HS_EDONE && svc_start) {
-        h_data = h_meta = h_status = h_control = 0;
+        h_data = h_data_end = h_meta = h_status = h_control = h_imu = h_imu_end = 0;
+        h_data_cccd = h_imu_cccd = 0;
+        chr_def_cnt = 0;
         ble_gattc_disc_all_chrs(c, svc_start, svc_end, on_chr, NULL);
     } else {
         logf_("svc missing %d", err->status); ble_gap_terminate(c, BLE_ERR_REM_USER_CONN_TERM);
@@ -123,6 +188,7 @@ static int on_svc(uint16_t c, const struct ble_gatt_error *err, const struct ble
 }
 
 static int on_mtu(uint16_t c, const struct ble_gatt_error *err, uint16_t mtu, void *arg) {
+    (void)err; (void)mtu; (void)arg;
     svc_start = svc_end = 0;
     ble_gattc_disc_svc_by_uuid(c, &SVC.u, on_svc, NULL);  // MTU 失败也照样继续，按 23 走
     return 0;
@@ -199,9 +265,17 @@ static int gap_event(struct ble_gap_event *e, void *arg) {
         conn = e->connect.conn_handle; connects++; ready = false; rd_busy = false; dl_tx = 27;
         ble_gap_set_prefered_le_phy(conn, BLE_GAP_LE_PHY_2M_MASK, BLE_GAP_LE_PHY_2M_MASK, BLE_GAP_LE_PHY_CODED_ANY);
         ble_gap_set_data_len(conn, 251, 2120);
-        // 不主动协商 MTU：F05 开始采集时自己会发起一次；两边都发起时，R01 的 SoftDevice 一直认为“MTU 协商进行中”，
-        // 每次发通知都返回 NRF_ERROR_INVALID_STATE（2026-10-24 实测 last_hvx_error=8）。直接进入服务发现
-        on_mtu(conn, &(struct ble_gatt_error){0}, 23, NULL);
+        // R01 (MAKO-V12-ADS-2K) 开始采集时自己会发起一次 MTU 协商；两边都发起时 R01 的 SoftDevice 会报 last_hvx_error=8。
+        // 而 C08B (YUANLI-C08B) 从机等待中心主动发起 MTU=247 交换，因此目标为 YUANLI-C08B（或定义 DONGLE_INITIATE_MTU）时主动交换 MTU。
+#if defined(DONGLE_INITIATE_MTU)
+        if (ble_gattc_exchange_mtu(conn, on_mtu, NULL) != 0) on_mtu(conn, &(struct ble_gatt_error){0}, 23, NULL);
+#else
+        if (!strcmp(TARGET_NAME, "YUANLI-C08B")) {
+            if (ble_gattc_exchange_mtu(conn, on_mtu, NULL) != 0) on_mtu(conn, &(struct ble_gatt_error){0}, 23, NULL);
+        } else {
+            on_mtu(conn, &(struct ble_gatt_error){0}, 23, NULL);
+        }
+#endif
         return 0;
     case BLE_GAP_EVENT_DISCONNECT:
         logf_("disconnected reason 0x%02x", e->disconnect.reason);
@@ -221,13 +295,13 @@ static int gap_event(struct ble_gap_event *e, void *arg) {
         dl_tx = e->data_len_chg.max_rx_octets;  // 外设实际肯发多长
         return 0;
     case BLE_GAP_EVENT_NOTIFY_RX:
-        if (e->notify_rx.attr_handle == h_data) {
+        if (e->notify_rx.attr_handle == h_data || (h_imu && e->notify_rx.attr_handle == h_imu)) {
             static uint8_t buf[256];
             uint16_t n = OS_MBUF_PKTLEN(e->notify_rx.om);
             if (n > sizeof buf) n = sizeof buf;
             os_mbuf_copydata(e->notify_rx.om, 0, n, buf);
             notifies++;
-            put_frame(2, now_us(), buf, n);
+            put_frame(e->notify_rx.attr_handle == h_imu ? 6 : 2, now_us(), buf, n);
         }
         return 0;
     default:

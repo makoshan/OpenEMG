@@ -94,6 +94,30 @@ int main(void) {
     hex_line("META_8", (const uint8_t *)meta, (size_t)n);
     n = c08b_format_meta_json(meta, sizeof(meta), AFE_2CH, 1000u, true, true);
     hex_line("META_2", (const uint8_t *)meta, (size_t)n);
+    c08b_reg_reply_t rep_meta = { .valid = true, .seq = 9u, .addr = 0x05u, .val_a = 0x60u, .val_b = 0x10u, .ovr_count = 2u };
+    n = c08b_format_meta_json_ex(meta, sizeof(meta), AFE_16CH, 2000u, true, true, &rep_meta);
+    hex_line("META_16_REG", (const uint8_t *)meta, (size_t)n);
+
+    /* 扫描 C11 c08b_validate_reg_write 全空间摘要，用于与 Python validate_c08b_reg_write_host 逐位对拍 */
+    uint8_t reg_digest[4] = {0};
+    const c08b_afe_mode_t modes[3] = { AFE_16CH, AFE_8CH, AFE_2CH };
+    uint32_t acc = 2166136261u;
+    for (int mi = 0; mi < 3; ++mi) {
+        for (uint8_t c = 0; c <= 1u; ++c) {
+            for (uint8_t a = 0; a <= 0x1Au; ++a) {
+                for (int v = 0; v <= 255; ++v) {
+                    uint8_t vm = 0u;
+                    bool ok = c08b_validate_reg_write(modes[mi], c, a, (uint8_t)v, &vm);
+                    acc = (acc ^ (uint32_t)(ok ? (1u + vm) : 0u)) * 16777619u;
+                }
+            }
+        }
+    }
+    reg_digest[0] = (uint8_t)(acc);
+    reg_digest[1] = (uint8_t)(acc >> 8);
+    reg_digest[2] = (uint8_t)(acc >> 16);
+    reg_digest[3] = (uint8_t)(acc >> 24);
+    hex_line("WREG_FNV", reg_digest, 4);
 
     uint8_t st[64];
     c08b_ble_status_t st_in = {
@@ -186,6 +210,19 @@ int main(void) {
     assert (m8['protocol'], m8['channels'], m8['active_channels'], m8['vref_mV']) == (1, 8, 8, 2400)
     m2 = cs.validate_c08b_metadata(kv['META_2'], expected=BUILD_ID)
     assert (m2['protocol'], m2['channels'], m2['active_channels'], m2['vref_mV'], m2['spi_Hz']) == (1, 8, 2, 2420, 1_000_000)
+    m16_reg = cs.validate_c08b_metadata(kv['META_16_REG'], expected=BUILD_ID)
+    assert m16_reg['fs_Hz'] == 2000 and m16_reg['reg_overrides'] == 2
+    assert m16_reg['last_reg'] == {'seq': 9, 'addr': 5, 'u1': 0x60, 'u2': 0x10}
+
+    # C11 c08b_validate_reg_write 与 Python validate_c08b_reg_write_host 全空间 (3×2×27×256) FNV-1a 逐位一致
+    acc = 2166136261
+    for afe_name in ('ADS1298_DUAL', 'ADS1298_SINGLE', 'ADS1292'):
+        for c in (0, 1):
+            for a in range(0x1B):
+                for v in range(256):
+                    ok, vm = cs.validate_c08b_reg_write_host(afe_name, c, a, v)
+                    acc = ((acc ^ ((1 + vm) if ok else 0)) * 16777619) & 0xFFFFFFFF
+    assert acc.to_bytes(4, 'little') == kv['WREG_FNV'], (acc.to_bytes(4, 'little').hex(), kv['WREG_FNV'].hex())
 
     st = v12_status.decode_status(kv['STATUS'])
     assert st['produced'] == 128 and st['sent_samples'] == 124 and st['active'] and st['bench_measured']
@@ -285,16 +322,17 @@ class _FakeServices:
 class FakeC08BBleClient:
     """模拟 C08B 真机冷启动行为：
     初始待机一律报 afe='NONE' (protocol=1, active_channels=0, spi_Hz=1MHz)，
-    只有在收到解锁后的 PRB1/TST1/...（切换为 board_afe）或收到 SYN1（切换为第 7 字节指定的 2/8/16ch）时，
+    只有在收到解锁后的 PRB1/RREG/WREG/TST1/...（切换为 board_afe）或收到 SYN1（切换为第 7 字节指定的 2/8/16ch）时，
     才在发出第 1 条通知前刷新 GATT META！
     """
 
-    def __init__(self, board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=False, fs_Hz=1000, corrupt_synth_flag=None):
+    def __init__(self, board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=False, fs_Hz=1000, corrupt_synth_flag=None, stale_reads_on_reg_op=0):
         self.mtu_size = 247
         self.board_afe = board_afe
         self.bench_measured = bench_measured
         self.fs_Hz = fs_Hz
         self.corrupt_synth_flag = corrupt_synth_flag
+        self.stale_reads_on_reg_op = stale_reads_on_reg_op
         self.services = _FakeServices(_FakeService([cs.SERVICE, cs.DATA, cs.META, cs.STATUS, cs.CONTROL, cs.IMU_DATA]))
         self.notify_cbs = {}
         self.written_commands = []
@@ -303,7 +341,28 @@ class FakeC08BBleClient:
         self.produced = 0
         self.sent = 0
         self._pump_task = None
+        self.reg_overrides = [{}, {}]
+        self.reg_seq = 0
+        self.last_reg = None
+        self._pending_last_reg = None
+        self._stale_reads_left = 0
+        self._init_default_regs(board_afe)
         self._apply_afe(initial_afe)
+
+    def _init_default_regs(self, board_afe):
+        if board_afe == 'ADS1292':
+            r0 = {
+                0x00: 0x53, 0x01: 0x03, 0x02: 0xA0, 0x03: 0x10,
+                0x04: 0x00, 0x05: 0x00, 0x06: 0x00, 0x07: 0x00,
+                0x08: 0x00, 0x09: 0x02, 0x0A: 0x07, 0x0B: 0x0C,
+            }
+            self.regs = [r0, {}]
+        else:
+            def _r98(id_byte):
+                d = {a: 0x00 for a in range(0x1A)}
+                d.update({0x00: id_byte, 0x01: 0x85, 0x02: 0x00, 0x03: 0xC0, 0x14: 0x0F, 0x16: 0x20})
+                return d
+            self.regs = [_r98(0x92), _r98(0x92 if board_afe == 'ADS1298_DUAL' else 0xFF)]
 
     def _apply_afe(self, afe):
         self.afe = afe
@@ -316,10 +375,25 @@ class FakeC08BBleClient:
         else:
             self.protocol, self.channels, self.active_channels, self.vref_mV, self.spi_Hz = 1, 8, 0, 2400, 1_000_000
 
+    def _ovr_count(self):
+        if self.afe == 'ADS1298_DUAL':
+            return len(self.reg_overrides[0]) + len(self.reg_overrides[1])
+        if self.afe in ('ADS1298_SINGLE', 'ADS1292'):
+            return len(self.reg_overrides[0])
+        return 0
+
     async def read_gatt_char(self, uuid):
         u = str(uuid).lower()
         if u == cs.META:
-            return json.dumps(dict(
+            vis_last_reg = self.last_reg
+            if self._pending_last_reg is not None:
+                if self._stale_reads_left > 0:
+                    self._stale_reads_left -= 1
+                else:
+                    self.last_reg = self._pending_last_reg
+                    self._pending_last_reg = None
+                    vis_last_reg = self.last_reg
+            payload = dict(
                 profile='C08B_DUAL_STREAM_CANDIDATE',
                 protocol=self.protocol,
                 channels=self.channels,
@@ -334,7 +408,13 @@ class FakeC08BBleClient:
                 clock_source='L432_DWT_1MHz',
                 clock_resolution_us=1,
                 build_id=BUILD_ID,
-            )).encode()
+            )
+            ovr_n = self._ovr_count()
+            if vis_last_reg is not None or ovr_n > 0:
+                payload['reg_overrides'] = ovr_n
+                if vis_last_reg is not None:
+                    payload['last_reg'] = dict(vis_last_reg)
+            return json.dumps(payload).encode()
         if u == cs.STATUS:
             edges = self.produced + 1 if self.produced >= 2 else 0
             min_iv = 1_000_000 // self.fs_Hz if edges >= 2 else 0xFFFFFFFF
@@ -355,22 +435,97 @@ class FakeC08BBleClient:
     async def stop_notify(self, uuid):
         self.notify_cbs.pop(str(uuid).lower(), None)
 
+    async def _stop_pump(self):
+        self.active = False
+        if self._pump_task is not None:
+            self._pump_task.cancel()
+            try:
+                await self._pump_task
+            except asyncio.CancelledError:
+                pass
+            self._pump_task = None
+
     async def write_gatt_char(self, uuid, data, response=True):
         assert str(uuid).lower() == cs.CONTROL
         cmd = bytes(data)
         self.written_commands.append(cmd)
         verb = cmd[:4]
         if verb == b'STOP':
-            self.active = False
-            # 对齐真实 C 固件（nrf/main.c & l432/main.c）：收到 STOP 复位非持续性故障码锁存
+            # 对齐真实 C 固件（nrf/main.c & l432/main.c）：收到 STOP 停泵并复位非持续性故障码锁存
+            await self._stop_pump()
             self.fault = 0
-            if self._pump_task is not None:
-                self._pump_task.cancel()
-                try:
-                    await self._pump_task
-                except asyncio.CancelledError:
-                    pass
-                self._pump_task = None
+            return
+
+        if verb == b'CLRO':
+            await self._stop_pump()
+            if len(cmd) != 4:
+                self.fault = 2
+                return
+            self.reg_overrides = [{}, {}]
+            self.last_reg = None
+            self._pending_last_reg = None
+            self._stale_reads_left = 0
+            self.fault = 0
+            return
+
+        if verb in (b'RREG', b'WREG'):
+            await self._stop_pump()
+            prev_visible = self.last_reg
+            self.last_reg = None
+            self._pending_last_reg = None
+            self._stale_reads_left = 0
+            exp_len = 6 if verb == b'RREG' else 7
+            if len(cmd) != exp_len or cmd[4] > 2 or cmd[5] > 0x19:
+                self.fault = 2
+                return
+            if not self.bench_measured:
+                self.fault = 1
+                return
+            if self.board_afe == 'NONE':
+                self.fault = 4
+                return
+            self._apply_afe(self.board_afe)
+            chip_sel, addr = cmd[4], cmd[5]
+            if verb == b'RREG':
+                if (self.afe != 'ADS1298_DUAL' and chip_sel == 1) or (self.afe == 'ADS1292' and addr > 0x0B):
+                    self.fault = 2
+                    return
+                self.reg_seq = (self.reg_seq + 1) & 0xFFFF
+                u1 = self.regs[0].get(addr, 0)
+                u2 = self.regs[1].get(addr, 0) if self.afe == 'ADS1298_DUAL' else 0
+                new_lr = {'seq': self.reg_seq, 'addr': addr, 'u1': u1, 'u2': u2}
+                if self.stale_reads_on_reg_op > 0 and prev_visible is not None:
+                    self.last_reg = prev_visible
+                    self._pending_last_reg = new_lr
+                    self._stale_reads_left = self.stale_reads_on_reg_op
+                else:
+                    self.last_reg = new_lr
+                self.fault = 0
+                return
+            val = cmd[6]
+            if self.afe != 'ADS1298_DUAL' and chip_sel == 1:
+                self.fault = 2
+                return
+            targets = [1] if chip_sel == 1 else ([0] if (chip_sel == 0 or self.afe != 'ADS1298_DUAL') else [0, 1])
+            for c in targets:
+                ok, _vm = cs.validate_c08b_reg_write_host(self.afe, c, addr, val)
+                if not ok:
+                    self.fault = 2
+                    return
+            for c in targets:
+                self.regs[c][addr] = val
+                self.reg_overrides[c][addr] = val
+            self.reg_seq = (self.reg_seq + 1) & 0xFFFF
+            u1 = self.regs[0].get(addr, 0)
+            u2 = self.regs[1].get(addr, 0) if self.afe == 'ADS1298_DUAL' else 0
+            new_lr = {'seq': self.reg_seq, 'addr': addr, 'u1': u1, 'u2': u2}
+            if self.stale_reads_on_reg_op > 0 and prev_visible is not None:
+                self.last_reg = prev_visible
+                self._pending_last_reg = new_lr
+                self._stale_reads_left = self.stale_reads_on_reg_op
+            else:
+                self.last_reg = new_lr
+            self.fault = 0
             return
 
         is_synth = (verb == b'SYN1')
@@ -378,12 +533,20 @@ class FakeC08BBleClient:
             self.fault = 1
             return
 
+        if len(cmd) >= 6 and verb != b'PRB1':
+            fs = struct.unpack_from('<H', cmd, 4)[0]
+            if fs not in (500, 1000, 2000):
+                self.fault = 2
+                return
+            self.fs_Hz = fs
+
         if verb == b'PRB1':
             if self.board_afe == 'NONE':
                 self.fault = 4
             else:
                 self._apply_afe(self.board_afe)
             self.active = False
+            self.fault = 0
             return
 
         if is_synth:
@@ -395,6 +558,7 @@ class FakeC08BBleClient:
                 return
             self._apply_afe(self.board_afe)
 
+        self.fault = 0
         self.active = True
         self._pump_task = asyncio.create_task(self._pump(is_synth))
 
@@ -529,6 +693,64 @@ async def _run_ble_tests(tmp: Path):
         assert 'fault=6' in str(err), err
         assert mid_fault_cli.fault == 0 and mid_fault_cli.written_commands[-1] == b'STOP'
         print(f'  红 ✓ 采集中途硬件故障在发 STOP 复位前被当场拦截并随后自动 STOP 复位: {err}')
+
+    # 8. BLE 在线采样率覆盖（fs_hz=2000）+ RREG / WREG / CLRO 安全掩码正反例全闭环
+    locked_reg = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=False)
+    try:
+        await cs.reg_op_c08b(locked_reg, 'rreg', chip='both', addr=0x00, allow_real=True, expected=BUILD_ID)
+        raise AssertionError('锁定固件放行了 RREG')
+    except ValueError:
+        assert locked_reg.written_commands == []
+
+    reg_cli = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=True)
+    # 8a. 冷启动 NONE 下直接下发危险写寄存器（RLDREF_INT=1 / RLD_MEAS=1 / MUX=0x02 / U2 开 RLD），由固件侧安全掩码拒收并报 fault=2
+    for bad_chip, bad_addr, bad_val, tag in (
+        ('u1', 0x03, 0xCC, 'RLDREF_INT=1 短接 Pin60=AGND'),
+        ('u1', 0x03, 0xD4, 'RLD_MEAS=1 灌入 Pin62=+2.5V'),
+        ('u1', 0x05, 0x02, 'CH1SET MUX=010 RLD_MEAS'),
+        ('u2', 0x03, 0xC4, 'U2 PD_RLD=1 双片抢偏置'),
+    ):
+        fresh = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=True)
+        try:
+            await cs.reg_op_c08b(fresh, 'wreg', chip=bad_chip, addr=bad_addr, val=bad_val, allow_real=True, expected=BUILD_ID)
+            raise AssertionError(f'固件未拦截危险写寄存器：{tag}')
+        except RuntimeError as err:
+            assert '故障码 2' in str(err), err
+
+    # 8b. 合法在线读写与清除覆盖：WREG both:CH1SET=0x60 -> WREG u1:CH2SET=0x50 -> RREG -> 同地址连续 RREG 防陈旧 -> CLRO
+    r_id = await cs.reg_op_c08b(reg_cli, 'rreg', chip='both', addr=0x00, allow_real=True, expected=BUILD_ID)
+    assert r_id['last_reg'] == {'seq': 1, 'addr': 0, 'u1': 0x92, 'u2': 0x92} and r_id['reg_overrides'] == 0
+    # 已识别 ADS1298_DUAL 后，主机侧安全预检在写特征前直接拦截危险值
+    n_cmd_before = len(reg_cli.written_commands)
+    try:
+        await cs.reg_op_c08b(reg_cli, 'wreg', chip='u1', addr=0x03, val=0xEC, allow_real=True, expected=BUILD_ID)
+        raise AssertionError('主机预检放行了 VREF_4V=1')
+    except ValueError:
+        assert len(reg_cli.written_commands) == n_cmd_before
+
+    w1 = await cs.reg_op_c08b(reg_cli, 'wreg', chip='both', addr=0x05, val=0x60, allow_real=True, expected=BUILD_ID)
+    assert w1['last_reg'] == {'seq': 2, 'addr': 5, 'u1': 0x60, 'u2': 0x60} and w1['reg_overrides'] == 2
+    w2 = await cs.reg_op_c08b(reg_cli, 'wreg', chip='u1', addr=0x06, val=0x50, allow_real=True, expected=BUILD_ID)
+    assert w2['last_reg'] == {'seq': 3, 'addr': 6, 'u1': 0x50, 'u2': 0x00} and w2['reg_overrides'] == 3
+    r_chk = await cs.reg_op_c08b(reg_cli, 'rreg', chip='both', addr=0x05, allow_real=True, expected=BUILD_ID)
+    assert r_chk['last_reg'] == {'seq': 4, 'addr': 5, 'u1': 0x60, 'u2': 0x60} and r_chk['reg_overrides'] == 3
+
+    # 模拟 SoftDevice VLOC_STACK 异步窗口：前 2 次读 META 仍返回上一条同地址 RREG 的旧 seq/旧值，主机必须等到新 seq 才返回！
+    stale_cli = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='ADS1298_DUAL', bench_measured=True, stale_reads_on_reg_op=2)
+    stale_cli.regs[0][0x12] = 0x01  # LOFF_STATP 第 1 次为 0x01
+    r_s1 = await cs.reg_op_c08b(stale_cli, 'rreg', chip='u1', addr=0x12, allow_real=True, expected=BUILD_ID, poll_seconds=0.005)
+    assert r_s1['last_reg'] == {'seq': 1, 'addr': 0x12, 'u1': 0x01, 'u2': 0x00}
+    stale_cli.regs[0][0x12] = 0x84  # 导联状态变化为 0x84，紧接再发同地址 RREG 0x12
+    r_s2 = await cs.reg_op_c08b(stale_cli, 'rreg', chip='u1', addr=0x12, allow_real=True, expected=BUILD_ID, poll_seconds=0.005)
+    assert r_s2['last_reg'] == {'seq': 2, 'addr': 0x12, 'u1': 0x84, 'u2': 0x00}, r_s2
+
+    r_clr = await cs.reg_op_c08b(reg_cli, 'clro', expected=BUILD_ID)
+    assert r_clr['reg_overrides'] == 0
+    # 8c. 在线切 2000 SPS 实采：核对 CONTROL 载荷与 META fs_Hz=2000
+    out_2k = tmp / 'cap-ble-2k'
+    r_2k = await cs.capture_c08b(reg_cli, out_2k, seconds=0.06, mode='external', allow_real=True, expected=BUILD_ID, fs_hz=2000)
+    assert r_2k['fs_Hz'] == 2000 and b'EXT1\xd0\x07' in reg_cli.written_commands
+    print('  BLE 在线调参 ✓ RREG / WREG 安全掩码正反例 / CLRO 清空覆盖 / 2000 SPS 在线切采样率全过')
 
 
 def test_studio_acq_and_recording(tmp: Path):
@@ -787,6 +1009,50 @@ async def _run_dongle_usb_e2e(tmp: Path):
     except RuntimeError as err:
         assert '未连上 YUANLI-C08B' in str(err), err
         print(f'  红 ✓ 接收器未扫到 YUANLI-C08B 干净超时退出: {err}')
+
+    # 4. Dongle USB 在线寄存器读写与采样率切换：0xA5 'W'/'R' 串口帧透传 WREG -> RREG -> 危险写拦截 -> CLRO -> 2000 SPS 采集
+    ble_reg_usb = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=True)
+    ser_reg_usb = FakeDongleSerial(ble_reg_usb, loop)
+    w_usb = await cs.run_dongle_reg_c08b(
+        '/dev/cu.fake_reg', 'wreg', chip='both', addr=0x05, val=0x60,
+        allow_real=True, expected=BUILD_ID, open_ser=lambda _p: ser_reg_usb,
+    )
+    assert w_usb['transport'] == 'xiao_dongle' and w_usb['dongle_junk_bytes'] == 0
+    assert w_usb['last_reg'] == {'seq': 1, 'addr': 5, 'u1': 0x60, 'u2': 0x60} and w_usb['reg_overrides'] == 2
+
+    ser_reg_usb2 = FakeDongleSerial(ble_reg_usb, loop)
+    r_usb = await cs.run_dongle_reg_c08b(
+        '/dev/cu.fake_reg', 'rreg', chip='u1', addr=0x00,
+        allow_real=True, expected=BUILD_ID, open_ser=lambda _p: ser_reg_usb2,
+    )
+    assert r_usb['last_reg'] == {'seq': 2, 'addr': 0, 'u1': 0x92, 'u2': 0x92} and r_usb['reg_overrides'] == 2
+
+    # 危险写入经 Dongle 前置安全掩码直接拦截
+    ser_reg_usb3 = FakeDongleSerial(ble_reg_usb, loop)
+    try:
+        await cs.run_dongle_reg_c08b(
+            '/dev/cu.fake_reg', 'wreg', chip='u1', addr=0x03, val=0xD4,
+            allow_real=True, expected=BUILD_ID, open_ser=lambda _p: ser_reg_usb3,
+        )
+        raise AssertionError('Dongle 通路未拦截 RLD_MEAS=1')
+    except ValueError:
+        pass
+
+    ser_reg_usb4 = FakeDongleSerial(ble_reg_usb, loop)
+    c_usb = await cs.run_dongle_reg_c08b(
+        '/dev/cu.fake_reg', 'clro', expected=BUILD_ID, open_ser=lambda _p: ser_reg_usb4,
+    )
+    assert c_usb['reg_overrides'] == 0
+
+    ser_reg_usb5 = FakeDongleSerial(ble_reg_usb, loop)
+    out_usb_2k = tmp / 'dongle-2k'
+    res_usb_2k = await cs.run_dongle_c08b(
+        '/dev/cu.fake_reg', out_usb_2k, seconds=0.06, mode='external',
+        allow_real=True, expected=BUILD_ID, with_imu=True, fs_hz=2000,
+        open_ser=lambda _p: ser_reg_usb5, reconnect_timeout=1.0,
+    )
+    assert res_usb_2k['fs_Hz'] == 2000 and res_usb_2k['stop_confirmed']
+    print('  Dongle USB 在线调参 ✓ 0xA5 串口帧透传 WREG / RREG / 安全掩码拦截 / CLRO / 2000 SPS 全过')
 
 
 def main():

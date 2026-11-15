@@ -480,6 +480,16 @@ def check_source_safety(root: Path) -> list[str]:
                         '（C08B Pin60 RLDREF 硬连 AGND 禁置 RLDREF_INT=0x08，v0.01 Pin62 RLDIN 硬连 +2.5V 禁置 RLD_MEAS=0x10，且禁置 VREF_4V=0x20）'
                     )
 
+    m_wreg = re.search(r'c08b_validate_reg_write\s*\(.*?\n\{(.*?)\n\}', proto_h, flags=re.S)
+    if not m_wreg:
+        errors.append('stream_proto.h 未找到 c08b_validate_reg_write 在线寄存器安全掩码函数')
+    else:
+        wbody = m_wreg.group(1)
+        if not re.search(r'\(\s*val\s*&\s*0x38u?\s*\)\s*!=\s*0u?', wbody):
+            errors.append('stream_proto.h c08b_validate_reg_write 缺少 ADS1298 CONFIG3 (val & 0x38)!=0 硬件短路拦截')
+        if not re.search(r'\(\s*val\s*&\s*0x07u?\s*\)\s*==\s*0x02u?', wbody):
+            errors.append('stream_proto.h c08b_validate_reg_write 缺少 ADS1298 CHnSET MUX==0x02(RLD_MEASURE) 拦截')
+
     l432_c = strip_c_comments((root / 'l432/main.c').read_text(encoding='utf-8'))
     # SET(ADS_PWDN, 0) 仅允许出现在 afe_safe_off() 与 pulse_ads1292_pwdn_reset() 中各 1 次，
     # 且 pulse_ads1292_pwdn_reset() 调用必须处于 if (g_sess.id_a != 0x92u) 守卫内（严禁对 ADS1298 拉低 PWDN）
@@ -529,6 +539,8 @@ def run_safety_selftest(root: Path) -> None:
         ('common/stream_proto.h', 'if (cfg3_step2) *cfg3_step2 = 0xC4u;', 'if (cfg3_step2) *cfg3_step2 = 0xCCu;', 'ADS1298 误置 RLDREF_INT=1 顶牛 AGND'),
         ('common/stream_proto.h', 'if (cfg3_step2) *cfg3_step2 = 0xC4u;', 'if (cfg3_step2) *cfg3_step2 = 0xD4u;', 'ADS1298 误置 RLD_MEAS=1 把 v0.01 Pin62(+2.5V) 灌入内部总线'),
         ('common/stream_proto.h', 'case C08B_MODE_TST1: ch_mux = 0x05u; int_test = true; break;', 'case C08B_MODE_TST1: ch_mux = 0x05u; int_test = (chip_idx == 0); break;', 'ADS1298 TST1 误关 U2 INT_TEST 致 v0.01 CH9..16 失波'),
+        ('common/stream_proto.h', 'if ((val & 0x38u) != 0u) return false;', 'if ((val & 0x20u) != 0u) return false;', '在线 WREG 漏拦 RLD_MEAS/RLDREF_INT 致 v0.01 Pin62/Pin60 短路'),
+        ('common/stream_proto.h', 'if ((val & 0x07u) == 0x02u) return false;', 'if ((val & 0x07u) == 0x09u) return false;', '在线 WREG 漏拦 MUX=0x02 RLD_MEASURE'),
         ('l432/main.c', 'SET(ADS_RESET, 0);', 'SET(ADS_PWDN, 0); SET(ADS_RESET, 0);', '对 ADS1298 复位时误拉低 ADS_PWDN 放光 VCAP1'),
         ('l432/main.c', 'if (g_sess.id_a != 0x92u)', 'if (1)', '去掉 id_a != 0x92u 守卫无条件拉低 ADS_PWDN'),
         ('nrf/main.c', 'NRF_CLOCK_LF_SRC_RC', 'NRF_CLOCK_LF_SRC_XTAL', '误开 XL1/XL2 外部低频晶振'),

@@ -11,7 +11,7 @@
  *      - 2CH 专属：SPI1 1.000 MHz（<=1.024 MHz），PA4 先 10 µs 下拉放净残荷再保持 P_NONE 监测 3.0V AVDD，
  *        RESP2=0x07，EXR1/RLD1 强制两步开 RLD（0x20 等满 >=150 ms 再写 0x23）；
  *      - 16CH/8CH 专属：SPI1 4.000 MHz，LM27762 ±2.5V 双极供电下锁定内部 2.40V 基准（VREF_4V=0），
- *        Pin 60(RLDREF)/Pin 62(RLDIN) 硬连 AGND 故严格保持 RLDREF_INT=0（两步 0xC0 -> EXR1:0xC4 / RLD1:0xD4）；
+ *        Pin 60(RLDREF) 硬连 AGND 且 v0.01 Pin 62(RLDIN) 接 +2.5V，严禁置 VREF_4V / RLD_MEAS / RLDREF_INT（两步 0xC0 -> EXR1/RLD1:0xC4）；
  *      - LSM6DS3TR-C 6 轴 IMU（104 Hz，±8 g / ±1000 dps）使用同源 L432_DWT_1MHz 64 位微秒时间戳；
  *   3. 经 SPI3(8 MHz) 向 nRF52840(SPIS1) 批量推送 280 字节流式帧，同时从 MISO 回收 16 字节控制/互锁帧；
  *      任一侧检测到 USB VBUS、OE_N 断开或 2CH AVDD 掉电立即切断模拟前端并置 C08B_FAULT_INTERLOCK(3)。
@@ -465,6 +465,78 @@ typedef struct {
 } session_ctx_t;
 
 static session_ctx_t g_sess;
+static uint8_t         g_reg_ovr_set[2][0x1A];
+static uint8_t         g_reg_ovr_val[2][0x1A];
+static c08b_reg_reply_t g_reg_reply;
+
+static uint8_t recount_reg_overrides(c08b_afe_mode_t mode)
+{
+    uint8_t n = 0;
+    int nchips = (mode == AFE_16CH) ? 2 : 1;
+    uint8_t max_a = (mode == AFE_2CH) ? 0x0Bu : 0x19u;
+    for (int c = 0; c < nchips; c++) {
+        for (uint8_t a = 0x01u; a <= max_a; a++) {
+            if (g_reg_ovr_set[c][a]) n++;
+        }
+    }
+    return n;
+}
+
+static void apply_ads1292_overrides(
+    const uint8_t ovr_set[2][0x1A], const uint8_t ovr_val[2][0x1A],
+    uint8_t cfg[0x0C], uint8_t mask[0x0C], uint8_t *rld_step2)
+{
+    for (uint8_t a = 0x01u; a <= 0x0Bu; a++) {
+        if (!ovr_set[0][a]) continue;
+        uint8_t vm = 0xFFu, v = ovr_val[0][a];
+        if (!c08b_validate_reg_write(AFE_2CH, 0u, a, v, &vm)) continue;
+        if (a == 0x06u) {
+            if ((v & 0x20u) != 0u) {
+                cfg[0x06] = 0x20u; /* 第 1 步仍只开 PDB_RLD 预热 >=150 ms */
+                if (rld_step2) *rld_step2 = v;
+            } else {
+                cfg[0x06] = v;
+                if (rld_step2) *rld_step2 = 0u;
+            }
+        } else {
+            cfg[a] = v;
+            mask[a] = vm;
+        }
+    }
+}
+
+static void apply_ads1298_overrides(
+    c08b_afe_mode_t mode, int chip_idx,
+    const uint8_t ovr_set[2][0x1A], const uint8_t ovr_val[2][0x1A],
+    uint8_t cfg[0x1A], uint8_t mask[0x1A],
+    uint8_t *cfg3_step2, uint8_t *rld_p_step2, uint8_t *rld_n_step2)
+{
+    for (uint8_t a = 0x01u; a <= 0x19u; a++) {
+        if (!ovr_set[chip_idx][a]) continue;
+        uint8_t vm = 0xFFu, v = ovr_val[chip_idx][a];
+        if (!c08b_validate_reg_write(mode, (uint8_t)chip_idx, a, v, &vm)) continue;
+        if (a == 0x03u) {
+            cfg[0x03] = 0xC0u; /* 第 1 步先锁定 2.40V 基准预热 */
+            if ((v & 0x04u) != 0u) {
+                if (cfg3_step2) *cfg3_step2 = v;
+            } else {
+                if (cfg3_step2) *cfg3_step2 = 0u;
+            }
+        } else if (a == 0x0Du) {
+            if (rld_p_step2) *rld_p_step2 = v;
+        } else if (a == 0x0Eu) {
+            if (rld_n_step2) *rld_n_step2 = v;
+        } else {
+            cfg[a] = v;
+            mask[a] = vm;
+        }
+    }
+    /* 若 CONFIG3 覆盖关闭了 PD_RLD(bit2=0)，无论 0x0D/0x0E 顺序如何，第 2 步 RLD 选通必须同步清零 */
+    if (cfg3_step2 && (*cfg3_step2 & 0x04u) == 0u) {
+        if (rld_p_step2) *rld_p_step2 = 0u;
+        if (rld_n_step2) *rld_n_step2 = 0u;
+    }
+}
 
 static void session_stop(c08b_fault_t reason)
 {
@@ -499,6 +571,7 @@ static void fill_tx_telemetry(c08b_link_tx_t *tx)
     tx->id_b = g_sess.id_b;
     tx->active_mode = g_sess.active_mode;
     tx->ack_epoch_lo = (uint16_t)g_sess.last_cmd_epoch;
+    c08b_link_tx_put_reg_reply(tx, &g_reg_reply);
 }
 
 /* 拉高 ANA_EN 等待 U10 反相器建立后，执行两轮 SPIS1 心跳握手：
@@ -554,8 +627,10 @@ static void pulse_ads1292_pwdn_reset(void)
     delay_us(C08B_ADS1292_RESET_SETTLE_US);
 }
 
-/* 启动真实 AFE 会话或执行 PRB1 子板探测（仅在双硬件锁显式放行且无 VBUS 互锁时可达） */
-static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf_flags, bool *aborted)
+/* 启动真实 AFE 会话，或执行 PRB1 探测 / RREG 在线回读 / WREG 安全写核（仅在双硬件锁显式放行且无 VBUS 互锁时可达） */
+static c08b_fault_t start_real_afe(
+    uint8_t req_mode, uint16_t fs_hz, uint8_t nrf_flags, uint16_t cmd_seq,
+    uint8_t chip_sel, uint8_t reg_addr, uint8_t reg_val, bool *aborted)
 {
     *aborted = false;
     if (l432_vbus_present() || (nrf_flags & C08B_NF_VBUS_INTERLOCK))
@@ -630,6 +705,37 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
         return C08B_FAULT_NONE;
     }
 
+    bool is_reg_op = (req_mode == C08B_MODE_RREG || req_mode == C08B_MODE_WREG);
+    uint8_t base_mode = is_reg_op ? C08B_MODE_EXT1 : req_mode;
+
+    if (req_mode == C08B_MODE_RREG && !c08b_validate_reg_read(mode, chip_sel, reg_addr)) {
+        afe_safe_off();
+        return C08B_FAULT_ARG;
+    }
+
+    int w_first = 0, w_last = -1;
+    uint8_t w_vm[2] = {0xFFu, 0xFFu};
+    uint8_t eff_set[2][0x1A], eff_val[2][0x1A];
+    memcpy(eff_set, g_reg_ovr_set, sizeof(eff_set));
+    memcpy(eff_val, g_reg_ovr_val, sizeof(eff_val));
+    if (req_mode == C08B_MODE_WREG) {
+        if (chip_sel > C08B_CHIP_BOTH || (chip_sel == C08B_CHIP_U2 && mode != AFE_16CH)) {
+            afe_safe_off();
+            return C08B_FAULT_ARG;
+        }
+        w_first = (chip_sel == C08B_CHIP_U2) ? 1 : 0;
+        w_last  = (chip_sel == C08B_CHIP_U1) ? 0 : ((mode == AFE_16CH) ? 1 : 0);
+        for (int c = w_first; c <= w_last; c++) {
+            if (!c08b_validate_reg_write(mode, (uint8_t)c, reg_addr, reg_val, &w_vm[c])) {
+                afe_safe_off();
+                return C08B_FAULT_ARG;
+            }
+            /* 先写入局部候选覆盖表，统一经两步 150 ms 基准/RLD 预热状态机下发并校验，成功后再原子提交全局表 */
+            eff_set[c][reg_addr] = 1u;
+            eff_val[c][reg_addr] = reg_val;
+        }
+    }
+
     if (mode == AFE_2CH) {
         /* PA4(AVDD_SENSE) 先 10 µs P_DOWN 泄放寄生电容，再保持纯高阻输入 P_NONE 判读 3.0V */
         pin_mode(DRDY_B_PORT, DRDY_B_PIN, M_IN, 0, P_DOWN, 0);
@@ -640,13 +746,14 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
         if (!g_sess.avdd_ok) { afe_safe_off(); return C08B_FAULT_INTERLOCK; }
 
         uint8_t cfg[0x0C], mask[0x0C], rld_step2 = 0;
-        if (!c08b_build_ads1292_regs(req_mode, fs_hz, cfg, mask, &rld_step2)) {
+        if (!c08b_build_ads1292_regs(base_mode, fs_hz, cfg, mask, &rld_step2)) {
             afe_safe_off(); return C08B_FAULT_ARG;
         }
+        apply_ads1292_overrides(eff_set, eff_val, cfg, mask, &rld_step2);
         if (ads_write_verify(0, cfg, mask, 0x01, 0x0B) != 0) {
             afe_safe_off(); return C08B_FAULT_READBACK;
         }
-        /* 两步开 RLD：先等 PDB_RLD 与外部 C7(10 µF) 预热满 >=150 ms，再合上电极反馈 0x23 */
+        /* 两步开 RLD：先等 PDB_RLD 与外部 C7(10 µF) 预热满 >=150 ms，再合上电极反馈 */
         for (uint32_t waited = 0; waited < C08B_ADS_RLD_WARMUP_US; waited += 5000u) {
             delay_us(5000u);
             if (l432_vbus_present() || !GET(DRDY_B)) { afe_safe_off(); return C08B_FAULT_INTERLOCK; }
@@ -657,39 +764,91 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
                 afe_safe_off(); return C08B_FAULT_READBACK;
             }
         }
+        if (is_reg_op) {
+            uint8_t rb0 = ads_rreg(0, reg_addr);
+            if (req_mode == C08B_MODE_WREG) {
+                if ((rb0 & w_vm[0]) != (reg_val & w_vm[0])) {
+                    afe_safe_off(); return C08B_FAULT_READBACK;
+                }
+                memcpy(g_reg_ovr_set, eff_set, sizeof(g_reg_ovr_set));
+                memcpy(g_reg_ovr_val, eff_val, sizeof(g_reg_ovr_val));
+            }
+            g_reg_reply.seq       = cmd_seq;
+            g_reg_reply.addr      = reg_addr;
+            g_reg_reply.val_a     = rb0;
+            g_reg_reply.val_b     = 0u;
+            g_reg_reply.ovr_count = recount_reg_overrides(mode);
+            g_reg_reply.valid     = true;
+            afe_safe_off();
+            return C08B_FAULT_NONE;
+        }
         ads_cmd(0, ADS_RDATAC);
     } else {
-        /* 8CH / 16CH ADS1298（LM27762 ±2.5V 双极供电，Pin 60 RLDREF & Pin 62 RLDIN 硬连 AGND）：
+        /* 8CH / 16CH ADS1298（LM27762 ±2.5V 双极供电，Pin 60 RLDREF 硬连 AGND，v0.01 Pin 62 RLDIN 接 +2.5V）：
          * 切 SPI1 到 4.000 MHz（BR=1: 16MHz/4=4MHz），DRDY_B 开上拉防 8CH 悬空 */
         pin_mode(DRDY_B_PORT, DRDY_B_PIN, M_IN, 0, P_UP, 0);
         spi_init(SPI1, 1u, 1);
         g_sess.avdd_ok = true;
         int nchips = (mode == AFE_16CH) ? 2 : 1;
-        uint8_t cfg3_step2[2] = {0, 0};
-        uint8_t rld_step2[2]  = {0, 0};
+        uint8_t cfg3_step2[2]  = {0, 0};
+        uint8_t rld_p_step2[2] = {0, 0};
+        uint8_t rld_n_step2[2] = {0, 0};
         for (int c = 0; c < nchips; c++) {
-            uint8_t cfg[0x1A], mask[0x1A];
-            if (!c08b_build_ads1298_regs(req_mode, fs_hz, c, cfg, mask, &cfg3_step2[c], &rld_step2[c])) {
+            uint8_t cfg[0x1A], mask[0x1A], rld_def = 0;
+            if (!c08b_build_ads1298_regs(base_mode, fs_hz, c, cfg, mask, &cfg3_step2[c], &rld_def)) {
                 afe_safe_off(); return C08B_FAULT_ARG;
             }
+            rld_p_step2[c] = rld_def;
+            rld_n_step2[c] = rld_def;
+            apply_ads1298_overrides(mode, c, eff_set, eff_val, cfg, mask, &cfg3_step2[c], &rld_p_step2[c], &rld_n_step2[c]);
             if (ads_write_verify(c, cfg, mask, 0x01, 0x19) != 0) {
                 afe_safe_off(); return C08B_FAULT_READBACK;
             }
         }
-        /* 等满 >=150 ms 让内部 2.40V 基准稳定，随后对 U1 执行第 2 步 RLD 启用（RLDREF_INT 保持 0！） */
+        /* 等满 >=150 ms 让内部 2.40V 基准稳定，随后对 U1 执行第 2 步 RLD 启用（RLDREF_INT/RLD_MEAS 保持 0！） */
         for (uint32_t waited = 0; waited < C08B_ADS_RLD_WARMUP_US; waited += 5000u) {
             delay_us(5000u);
             if (l432_vbus_present()) { afe_safe_off(); return C08B_FAULT_INTERLOCK; }
         }
-        if (cfg3_step2[0]) {
-            ads_wreg(0, 0x0Du, rld_step2[0]);
-            ads_wreg(0, 0x0Eu, rld_step2[0]);
-            ads_wreg(0, 0x03u, cfg3_step2[0]);
-            if (ads_rreg(0, 0x0Du) != rld_step2[0] ||
-                ads_rreg(0, 0x0Eu) != rld_step2[0] ||
-                (ads_rreg(0, 0x03u) & 0xFEu) != cfg3_step2[0]) {
+        if (cfg3_step2[0] || eff_set[0][0x0Du] || eff_set[0][0x0Eu]) {
+            ads_wreg(0, 0x0Du, rld_p_step2[0]);
+            ads_wreg(0, 0x0Eu, rld_n_step2[0]);
+            if (cfg3_step2[0]) ads_wreg(0, 0x03u, cfg3_step2[0]);
+            if (ads_rreg(0, 0x0Du) != rld_p_step2[0] ||
+                ads_rreg(0, 0x0Eu) != rld_n_step2[0] ||
+                (cfg3_step2[0] && (ads_rreg(0, 0x03u) & 0xFEu) != cfg3_step2[0])) {
                 afe_safe_off(); return C08B_FAULT_READBACK;
             }
+        }
+        if (is_reg_op) {
+            uint8_t rb0 = ads_rreg(0, reg_addr);
+            uint8_t rb1 = (mode == AFE_16CH) ? ads_rreg(1, reg_addr) : 0u;
+            if (req_mode == C08B_MODE_WREG) {
+                for (int c = w_first; c <= w_last; c++) {
+                    uint8_t rbc = (c == 0) ? rb0 : rb1;
+                    /* 若写 0x0D/0x0E 但当前 CONFIG3.PD_RLD=0，第 2 步状态机保持硬件寄存器为 0，待下次开 EXR1/PD_RLD=1 时一并合上；
+                     * 此时单独下发目标寄存器回读校验芯片 I/O 完好性，校验后再退回安全零态 */
+                    if ((reg_addr == 0x0Du || reg_addr == 0x0Eu) && c == 0 && cfg3_step2[0] == 0u && reg_val != 0u) {
+                        ads_wreg(0, reg_addr, reg_val);
+                        rbc = ads_rreg(0, reg_addr);
+                        ads_wreg(0, reg_addr, 0u);
+                        if (c == 0) rb0 = rbc;
+                    }
+                    if ((rbc & w_vm[c]) != (reg_val & w_vm[c])) {
+                        afe_safe_off(); return C08B_FAULT_READBACK;
+                    }
+                }
+                memcpy(g_reg_ovr_set, eff_set, sizeof(g_reg_ovr_set));
+                memcpy(g_reg_ovr_val, eff_val, sizeof(g_reg_ovr_val));
+            }
+            g_reg_reply.seq       = cmd_seq;
+            g_reg_reply.addr      = reg_addr;
+            g_reg_reply.val_a     = rb0;
+            g_reg_reply.val_b     = rb1;
+            g_reg_reply.ovr_count = recount_reg_overrides(mode);
+            g_reg_reply.valid     = true;
+            afe_safe_off();
+            return C08B_FAULT_NONE;
         }
         ads_cmd(0, ADS_RDATAC);
         if (mode == AFE_16CH) ads_cmd(1, ADS_RDATAC);
@@ -727,7 +886,22 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
         return;
     }
 
+    if (rx->req_mode == C08B_MODE_CLRO) {
+        bool keep_interlock = (g_sess.fault == C08B_FAULT_INTERLOCK) &&
+                              (l432_vbus_present() || nrf_interlock);
+        session_stop(keep_interlock ? C08B_FAULT_INTERLOCK : C08B_FAULT_NONE);
+        if (!keep_interlock) g_sess.fault = C08B_FAULT_NONE;
+        memset(g_reg_ovr_set, 0, sizeof(g_reg_ovr_set));
+        memset(g_reg_ovr_val, 0, sizeof(g_reg_ovr_val));
+        memset(&g_reg_reply, 0, sizeof(g_reg_reply));
+        logf_("已清空全部运行时 ADS 寄存器覆盖项\n");
+        return;
+    }
+
     session_stop(C08B_FAULT_NONE);
+    if (rx->req_mode == C08B_MODE_RREG || rx->req_mode == C08B_MODE_WREG) {
+        g_reg_reply.valid = false;
+    }
     uint16_t fs = rx->fs_hz ? rx->fs_hz : 1000u;
     bool unlocked = (MAKO_C08B_AFE_ENABLED != 0) && (MAKO_BENCH_MEASURED != 0);
     bool vbus = l432_vbus_present() || ((rx->nrf_flags & C08B_NF_VBUS_INTERLOCK) != 0);
@@ -740,15 +914,17 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
 
     g_sess.fault = C08B_FAULT_NONE;
     g_sess.fs_hz = fs;
-    g_sess.produced = 0;
-    g_sess.dropped = 0;
-    g_sess.bad_status = 0;
-    g_sess.drdy_desync = 0;
-    g_sess.min_interval_us = 0xFFFFFFFFu;
-    g_sess.last_sample_us = 0;
-    g_sess.last_imu_ms = g_ms;
-    g_sess.sent_session_start = false;
-    g_sess.has_carry = false;
+    if (rx->req_mode != C08B_MODE_PRB1 && rx->req_mode != C08B_MODE_RREG && rx->req_mode != C08B_MODE_WREG) {
+        g_sess.produced = 0;
+        g_sess.dropped = 0;
+        g_sess.bad_status = 0;
+        g_sess.drdy_desync = 0;
+        g_sess.min_interval_us = 0xFFFFFFFFu;
+        g_sess.last_sample_us = 0;
+        g_sess.last_imu_ms = g_ms;
+        g_sess.sent_session_start = false;
+        g_sess.has_carry = false;
+    }
 
     if (rx->req_mode == C08B_MODE_SYN1) {
         uint8_t sc = rx->synth_channels;
@@ -764,14 +940,17 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
     }
 
     bool aborted = false;
-    c08b_fault_t err = start_real_afe(rx->req_mode, fs, rx->nrf_flags, &aborted);
+    c08b_fault_t err = start_real_afe(
+        rx->req_mode, fs, rx->nrf_flags, (uint16_t)rx->cmd_epoch,
+        rx->synth_channels, rx->reg_addr, rx->reg_val, &aborted);
     if (err != C08B_FAULT_NONE) {
         g_sess.fault = err;
-        logf_("启动真实 AFE 失败：故障码 %u\n", (unsigned)err);
+        logf_("启动真实 AFE 或寄存器操作失败：故障码 %u\n", (unsigned)err);
         return;
     }
-    if (aborted || rx->req_mode == C08B_MODE_PRB1) {
-        logf_("完成 PRB1 探测或被 STOP 中止：afe=%uCH\n", (unsigned)g_sess.afe_mode);
+    if (aborted || rx->req_mode == C08B_MODE_PRB1 ||
+        rx->req_mode == C08B_MODE_RREG || rx->req_mode == C08B_MODE_WREG) {
+        logf_("完成单次探测/寄存器操作或被 STOP 中止：mode=%u afe=%uCH\n", rx->req_mode, (unsigned)g_sess.afe_mode);
         return;
     }
     g_sess.is_synth = false;

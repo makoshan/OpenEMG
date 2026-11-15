@@ -1,6 +1,6 @@
 # C08B 共用双核主控（`MCU-U9` / `R4U6` / `R4U6N`）2/8/16ch 实时流式采集候选固件
 
-状态：**已实现未验收**（`OpenEMG_v0.01_DualBoard.epro2`、`MCU-U9` 与 `R4U6/R4U6N` 引脚逐脚对账、源码安全红线 14/14 反例、C11 协议单测与双核 ARM 零告警链接全绿；未刷机、未做台架供电纹波与互锁实测、未做人体测试）。默认双硬件锁保持关闭（`MAKO_C08B_AFE_ENABLED=0`、`MAKO_BENCH_MEASURED=0`），BLE 广播名固定为 `"YUANLI-C08B"`。
+状态：**已实现未验收**（`OpenEMG_v0.01_DualBoard.epro2`、`MCU-U9` 与 `R4U6/R4U6N` 引脚逐脚对账、源码安全红线 16/16 反例、C11 协议单测与双核 ARM 零告警链接全绿；未刷机、未做台架供电纹波与互锁实测、未做人体测试）。默认双硬件锁保持关闭（`MAKO_C08B_AFE_ENABLED=0`、`MAKO_BENCH_MEASURED=0`），BLE 广播名固定为 `"YUANLI-C08B"`。完整分离式板间接口、BLE GATT / `SPI3↔SPIS1` / USB 接收器帧协议与在线 `RREG / WREG / CLRO` 调参契约见 [`../transport-protocol.md`](../transport-protocol.md)。
 
 ## A 双核分工与三档下层板自动识别
 
@@ -12,7 +12,7 @@
 | **`R4U6(N)` ↔ `8ch D20(N)-8CH`** | `0x92 / 0x00\|0xFF` | `4.000 MHz` | `PA4(DRDY_B)` 开内部上拉防浮空；`GPIO1..4` 全设输入（`0x0F`）；同用两步 `(CONFIG3 & 0x38)==0` 规则 | `F01 v1`（`16B + 8×27B = 232B`） |
 | **`R4U6(N)` ↔ `2ch ADS1292-2ch-R9`** | `0x53\|0x73 / 0x00\|0xFF` | `1.000 MHz` | 保持 `ADS_PWDN=1` 等满 `>=1050 ms` 建立 `VCAP1=1µF`；先打 `PA8(ADS_RESET)` 测是否 `0x92(ADS1298)`，确认 `id_a != 0x92` 后再对 `PA1(ADS_PWDN -> J2.6 -> R31 -> Pin15 PWDN/RESET)` 发 `20 µs`（`<< 4000 µs` 掉电阈值）纯数字复位脉冲并重读 ID（既补齐 `2ch J2.7=NC` 缺失的复位脉冲，又绝不放掉 `ADS1298` 22µF `VCAP1`）；`PA4` 先 `10 µs` 下拉放净残荷再保持 `P_NONE` 监测 `3.0V AVDD_SENSE`；`RESP2=0x07`；两步开 RLD（`0x20` 等满 `>=150 ms` 再写 `0x23`） | `F01 v1`（`CH1..2` + `CH3..8=0`，状态头映射对齐 `decode_ads_status`） |
 
-## B 硬件红线与互锁链路（`tools/pins.py --check-safety` 强扫 14 项反例）
+## B 硬件红线与互锁链路（`tools/pins.py --check-safety` 强扫 16 项反例）
 
 1. **双默认硬件锁**：`common/bench_release.h` 默认 `MAKO_C08B_AFE_ENABLED=0` 且 `MAKO_BENCH_MEASURED=0`。未解锁前仅响应免开 AFE 供电的 `SYN1` 双核合成流测试（包头强制置 `SYNTHETIC=1`），所有真实采集命令（含只读子板探测 `PRB1`）返回 `C08B_FAULT_LOCKED(1)`。
 2. **禁止外部低频晶振（`XL1/XL2` 复用红线）**：板上 `U13`（`MCU-U9` 为 `U8`）的 `P0.00/XL1 = MCU_BENCH_EN`、`P0.01/XL2 = VBUS_SENSE`，无外部 `32.768 kHz` 晶振。`nrf/main.c` 强制 SoftDevice S140 使用 `NRF_CLOCK_LF_SRC_RC`（`rc_ctiv=16, rc_temp_ctiv=2`）。
