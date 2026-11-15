@@ -86,14 +86,6 @@ Together with literature review and bench measurements on our earlier 8-channel 
 | **Cross-wear features & model** | Same-wear accuracy overstates real usability; per-channel z-score erases spatial amplitude ratios across refits | Per-channel z-score is avoided; **`250 ms` five-band log bandpower (`bands5`: `20–45`, `55–95`, `105–145`, `155–245`, `255–445 Hz`) + Shrinkage LDA** is evaluated strictly with **leave-one-wear-out** splits |
 | **Off-mains safety interlock** | Direct USB connection introduces mains fault-current risk | Hardware `VBUS` detection pulls `AFE_OE_N` high to cut analog power (`JP701` DNP by default), and software keeps `record: false` locked on unverified `c08b-16ch / 8ch / 2ch` profiles |
 
-### What to expect (inspired by [neurband](https://github.com/jlcjak/neurband))
-
-| Available & reproducible today (✓) | Current limitations & untested boundaries (✗) |
-|---|---|
-| ✓ **Human-reviewed 16-channel `v0.01` dual-board package** with editable `.epro2`, searchable 9-page schematic PDF, Gerbers, BOM, and CPL ready to order | ✗ **No assembled `v0.01` hardware data yet**: 16-channel bench noise, bias loop stability, mechanical fit, and battery runtime await first boards |
-| ✓ **Unified `16 / 8 / 2`-channel desktop studio** with scrolling waveforms, 5-second signal check, cross-wear evaluation theater, live confidence gating, and the built-in 3D game *Palm Tribulation* | ✗ **Not plug-and-play across users**: zero-shot cross-user foundation models remain under study; refitting or switching users still requires a short calibration session |
-| ✓ **Proven 8-channel `V12-R01` bench capture** (`2.8 µV` shorted noise, 10-min zero-drop stream) and end-to-end training validated on an 8-channel wired wristband | ✗ **All other AI-generated PCBs, electrode FPCs, and 3D enclosures have not been human-reviewed or ordered**; never touch electrodes to skin while USB or mains power is connected |
-
 ## Status and roadmap
 
 **November 15, 2026.** The 16-channel v0.01 board design is ready for prototyping. The editable project, schematics, Gerbers, and assembly files are public. The firmware has passed host-side tests, and the desktop app can display 16 demo traces. **We have no measurements from this assembled system yet. The next milestone is a continuous bench recording of known signals on all 16 inputs.**
