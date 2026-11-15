@@ -22,7 +22,10 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 **v0.01 的 PCB 设计已完成，下一步是打板、贴片和上电测试。** 采集板新增 32 颗输入保护管（D101–D132），贴片 BOM 和坐标表共 146 个位号。
 
-![OpenEMG 16 通道双板 PCB 正反面：上排为主控板，下排为采集板，左列为正面，右列为背面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-pcb-four-views.png)
+| 板卡 | 正面 | 背面 |
+|---|---|---|
+| C08B-U9 主控板 | [![C08B-U9 主控板 · 正面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-top.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-top.png) | [![C08B-U9 主控板 · 背面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-bottom.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-bottom.png) |
+| 16 通道采集板 | [![16 通道采集板 · 正面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-top.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-top.png) | [![16 通道采集板 · 背面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-bottom.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-bottom.png) |
 
 图由同版 Gerber 生成。右列按翻到板背后的方向显示。[双板工程与制造文件](hardware/16ch-afe-hirose-1mm-1nf/) · [主控板元件正视图](hardware/renders/v001-mcu-front.png) · [采集板元件正视图](hardware/renders/v001-afe-front.png)
 

@@ -22,7 +22,10 @@ A 20-pin ribbon cable connects the six-layer controller board to the four-layer 
 
 **PCB design is complete. Fabrication, assembly, and first power-on are next.** The acquisition board has 32 ESD protection diodes (D101–D132), one per input lead. The BOM and placement file cover 146 components.
 
-![v0.01 PCB artwork: controller above, acquisition board below. Front views on the left and rear views on the right.](hardware/16ch-afe-hirose-1mm-1nf/views/v001-pcb-four-views.png)
+| Board | Front | Back |
+|---|---|---|
+| C08B-U9 controller | [![C08B-U9 controller · Front](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-top.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-top.png) | [![C08B-U9 controller · Back](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-bottom.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-mcu-bottom.png) |
+| 16-channel acquisition board | [![16-channel acquisition board · Front](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-top.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-top.png) | [![16-channel acquisition board · Back](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-bottom.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-afe-bottom.png) |
 
 The views come from the production Gerbers. The right column shows each board as seen from the back. [Board files](hardware/16ch-afe-hirose-1mm-1nf/) · [Controller with components](hardware/renders/v001-mcu-front.png) · [Acquisition board with components](hardware/renders/v001-afe-front.png)
 
