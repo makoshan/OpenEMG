@@ -93,6 +93,7 @@ NRF = [
 def default_board_path() -> Path:
     candidates = [
         HERE.parents[1] / 'hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2',
+        HERE.parents[1] / 'v12/mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2',
         HERE.parent / 'mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2',
     ]
     for p in candidates:
@@ -223,10 +224,12 @@ def verify_jafe_cross_boards(main_board: Path) -> list[str]:
     nets = load_nets(main_board)
     d20_path = _find_first([
         HERE.parents[1] / 'hardware/16ch-c08b-round/schematics-afe/c08b-pcb-pins.json',
+        HERE.parents[1] / 'v12/c08b-sch-d20-20261109/c08b-pcb-pins.json',
         HERE.parent / 'c08b-sch-d20-20261109/c08b-pcb-pins.json',
     ])
     d2ch_path = _find_first([
         HERE.parents[1] / 'hardware/2ch-ads1292/schematics/design.json',
+        HERE.parents[1] / 'v12/ads1292-2ch-20261104/design.json',
         HERE.parent / 'ads1292-2ch-20261104/design.json',
     ])
     if d20_path is None or d2ch_path is None:

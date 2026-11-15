@@ -103,11 +103,12 @@ def check_boundary():
 
 
 class _Rig:
-    kind = 'emg'
+    kind = 'wl8'
 
     def __init__(self):
         self.frame_subscribers = []
         self.boundary_subscribers = []
+        self.imu_subscribers = []
 
     def subscribe(self):
         return None

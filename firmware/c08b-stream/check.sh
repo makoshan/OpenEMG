@@ -13,6 +13,10 @@ if [[ -f "$HERE/../../hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.ep
   BOARD="$HERE/../../hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2"
   BOARD_N="$HERE/../../hardware/common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2"
   READBACK="$HERE/../../hardware/common-mainboard/mainboard-r4u6/r4u6-readback.json"
+elif [[ -f "$HERE/../../v12/mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2" ]]; then
+  BOARD="$HERE/../../v12/mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2"
+  BOARD_N="$HERE/../../v12/mainboard-r4u6-boot0-20261111/C08B-main-R4U6N.epcb2"
+  READBACK=""
 else
   BOARD="$HERE/../mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2"
   BOARD_N="$HERE/../mainboard-r4u6-boot0-20261111/C08B-main-R4U6N.epcb2"

@@ -101,7 +101,20 @@ def port_c_nrf(p):
 
 
 def main():
-    geo = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parents[1] / 'hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2'
+    if len(sys.argv) > 1:
+        geo = Path(sys.argv[1])
+    else:
+        geo = next(
+            (
+                p for p in (
+                    HERE.parents[1] / 'hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2',
+                    HERE.parents[1] / 'v12/mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2',
+                    HERE.parent / 'mainboard-r4u6-boot0-20261111/C08B-main-R4U6.epcb2',
+                )
+                if p.is_file()
+            ),
+            HERE.parents[1] / 'hardware/common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2',
+        )
     nets = load_nets(geo)
     bad = []
     for ref, table, pkg in (('U18', L432, L432_PKG), ('U13', NRF, NRF_PKG)):

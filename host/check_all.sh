@@ -17,6 +17,8 @@ PY="${PY:-../.venv/bin/python}"
 "$PY" check_v12_imu.py
 "$PY" check_v12_status.py
 "$PY" check_c08b_stream.py
+if [ -f check_wl18_web.py ]; then "$PY" check_wl18_web.py; fi
+if [ -f check_live_archive.py ]; then "$PY" check_live_archive.py; fi
 "$PY" ../firmware/offline-f01/check.py
 "$PY" ../firmware/dsp-f03/check.py
 if [ -f ../apple/openEMG/iOS/c08b_dsp.c ]; then
@@ -32,5 +34,8 @@ if [ -f ../apple/openEMG/iOS/c08b_dsp.c ]; then
   else
     echo "c08b_dsp C11 编译通过（非 macOS 或无 swiftc，跳过 CoreBluetooth Swift 自检）"
   fi
+fi
+if "$PY" -c "import torch" >/dev/null 2>&1 && [ -f research/ring_cnn_rewear.py ]; then
+  "$PY" research/ring_cnn_rewear.py --check
 fi
 echo "host 核心自检全部通过"

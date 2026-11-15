@@ -369,6 +369,8 @@ class Session:
 
     def wl8_train_start(self, labels=None):
         if self.desc.n_channels < 2: raise ValueError(f'{self.desc.name} 请使用单通道训练入口')
+        if not self.desc.cap('train') or self.desc.n_channels not in (2, 8, 16):
+            raise ValueError(f'{self.desc.name} 还不能训练和实时识别：当前仅开放 2 / 8 路及 C08B 16 路')
         labels = [l for l in (labels or wl8_train.DEFAULT_LABELS) if l in wl8.LABELS]
         job = self.wl8_job = {'running': True, 'events': [], 'run_id': None, 'error': None, 'labels': labels}
         folder = self.wl8_folder_prefix()
@@ -441,6 +443,8 @@ class Session:
         if action == 'stop':
             return {'ok': True, 'archive': self._stop_live8()}
         if self.desc.n_channels < 2: raise ValueError(f'{self.desc.name} 请使用单通道实时识别入口')
+        if not self.desc.cap('train') or self.desc.n_channels not in (2, 8, 16):
+            raise ValueError(f'{self.desc.name} 还不能训练和实时识别：当前仅开放 2 / 8 路及 C08B 16 路')
         max_ch = self.desc.n_channels
         if action == 'tune':
             if self.validation and self.validation.active: raise ValueError('连续验证期间请保持识别设置不变')
