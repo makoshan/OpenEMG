@@ -70,7 +70,7 @@ typedef enum {
     C08B_MODE_STOP = 4,  /* 停止采集并关断 ANA_EN / ADS_START / ADS_PWDN */
     C08B_MODE_EXR1 = 5,  /* 外部电极 + 右腿驱动 RLD（需解锁台架安全门；两步预热） */
     C08B_MODE_SYN1 = 6,  /* 免开 AFE 供电的双核合成流测试（锁定状态下允许，强制打 SYNTHETIC=1） */
-    C08B_MODE_RLD1 = 7,  /* RLD 环路监测（ADS1292 CH2=RLD_MEASURE；ADS1298 U1 RLD_MEAS=1 + CH8=RLD_MEASURE） */
+    C08B_MODE_RLD1 = 7,  /* RLD 环路监测（ADS1292 CH2=RLD_MEASURE；ADS1298 U1 PD_RLD=1，禁置 RLD_MEAS/MUX=0x02） */
     C08B_MODE_PRB1 = 8,  /* 只读子板 ID 探测（需解锁台架安全门；读完 ID 更新 afe_mode 后立即关断 AFE） */
 } c08b_req_mode_t;
 
@@ -147,20 +147,23 @@ static inline void c08b_ads1292_map_f01_status(const uint8_t raw3[3], uint8_t ou
     out3[2] = (uint8_t)(((statn & 0x0Fu) << 4) | (gpio & 0x0Fu));
 }
 
-/* 生成 C08B D20 / D20-8CH（V4_LM27762 ±2.5V 双极模拟供电）下 ADS1298 寄存器配置（0x01..0x19）。
- * 关键硬件铁律（核自 hardware/16ch-c08b-round/schematics-afe/page1.py & firmware-guide.md）：
- *   1. AVDD=+2.484V, AVSS=-2.489V（跨度 4.97V，但对 AGND 单边 < 4.4V），CONFIG3(0x03) bit5 VREF_4V 必须为 0
+/* 生成 C08B v0.01 AFE-30P / D20 / D20-8CH（LM27762 ±2.5V 双极模拟供电）下 ADS1298 寄存器配置（0x01..0x19）。
+ * 关键硬件铁律（核自 OpenEMG_v0.01_DualBoard.epro2 & hardware/16ch-c08b-round/schematics-afe/page1.py）：
+ *   1. AVDD=+2.5V, AVSS=-2.5V（跨度 5.0V，对 AGND 单边 2.5V），CONFIG3(0x03) bit5 VREF_4V 必须为 0
  *      （锁定内部 2.40 V 基准，相对于 AVSS=-2.5V 建立）！
- *   2. 两片 Pin 60 (RLDREF) 与 Pin 62 (RLDIN) 在 PCB 上直接硬连 AGND (0V)！
+ *   2. 两片 Pin 60 (RLDREF) 在 PCB 上直接硬连 AGND (0V)！
  *      因此 CONFIG3 bit3 RLDREF_INT(0x08) 必须严格为 0（使用外部 AGND 参考），严禁写 0xCC 让内部缓冲顶牛短路！
- *   3. 两步开 RLD（仅 chip_idx=0 主片 U1 负责驱动手腕偏置 V4_BIAS_DRV1，U2 永远保持 0xC0 不开 RLD）：
+ *   3. 人工审核定版 v0.01 AFE-30P 的两片 Pin 62 (RLDIN) 直接接 +2.5V (AVDD)，D20 的 Pin 62 接 AGND（均未连 RLDOUT）！
+ *      根据 TI ADS1298 手册 SBAS459K 图 39 与表 21，RLD_MEAS(bit4=0x10) 会将 Pin 62(RLDIN) 接入 MUX=010 总线；
+ *      在 v0.01 上置 RLD_MEAS=1 或 CHnSET.MUX=010 会把 +2.5V 电源轨直接灌入内部 RLD/PGA 测量总线！
+ *      因此 ADS1298 的 CONFIG3 严禁置 VREF_4V(0x20)、RLD_MEAS(0x10) 或 RLDREF_INT(0x08)，即 (CONFIG3 & 0x38)==0，
+ *      且任何通道严禁设 MUX=0x02(RLD_MEASURE)！
+ *   4. 两步开 RLD（仅 chip_idx=0 主片 U1 负责使能偏置运放 BIAS_DRV1，U2 永远保持 0xC0 不开 RLD）：
  *      - Step 1：先写 cfg[0x03]=0xC0、cfg[0x0D]=0x00、cfg[0x0E]=0x00，等待 >=150 ms 让 2.40V 基准稳定；
- *      - Step 2：EXR1 下写 RLD_SENSP/N=0xFF 且 CONFIG3=0xC4（PD_RLD=1, RLDREF_INT=0）；
- *               RLD1 环路自检下因 Pin 62(RLDIN) 硬连 AGND，必须同时置 CONFIG3.RLD_MEAS(bit4)=1 -> 0xD4，
- *               才能将 RLDOUT 内部路由至 MUX=0x02(CH8) 测出偏置运放真实输出！
- *   4. GPIO1/2/4 在板上硬连 GND，GPIO(0x14) 低 4 位必须全为 1（输入 = 0x0F），严禁设推挽输出！
- *   5. 16CH 测试方波下：两片 Pin 17/18(V4_REF1/V4_REF2) 并接，仅 U1(chip_idx=0) 开 INT_TEST=1 驱动总线，
- *      U2(chip_idx=1) 设 INT_TEST=0 + MUX=0x05 从共享总线接收，防止两片内部发生器相位不同步互顶。
+ *      - Step 2：EXR1 / RLD1 下写 RLD_SENSP/N=0xFF 且 CONFIG3=0xC4（PD_RLD=1, RLD_MEAS=0, RLDREF_INT=0）。
+ *   5. GPIO1/2/4 在板上硬连 GND，GPIO(0x14) 低 4 位必须全为 1（输入 = 0x0F），严禁设推挽输出！
+ *   6. 16CH 测试方波（TST1）下：v0.01 AFE-30P 的 U1.17/18 与 U2.17/18 独立悬空，且 PACE(0x15)=0x00 (PD_PACE=0)
+ *      不向 17/18 脚外驱，因此 U1 与 U2 均置 CONFIG2(0x02)=0x10 (INT_TEST=1)，确保 CH1..16 全 16 路均有 1 Hz 方波。
  */
 static inline bool c08b_build_ads1298_regs(
     uint8_t req_mode, uint16_t fs_hz, int chip_idx,
@@ -180,32 +183,28 @@ static inline bool c08b_build_ads1298_regs(
 
     uint8_t ch_mux;
     bool use_rld = false;
-    bool rld_meas = false;
     bool int_test = false;
     switch (req_mode) {
-    case C08B_MODE_TST1: ch_mux = 0x05u; int_test = (chip_idx == 0); break;
+    case C08B_MODE_TST1: ch_mux = 0x05u; int_test = true; break;
     case C08B_MODE_SHT1: ch_mux = 0x01u; break;
     case C08B_MODE_EXT1: ch_mux = 0x00u; break;
     case C08B_MODE_EXR1: ch_mux = 0x00u; use_rld = true; break;
-    case C08B_MODE_RLD1: ch_mux = 0x00u; use_rld = true; rld_meas = true; break;
+    case C08B_MODE_RLD1: ch_mux = 0x00u; use_rld = true; break;
     default: return false;
     }
 
     cfg[0x01] = dr;
-    cfg[0x02] = int_test ? 0x10u : 0x00u; /* 1 Hz 测试方波（仅 U1 驱动共享 V4_REF1/2） */
-    cfg[0x03] = 0xC0u;                    /* Step 1：仅开 2.40V 内部基准，RLDREF_INT=0，PD_RLD=0 */
-    for (int a = 0x05; a <= 0x0C; a++) cfg[a] = ch_mux; /* 增益 6（000），按模式选 MUX */
-    if (rld_meas && chip_idx == 0) {
-        cfg[0x0C] = 0x02u;                /* RLD1 诊断：U1 CH8 切 RLD_MEASURE 测偏置运放输出 */
-    }
+    cfg[0x02] = int_test ? 0x10u : 0x00u; /* 1 Hz 测试方波（U1/U2 均开启片内测试源，兼容 v0.01 独立悬空 17/18 脚） */
+    cfg[0x03] = 0xC0u;                    /* Step 1：仅开 2.40V 内部基准，VREF_4V=0，RLD_MEAS=0，RLDREF_INT=0，PD_RLD=0 */
+    for (int a = 0x05; a <= 0x0C; a++) cfg[a] = ch_mux; /* 增益 6（000），按模式选 MUX（严禁 0x02 RLD_MEASURE） */
     cfg[0x0D] = 0x00u;                    /* Step 1 先断开 RLD_SENSP/N，等基准稳定后再合上 */
     cfg[0x0E] = 0x00u;
     cfg[0x14] = 0x0Fu;                    /* GPIO1..4 全输入（防接地脚短路） */
     cfg[0x16] = 0x20u;                    /* RESP bit5 必写 1 */
 
     if (use_rld && chip_idx == 0) {
-        /* Step 2：RLDREF_INT 严禁置 1！EXR1 -> 0xC4，RLD1 -> 0xD4 (RLD_MEAS=1 | PD_RLD=1) */
-        if (cfg3_step2) *cfg3_step2 = rld_meas ? 0xD4u : 0xC4u;
+        /* Step 2：严禁置 VREF_4V(0x20)/RLD_MEAS(0x10)/RLDREF_INT(0x08)！恒为 0xC4 (PD_REFBUF=1 | PD_RLD=1) */
+        if (cfg3_step2) *cfg3_step2 = 0xC4u;
         if (rld_sens_step2) *rld_sens_step2 = 0xFFu;
     }
 

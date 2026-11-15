@@ -95,7 +95,7 @@ Together with literature review and bench measurements on our earlier 8-channel 
 | Work | What remains |
 |---|---|
 | Fabrication and assembly | Build from the November 15 package. Check board thickness, via-in-pad treatment, and stencil openings. Review both assembly sides for the two ADS1298 chips, three ribbon connectors, and 32 protection diodes. |
-| Firmware adaptation | Check chip select, reset, clock, and bias settings against the final schematic. RLDIN connects to +2.5 V and the two chips have separate test pins. Review the earlier self-test configuration before using it on this revision. |
+| Firmware adaptation | [`c08b-bringup`](firmware/c08b-bringup/) and [`c08b-stream`](firmware/c08b-stream/) are aligned and verified against the `v0.01` dual-board netlist (`INT_TEST=1` on both chips for independent `TESTP/TESTN` pins, `RLD_MEAS=0` / no `MUX=010` for `RLDIN=+2.5 V`, and `RLDREF_INT=0` for `RLDREF=AGND`), ready for first-board flashing. |
 | Bench setup | Prepare the 20-pin cable, adapters, and an off-body signal source. Map the input pins to CH1–CH16 in the app and prepare shorted-input, known-signal, and stream-interruption tests. |
 
 #### When the boards arrive: bench tests first

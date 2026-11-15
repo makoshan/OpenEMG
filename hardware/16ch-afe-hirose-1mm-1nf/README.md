@@ -32,7 +32,7 @@
 
 - 按定版打样包选择盘中孔树脂塞孔、电镀盖帽。LM1 顶面散热焊盘的钢网已分成双窗，使用本目录 Gerber。
 - 离体台架首板按 1.6 mm 板厚；U9 外壳渲染按 0.8 mm 裸板展示，装壳与排线仍需试装。
-- 两颗 ADS1298 的 RLDIN 接 +2.5 V。仓库通用采集固件按另一版电路开发，首次上电前需要按本版接线核对测试模式和寄存器配置。偏置回路、通道底噪、丢帧与佩戴安全尚待验证。[安全说明](../../SAFETY.md)
+- 两颗 `ADS1298` 的 `Pin 60 (RLDREF)` 接 `AGND`、`Pin 62 (RLDIN)` 接 `+2.5 V`、`Pin 17/18 (TESTP/TESTN)` 独立悬空。[`firmware/c08b-bringup`](../../firmware/c08b-bringup/) 与 [`firmware/c08b-stream`](../../firmware/c08b-stream/) 已据此完成寄存器与网表对齐（`TST1` 下双片均置 `CONFIG2=0x10`，`CONFIG3` 强制 `(val & 0x38)==0` 禁置 `VREF_4V / RLD_MEAS / RLDREF_INT` 且禁设 `MUX=0x02`）。偏置回路、通道底噪、丢帧与佩戴安全尚待首板实测验证。[安全说明](../../SAFETY.md)
 
 ### 双面贴片方向
 

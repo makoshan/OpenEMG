@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-"""从旗舰六层双核主控工程 hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2 逐脚核对：
-1. U7（STM32L432KCU6，UFQFN32）全部 25 根信号/调试脚（含第 31 脚 PH3 = L_BOOT0 独立启动脚）；
-2. U8（nRF52840-QFAA，QFN48）全部 GPIO、SWD、晶振与去耦脚，并断言无未登记的多余信号脚；
-3. U17（LTC4054ES5-4.2#TRPBF）充电管理 5 脚与 FPC1（20P 板间座）20 脚；
-4. 与现行 l432/pins.h、nrf/pins.h 逐宏交叉比对，证明除 PH3（L_BOOT0 vs VBUS_SENSE）启动进入方式外，
-   双核全部运行态 GPIO 端口与引脚编号 100% 兼容。
-支持 `--selftest` 执行 3 项必败反例自检。纯 Python 标准库，可在本地与云端 CI 直接运行。
+"""从人工审核定版双板工程 hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2
+与旗舰六层主控工程 hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2 逐脚核对：
+1. 01 主控板（C08B-U9）：U7（STM32L432KCU6）23+3 脚（含 31 脚 PH3=L_BOOT0）、U8（nRF52840-QFAA）15 脚、
+   U17（LTC4054）5 脚与 FPC1（20P 板间座）20 脚；
+2. 02 采集板（v0.01 AFE-30P）：FPC2（20P 板间座 k <-> 21-k）、U1/U2（双 ADS1298）全部电源/SPI/控制脚
+   （含 Pin 17/18 独立悬空、Pin 31 RESV1=GND、Pin 42/44/46 GPIO1/2/4=GND、Pin 60 RLDREF=AGND、
+   Pin 62 RLDIN=+2.5V、Pin 63 RLDOUT 经 R34/R36 至 FPC1.29/FPC3.29）以及 D101..D132 全 32 路 ESD 保护；
+3. 与现行 l432/pins.h、nrf/pins.h 及 l432/main.c 的 CFG1298_TEST 寄存器配置交叉核对（确保 U1/U2 均开 INT_TEST=1，
+   且 CONFIG3 严禁置 VREF_4V/RLD_MEAS/RLDREF_INT）。
+支持 `--selftest` 执行 6 项必败反例自检。纯 Python 标准库，可在本地与云端 CI 直接运行。
 """
 from __future__ import annotations
 import json
@@ -16,6 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
 REPO = HERE.parents[1]
+DEFAULT_DUAL_EPRO2 = REPO / "hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2"
 DEFAULT_EPRO2 = REPO / "hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2"
 
 L432_PKG = {
@@ -100,12 +104,31 @@ FPC1_20P_EXPECTED = {
 }
 
 
-def load_u9_nets(epro2_path: Path) -> dict[tuple[str, int], str]:
+FPC2_20P_EXPECTED = {
+    1: "+3.3V", 2: "+3.3V", 3: "CLKSEL", 4: "DRDY#", 5: "GPIO3",
+    6: "DOUT", 7: "GND", 8: "GND", 9: "GND", 10: "SCLK",
+    11: "CS#", 12: "START", 13: "CLK", 14: "RESET#", 15: "PWDN#",
+    16: "DIN", 17: "CS#2", 18: "DRDY2#", 19: "GND", 20: "GND",
+}
+
+ADS1298_COMMON_PINS = {
+    17: "", 18: "",  # v0.01 AFE-30P TESTP/TESTN 独立悬空
+    19: "+2.5V", 21: "+2.5V", 22: "+2.5V", 54: "+2.5V", 56: "+2.5V", 59: "+2.5V",
+    20: "-2.5V", 23: "-2.5V", 25: "-2.5V", 32: "-2.5V", 53: "-2.5V", 57: "-2.5V", 58: "-2.5V",
+    31: "GND", 33: "GND", 41: "GND", 42: "GND", 44: "GND", 46: "GND", 49: "GND", 51: "GND",
+    48: "+3.3V", 50: "+3.3V",
+    34: "DIN", 35: "PWDN#", 36: "RESET#", 37: "CLK", 38: "START", 40: "SCLK",
+    43: "DOUT", 45: "GPIO3", 52: "CLKSEL",
+    60: "AGND",  # RLDREF 接 AGND -> 严禁置 RLDREF_INT(0x08)
+    62: "+2.5V", # RLDIN 接 +2.5V -> 严禁置 RLD_MEAS(0x10) 或 MUX=010
+}
+
+
+def load_epro2_pcb_boards(epro2_path: Path) -> list[tuple[str, dict[tuple[str, int], str]]]:
     with zipfile.ZipFile(epro2_path) as zf:
         doc = zf.read(next(n for n in zf.namelist() if n.endswith(".epru"))).decode("utf-8", "ignore")
+    boards: list[tuple[str, dict[str, str], dict[tuple[str, int], str]]] = []
     active = False
-    des_by_cid: dict[str, str] = {}
-    raw_pads: dict[tuple[str, int], str] = {}
     for line in doc.splitlines():
         if "||" not in line:
             continue
@@ -118,14 +141,36 @@ def load_u9_nets(epro2_path: Path) -> dict[tuple[str, int], str]:
             continue
         v, _ = json.JSONDecoder().raw_decode(right)
         if h["type"] == "DOCHEAD":
-            active = v.get("docType") == "PCB"
+            if v.get("docType") == "PCB":
+                active = True
+                boards.append((v.get("uuid", ""), {}, {}))
+            else:
+                active = False
         elif active and h["type"] == "ATTR" and v.get("key") == "Designator":
-            des_by_cid[v["parentId"]] = v.get("value", "")
+            boards[-1][1][v["parentId"]] = v.get("value", "")
         elif active and h["type"] == "PAD_NET":
             _, cid, pin, _ = json.loads(h["id"])
             if str(pin).isdigit():
-                raw_pads[(cid, int(pin))] = v.get("padNet", "")
-    return {(des_by_cid[cid], pin): net for (cid, pin), net in raw_pads.items() if cid in des_by_cid}
+                boards[-1][2][(cid, int(pin))] = v.get("padNet", "")
+    return [
+        (uuid, {(des[cid], pin): net for (cid, pin), net in pads.items() if cid in des})
+        for uuid, des, pads in boards
+    ]
+
+
+def load_u9_nets(epro2_path: Path) -> dict[tuple[str, int], str]:
+    boards = load_epro2_pcb_boards(epro2_path)
+    for _, nets in boards:
+        if ("U7", 31) in nets and ("U8", 2) in nets:
+            return nets
+    return boards[0][1] if boards else {}
+
+
+def load_afe30p_v001_nets(epro2_path: Path) -> dict[tuple[str, int], str] | None:
+    for _, nets in load_epro2_pcb_boards(epro2_path):
+        if ("U1", 39) in nets and ("U2", 39) in nets and ("FPC2", 1) in nets:
+            return nets
+    return None
 
 
 def verify_u9_nets(nets: dict[tuple[str, int], str]) -> list[str]:
@@ -179,7 +224,48 @@ def verify_u9_nets(nets: dict[tuple[str, int], str]) -> list[str]:
     return errs
 
 
-def verify_headers_compat() -> list[str]:
+def verify_afe30p_v001_nets(afe_nets: dict[tuple[str, int], str]) -> list[str]:
+    errs: list[str] = []
+    for pin, exp_net in FPC2_20P_EXPECTED.items():
+        got = afe_nets.get(("FPC2", pin), "")
+        if got != exp_net:
+            errs.append(f"AFE-30P FPC2.pin{pin}: 实际 {got!r} != 期望 {exp_net!r}")
+
+    for ref, cs_net, drdy_net, rldinv_net, rldout_net in (
+        ("U1", "CS#", "DRDY#", "BIASINV1", "BIASOUT1"),
+        ("U2", "CS#2", "DRDY2#", "BIASINV12", "BIASOUT12"),
+    ):
+        for pin, exp_net in ADS1298_COMMON_PINS.items():
+            got = afe_nets.get((ref, pin), "<MISSING>")
+            if got != exp_net:
+                errs.append(f"AFE-30P {ref}.pin{pin}: 实际 {got!r} != 期望 {exp_net!r}")
+        for pin, exp_net in ((39, cs_net), (47, drdy_net), (61, rldinv_net), (63, rldout_net)):
+            got = afe_nets.get((ref, pin), "<MISSING>")
+            if got != exp_net:
+                errs.append(f"AFE-30P {ref}.pin{pin}: 实际 {got!r} != 期望 {exp_net!r}")
+
+    r34_nets = {afe_nets.get(("R34", 1), ""), afe_nets.get(("R34", 2), "")}
+    r36_nets = {afe_nets.get(("R36", 1), ""), afe_nets.get(("R36", 2), "")}
+    if r34_nets != {"BIASOUT1", "BIAS_DRV1"} or afe_nets.get(("FPC1", 29), "") != "BIAS_DRV1":
+        errs.append(f"AFE-30P U1 RLD 驱动链路异常: R34={r34_nets!r}, FPC1.29={afe_nets.get(('FPC1', 29))!r}")
+    if r36_nets != {"BIASOUT12", "BIAS_DRV12"} or afe_nets.get(("FPC3", 29), "") != "BIAS_DRV12":
+        errs.append(f"AFE-30P U2 RLD 驱动链路异常: R36={r36_nets!r}, FPC3.29={afe_nets.get(('FPC3', 29))!r}")
+
+    esd_inputs = set()
+    for idx in range(101, 133):
+        ref = f"D{idx}"
+        p1 = afe_nets.get((ref, 1), "")
+        p2 = afe_nets.get((ref, 2), "")
+        if not p1 or p2 != "AGND":
+            errs.append(f"AFE-30P {ref}: 实际 (1={p1!r}, 2={p2!r}) != 期望 (非空输入网, 'AGND')")
+        else:
+            esd_inputs.add(p1)
+    if len(esd_inputs) != 32:
+        errs.append(f"AFE-30P D101..D132 覆盖独立输入网数量 {len(esd_inputs)} != 32")
+    return errs
+
+
+def verify_headers_and_source_compat(l432_src: str | None = None) -> list[str]:
     errs: list[str] = []
     l432_h = (HERE / "l432/pins.h").read_text(encoding="utf-8")
     nrf_h = (HERE / "nrf/pins.h").read_text(encoding="utf-8")
@@ -194,18 +280,39 @@ def verify_headers_compat() -> list[str]:
         if f"#define {macro}_PIN ({po} * 32 + {pi})" not in nrf_h:
             errs.append(f"nrf/pins.h 宏不兼容: {macro} -> {port}")
 
+    raw_c = l432_src if l432_src is not None else (HERE / "l432/main.c").read_text(encoding="utf-8")
+    code = re.sub(r"/\*.*?\*/", "", raw_c, flags=re.S)
+    code = re.sub(r"//[^\n]*", "", code)
+    if not re.search(r"\[0x02\]\s*=\s*0x10\b", code):
+        errs.append("l432/main.c CFG1298_TEST[0x02] 未设为 0x10 (INT_TEST=1)")
+    if re.search(r"if\s*\(\s*chip\s*==\s*1\s*\)\s*cfg\[\s*0x02\s*\]\s*=\s*0x00\b", code):
+        errs.append("l432/main.c 严禁对 U2 (chip==1) 覆写 cfg[0x02]=0x00（v0.01 AFE-30P 17/18 脚独立悬空，会令 CH9..16 失波）")
+    m_c3 = re.search(r"\[0x03\]\s*=\s*0x([0-9A-Fa-f]{2})\b", code)
+    if not m_c3 or (int(m_c3.group(1), 16) & 0x38) != 0:
+        errs.append("l432/main.c CFG1298_TEST[0x03] 严禁置 VREF_4V(0x20)/RLD_MEAS(0x10)/RLDREF_INT(0x08)")
+    if not re.search(r"\[0x14\]\s*=\s*0x0F\b", code):
+        errs.append("l432/main.c CFG1298_TEST[0x14] 未设为 0x0F（GPIO1/2/4 接地，必须全输入）")
+
     return errs
 
 
 def main() -> int:
     selftest = "--selftest" in sys.argv
     args = [a for a in sys.argv[1:] if a != "--selftest"]
-    epro2_path = Path(args[0]) if args else DEFAULT_EPRO2
+    epro2_path = Path(args[0]) if args else (DEFAULT_DUAL_EPRO2 if DEFAULT_DUAL_EPRO2.is_file() else DEFAULT_EPRO2)
 
     nets = load_u9_nets(epro2_path)
-    errs = verify_u9_nets(nets) + verify_headers_compat()
+    errs = verify_u9_nets(nets) + verify_headers_and_source_compat()
+    afe_nets = load_afe30p_v001_nets(epro2_path)
+    if afe_nets is None and DEFAULT_DUAL_EPRO2.is_file():
+        afe_nets = load_afe30p_v001_nets(DEFAULT_DUAL_EPRO2)
+    if afe_nets is not None:
+        errs.extend(verify_afe30p_v001_nets(afe_nets))
+    if not args and DEFAULT_DUAL_EPRO2.is_file() and DEFAULT_EPRO2.is_file():
+        errs.extend(verify_u9_nets(load_u9_nets(DEFAULT_EPRO2)))
+
     if errs:
-        print("MCU-U9 引脚核对失败：", file=sys.stderr)
+        print("MCU-U9 / v0.01 AFE-30P 引脚与寄存器核对失败：", file=sys.stderr)
         for e in errs:
             print("  -", e, file=sys.stderr)
         return 1
@@ -225,11 +332,27 @@ def main() -> int:
         bad3 = dict(nets)
         bad3[("U8", 19)] = "ROGUE_NET"
         assert any("未登记 GPIO 脚 19" in e for e in verify_u9_nets(bad3)), "反例 3 未检出 U8 未登记 GPIO"
-        print("[SELFTEST PASS] 3/3 必败反例（FPC1.3/4 交叉、U7.31 启动网错配、U8 多接未登记脚）全部拦截。")
+
+        if afe_nets is not None:
+            # 反例 4：U1.31 (RESV1) 未接 GND
+            bad4 = dict(afe_nets)
+            bad4[("U1", 31)] = "+3.3V"
+            assert any("U1.pin31" in e for e in verify_afe30p_v001_nets(bad4)), "反例 4 未检出 U1.31 RESV1 错接"
+
+            # 反例 5：U2.62 (RLDIN) 或 D116 漏接
+            bad5 = dict(afe_nets)
+            bad5[("D116", 1)] = ""
+            assert any("D116" in e for e in verify_afe30p_v001_nets(bad5)), "反例 5 未检出 D116 ESD 漏接"
+
+        # 反例 6：l432/main.c 误将 U2 设 cfg[0x02]=0x00 或置 RLD_MEAS(0x10)
+        orig_c = (HERE / "l432/main.c").read_text(encoding="utf-8")
+        assert any("cfg[0x02]=0x00" in e for e in verify_headers_and_source_compat(orig_c + "\nif (chip == 1) cfg[0x02] = 0x00;\n"))
+        assert any("CFG1298_TEST[0x03]" in e for e in verify_headers_and_source_compat(orig_c.replace("[0x03] = 0xC0", "[0x03] = 0xD0", 1)))
+        print("[SELFTEST PASS] 6/6 必败反例（FPC1.3/4 交叉、U7.31 错配、U8 未登记脚、U1.31 错接、D116 漏接、U2 关 INT_TEST/开 RLD_MEAS）全部拦截。")
 
     print(
-        f"MCU-U9 引脚核对通过：U7(STM32L432) {len(U7_L432_EXPECTED)} 脚 + 3 调试脚（PH3=L_BOOT0）、"
-        f"U8(nRF52840) {len(U8_NRF_EXPECTED)} 脚、U17(LTC4054) 5 脚、FPC1 20 脚与 l432/nrf 固件头文件 100% 兼容。"
+        f"MCU-U9 + v0.01 AFE-30P 核对通过：U7(STM32L432) {len(U7_L432_EXPECTED)}+3 脚、U8(nRF52840) {len(U8_NRF_EXPECTED)} 脚、"
+        "FPC1<->FPC2 20P、U1/U2(ADS1298) 电源/SPI/RLD/独立17-18脚、32 颗 ESD 与 l432/nrf 固件 100% 兼容。"
     )
     return 0
 

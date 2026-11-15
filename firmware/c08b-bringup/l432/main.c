@@ -96,11 +96,14 @@ static void ads_wreg(int chip, uint8_t a, uint8_t v)
 }
 
 /* ADS1298 自检寄存器表：500 SPS 高精度、测试方波、不开 RLD、GPIO 全设输入（GPIO1/2/4 接地，设输出会短路）。
-   16CH 下 U1 产生测试信号（INT_TEST=1），U2 设 INT_TEST=0 经 17/18 脚共享接收，防两片输出互顶。 */
+   16CH 下 U1 与 U2 均开启片内测试源（CONFIG2=0x10，INT_TEST=1）：
+   - 人工审核定版 v0.01 AFE-30P 上 U1.17/18 与 U2.17/18 独立悬空，必须两片均置 INT_TEST=1 才能让 CH9..16 产生 1 Hz 方波；
+   - PACE(0x15)=0x00 (PD_PACE=0) 不向 17/18 脚外驱，因此在 D20（17/18 互联）上同样无驱动冲突。
+   CONFIG3(0x03)=0xC0：Pin 60(RLDREF) 接 AGND、v0.01 Pin 62(RLDIN) 接 +2.5V，严禁置 VREF_4V/RLD_MEAS/RLDREF_INT（即 (cfg[0x03]&0x38)==0）。 */
 static const uint8_t CFG1298_TEST[0x1A] = {
     [0x01] = 0x86,             /* CONFIG1：HR=1，DR=110 → 500 SPS */
     [0x02] = 0x10,             /* CONFIG2：INT_TEST=1，1×VREF/2400，约 1 Hz */
-    [0x03] = 0xC0,             /* CONFIG3：内部基准 2.4 V，不开 RLD */
+    [0x03] = 0xC0,             /* CONFIG3：内部基准 2.4 V，VREF_4V=0，RLD_MEAS=0，RLDREF_INT=0，PD_RLD=0 */
     [0x05 ... 0x0C] = 0x05,    /* CHnSET：增益 6，输入接测试信号 */
     [0x14] = 0x0F,             /* GPIO：4 脚都设输入 */
     [0x16] = 0x20,             /* RESP：bit5 手册要求写 1 */
@@ -338,7 +341,7 @@ static void test_ads(void)
         for (int chip = 0; chip < 2; chip++) {
             if (!(chip ? alive_b : alive_a)) continue;
             uint8_t cfg[0x1A]; for (int a = 0; a < 0x1A; a++) cfg[a] = CFG1298_TEST[a];
-            if (chip == 1) cfg[0x02] = 0x00;  /* 16CH 下 U2 接收 U1 送出的测试方波 */
+            /* U1 与 U2 均保持 cfg[0x02]=0x10 (INT_TEST=1)，兼容 v0.01 AFE-30P 独立 17/18 脚与 D20 */
             int bad = ads_write_check(chip, cfg, MASK1298, 0x01, 0x19);
             if (chip == 0) r->reg_bad_a = (uint8_t)bad; else r->reg_bad_b = (uint8_t)bad;
             mark(chip ? T_REG_B : T_REG_A, bad == 0);

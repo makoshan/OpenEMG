@@ -27,8 +27,11 @@ if [[ -n "$BOARD_N" && -f "$BOARD_N" ]]; then "$PY" -B tools/pins.py --check-hea
 if [[ -n "$READBACK" && -f "$READBACK" ]]; then "$PY" -B tools/pins.py --check-headers "$READBACK"; fi
 "$PY" -B tools/pins.py --check-headers "$BOARD"
 "$PY" -B tools/pins.py --check-jafe "$BOARD"
-if [[ -f "$HERE/../../hardware/16ch-u9-dual30/MCU-U9.epro2" ]]; then
-  "$PY" -B tools/pins.py --check-u9 --self-test "$HERE/../../hardware/16ch-u9-dual30/MCU-U9.epro2"
+if [[ -f "$HERE/../../hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2" ]]; then
+  "$PY" -B tools/pins.py --check-u9 --self-test "$HERE/../../hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2"
+fi
+if [[ -f "$HERE/../../hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2" ]]; then
+  "$PY" -B tools/pins.py --check-u9 --self-test "$HERE/../../hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2"
 fi
 
 "$PY" -B - "$BOARD" "$TMP_DIR/bad1.epcb2" "$TMP_DIR/bad2_r4u2.json" "$TMP_DIR/bad3_extra.json" <<'EOF'

@@ -79,7 +79,7 @@ int main(void) {
     uint8_t cfg98[0x1A], mask98[0x1A], c3_s2 = 0, rld_s2 = 0;
     assert(c08b_build_ads1298_regs(C08B_MODE_RLD1, 1000u, 0, cfg98, mask98, &c3_s2, &rld_s2));
     cfg98[0x00] = 0x92u;
-    cfg98[0x03] = c3_s2; /* 0xD4: RLD_MEAS=1, PD_RLD=1, RLDREF_INT=0 */
+    cfg98[0x03] = c3_s2; /* 0xC4: RLD_MEAS=0 (v0.01 Pin62=+2.5V 禁置 RLD_MEAS), PD_RLD=1, RLDREF_INT=0 */
     cfg98[0x0D] = rld_s2;
     cfg98[0x0E] = rld_s2;
     hex_line("REGS98_RLD1", cfg98, sizeof(cfg98));
@@ -172,11 +172,11 @@ int main(void) {
         k, v = ln.split(':', 1)
         kv[k] = bytes.fromhex(v)
 
-    # C11 生成的 ADS1298 RLD1 快照必须 0 违规通过 ads1298_regs.check，且 RLDREF_INT==0, RLD_MEAS==1, VREF==2.4V
+    # C11 生成的 ADS1298 RLD1 快照必须 0 违规通过 ads1298_regs.check，且 RLDREF_INT==0, RLD_MEAS==0(v0.01 Pin62=+2.5V), VREF==2.4V
     assert ads1298_regs.check(kv['REGS98_RLD1']) == [], ads1298_regs.check(kv['REGS98_RLD1'])
     dec98 = ads1298_regs.decode(kv['REGS98_RLD1'])
-    assert dec98['CONFIG3']['RLDREF_INT'] == 0 and dec98['CONFIG3']['RLD_MEAS'] == 1 and dec98['CONFIG3']['PD_RLD'] == 1
-    assert ads1298_regs.vref_v(kv['REGS98_RLD1']) == 2.4 and dec98['CH8SET']['MUX'] == 0x02
+    assert dec98['CONFIG3']['RLDREF_INT'] == 0 and dec98['CONFIG3']['RLD_MEAS'] == 0 and dec98['CONFIG3']['PD_RLD'] == 1
+    assert ads1298_regs.vref_v(kv['REGS98_RLD1']) == 2.4 and dec98['CH8SET']['MUX'] == 0x00
 
     m_none = cs.validate_c08b_metadata(kv['META_NONE'], expected=BUILD_ID)
     assert m_none['afe'] == 'NONE' and not m_none['bench_measured'] and m_none['active_channels'] == 0 and m_none['spi_Hz'] == 1_000_000

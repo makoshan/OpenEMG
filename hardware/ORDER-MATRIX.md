@@ -91,7 +91,7 @@
    - `nRF52840`（`MCU-U9` 上为 **`U8`**，`R4U6/R4U6N` 上为 `U13`）：经顶面 `J301`（`SWDIO / SWDCLK / GND`）使用 SWD 探针烧写 `nrf.hex`（`c4d046ab`）。
    - `STM32L432KC`（`MCU-U9` 上为 **`U7`**，`R4U6/R4U6N` 上为 `U18`）：
      - 在 **`MCU-U9`** 上：`U7.31`（`PH3-BOOT0`）连至独立 `L_BOOT0`（经 **`R5 = 10 kΩ`** `C25744` 下拉至 `GND`；注意 `R26` 是安全互锁网络 `U7_EN ↔ ILK_D` 的 `0 Ω` 电阻，切勿改动），推荐直接经顶面 `DEBUG` 焊盘组（`SWCLK / SWDIO / NRST / GND`）用 SWD 探针烧写 `l432.hex`，或上电时将 `DEBUG` 的 `BOOT0` 焊盘临时拉高至 `3.3 V` 进入系统 ROM USB DFU（`0483:DF11`）。
-     - 在 **`R4U6 / R4U6N`** 上：已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `7fc800df`，`CFG1292_TEST` 已修正 `RESP2=0x07`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
+     - 在 **`R4U6 / R4U6N`** 上：已将 `PH3-BOOT0` 连至 `VBUS_SENSE`，插 USB 上电自动进入系统 ROM DFU（`0483:DF11`），执行 `dfu-util -a 0 -s 0x08000000:leave -D build/l432.bin` 免探针烧写（`l432.hex` `7a86d895`，`CFG1298_TEST` 已适配 `v0.01` 双片独立 `INT_TEST=1` 且 `CFG1292_TEST` 已修正 `RESP2=0x07`）；拔掉 USB 改由 `J401` 电池供电即自动运行采集自检固件。
    - `2CH + P44e + XIAO nRF52840 Sense` 独立 BLE `F01` 流式候选固件：[`firmware/xiao-ads1292-2ch/`](../firmware/xiao-ads1292-2ch/README.md)（`bash check.sh --pio`：20/20 脚对账、6 项必败反例、48 项单测与 `ads1292_2k`/`ads1292_4k` 镜像全绿，默认硬件锁关闭）。
    - `C08B` 双核主控家族（`OpenEMG-C08B-Mainboard-Rev0.01 + AFE-30P` 以及 `R4U6 / R4U6N + D20/8CH/2CH`：`L432 + nRF52840`）`2/8/16ch` 自动识别实时 BLE `F01 v1/v4 + IMU` 流式候选固件与主机接入契约：[`firmware/c08b-stream/`](../firmware/c08b-stream/README.md) + [`host/c08b_stream.py`](../host/c08b_stream.py)（`bash firmware/c08b-stream/check.sh` & `python3 -B host/check_c08b_stream.py`：`l432.hex` `0e0f6eb9` / `nrf_s140.hex` `a569fdbf` / `nrf_nosd.hex` `ca23b0cc`，默认双硬件锁关闭）。
 3. **手机广播与 97 字节报告一键判读（免调试器）**：

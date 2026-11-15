@@ -9,7 +9,8 @@ OLD_R4U2=$H/../../hardware/common-mainboard/mainboard-r4u6/r4u2-readback-missing
 PY=${PY:-python3}
 TC=${TC:-$HOME/.platformio/packages/toolchain-gccarmnoneeabi/bin/}
 
-echo "== 1 引脚核对（R4U6 圆孔 + R4U6N 缺口）"
+echo "== 1 引脚核对（MCU-U9 + v0.01 AFE-30P + R4U6 圆孔 + R4U6N 缺口）"
+$PY -B tools/pins_u9.py --selftest
 if [ -f "$BOARD_N" ]; then $PY tools/pins.py "$BOARD_N"; fi
 $PY tools/pins.py "$BOARD"
 T=$(mktemp -d)

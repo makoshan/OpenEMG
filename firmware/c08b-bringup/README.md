@@ -95,7 +95,7 @@ make                             # 只编译：build/l432.hex、build/nrf.hex
 ```
 
 - `tools/pins.py` 直接解析 `C08B-main-R4U6.epcb2` 与 `C08B-main-R4U6N.epcb2`（核对 L432 23 个信号脚含 `U18.31 PH3=VBUS_SENSE`、nRF 15 个信号脚），并包含两条必败反例（篡改 `XIAO_CS` 网名 + 喂入缺 `BOOT0=VBUS_SENSE` 的旧版 `r4u2-readback.json`）。
-- `tools/pins_u9.py` 直接解析 6 层旗舰主控 `hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`，核对 `U7`（`STM32L432KCU6` 23 个运行脚 + 3 个调试/启动脚 `U7.31 PH3=L_BOOT0`）、`U8`（`nRF52840-QFAA` 15 个运行脚）、`U17`（`LTC4054`）与 `FPC1`（20P 座），并含 3 项必败反例（`python3 -B tools/pins_u9.py --selftest`）。
+- `tools/pins_u9.py` 直接解析人工审核定版双板工程 `hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2` 与 6 层旗舰主控 `hardware/16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`，逐脚核对 `01 主控板`（`U7 STM32L432KCU6` 23+3 脚 `PH3=L_BOOT0`、`U8 nRF52840-QFAA` 15 脚、`U17 LTC4054`、`FPC1` 20P）与 `02 采集板 v0.01 AFE-30P`（`FPC2` 20P `k↔21-k`、`U1/U2` 独立悬空 `17/18` 测试脚、`Pin 31 RESV1=GND`、`Pin 60 RLDREF=AGND`、`Pin 62 RLDIN=+2.5V`、`R34/R36=392k`、`D101..D132` 32 路 ESD），并含 6 项必败反例（`python3 -B tools/pins_u9.py --selftest`）。
 - `host_test/test_host.c` 覆盖 CRC、16CH/8CH/2CH 模式识别、期望掩码、B 片乱码/单活异常拦截、24 位补码与峰峰值/底噪门限的正反例测试。
 - `tools/decode_bringup.py` 提供零依赖命令行解码（`--ble-hex` 自动兼容 10B 值 / 12B 含公司号 / 23B AD 载荷 / 31B 完整广播 PDU，`--report-hex` 校验并解析 97 字节 `c08b_report_t`，检测 `VBUS=1 & OE_N=0` 互锁旁路危险态；`--self-test` 已纳入 `check.sh` 与云端 CI）。
 

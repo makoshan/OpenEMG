@@ -59,29 +59,33 @@ int main(void)
     /* 非法采样率必拒 */
     assert(c08b_gate_mode_request(C08B_MODE_TST1, 4000, true, false)  == C08B_FAULT_ARG);
 
-    /* 5. ADS1298 (±2.5V 双电源 + Pin60 RLDREF & Pin62 RLDIN 硬连 AGND) 寄存器与两步 RLD 核对：
-     *    严禁置 VREF_4V(0x20) 与 RLDREF_INT(0x08)！Step1=0xC0；Step2 EXR1=0xC4、RLD1=0xD4(RLD_MEAS=1) */
+    /* 5. ADS1298 (±2.5V 双电源 + Pin60 RLDREF 硬连 AGND + v0.01 Pin62 RLDIN 硬连 +2.5V + Pin17/18 独立悬空) 寄存器核对：
+     *    严禁置 VREF_4V(0x20)、RLD_MEAS(0x10) 与 RLDREF_INT(0x08)（即 (CONFIG3 & 0x38)==0），严禁设 MUX=0x02！
+     *    TST1 下 U1 与 U2 均置 CONFIG2=0x10；Step1=0xC0；Step2 EXR1/RLD1=0xC4 */
     uint8_t cfg98_a[0x1A], mask98_a[0x1A], cfg98_b[0x1A], mask98_b[0x1A];
     uint8_t c3_s2_a = 0xFFu, rld_s2_a = 0xFFu, c3_s2_b = 0xFFu, rld_s2_b = 0xFFu;
     assert(c08b_build_ads1298_regs(C08B_MODE_TST1, 1000, 0, cfg98_a, mask98_a, &c3_s2_a, &rld_s2_a));
     assert(c08b_build_ads1298_regs(C08B_MODE_TST1, 1000, 1, cfg98_b, mask98_b, &c3_s2_b, &rld_s2_b));
     assert(cfg98_a[0x01] == 0x85u && cfg98_b[0x01] == 0x85u);
-    assert(cfg98_a[0x02] == 0x10u && cfg98_b[0x02] == 0x00u); /* 仅 U1 驱动共享 V4_REF1/2 */
+    assert(cfg98_a[0x02] == 0x10u && cfg98_b[0x02] == 0x10u); /* U1 与 U2 均开片内 1 Hz 方波，确保 v0.01 CH9..16 有信号 */
     assert(cfg98_a[0x03] == 0xC0u && cfg98_b[0x03] == 0xC0u);
     assert(c3_s2_a == 0x00u && rld_s2_a == 0x00u && c3_s2_b == 0x00u && rld_s2_b == 0x00u);
     assert(cfg98_a[0x14] == 0x0Fu && cfg98_b[0x14] == 0x0Fu); /* GPIO1..4 输入 */
 
-    /* EXR1：Step 1 先写 0xC0 + 0x00，Step 2 仅 U1 升为 0xC4(PD_RLD=1, RLDREF_INT=0) + 0xFF，U2 保持关 RLD */
+    /* EXR1：Step 1 先写 0xC0 + 0x00，Step 2 仅 U1 升为 0xC4(PD_RLD=1, RLD_MEAS=0, RLDREF_INT=0) + 0xFF，U2 保持关 RLD */
     assert(c08b_build_ads1298_regs(C08B_MODE_EXR1, 2000, 0, cfg98_a, mask98_a, &c3_s2_a, &rld_s2_a));
     assert(c08b_build_ads1298_regs(C08B_MODE_EXR1, 2000, 1, cfg98_b, mask98_b, &c3_s2_b, &rld_s2_b));
     assert(cfg98_a[0x03] == 0xC0u && cfg98_a[0x0D] == 0x00u && cfg98_a[0x0E] == 0x00u);
-    assert(c3_s2_a == 0xC4u && (c3_s2_a & 0x28u) == 0u && rld_s2_a == 0xFFu);
+    assert(c3_s2_a == 0xC4u && (c3_s2_a & 0x38u) == 0u && rld_s2_a == 0xFFu);
     assert(cfg98_b[0x03] == 0xC0u && c3_s2_b == 0x00u && rld_s2_b == 0x00u);
 
-    /* RLD1：Pin 62(RLDIN) 硬连 AGND，U1 必须同时置 CONFIG3.RLD_MEAS(0x10) -> 0xD4 且 CH8=0x02 */
+    /* RLD1：v0.01 Pin 62(RLDIN) 接 +2.5V，严禁置 CONFIG3.RLD_MEAS(0x10) 或 CH8 MUX=0x02，保持 0xC4 + CH8=0x00 */
     assert(c08b_build_ads1298_regs(C08B_MODE_RLD1, 1000, 0, cfg98_a, mask98_a, &c3_s2_a, &rld_s2_a));
     assert(c08b_build_ads1298_regs(C08B_MODE_RLD1, 1000, 1, cfg98_b, mask98_b, &c3_s2_b, &rld_s2_b));
-    assert(cfg98_a[0x0C] == 0x02u && c3_s2_a == 0xD4u && (c3_s2_a & 0x28u) == 0u && rld_s2_a == 0xFFu);
+    assert(cfg98_a[0x0C] == 0x00u && c3_s2_a == 0xC4u && (c3_s2_a & 0x38u) == 0u && rld_s2_a == 0xFFu);
+    for (int r = 0x05; r <= 0x0C; ++r) {
+        assert((cfg98_a[r] & 0x07u) != 0x02u && (cfg98_b[r] & 0x07u) != 0x02u);
+    }
     assert(cfg98_b[0x0C] == 0x00u && c3_s2_b == 0x00u && rld_s2_b == 0x00u);
     assert(!c08b_build_ads1298_regs(C08B_MODE_EXR1, 999, 0, cfg98_a, mask98_a, &c3_s2_a, &rld_s2_a));
 
