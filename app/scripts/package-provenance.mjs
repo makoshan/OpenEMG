@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 export function hashes(root) {
  const out={};
- for (const dir of ['app','host','python']) {
+ for (const dir of ['app','firmware','host','python']) {
   const walk=p=>{for(const e of readdirSync(path.join(root,p),{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name,'en'))){const rel=p+'/'+e.name;if(e.isSymbolicLink())throw Error('运行文件不能是软链：'+rel);if(e.isDirectory()){walk(rel);}else out[rel]=createHash('sha256').update(readFileSync(path.join(root,rel))).digest('hex');}};walk(dir);
  }
  return out;

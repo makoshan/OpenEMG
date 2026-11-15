@@ -12,7 +12,7 @@ const [appPath] = await packager({
   // bundle id 不随改名换：换了辅助功能、摄像头授权要重给
   name: 'OpenEMG', appBundleId: 'org.openemg.desktop', appCategoryType: 'public.app-category.healthcare-fitness',
   icon: 'icon/icon.icns',   // 源图 icon/icon.svg；改图后跑 scripts/render-icon.cjs + iconutil 重出
-  extraResource: ['build/python', 'build/host'],
+  extraResource: ['build/python', 'build/host', 'build/firmware'],
   // 主进程只用 Node 自带模块，node_modules 一个都不带；页面已打进 dist/
   ignore: [/^\/(src|build|out|scripts|node_modules|icon|public)(\/|$)/, /^\/(check-[\w-]+\.(mjs|cjs|tsx|html)|vite\.config\.js|index\.html|README\.md|package-lock\.json)$/,
     /__pycache__/, /\.c$/],
