@@ -6,6 +6,8 @@ OpenEMG is an open-source **16-channel surface EMG wristband**. Our goal is to r
 
 We want to do for EMG what DeepSeek did for AI: share the circuit, mechanical design, firmware, and desktop software so others can build a board and train a model on their own data.
 
+We develop OpenEMG together with AI. It’s still early, and the circuits, code, and documentation will have mistakes. If you spot one, please [open an issue](https://github.com/makoshan/OpenEMG/issues). If you have a code fix, a circuit change, or measurements that tell a different story, [send a pull request](https://github.com/makoshan/OpenEMG/pulls) so others can build on your work.
+
 [Status and roadmap](#status-and-roadmap) · [Gallery](#gallery) · [How it works](#how-it-works) · [Desktop app](#desktop-app)
 
 ![U9 enclosure design for the 16-channel wristband](hardware/16ch-afe-hirose-1mm-1nf/views/v001-enclosure-iso-dark.png)

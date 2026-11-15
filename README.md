@@ -6,6 +6,8 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 我们想做肌电界的 DeepSeek。电路、结构、固件和桌面软件全部开源，谁都可以照着做一块板，用自己的数据训练模型。
 
+OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文档里难免有错。如果你发现问题，欢迎[提 issue](https://github.com/makoshan/OpenEMG/issues)。如果你改好了代码、电路，或测出了不同的结果，也欢迎[提交 PR](https://github.com/makoshan/OpenEMG/pulls)，让其他人能复用你的工作。
+
 [当前状态与进展计划](#当前状态与进展计划) · [Gallery](#gallery) · [工作原理与调研](#工作原理) · [桌面工作台](#桌面工作台)
 
 ![16 通道 OpenEMG 手环的 U9 外壳设计渲染](hardware/16ch-afe-hirose-1mm-1nf/views/v001-enclosure-iso-dark.png)
