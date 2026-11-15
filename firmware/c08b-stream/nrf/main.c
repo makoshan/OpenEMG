@@ -174,6 +174,7 @@ static uint8_t calc_nrf_flags(void)
     if (gpio_get(VBUS_SENSE_PIN)) nf |= C08B_NF_VBUS_INTERLOCK;
     if (gpio_get(OE_N_PIN))       nf |= C08B_NF_OE_OFF;
     if (g_ble_subscribed)         nf |= C08B_NF_BLE_SUBSCRIBED;
+    if (g_imu_subscribed)         nf |= C08B_NF_IMU_SUBSCRIBED;
     return nf;
 }
 
@@ -578,6 +579,7 @@ static void ble_poll_events(void)
                     g_bridge.imu_seq = 0;
                     g_conn_imu_started = false;
                 }
+                spis_rearm_now();
             } else if (w->handle == g_chr_ctrl.value_handle) {
                 handle_ctrl_payload(w->data, w->len);
             }
@@ -685,6 +687,8 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
     }
 
     c08b_afe_mode_t prev_mode = g_bridge.afe_mode;
+    uint8_t         prev_fault = g_bridge.fault;
+    bool            prev_active = g_bridge.active;
     /* 若子板档位变化且仍有上一档位的未满包残帧，先按旧 pend_mode 刷净，再切换 afe_mode */
     if (g_bridge.pend_count > 0 && g_bridge.pend_mode != (c08b_afe_mode_t)f->afe_mode) {
         flush_pending_ble_packet();
@@ -697,22 +701,45 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
     g_bridge.ring_dropped    = f->dropped;
     g_bridge.min_interval_us = (f->min_interval_us_sat == 0xFFFFu) ? 0xFFFFFFFFu : f->min_interval_us_sat;
 
-    /* 一旦子板模式变化（如从 AFE_NONE 识别为 AFE_16CH/8CH/2CH），在发出第 1 条通知前先更新 GATT META/STATUS */
-    if (prev_mode != g_bridge.afe_mode) {
+    /* 一旦子板模式、活动态或故障码变化，在发出通知前立刻更新 GATT META/STATUS */
+    if (prev_mode != g_bridge.afe_mode || prev_fault != g_bridge.fault || prev_active != g_bridge.active) {
         refresh_gatt_meta_and_status();
     }
 
     if (f->sample_count > 0 && g_bridge.afe_mode != AFE_NONE) {
+        /* 第二道安全铁闸：发 BLE HVX 前逐槽核对 0xC0 状态头；若因 OE_N=1/MISO 下拉混入 0x000000 零帧，
+         * 立即清空待发缓冲、拒发通知、锁存 BAD_FRAME(6)（或 VBUS INTERLOCK(3)）并向 L432 下发 STOP 急停 */
+        for (uint8_t i = 0; i < f->sample_count; i++) {
+            if (!c08b_slot_status_valid(f->samples[i], g_bridge.afe_mode)) {
+                g_bridge.ads_status = ((uint32_t)f->samples[i][0] << 16) |
+                                      ((uint32_t)f->samples[i][1] << 8) |
+                                      (uint32_t)f->samples[i][2];
+                g_bridge.pend_mode  = AFE_NONE;
+                g_bridge.pend_count = 0;
+                g_bridge.pend_flags = 0;
+                g_bridge.active     = false;
+                g_bridge.fault      = gpio_get(VBUS_SENSE_PIN) ? C08B_FAULT_INTERLOCK : C08B_FAULT_BAD_FRAME;
+                g_req_mode          = C08B_MODE_STOP;
+                g_cmd_epoch         = c08b_next_cmd_epoch(g_cmd_epoch);
+                g_await_epoch_lo    = (uint16_t)g_cmd_epoch;
+                spis_rearm_now();
+                refresh_gatt_meta_and_status();
+                return;
+            }
+        }
+
         g_bridge.ads_status = ((uint32_t)f->samples[0][0] << 16) |
                               ((uint32_t)f->samples[0][1] << 8) |
                               (uint32_t)f->samples[0][2];
 
-        /* 16CH 每包上限 4 帧（232B），8CH/2CH 每包上限 8 帧（232B） */
+        /* 16CH 每包上限 4 帧（232B），8CH/2CH 每包上限 8 帧（232B）；若序号跳变亦先刷出前半包以忠实保留跳号 */
         uint8_t max_pkt_frames = (g_bridge.afe_mode == AFE_16CH) ? 4u : 8u;
         if ((f->f01_flags & C08B_F01_SESSION_START) && g_bridge.pend_count > 0) {
             flush_pending_ble_packet();
         }
-        if (g_bridge.pend_count + f->sample_count > max_pkt_frames) {
+        if (g_bridge.pend_count > 0 &&
+            (g_bridge.pend_count + f->sample_count > max_pkt_frames ||
+             f->seq_first != g_bridge.pend_seq + g_bridge.pend_count)) {
             flush_pending_ble_packet();
         }
         if (g_bridge.pend_count == 0) {

@@ -584,8 +584,24 @@ async def capture_c08b(
                     raise RuntimeError('采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）')
                 await asyncio.sleep(min(poll_seconds, max(0.01, run_deadline - time.monotonic())))
                 drain()
+                if not getattr(client, 'is_connected', True):
+                    raise RuntimeError('采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）')
+                mid_status = decode_status(bytes(await asyncio.wait_for(client.read_gatt_char(STATUS), 10)))
+                final_status = mid_status
+                if mid_status['fault']:
+                    raise RuntimeError(f'采集中触发设备故障码 {mid_status["fault"]}（fault={mid_status["fault"]}）')
+                if not mid_status['active']:
+                    raise RuntimeError(f'采集中设备意外退出运行态（fault={mid_status["fault"]}）')
             if not getattr(client, 'is_connected', True):
                 raise RuntimeError('采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）')
+
+            # 发 STOP 前必须先核对 STATUS：固件收到 STOP 会复位非持续性锁存故障码，先发 STOP 会静默吞没中途故障！
+            pre_stop = decode_status(bytes(await asyncio.wait_for(client.read_gatt_char(STATUS), 10)))
+            final_status = pre_stop
+            if pre_stop['fault']:
+                raise RuntimeError(f'采集中触发设备故障码 {pre_stop["fault"]}（fault={pre_stop["fault"]}）')
+            if not pre_stop['active']:
+                raise RuntimeError(f'采集中设备意外退出运行态（fault={pre_stop["fault"]}）')
 
             await asyncio.wait_for(client.write_gatt_char(CONTROL, STOP_COMMAND, response=True), 10)
             for _ in range(10):
@@ -602,7 +618,7 @@ async def capture_c08b(
             if not result['stop_confirmed']:
                 raise RuntimeError('发送 STOP 后设备仍处于 active 状态')
             if final_status['fault']:
-                raise RuntimeError(f'采集中触发设备故障码 {final_status["fault"]}')
+                raise RuntimeError(f'采集中触发设备故障码 {final_status["fault"]}（fault={final_status["fault"]}）')
             if result['valid_samples'] <= 0:
                 raise RuntimeError('未收到任何有效采样')
         result['state'] = '已完成（已实现未验收）'

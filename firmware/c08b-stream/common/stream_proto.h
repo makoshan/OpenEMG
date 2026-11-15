@@ -315,7 +315,20 @@ enum {
     C08B_NF_VBUS_INTERLOCK = 1u << 0,
     C08B_NF_OE_OFF         = 1u << 1,
     C08B_NF_BLE_SUBSCRIBED = 1u << 2,
+    C08B_NF_IMU_SUBSCRIBED = 1u << 3,
 };
+
+/* 检查单槽（54B）在给定采集板档位下的 ADS 状态头高 4 位是否为合法 0xC (1100b)。
+ * 2CH 槽位经 c08b_ads1292_map_f01_status 映射后首字节高 4 位同样必为 0xC；
+ * 16CH 必须同时满足 U1(slot[0]) 与 U2(slot[27]) 高 4 位均为 0xC。
+ * 当互锁缓冲 OE_N=1 高阻且 R701/R702(100k) 将 DRDY_A/MISO 拉为 0 时，读出 0x000000 零帧即刻被拒。 */
+static inline bool c08b_slot_status_valid(const uint8_t slot[C08B_RAW_SLOT_BYTES], c08b_afe_mode_t mode)
+{
+    if (!slot || (mode != AFE_2CH && mode != AFE_8CH && mode != AFE_16CH)) return false;
+    if ((slot[0] & 0xF0u) != 0xC0u) return false;
+    if (mode == AFE_16CH && (slot[27] & 0xF0u) != 0xC0u) return false;
+    return true;
+}
 
 typedef struct __attribute__((packed)) {
     uint16_t magic;               /* 0xC853 */
