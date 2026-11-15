@@ -59,13 +59,34 @@ Taking the band off and putting it back on changes electrode position and pressu
 
 ## Status and roadmap
 
-**November 15, 2026.** The v0.01 design and manufacturing files are public. Once the boards are fabricated and assembled, we will check power and communication before testing each input on the bench.
+**November 15, 2026.** The 16-channel v0.01 board design is ready for prototyping. The editable project, schematics, Gerbers, and assembly files are public. The firmware has passed host-side tests, and the desktop app can display 16 demo traces. **We have no measurements from this assembled system yet. The next milestone is a continuous bench recording of known signals on all 16 inputs.**
 
-| Step | Test | What we will record |
-|---|---|---|
-| 1. Bring up both boards | Verify cable orientation, power, and communication. Apply a known signal to each input. | Channel mapping, waveform, shorted-input noise, and dropped frames. |
-| 2. Check desktop playback | Replay bench recordings in the 2-, 8-, and 16-channel configurations. | Channel count and labels match the input, and saved files reopen correctly. |
-| 3. Test after refitting the band | After wear safety checks, train on one wear session and test on another. | Results for rest, activation, and four swipe directions, plus false triggers at rest. |
+#### Before the boards arrive
+
+| Work | What remains |
+|---|---|
+| Fabrication and assembly | Build from the November 15 package. Check board thickness, via-in-pad treatment, and stencil openings. Review both assembly sides for the two ADS1298 chips, three ribbon connectors, and 32 protection diodes. |
+| Firmware adaptation | Check chip select, reset, clock, and bias settings against the final schematic. RLDIN connects to +2.5 V and the two chips have separate test pins. Review the earlier self-test configuration before using it on this revision. |
+| Bench setup | Prepare the 20-pin cable, adapters, and an off-body signal source. Map the input pins to CH1–CH16 in the app and prepare shorted-input, known-signal, and stream-interruption tests. |
+
+#### When the boards arrive: bench tests first
+
+| Work | Evidence to collect |
+|---|---|
+| Inspection and power | Check component orientation, cable pin 1 at both ends, and continuity. Measure digital and analog rails, reference voltage, startup timing, and ripple. Test the acquisition power interlock with USB connected. |
+| Board communication | Read the ID and registers of each ADS1298 separately. Observe both data-ready signals and verify the ordering of the two eight-channel groups. |
+| Analog acquisition | Measure shorted-input noise on every channel, then inject a known signal into one input at a time. Record gain, polarity, mains interference, and adjacent-channel crosstalk. Test bias output with a simulated load. |
+| Wireless link and desktop recording | Measure sample rate, dropped frames, and latency during a continuous hardware run. View, label, save, close, and replay a recording. Disconnect mid-run and check file integrity and whether the gap is visible. Run separate compatibility checks for 2 and 8 channels. |
+| Enclosure, flex, and battery | Fit both boards and the cell. Insert the 20-pin cable and both 30-pin flex tails. Check latch access and cable clearance with the lid closed. Measure power draw, temperature rise, and runtime. |
+
+#### After bench validation: wear and gesture tests
+
+| Work | Evidence to collect |
+|---|---|
+| Before wear | Review electrode connections, current-limiting paths, battery power, and the charging interlock before scheduling wear tests. [Safety notes](SAFETY.md) |
+| Electrode contact and data | Record band position and tightness. Compare each channel at rest, during movement, and after refitting. Keep gesture labels and wear-session IDs so intermittent contact can be traced. |
+| Gesture recognition | Start with rest, activation, and four swipe directions. Train on one wear session and test on another. Report results per gesture, response time, and false triggers at rest. |
+| Reproducing a build | Publish assembly photos, firmware versions, desktop connection instructions, and first-board measurements. Have another developer follow the public files through assembly and recording and document where they get stuck. |
 
 ### Desktop app
 
