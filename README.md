@@ -10,9 +10,11 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 [当前状态与进展计划](#当前状态与进展计划) · [Gallery](#gallery) · [工作原理与调研](#工作原理) · [桌面工作台](#桌面工作台)
 
-![16 通道 OpenEMG 手环展开图，长表带、透明 U9 外壳和带扣短表带](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-iso-dark.png)
+| 正面 · U9 外壳与双板 | 贴肤面 · 金属电极触点 |
+|---|---|
+| [![长带、透明主机与短带扣](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-iso-dark.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-iso-dark.png) | [![长带上有 24 个圆触点，短带上有 4 个，主机底部有 4 圆 2 方](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-skin-iso-dark.png)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-skin-iso-dark.png) |
 
-透明 U9 外壳内是 v0.01 主控板和采集板，两侧采用 R13 表带设计。电极位于贴肤侧。这套组合还没有实物试装。[表带模型](hardware/enclosure-46x40/c08b-shell-r13-notch/) · [双 30 针电极软板](hardware/16ch-u9-dual30/strap-fpc-30p/)
+外观沿用 R13 表带，贴肤面按双 30 针电极软板布局绘制。长带 24 个、短带 4 个、主机底部 4 个圆形采样触点，共组成 16 对差分输入。底部另有 2 个方形辅助触点。这套组合尚待实物试装。 [表带模型](hardware/enclosure-46x40/c08b-shell-r13-notch/) · [双 30 针电极软板](hardware/16ch-u9-dual30/strap-fpc-30p/)
 
 **OpenEMG 还在早期研制阶段。** 2026 年 11 月 15 日定下的是打样用的 PCB。固件、桌面软件与板子的联调、手势识别都还在开发，16 通道整机尚未上机验证。
 
