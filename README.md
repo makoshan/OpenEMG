@@ -56,7 +56,7 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 [![第 9 页原理图，电极输入、滤波和静电保护，点击查看九页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
-**[下载九页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1 页是整机框图，第 2 页是电源树。第 3–7 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 8–9 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)。
+**[下载九页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1 页是整机框图，第 2 页是电源树。第 3–7 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 8–9 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改或联调电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)或 [KiCad 8 原生双板与九页原理图工程](hardware/16ch-afe-hirose-1mm-1nf/kicad/)。
 
 | 复刻资料 | 主控板 | 采集板 |
 |---|---|---|

@@ -62,7 +62,7 @@
 
 | 档位与用途 | 工程文件路径 | 说明 |
 |---|---|---|
-| **16ch `v0.01` 双板合并工程 + 广濑 `1.0 mm` `1 nF` 台架采集板（人工审核 · 准备下单）** | `16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2`<br>`16ch-afe-xunpu-2mm-1nf/AFE-30P.epro2` | **2026-11-15 人工工程师逐脚审核定版、准备下单的双板工程**，采集板 D101–D132 共 32 颗 ESD401、146 个贴片位号（`01 主控板` + `02 采集板` 四角 `R1.80` 圆角、现货 `0603 R4=104kΩ C861070`、广濑 `1.0 mm` 双 30P + `1 nF` 差分网络，含同步单板 Gerber/BOM/CPL）；附 AI 派生讯普 `2.0 mm` 对照版（未下单） |
+| **16ch `v0.01` 双板合并工程 + 广濑 `1.0 mm` `1 nF` 台架采集板（人工审核 · 准备下单）** | `16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2`<br>`16ch-afe-hirose-1mm-1nf/kicad/`<br>`16ch-afe-xunpu-2mm-1nf/AFE-30P.epro2` | **2026-11-15 人工工程师逐脚审核定版、准备下单的双板工程**，采集板 D101–D132 共 32 颗 ESD401、146 个贴片位号（`01 主控板` + `02 采集板` 四角 `R1.80` 圆角、现货 `0603 R4=104kΩ C861070`、广濑 `1.0 mm` 双 30P + `1 nF` 差分网络，含同步单板 Gerber/BOM/CPL 及 1:1 导出的 KiCad 8 原生双板与九页原理图 `kicad/`）；附 AI 派生讯普 `2.0 mm` 对照版（未下单） |
 | **16ch 6 层圆角主控 `Rev0.01` + 超薄双 30P `22 pF` 穿戴派生版（AI 生成 · 未下单）** | `16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`<br>`16ch-u9-dual30/AFE-30P.epro2` | AI 结构与叠板派生参考：6 层 `OpenEMG-C08B-Mainboard-Rev0.01` + 4 层 `0.80 mm` 圆角 `R1.80` 超薄双 30P（`C324727`）`AFE-30P`（`22 pF` 差分网络，含 `fab-mcu-u9/`、`fab-afe-30p/` 与 KiCad 四层软板 `strap-fpc-30p/`，尚未人工审核、尚未下单） |
 | **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
 | **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |

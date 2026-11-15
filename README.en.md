@@ -56,7 +56,7 @@ Read left to right, then top to bottom. All copper layers are viewed from above 
 
 [![Schematic sheet 9: electrode inputs, filtering, and ESD protection](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
-Sheet 1 shows the system block diagram and sheet 2 shows the power tree. Sheets 3–7 cover controller power, Bluetooth, USB, inter-board connections, and the sampling MCU. Sheets 8–9 cover analog power, acquisition, electrode connectors, and input filters. [Searchable schematic PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf) · [Editable EasyEDA Pro project](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)
+Sheet 1 shows the system block diagram and sheet 2 shows the power tree. Sheets 3–7 cover controller power, Bluetooth, USB, inter-board connections, and the sampling MCU. Sheets 8–9 cover analog power, acquisition, electrode connectors, and input filters. [Searchable schematic PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf) · [Editable EasyEDA Pro project](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2) · [Native KiCad 8 project (dual-board PCBs & 9-page schematics)](hardware/16ch-afe-hirose-1mm-1nf/kicad/)
 
 | Assembly files | Controller | Acquisition board |
 |---|---|---|
