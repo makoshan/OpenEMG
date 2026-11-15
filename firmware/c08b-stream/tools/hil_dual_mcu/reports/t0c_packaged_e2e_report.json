@@ -1,0 +1,64 @@
+{
+  "commit": "364deaf60692600de4fa5664ecc94468a1704ec2",
+  "packaged_app": "<local-path>",
+  "userdata": "<tmp-path>",
+  "checks": {
+    "device_dropdown_options": [
+      {
+        "value": "c08b-16ch",
+        "label": "16 通道 · OpenEMG 双 ADS1298"
+      },
+      {
+        "value": "wl8",
+        "label": "8 通道 · 唯理肌电手环"
+      },
+      {
+        "value": "c08b-8ch",
+        "label": "8 通道 · OpenEMG 单 ADS1298"
+      },
+      {
+        "value": "c08b-2ch",
+        "label": "2 通道 · OpenEMG ADS1292"
+      },
+      {
+        "value": "emg",
+        "label": "单通道 · Cheez + ESP32-S3"
+      }
+    ],
+    "c08b_16ch_connect": {
+      "headline": "OpenEMG 16 路合成预览就绪",
+      "spec": "16 / 16",
+      "has_synth_banner": true
+    },
+    "negative_c08b16_record_locked": {
+      "studio_sessionStart": {
+        "ok": false,
+        "code": "http-403",
+        "message": "c08b-16ch 不能录制"
+      },
+      "legacy_record": {
+        "ok": false,
+        "code": "http-400",
+        "message": "单次时长只用于八通道腕带"
+      }
+    },
+    "c08b-8ch": {
+      "device_id": "c08b-8ch",
+      "n_channels": 8,
+      "fs_Hz": 1000,
+      "record": false,
+      "banner": "C08B 8ch 协议 v1 FAKE · 合成数据，非实物"
+    },
+    "c08b-2ch": {
+      "device_id": "c08b-2ch",
+      "n_channels": 2,
+      "fs_Hz": 1000,
+      "record": false,
+      "banner": "C08B 2ch 协议 v1 FAKE · 合成数据，非实物"
+    }
+  },
+  "screenshots": [
+    "<local-path>",
+    "<local-path>"
+  ]
+}
