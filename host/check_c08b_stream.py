@@ -362,6 +362,8 @@ class FakeC08BBleClient:
         verb = cmd[:4]
         if verb == b'STOP':
             self.active = False
+            # 对齐真实 C 固件（nrf/main.c & l432/main.c）：收到 STOP 复位非持续性故障码锁存
+            self.fault = 0
             if self._pump_task is not None:
                 self._pump_task.cancel()
                 try:
@@ -506,6 +508,27 @@ async def _run_ble_tests(tmp: Path):
         expected_row1 = np.sin(0.05) * (10.0 * np.arange(1, exp_ch + 1))
         assert np.max(np.abs(rep['uv'][1] - expected_row1)) < 0.05
         print(f'  BLE 冷启动动态识别 ✓ NONE -> {board_afe}: proto=v{exp_proto}, shape={rep["uv"].shape}, voltage_at="{exp_vat}"')
+
+    # 7. 安全红线必败：采集中途触发硬件故障（如 fault=6 BAD_FRAME 断电停机），必须在发 STOP 清零前当场捕获报错！
+    mid_fault_cli = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='NONE', bench_measured=True)
+
+    def _trip_mid_fault():
+        async def _delayed_trip():
+            await asyncio.sleep(0.015)
+            mid_fault_cli.fault = 6
+            mid_fault_cli.active = False
+        asyncio.create_task(_delayed_trip())
+
+    try:
+        await cs.capture_c08b(
+            mid_fault_cli, tmp / 'cap-mid-fault6', seconds=0.2, mode='test',
+            allow_real=True, expected=BUILD_ID, poll_seconds=0.02, on_first_data=_trip_mid_fault,
+        )
+        raise AssertionError('采集中途 fault=6 被收尾 STOP 静默吞没')
+    except RuntimeError as err:
+        assert 'fault=6' in str(err), err
+        assert mid_fault_cli.fault == 0 and mid_fault_cli.written_commands[-1] == b'STOP'
+        print(f'  红 ✓ 采集中途硬件故障在发 STOP 复位前被当场拦截并随后自动 STOP 复位: {err}')
 
 
 def test_studio_acq_and_recording(tmp: Path):

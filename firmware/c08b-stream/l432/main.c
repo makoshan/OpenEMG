@@ -34,24 +34,25 @@ volatile c08b_link_tx_t g_tx_frame;
 volatile c08b_link_rx_t g_last_rx;
 
 static volatile uint32_t g_ms;
+static uint32_t g_cyc_per_us = 16u;
 static uint32_t g_cyccnt_prev;
 static uint64_t g_cyc_total;
 
 void SysTick_Handler(void) { g_ms++; }
 
-/* 基于 32 位 DWT->CYCCNT（16 MHz 下每 16 拍 = 1 µs）维护不回绕的 64 位微秒时钟 */
+/* 基于 32 位 DWT->CYCCNT（64 MHz PLL 下每 64 拍 = 1 µs）维护不回绕的 64 位 1 MHz 微秒时钟 */
 static uint64_t clock_us(void)
 {
     uint32_t cur = DWT->CYCCNT;
     uint32_t diff = cur - g_cyccnt_prev;
     g_cyccnt_prev = cur;
     g_cyc_total += diff;
-    return g_cyc_total / 16u;
+    return g_cyc_total / g_cyc_per_us;
 }
 
 static void delay_us(uint32_t us)
 {
-    uint32_t t0 = DWT->CYCCNT, n = us * 16u;
+    uint32_t t0 = DWT->CYCCNT, n = us * g_cyc_per_us;
     while ((DWT->CYCCNT - t0) < n) {}
     (void)clock_us();
 }
@@ -188,7 +189,7 @@ static void i2c_reset_bus(void)
 static int i2c_wait(uint32_t flag)
 {
     uint32_t t0 = DWT->CYCCNT;
-    uint32_t limit = 1500u * 16u; /* 最多等 1.5 ms，超时立即复位外设防死锁 */
+    uint32_t limit = 1500u * g_cyc_per_us; /* 最多等 1.5 ms，超时立即复位外设防死锁 */
     while (!(I2C1->ISR & flag)) {
         if (I2C1->ISR & I2C_ISR_NACKF) {
             I2C1->ICR = I2C_ICR_NACKCF | I2C_ICR_STOPCF;
@@ -266,17 +267,144 @@ static bool imu_setup_stream(void)
     return true;
 }
 
-static bool imu_poll_sample(int16_t out_raw[6])
+/* 非阻塞硬件 I2C1 采样状态机：每次调用仅推进 1 个硬件寄存器事件（< 0.5 µs），
+ * 让 400 kHz I2C 字节移位完全在 DRDY_A 等待窗后台并发完成，彻底消除 16CH@2000SPS 阻塞漏采与批次量化。 */
+typedef enum {
+    IMU_NB_IDLE = 0,
+    IMU_NB_ST_TX,
+    IMU_NB_ST_TC,
+    IMU_NB_ST_RX,
+    IMU_NB_ST_STOP,
+    IMU_NB_DAT_TX,
+    IMU_NB_DAT_TC,
+    IMU_NB_DAT_RX,
+    IMU_NB_DAT_STOP,
+} imu_nb_state_t;
+
+static struct {
+    imu_nb_state_t st;
+    uint8_t        status_reg;
+    uint8_t        idx;
+    uint8_t        raw[12];
+    int16_t        out6[6];
+    uint64_t       last_poll_us;
+    uint64_t       op_start_us;
+    uint64_t       sample_ts_us;
+    uint16_t       read_us;
+    bool           ready;
+} g_imu_nb;
+
+static void imu_nb_reset(uint64_t now_us)
 {
-    uint8_t st = 0;
-    if (i2c_read(0x6Au, 0x1Eu, &st, 1)) return false;
-    if ((st & 0x03u) != 0x03u) return false; /* XLDA | GDA 同时就绪才取 */
-    uint8_t raw[12];
-    if (i2c_read(0x6Au, 0x22u, raw, 12)) return false; /* OUTX_L_G(0x22)..OUTZ_H_XL(0x2D) */
-    for (int i = 0; i < 6; i++) {
-        out_raw[i] = (int16_t)((uint16_t)raw[2 * i] | ((uint16_t)raw[2 * i + 1] << 8));
+    memset(&g_imu_nb, 0, sizeof(g_imu_nb));
+    g_imu_nb.last_poll_us = now_us;
+}
+
+static void imu_nb_step(bool enabled)
+{
+    if (!enabled) {
+        if (g_imu_nb.st != IMU_NB_IDLE) {
+            i2c_reset_bus();
+            g_imu_nb.st = IMU_NB_IDLE;
+        }
+        return;
     }
-    return true;
+
+    uint64_t now = clock_us();
+    uint32_t isr = I2C1->ISR;
+    if (g_imu_nb.st != IMU_NB_IDLE) {
+        if (isr & I2C_ISR_NACKF) {
+            I2C1->ICR = I2C_ICR_NACKCF | I2C_ICR_STOPCF;
+            g_imu_nb.st = IMU_NB_IDLE;
+            g_imu_nb.last_poll_us = now;
+            return;
+        }
+        if (now - g_imu_nb.op_start_us > 2000u) {
+            i2c_reset_bus();
+            g_imu_nb.st = IMU_NB_IDLE;
+            g_imu_nb.last_poll_us = now;
+            return;
+        }
+    }
+
+    switch (g_imu_nb.st) {
+    case IMU_NB_IDLE:
+        if (g_imu_nb.ready || (now - g_imu_nb.last_poll_us < 2400u)) return;
+        if (isr & I2C_ISR_BUSY) {
+            i2c_reset_bus();
+            g_imu_nb.last_poll_us = now;
+            return;
+        }
+        I2C1->ICR = 0x3F38u;
+        I2C1->CR2 = (0x6Au << 1) | (1u << I2C_CR2_NBYTES_Pos) | I2C_CR2_START;
+        g_imu_nb.op_start_us = now;
+        g_imu_nb.st = IMU_NB_ST_TX;
+        break;
+    case IMU_NB_ST_TX:
+        if (isr & I2C_ISR_TXIS) {
+            I2C1->TXDR = 0x1Eu;
+            g_imu_nb.st = IMU_NB_ST_TC;
+        }
+        break;
+    case IMU_NB_ST_TC:
+        if (isr & I2C_ISR_TC) {
+            I2C1->CR2 = (0x6Au << 1) | I2C_CR2_RD_WRN | (1u << I2C_CR2_NBYTES_Pos) | I2C_CR2_AUTOEND | I2C_CR2_START;
+            g_imu_nb.st = IMU_NB_ST_RX;
+        }
+        break;
+    case IMU_NB_ST_RX:
+        if (isr & I2C_ISR_RXNE) {
+            g_imu_nb.status_reg = (uint8_t)I2C1->RXDR;
+            g_imu_nb.st = IMU_NB_ST_STOP;
+        }
+        break;
+    case IMU_NB_ST_STOP:
+        if (isr & I2C_ISR_STOPF) {
+            I2C1->ICR = I2C_ICR_STOPCF;
+            g_imu_nb.last_poll_us = now;
+            if ((g_imu_nb.status_reg & 0x03u) != 0x03u) {
+                g_imu_nb.st = IMU_NB_IDLE;
+            } else {
+                I2C1->ICR = 0x3F38u;
+                I2C1->CR2 = (0x6Au << 1) | (1u << I2C_CR2_NBYTES_Pos) | I2C_CR2_START;
+                g_imu_nb.sample_ts_us = now;
+                g_imu_nb.op_start_us = now;
+                g_imu_nb.idx = 0u;
+                g_imu_nb.st = IMU_NB_DAT_TX;
+            }
+        }
+        break;
+    case IMU_NB_DAT_TX:
+        if (isr & I2C_ISR_TXIS) {
+            I2C1->TXDR = 0x22u;
+            g_imu_nb.st = IMU_NB_DAT_TC;
+        }
+        break;
+    case IMU_NB_DAT_TC:
+        if (isr & I2C_ISR_TC) {
+            I2C1->CR2 = (0x6Au << 1) | I2C_CR2_RD_WRN | (12u << I2C_CR2_NBYTES_Pos) | I2C_CR2_AUTOEND | I2C_CR2_START;
+            g_imu_nb.st = IMU_NB_DAT_RX;
+        }
+        break;
+    case IMU_NB_DAT_RX:
+        if (isr & I2C_ISR_RXNE) {
+            g_imu_nb.raw[g_imu_nb.idx++] = (uint8_t)I2C1->RXDR;
+            if (g_imu_nb.idx >= 12u) g_imu_nb.st = IMU_NB_DAT_STOP;
+        }
+        break;
+    case IMU_NB_DAT_STOP:
+        if (isr & I2C_ISR_STOPF) {
+            I2C1->ICR = I2C_ICR_STOPCF;
+            for (int i = 0; i < 6; i++) {
+                g_imu_nb.out6[i] = (int16_t)((uint16_t)g_imu_nb.raw[2 * i] | ((uint16_t)g_imu_nb.raw[2 * i + 1] << 8));
+            }
+            uint64_t dt = now - g_imu_nb.sample_ts_us;
+            g_imu_nb.read_us = (dt > 8999u) ? 8999u : (uint16_t)dt;
+            g_imu_nb.ready = true;
+            g_imu_nb.st = IMU_NB_IDLE;
+        }
+        break;
+    }
 }
 
 /* ---------- LINK SPI3（8 MHz 主机，发 280B 帧同时收 16B 命令头） ---------- */
@@ -313,6 +441,7 @@ typedef struct {
     bool            active;
     bool            is_synth;
     uint8_t         active_mode;
+    uint8_t         nrf_flags;
     c08b_afe_mode_t afe_mode;
     c08b_fault_t    fault;
     uint16_t        fs_hz;
@@ -320,6 +449,10 @@ typedef struct {
     bool            imu_ok;
     bool            avdd_ok;
     bool            sent_session_start;
+    bool            has_carry;
+    uint32_t        carry_missed;
+    uint64_t        carry_ts;
+    uint8_t         carry_slot[C08B_RAW_SLOT_BYTES];
     uint32_t        last_cmd_epoch;
     uint32_t        produced;
     uint32_t        dropped;
@@ -336,8 +469,10 @@ static session_ctx_t g_sess;
 static void session_stop(c08b_fault_t reason)
 {
     afe_safe_off();
+    imu_nb_step(false);
     g_sess.active = false;
     g_sess.is_synth = false;
+    g_sess.has_carry = false;
     g_sess.active_mode = C08B_MODE_IDLE;
     if (reason != C08B_FAULT_NONE) g_sess.fault = reason;
 }
@@ -388,6 +523,7 @@ static c08b_fault_t sync_nrf_interlock_after_ana_en(bool *abort_by_stop)
         if (!link_exchange(&hb, &rx, &got_rx) || !got_rx) {
             return C08B_FAULT_INTERLOCK;
         }
+        g_sess.nrf_flags = rx.nrf_flags;
         if (rx.cmd_epoch != g_sess.last_cmd_epoch &&
             (rx.req_mode == C08B_MODE_STOP || rx.req_mode == C08B_MODE_IDLE)) {
             g_sess.last_cmd_epoch = rx.cmd_epoch;
@@ -453,6 +589,7 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
             bool got_rx = false;
             fill_tx_telemetry(&hb);
             if (link_exchange(&hb, &rx, &got_rx) && got_rx) {
+                g_sess.nrf_flags = rx.nrf_flags;
                 if (rx.nrf_flags & (C08B_NF_VBUS_INTERLOCK | C08B_NF_OE_OFF)) {
                     afe_safe_off(); return C08B_FAULT_INTERLOCK;
                 }
@@ -559,12 +696,17 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
     }
 
     g_sess.imu_ok = imu_setup_stream();
+    imu_nb_reset(clock_us());
     SET(ADS_START, 1);
     return C08B_FAULT_NONE;
 }
 
 static void handle_rx_cmd(const c08b_link_rx_t *rx)
 {
+    g_sess.nrf_flags = rx->nrf_flags;
+    if ((rx->nrf_flags & C08B_NF_IMU_SUBSCRIBED) == 0u) {
+        imu_nb_step(false);
+    }
     bool nrf_interlock = (rx->nrf_flags & (C08B_NF_VBUS_INTERLOCK | C08B_NF_OE_OFF)) != 0;
     /* 无论命令序号是否更新，一旦 nRF 侧报告 VBUS 或 OE_N 互锁断开，运行中的真实 AFE 必须立刻断电并报 INTERLOCK(3) */
     if (g_sess.active && !g_sess.is_synth && nrf_interlock) {
@@ -606,6 +748,7 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
     g_sess.last_sample_us = 0;
     g_sess.last_imu_ms = g_ms;
     g_sess.sent_session_start = false;
+    g_sess.has_carry = false;
 
     if (rx->req_mode == C08B_MODE_SYN1) {
         uint8_t sc = rx->synth_channels;
@@ -614,6 +757,7 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
         g_sess.active = true;
         g_sess.active_mode = C08B_MODE_SYN1;
         g_sess.imu_ok = imu_setup_stream();
+        imu_nb_reset(clock_us());
         g_sess.next_synth_us = clock_us();
         logf_("启动 SYN1 合成流：%uCH @ %u Hz\n", (unsigned)g_sess.afe_mode, fs);
         return;
@@ -639,10 +783,12 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
 /* 采 1 个真实 AFE 样本槽（54 字节） */
 static bool read_one_afe_slot(uint8_t slot[54], uint64_t *ts_out)
 {
+    bool imu_en = g_sess.imu_ok && ((g_sess.nrf_flags & C08B_NF_IMU_SUBSCRIBED) != 0u);
     uint32_t t0 = g_ms;
     while (GET(DRDY_A)) {
         if (l432_vbus_present()) { session_stop(C08B_FAULT_INTERLOCK); return false; }
         if (g_ms - t0 > 20u)     { session_stop(C08B_FAULT_DRDY_TO);   return false; }
+        imu_nb_step(imu_en);
     }
     *ts_out = clock_us();
     memset(slot, 0, 54);
@@ -674,20 +820,46 @@ static bool read_one_afe_slot(uint8_t slot[54], uint64_t *ts_out)
             delay_us(2); cs_select(1, 1);
             if ((slot[27] & 0xF0u) != 0xC0u) g_sess.bad_status++;
         }
+        imu_nb_step(imu_en);
+    }
+
+    /* 第一道安全铁闸：若 OE_N=1 三态缓冲 + R701/R702 下拉导致 MISO 读回 0x000000 坏状态头，
+     * 立即切断 ANA_EN=0 并锁存 FAULT_BAD_FRAME(6)（或 VBUS INTERLOCK(3)），严禁把全零伪样本装入 SPI3 发送帧！ */
+    if (!c08b_slot_status_valid(slot, g_sess.afe_mode)) {
+        session_stop(l432_vbus_present() ? C08B_FAULT_INTERLOCK : C08B_FAULT_BAD_FRAME);
+        return false;
     }
 
     uint32_t tw = DWT->CYCCNT;
-    while (!GET(DRDY_A) && (DWT->CYCCNT - tw) < 80u * 16u) {}
+    while (!GET(DRDY_A) && (DWT->CYCCNT - tw) < 80u * g_cyc_per_us) {}
     return true;
 }
 
 static void clock_and_gpio_init(void)
 {
+    /* 配置 STM32L432：HSI16(16MHz) -> PLL(16/1*8/2 = 64MHz HCLK)，VOS Range 1 + Flash 3WS；
+     * 同时设 PPRE1=DIV4、PPRE2=DIV4 使 PCLK1=PCLK2 保持精确 16 MHz，确保 SPI1(4MHz/1MHz)、
+     * SPI3(8MHz, 对齐 nRF52840 SPIS1 <=8MHz 上限) 与 I2C1(400kHz) 波特率零偏差。 */
     RCC->CR |= RCC_CR_HSION;
     while (!(RCC->CR & RCC_CR_HSIRDY)) {}
-    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW) | RCC_CFGR_SW_HSI; /* HSI16 = 16 MHz */
-    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSI) {}
+    RCC->APB1ENR1 |= RCC_APB1ENR1_PWREN;
+    (void)RCC->APB1ENR1;
+    PWR->CR1 = (PWR->CR1 & ~PWR_CR1_VOS) | PWR_CR1_VOS_0;
+    while (PWR->SR2 & PWR_SR2_VOSF) {}
+    FLASH->ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN | FLASH_ACR_DCEN | FLASH_ACR_LATENCY_3WS;
+    while ((FLASH->ACR & FLASH_ACR_LATENCY) != FLASH_ACR_LATENCY_3WS) {}
+
+    RCC->CR &= ~RCC_CR_PLLON;
+    while (RCC->CR & RCC_CR_PLLRDY) {}
+    RCC->PLLCFGR = RCC_PLLCFGR_PLLSRC_HSI | (8u << RCC_PLLCFGR_PLLN_Pos) | RCC_PLLCFGR_PLLREN;
+    RCC->CR |= RCC_CR_PLLON;
+    while (!(RCC->CR & RCC_CR_PLLRDY)) {}
+
+    RCC->CFGR = RCC_CFGR_PPRE1_DIV4 | RCC_CFGR_PPRE2_DIV4 | RCC_CFGR_SW_PLL;
+    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL) {}
     SystemCoreClockUpdate();
+    g_cyc_per_us = SystemCoreClock / 1000000u;
+    if (g_cyc_per_us == 0u) g_cyc_per_us = 64u;
     SysTick_Config(SystemCoreClock / 1000u);
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
     DWT->CYCCNT = 0;
@@ -715,15 +887,15 @@ static void clock_and_gpio_init(void)
     pin_mode(IMU_SCL_PORT, IMU_SCL_PIN, M_AF, 4, P_UP, 1); /* 内部弱上拉兜底：防未贴 R198/R199 时浮空锁死 BUSY */
     pin_mode(IMU_SDA_PORT, IMU_SDA_PIN, M_AF, 4, P_UP, 1);
 
-    spi_init(SPI3, 0u, 0); /* 16 MHz / 2 = 8 MHz，模式 0 对接 nRF SPIS1 */
+    spi_init(SPI3, 0u, 0); /* PCLK1(16 MHz) / 2 = 8 MHz，模式 0 对接 nRF SPIS1 */
 }
 
 int main(void)
 {
     clock_and_gpio_init();
     rtt_init();
-    logf_("\nC08B L432 流式候选固件启动（AFE_LOCK=%d, BENCH_MEASURED=%d）\n",
-          MAKO_C08B_AFE_ENABLED, MAKO_BENCH_MEASURED);
+    logf_("\nC08B L432 流式候选固件启动（HCLK=%lu MHz, AFE_LOCK=%d, BENCH_MEASURED=%d）\n",
+          (unsigned long)(SystemCoreClock / 1000000u), MAKO_C08B_AFE_ENABLED, MAKO_BENCH_MEASURED);
 
     static c08b_link_tx_t tx;
     c08b_link_rx_t rx;
@@ -734,6 +906,7 @@ int main(void)
         (void)clock_us();
         if (g_sess.active && !g_sess.is_synth && l432_vbus_present()) {
             session_stop(C08B_FAULT_INTERLOCK);
+            last_hb_ms = g_ms - 20u;
         }
 
         if (!g_sess.active) {
@@ -750,50 +923,91 @@ int main(void)
 
         /* 采集中：2000 SPS 每批 2 帧（1 ms 一次，防 500 µs 周期超限）；500/1000 SPS 每批 4 帧 */
         uint8_t target_batch = (g_sess.fs_hz >= 2000u) ? 2u : 4u;
+        uint32_t step_us = 1000000u / g_sess.fs_hz;
+        uint32_t overrun_thresh_us = step_us + (step_us * 3u) / 5u; /* >= 1.6 * t_DR 判为硬件 DRDY 漏采 */
+        bool imu_sub = (g_sess.nrf_flags & C08B_NF_IMU_SUBSCRIBED) != 0u;
+        bool imu_en  = g_sess.imu_ok && imu_sub;
+
+        if (g_sess.has_carry) {
+            g_sess.dropped += g_sess.carry_missed;
+            g_sess.produced += g_sess.carry_missed;
+        }
         fill_tx_telemetry(&tx);
         tx.seq_first = g_sess.produced;
 
         for (uint8_t b = 0; b < target_batch; b++) {
+            if (b == 0u && g_sess.has_carry) {
+                memcpy(tx.samples[0], g_sess.carry_slot, C08B_RAW_SLOT_BYTES);
+                tx.timestamp_us = g_sess.carry_ts;
+                g_sess.last_sample_us = g_sess.carry_ts;
+                tx.sample_count = 1u;
+                g_sess.has_carry = false;
+                continue;
+            }
+
             uint64_t ts = 0;
+            uint8_t slot_buf[C08B_RAW_SLOT_BYTES];
             if (g_sess.is_synth) {
-                uint32_t step_us = 1000000u / g_sess.fs_hz;
-                while (clock_us() < g_sess.next_synth_us) {}
+                while (clock_us() < g_sess.next_synth_us) {
+                    imu_nb_step(imu_en);
+                }
                 ts = g_sess.next_synth_us;
                 g_sess.next_synth_us += step_us;
-                c08b_fill_synth_slot(tx.samples[b], g_sess.afe_mode, g_sess.produced + b);
+                c08b_fill_synth_slot(slot_buf, g_sess.afe_mode, g_sess.produced + tx.sample_count);
             } else {
-                if (!read_one_afe_slot(tx.samples[b], &ts)) break;
+                if (!read_one_afe_slot(slot_buf, &ts)) break;
             }
-            if (b == 0) tx.timestamp_us = ts;
-            if (g_sess.produced + b > 0) {
-                uint64_t dt = ts - g_sess.last_sample_us;
+
+            if (g_sess.produced + tx.sample_count > 0u) {
+                uint64_t dt = (ts > g_sess.last_sample_us) ? (ts - g_sess.last_sample_us) : 0u;
                 if (dt < g_sess.min_interval_us) g_sess.min_interval_us = (uint32_t)dt;
+                if (!g_sess.is_synth && dt >= overrun_thresh_us) {
+                    uint32_t missed = (uint32_t)((dt + step_us / 2u) / step_us) - 1u;
+                    if (missed == 0u) missed = 1u;
+                    if (tx.sample_count == 0u) {
+                        g_sess.dropped += missed;
+                        g_sess.produced += missed;
+                        tx.dropped = g_sess.dropped;
+                        tx.seq_first = g_sess.produced;
+                    } else {
+                        /* 保持单帧内部序号严格连续：先发完已采连续样本，跳号样本暂存至下一帧首槽发出 */
+                        memcpy(g_sess.carry_slot, slot_buf, C08B_RAW_SLOT_BYTES);
+                        g_sess.carry_ts = ts;
+                        g_sess.carry_missed = missed;
+                        g_sess.has_carry = true;
+                        break;
+                    }
+                }
             }
+
+            memcpy(tx.samples[tx.sample_count], slot_buf, C08B_RAW_SLOT_BYTES);
+            if (tx.sample_count == 0u) tx.timestamp_us = ts;
             g_sess.last_sample_us = ts;
             tx.sample_count++;
         }
 
-        if (!g_sess.active || tx.sample_count == 0) continue;
+        if (!g_sess.active) {
+            /* 一旦采集中发生任何故障停机（BAD_FRAME/DRDY_TO/INTERLOCK），立即在下一轮发心跳上报故障码 */
+            last_hb_ms = g_ms - 20u;
+            continue;
+        }
+        if (tx.sample_count == 0u) continue;
 
-        /* 每 ~10 ms 顺带轮询一次 104 Hz IMU，打同源 L432_DWT_1MHz 64 位时间戳 */
-        if (g_ms - g_sess.last_imu_ms >= 9u) {
-            int16_t imu6[6] = {0};
-            uint64_t t_imu0 = clock_us();
-            if (g_sess.imu_ok && imu_poll_sample(imu6)) {
-                uint64_t dt_imu = clock_us() - t_imu0;
-                g_sess.last_imu_ms = g_ms;
-                tx.imu_fresh = 1u;
-                tx.imu_timestamp_us = t_imu0;
-                tx.imu_read_us = (dt_imu > 8999u) ? 8999u : (uint16_t)dt_imu;
-                memcpy(tx.imu_raw, imu6, sizeof(imu6));
-            } else if (g_sess.is_synth && !g_sess.imu_ok && (g_ms - g_sess.last_imu_ms >= 10u)) {
-                g_sess.last_imu_ms = g_ms;
-                tx.imu_fresh = 1u;
-                tx.imu_timestamp_us = t_imu0;
-                tx.imu_read_us = 0u;
-                tx.imu_raw[0] = (int16_t)(g_sess.produced & 0xFFu);
-                tx.imu_raw[5] = 4096; /* 标称 +1 g @ ±8g (0.244 mg/LSB) */
-            }
+        /* 收获后台非阻塞 I2C1 状态机就绪的 104 Hz IMU 样本（仅在主机订阅 IMU_DATA 时启动轮询） */
+        imu_nb_step(imu_en);
+        if (imu_sub && g_imu_nb.ready) {
+            tx.imu_fresh = 1u;
+            tx.imu_timestamp_us = g_imu_nb.sample_ts_us;
+            tx.imu_read_us = g_imu_nb.read_us;
+            memcpy(tx.imu_raw, g_imu_nb.out6, sizeof(tx.imu_raw));
+            g_imu_nb.ready = false;
+        } else if (imu_sub && g_sess.is_synth && !g_sess.imu_ok && (g_ms - g_sess.last_imu_ms >= 10u)) {
+            g_sess.last_imu_ms = g_ms;
+            tx.imu_fresh = 1u;
+            tx.imu_timestamp_us = clock_us();
+            tx.imu_read_us = 0u;
+            tx.imu_raw[0] = (int16_t)(g_sess.produced & 0xFFu);
+            tx.imu_raw[5] = 4096; /* 标称 +1 g @ ±8g (0.244 mg/LSB) */
         }
 
         uint8_t flags = g_sess.is_synth ? C08B_F01_SYNTHETIC : 0u;
@@ -804,6 +1018,7 @@ int main(void)
         tx.f01_flags = flags;
         g_sess.produced += tx.sample_count;
         tx.produced = g_sess.produced;
+        tx.dropped = g_sess.dropped;
         tx.min_interval_us_sat = (g_sess.produced < 2u || g_sess.min_interval_us > 0xFFFEu)
                                       ? 0xFFFFu : (uint16_t)g_sess.min_interval_us;
 
@@ -814,6 +1029,7 @@ int main(void)
             /* 首包丢失时下次无法续接 seq=0，记入故障码停机 */
             if (flags & C08B_F01_SESSION_START) {
                 session_stop(C08B_FAULT_LINK_DROP);
+                last_hb_ms = g_ms - 20u;
             }
         }
     }

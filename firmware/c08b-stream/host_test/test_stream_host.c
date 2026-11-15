@@ -241,6 +241,29 @@ int main(void)
         assert(wrap_await == 0u);
     }
 
-    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
+    /* 13. ADS 单槽状态头校验器（拦截 OE_N=1 时 R701/R702 下拉产生的 0x000000 零帧，放行合法 0xC0 头） */
+    {
+        uint8_t slot[C08B_RAW_SLOT_BYTES];
+        c08b_fill_synth_slot(slot, AFE_16CH, 0u);
+        assert(c08b_slot_status_valid(slot, AFE_16CH));
+        assert(c08b_slot_status_valid(slot, AFE_8CH));
+        assert(c08b_slot_status_valid(slot, AFE_2CH));
+        assert(!c08b_slot_status_valid(slot, AFE_NONE));
+
+        /* 反例 A：16CH 下 U2 状态头塌陷为 0x00（U1 仍为 0xC0）-> 16CH 必拒，8CH 只看 U1 合法 */
+        slot[27] = 0x00u;
+        assert(!c08b_slot_status_valid(slot, AFE_16CH));
+        assert(c08b_slot_status_valid(slot, AFE_8CH));
+
+        /* 反例 B：OE_N=1 高阻下拉导致全零槽 -> 2/8/16CH 全部必拒，对应 C08B_FAULT_BAD_FRAME(6) */
+        memset(slot, 0, sizeof(slot));
+        assert(!c08b_slot_status_valid(slot, AFE_16CH));
+        assert(!c08b_slot_status_valid(slot, AFE_8CH));
+        assert(!c08b_slot_status_valid(slot, AFE_2CH));
+        assert(C08B_FAULT_BAD_FRAME == 6);
+        assert((C08B_NF_IMU_SUBSCRIBED & C08B_NF_BLE_SUBSCRIBED) == 0u);
+    }
+
+    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、OE_N零帧状态头拦截、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
     return 0;
 }

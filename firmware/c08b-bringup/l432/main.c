@@ -298,23 +298,36 @@ static void mark(int t, int ok)
 static void test_ads(void)
 {
     volatile c08b_report_t *r = &g_report;
-    spi_init(SPI1, 1, 1);                 /* 16 MHz / 4 = 4 MHz，模式 1 */
-    SET(ANA_EN, 1);                       /* 打开 U2/U3 缓冲 */
+    /* 先用 1 MHz 安全速率（16 MHz / 16 = 1 MHz，模式 1）探测 ID，满足 ADS1292 <= 1.024 MHz 约束 */
+    spi_init(SPI1, 3, 1);
+    SET(ANA_EN, 1);                       /* 打开 U4/U16/U19 缓冲与 AFE 3V3 */
     delay_ms(60);                         /* 等 OE_N RC 建立变低 */
-    /* 兼顾 ADS1298（RESET 接 PA8）与 ADS1292（PWDN/RESET 接 PA1）：先拉高 20 ms，再发 50 µs 同步复位低脉冲，后等满 200 ms > tPOR */
+    /* 对齐 c08b-stream 上电时序（TI SBAS502C §6.6/§10.1 & SBAS459K）：
+     * 1. 拉高 ADS_PWDN/ADS_RESET 后先等满 1050 ms（覆盖 ADS1292 512 kHz 内部时钟 tPOR=512 ms 与 1 µF/22 µF VCAP1 建立）；
+     * 2. 先仅对 ADS_RESET(PA8) 发 20 µs 低脉冲读 ID，避免误拉低 PA1 泄放 ADS1298 的 22 µF VCAP1；
+     * 3. 若 A 片非 ADS1298，再对 ADS_PWDN(PA1，对应 2CH 板 Pin15 PWDN/RESET) 发 20 µs（<<4000 µs 掉电阈值）数字复位重读 ID。 */
     SET(ADS_PWDN, 1); SET(ADS_RESET, 1);
-    delay_ms(20);
-    SET(ADS_PWDN, 0); SET(ADS_RESET, 0);
-    delay_us(50);
-    SET(ADS_PWDN, 1); SET(ADS_RESET, 1);
-    delay_ms(200);
+    delay_ms(1050);
+    SET(ADS_RESET, 0);
+    delay_us(20);
+    SET(ADS_RESET, 1);
+    delay_ms(2);
 
     for (int chip = 0; chip < 2; chip++) {
         ads_cmd(chip, ADS_SDATAC);
         uint8_t id = ads_rreg(chip, 0x00);
         if (chip == 0) r->id_a = id; else r->id_b = id;
-        logf_("ADS_%c ID = 0x%02X\n", CHIP[chip], id);
     }
+    if (!ADS1298_ID_OK(r->id_a)) {
+        SET(ADS_PWDN, 0);
+        delay_us(20);
+        SET(ADS_PWDN, 1);
+        delay_us(100);
+        ads_cmd(0, ADS_SDATAC);
+        r->id_a = ads_rreg(0, 0x00);
+    }
+    logf_("ADS_A ID = 0x%02X\n", r->id_a);
+    logf_("ADS_B ID = 0x%02X\n", r->id_b);
 
     afe_mode_t mode = afe_detect(r->id_a, r->id_b);
     logf_("自动识别采集板：%s\n", afe_mode_name(mode));
@@ -326,6 +339,9 @@ static void test_ads(void)
     }
 
     int is_1292 = (mode == AFE_2CH);
+    if (!is_1292) {
+        spi_init(SPI1, 1, 1);             /* 8CH/16CH ADS1298 切到 4 MHz（16 MHz / 4）；2CH ADS1292 保持 1 MHz */
+    }
     int alive_a = 1, alive_b = (mode == AFE_16CH);
     int ch_per_chip = is_1292 ? 2 : 8;
     int total_ch = (int)mode;             /* 2 / 8 / 16 */
