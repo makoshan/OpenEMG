@@ -29,7 +29,11 @@ wire(Pn('R13', '1'), (560, Y[2])); lab('RLDOUT', 560, Y[2], 'right')
 p = pad('E6', Y[3]); res('R16', 200, Y[3], 'hr'); wire(p, Pn('R16', '2')); wire(Pn('R16', '1'), (330, Y[3])); lab('NRLD', 330, Y[3], 'right')
 leg('E4', 'R5', 'D4', 'R6', Y[4], 'IN2P')
 leg('E5', 'R7', 'D5', 'R8', Y[5], 'IN2N')
-text('两路各用一对电极，两个辅点都接 RLD', 60, 1040, color='#555')
+svg.append(f'<rect x="44" y="1024" width="602" height="48" fill="#f7f9fc" stroke="#b8c4d4" stroke-width="1"/>')
+text('元件面(+y北,+x东右)：北排 E1(+)·E3(辅)·E2(-)', 52, 1043, size=9, color='#1d3f9a', weight='bold')
+text('南排：E4(CH2+,-8,-7.5)·E6(辅)·E5(CH2-,+8,-7.5)', 340, 1043, size=9, color='#1d3f9a', weight='bold')
+text('贴肤翻面(+y北,镜像)：1排左→右 E2(-)·E3·E1(+)', 52, 1063, size=9, color='#a8322d', weight='bold')
+text('2排左→右：E5(CH2-)·E6(RLD)·E4(CH2+) [E4恒+]', 340, 1063, size=9, color='#a8322d', weight='bold')
 
 # ---------------- B ADS1292 ----------------
 block(680, 60, 1270, 1080, 'B  采集：ADS1292，电极信号 → SPI', '内部振荡器；START 默认低，用命令启动；RLD 参考用内部 AVDD/2')

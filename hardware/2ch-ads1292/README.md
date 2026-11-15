@@ -12,12 +12,15 @@
 
 | 文件 | 用途 |
 |---|---|
-| `ADS1292-双通道原理图-R9-20261112.pdf` | 给人读的一页图 |
-| `design.py` | 电气真源，改电路只改这里；内含 J2 对 P44e pin-table 的核对 |
-| `page1.py`、`sch.py` | 画图；按连线几何反推网表，和真源逐脚（含脚名）比对，不符就退出非零 |
-| `ads1292-2ch.kicad_sch` | 只为 ERC 和网表，不给人读 |
-| `bom-candidate.csv` | BOM 候选 |
-| `jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2` | 嘉立创 EDA 专业版单文件工程（原理图 R9 + 4 层 0.8 mm 无电池窗/无中区禁布 PCB + 47/47 贴片 3D，`518f8401`）；看图/3D 预览用，正式下单仍用 `board/fab/` |
+| [`PINOUT-AND-REVIEW.md`](PINOUT-AND-REVIEW.md) · [`pinout-6contact-20p.csv`](pinout-6contact-20p.csv) | **六触点（`E1–E6`）元件面 vs 贴肤翻面极性对照、双辅助触点（`E3/E6`）`610 kΩ` 单故障限流核算、`J2 ↔ P44e` 20P 逐针映射、8 项上电测试点与五阶段验收记录表** |
+| [`views/schematic.pdf`](views/schematic.pdf) · `schematics/ADS1292-双通道原理图-R9-20261112.pdf` | **3 页完整可搜索矢量原理图 PDF**（P1 整机框图、P2 电源树与 8 测点表、P3 双通道采集与接口详图） |
+| [`views/ads1292-6contact-orientation.svg`](views/ads1292-6contact-orientation.svg) · [`.png`](views/ads1292-6contact-orientation.png) | **贴肤侧翻面视图（`E2·E3·E1 / E5·E6·E4`）vs 元件面俯视图（`E1·E3·E2 / E4·E6·E5`）与测试点定位图** |
+| [`views/ads1292-system-zh.svg`](views/ads1292-system-zh.svg) · [`views/ads1292-power-zh.svg`](views/ads1292-power-zh.svg) | P1 整机框图与 P2 电源树矢量图（含英文版 `-en.svg`） |
+| `schematics/design.py` | 电气真源，改电路只改这里；内含 J2 对 P44e pin-table 的核对 |
+| `schematics/page1.py`、`schematics/sch.py` | 画图；按连线几何反推网表，和真源逐脚（含脚名）比对，不符就退出非零 |
+| `schematics/ads1292-2ch.kicad_sch` | 只为 ERC 和网表，不给人读 |
+| `schematics/bom-candidate.csv` | BOM 候选 |
+| `jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2` | 嘉立创 EDA 专业版单文件工程（含 **3 页原理图**：`01.01 整机框图`、`01.02 电源树`、`01.03 双通道采集与接口详图` + 4 层 0.8 mm 无电池窗/无中区禁布 PCB + 47/47 贴片 3D）；正式下单用 `board/fab/` |
 
 ```bash
 python3 hardware/2ch-ads1292/schematics/design.py

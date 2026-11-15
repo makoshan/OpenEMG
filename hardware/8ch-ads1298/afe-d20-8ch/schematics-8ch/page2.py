@@ -107,7 +107,34 @@ def misc(conn, x0, bias, wct, side_title):
     wire(*[Pn(conn, p) for p in gp]); gnd(*Pn(conn, gp[-1]))
 
 group('V4_FPC1', 160, 'A组', '插座1 ')
+
+# B组：D2-8CH 表带软板贴肤触点 → 0603 保护串阻 → V4_FPC1 34P 逐针映射框（补齐软板级限流与贴肤极性链路）
+block(30, 568, 1649, 842,
+      'B组  D2-8CH 表带软板贴肤触点与双级串阻映射（贴肤触点 → 软板 100k/200k → V4_FPC1 34P → 采集板 ESD + 15k + 22pF）',
+      '采样腿：软板 R1–R16 (100kΩ 0603) + 采集板 V4_U3–U6 (15kΩ) = 115kΩ/腿；偏置腿：软板 EB1/EB2 各串 R33/R34 (200kΩ) 汇入 33 脚 + V4_R34 (392kΩ) = 单点 592kΩ / 双点并联 492kΩ。')
+own(None)
+for yy in (632, 660, 688, 716, 744, 772, 800, 828):
+    line([(46, yy), (1632, yy)], '#d0d5dd', 1)
+for xx in (46, 390, 735, 1080, 1632):
+    line([(xx, 632), (xx, 828)], '#d0d5dd', 1)
+TABLE_ROWS = [
+    ('盒底触点区（胶囊底面 6 触点）', '北短带区（腕带北段 4 触点）', '南长带前段（腕带南段 CH5–CH6）', '南长带后段与偏置/地（CH7–CH8 + BIAS/WCT/AGND）'),
+    ('CH1+ : E1P (+8.0,+7.5) → R1 100k → 脚5 → U6.1-8 → IN1P', 'CH3+ : E3P 北1+ → R5 100k → 脚12 → U5.1-8 → IN3P', 'CH5+ : E5P 南1+ → R9 100k → 脚19 → U4.1-8 → IN5P', 'CH7+ : E7P 南3+ → R13 100k → 脚25 → U3.1-8 → IN7P'),
+    ('CH1- : E1N (-8.0,+7.5) → R2 100k → 脚6 → U6.2-7 → IN1N', 'CH3- : E3N 北1- → R6 100k → 脚13 → U5.2-7 → IN3N', 'CH5- : E5N 南1- → R10 100k → 脚20 → U4.2-7 → IN5N', 'CH7- : E7N 南3- → R14 100k → 脚26 → U3.2-7 → IN7N'),
+    ('CH2+ : E2P (+8.0,-7.5) → R3 100k → 脚9 → U6.3-6 → IN2P', 'CH4+ : E4P 北2+ → R7 100k → 脚15 → U5.3-6 → IN4P', 'CH6+ : E6P 南2+ → R11 100k → 脚22 → U4.3-6 → IN6P', 'CH8+ : E8P 南4+ → R15 100k → 脚28 → U3.3-6 → IN8P'),
+    ('CH2- : E2N (-8.0,-7.5) → R4 100k → 脚10 → U6.4-5 → IN2N', 'CH4- : E4N 北2- → R8 100k → 脚16 → U5.4-5 → IN4N', 'CH6- : E6N 南2- → R12 100k → 脚23 → U4.4-5 → IN6N', 'CH8- : E8N 南4- → R16 100k → 脚29 → U3.4-5 → IN8N'),
+    ('EB2 辅北 (0,+7.5) → R34 200k ─┐', '北段间距：同对差分中心距 20 mm', '南段间距：CH5–CH8 沿前臂环向排布', 'BIAS : 脚33 ← D910 ESD ← V4_R34 392k ← U1.63 RLDOUT'),
+    ('EB1 辅南 (0,-7.5) → R33 200k ─┴→ 汇入脚33 V4_BIAS_DRV1', '盒底每排：大(P)—辅(EB)—大(N)', '软板金手指：插入 V4_FPC1（34P 0.5mm）', 'WCT : 脚32 (软板NC) · AGND : 1-4,7,8,11,14,17,18,21,24,27,30,31,34'),
+]
+for r_idx, cols in enumerate(TABLE_ROWS):
+    yy = 651 + 28 * r_idx
+    w_font = 'bold' if r_idx == 0 else 'normal'
+    c_font = '#111' if r_idx == 0 else '#2b3a4a'
+    for c_idx, txt_val in enumerate(cols):
+        xx = (56, 400, 745, 1090)[c_idx]
+        text(txt_val, xx, yy, size=10, color=c_font, weight=w_font)
+
 misc('V4_FPC1', 440, 'V4_BIAS_DRV1', 'V4_WCT', '插座1（CH01–08 + BIAS/WCT）')
 
 finish(2, '电极输入', PAGE_REFS, 'C08B 单面 8 通道采集板 电极输入：1 × 34 芯 FPC 座 → ESD → 15k → 22pF → ADS',
-       '正面单面贴 A 组（插座 1 V4_FPC1，CH01–08 + BIAS_DRV1/WCT）；右侧标签接 P1 的 ADS1298（U1）输入。插座按段拆画。')
+       '正面单面贴 A 组（插座 1 V4_FPC1，CH01–08 + BIAS_DRV1/WCT），B 组列出 D2-8CH 软板 100k/200k 串阻与贴肤触点映射；右侧标签接 P1 的 ADS1298（U1）。')

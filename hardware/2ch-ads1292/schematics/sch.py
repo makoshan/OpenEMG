@@ -227,7 +227,7 @@ def finish(page, name, refs, title, subtitle):
     svg.append(f'<rect x="{x0}" y="{y0}" width="470" height="84" fill="none" stroke="#333" stroke-width="1.4"/>')
     for yy in (y0 + 28, y0 + 56): line([(x0, yy), (x0 + 470, yy)], '#333', 1)
     line([(x0 + 80, y0), (x0 + 80, y0 + 84)], '#333', 1); line([(x0 + 300, y0), (x0 + 300, y0 + 84)], '#333', 1); line([(x0 + 370, y0), (x0 + 370, y0 + 84)], '#333', 1)
-    for i, (k, v, k2, v2) in enumerate([('图名', 'ADS1292 双通道验证版 · ' + name, '版本', 'R9 候选'), ('图页', '1 / 1', '日期', '2026-11-12'), ('网表', '逐脚含脚名比对', '状态', '未验收')]):
+    for i, (k, v, k2, v2) in enumerate([('图名', 'ADS1292 双通道验证版 · ' + name, '版本', 'R9 六触点定稿'), ('图页', '3 / 3', '日期', '2026-11-15'), ('网表', '逐脚含脚名比对', '状态', '待人工审板')]):
         yy = y0 + 19 + 28 * i
         text(k, x0 + 10, yy, size=12, color='#333'); text(v, x0 + 90, yy, size=12, color='#111')
         text(k2, x0 + 310, yy, size=12, color='#333'); text(v2, x0 + 380, yy, size=12, color='#111')

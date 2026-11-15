@@ -10,7 +10,7 @@
 
 1. **`afe-d20-8ch/` 与 `afe-d20n-8ch/`（`43.1×36.5 mm` 纯单面专属 8 通道采集板 · 推荐打样）**
    - 正面 76 颗贴片件，背面 **0 器件、`B.Paste = 0`、`B.Mask = 0`**（100% 绿油绝缘铜皮直接贴合 `302025` 锂电池，免双面贴片翻面费）。
-   - **`afe-d20-8ch/`（圆孔版，配螺丝壳 `R12` + 主控 `R4U6`）**：含自包含 KiCad 10 PCB、满载整板 `afe-d20-8ch-3d.step`、4 页专属原理图 `schematics-8ch/`（306 脚逐脚对板）、`fab/` 拼板 Gerber 与 `jlc-eda/` 两份嘉立创工程。
+   - **`afe-d20-8ch/`（圆孔版，配螺丝壳 `R12` + 主控 `R4U6`）**：含自包含 KiCad 10 PCB、满载整板 `afe-d20-8ch-3d.step`、**11 页主控+采集全套原理图 [`afe-d20-8ch/views/schematic.pdf`](afe-d20-8ch/views/schematic.pdf)**、**6 页采集板原理图 [`afe-d20-8ch/views/afe-schematic.pdf`](afe-d20-8ch/views/afe-schematic.pdf)**、**34P/20P 逐针核对与验收表 [`afe-d20-8ch/PINOUT-AND-REVIEW.md`](afe-d20-8ch/PINOUT-AND-REVIEW.md)**（含 [`pinout-34p-20p.csv`](afe-d20-8ch/pinout-34p-20p.csv) 与[贴肤触点/排线朝向图](afe-d20-8ch/views/d20-8ch-wiring-orientation.svg)）、`schematics-8ch/`（306 脚逐脚对板）、`fab/` 拼板 Gerber 与 `jlc-eda/` 两份嘉立创工程（11 页全套与 6 页单板）。
    - **`afe-d20n-8ch/`（四角缺口版，配无螺丝壳 `R13` + 主控 `R4U6N`）**：BOM/CPL 与圆孔版逐字节一致，含四角缺口 KiCad 10 PCB、满载整板 `afe-d20n-8ch-3d.step`、`fab/` 拼板 Gerber 与 `jlc-eda/` 两份嘉立创工程（单板 + 含 `R4U6N` 与 `D2-8CH` 软板的全套汇总）。
 2. **`strap-fpc-d2-8ch/`（8 通道单片 4 层柔性表带软板 `D2-8CH`）**
    - 单片直插 `V4_FPC1` 34P 座，覆盖胶囊底 2 路 + 2 辅助（双 `200 kΩ` 独立保护串阻，零悬空贴肤金属）与表带 6 路（北 2 路 + 南 4 路），胶囊背面带 6 窗 `0.20 mm` PI 垫片直接复用现成外壳底盖（`fit_3d_check.py` 实测 `0.0 mm³` 零干涉）；含自包含 KiCad 10 工程、`check.py` 20 道门自检、37 实体满载 `strap-d2-8ch-3d.step`、`fab/` 嘉立创 FPC+SMT 直传包（`strap-d2-8ch-gerber.zip` `7ed551d4`，含 `0.10/0.20 mm` 分厚补强层、全基础库 BOM/CPL 与 `.d356` 电测网表）、`jlc-eda/C08B-表带软板-D2-8CH单片.epro2` 及专属短版表带 TPU 电极层 `tpu-layer-d2-8ch/`（北 `26.2×16.2` / 南 `26.2×32.2 mm` STEP/STL、X2D 切片包 `6189e957` 与 1:1 A4 装配裁胶纸样 `5f69d2c3`）。

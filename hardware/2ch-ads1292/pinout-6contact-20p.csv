@@ -1,0 +1,24 @@
+section,pin_or_ref,channel_or_net,board_coord_mm,component_top_view_pos,skin_flipped_view_pos,stage1_resistor,esd_protection,stage2_resistor,filter_network,chip_or_mcu_pin,single_fault_current,notes
+SKIN_6CONTACT,E1,CH1+ (IN1P),"(92.0, 107.5) [dx=-8.0, dy=+7.5]",北排·左(西),第1排·右,R1 (1MΩ 0402),"D1 (ESD501, 节点N1P)",R2 (1MΩ 0402),C4 (4.7nF:1),U1.4 (IN1P),3.3µA (单颗短路),4×6mm沉金贴肤大焊盘，无贴肤过孔
+SKIN_6CONTACT,E3,RLD (偏置北),"(100.0, 107.5) [dx=0.0, dy=+7.5]",北排·中,第1排·中,R14 (620kΩ 0402),"D3 (ESD501, 节点NRLD)",R13 (300kΩ 0402),C3(1.5nF)∥R15(1MΩ),U1.30 (RLDOUT) & U1.28/29,3.59µA(单) / 5.41µA(双),3×6mm沉金辅助触点，与E6汇合NRLD
+SKIN_6CONTACT,E2,CH1- (IN1N),"(108.0, 107.5) [dx=+8.0, dy=+7.5]",北排·右(东),第1排·左,R3 (1MΩ 0402),"D2 (ESD501, 节点N1N)",R4 (1MΩ 0402),C4 (4.7nF:2),U1.3 (IN1N),3.3µA (单颗短路),4×6mm沉金贴肤大焊盘，无贴肤过孔
+SKIN_6CONTACT,E4,CH2+ (IN2P),"(92.0, 92.5) [dx=-8.0, dy=-7.5]",南排·左(西),第2排·右,R5 (1MΩ 0402),"D4 (ESD501, 节点N2P)",R6 (1MΩ 0402),C5 (4.7nF:1),U1.6 (IN2P),3.3µA (单颗短路),★恒为CH2+正端(与北排E1同侧)，消除旧文档E5/E4笔误
+SKIN_6CONTACT,E6,RLD (偏置南),"(100.0, 92.5) [dx=0.0, dy=-7.5]",南排·中,第2排·中,R16 (620kΩ 0402),"D3 (ESD501, 节点NRLD)",R13 (300kΩ 0402),C3(1.5nF)∥R15(1MΩ),U1.30 (RLDOUT) & U1.28/29,3.59µA(单) / 5.41µA(双),3×6mm沉金辅助触点，与E3并联后等效610kΩ
+SKIN_6CONTACT,E5,CH2- (IN2N),"(108.0, 92.5) [dx=+8.0, dy=-7.5]",南排·右(东),第2排·左,R7 (1MΩ 0402),"D5 (ESD501, 节点N2N)",R8 (1MΩ 0402),C5 (4.7nF:2),U1.5 (IN2N),3.3µA (单颗短路),★恒为CH2-负端(与北排E2同侧)
+J2_TO_P44E,J2:1 ↔ P44e J1:20,GND,-,东侧座子,n ↔ 21-n,-,-,-,-,XIAO GND ↔ 采集板 GND (TP3),-,公共地
+J2_TO_P44E,J2:2 ↔ P44e J1:19,XIAO_5V,-,东侧座子,n ↔ 21-n,R32 (0R),-,R25 (10kΩ下拉),-,XIAO 5V → Q1.1 (ILK_VBUS),-,USB插入时5V导通Q1拉低ADS_RESET_N
+J2_TO_P44E,J2:3 ↔ P44e J1:18,AVDD_SENSE,-,东侧座子,n ↔ 21-n,R26 (100kΩ),-,-,-,AVDD (3.0V) → XIAO A3/D3 (P0.29),-,模拟电源3.0V监测分压/限流输出
+J2_TO_P44E,J2:4 ↔ P44e J1:17,NC,-,东侧座子,n ↔ 21-n,-,-,-,-,悬空打叉,-,空脚
+J2_TO_P44E,J2:5 ↔ P44e J1:16,ADS_DIN,-,东侧座子,n ↔ 21-n,R17 (47kΩ下拉),-,-,-,U1.19 (DIN) ← XIAO D10 (P1.15 MOSI),-,SPI主出从入
+J2_TO_P44E,J2:6 ↔ P44e J1:15,MCU_PWDN,-,东侧座子,n ↔ 21-n,R20 (47kΩ下拉),-,R31 (4.7kΩ),-,U1.15 (RESET/PWDN) ← XIAO A2/D2 (P0.28),-,经R31接ADS_RESET_N，受Q1互锁钳位
+J2_TO_P44E,"J2:7,8 ↔ P44e J1:14,13",NC,-,东侧座子,n ↔ 21-n,-,-,-,-,悬空打叉,-,空脚
+J2_TO_P44E,J2:9 ↔ P44e J1:12,ADS_START,-,东侧座子,n ↔ 21-n,R19 (47kΩ下拉),-,-,-,U1.16 (START) ← XIAO A1/D1 (P0.03),-,同步启动转换控制
+J2_TO_P44E,J2:10 ↔ P44e J1:11,ADS_CS_N,-,东侧座子,n ↔ 21-n,R9 (10kΩ上拉3V3),-,-,-,U1.18 (CS) ← XIAO A0/D0 (P0.02),-,片选，默认上拉3V3释放
+J2_TO_P44E,J2:11 ↔ P44e J1:10,MCU_SCLK,-,东侧座子,n ↔ 21-n,R18 (47kΩ下拉),-,R23 (33Ω→ADS_SCLK),-,U1.20 (SCLK) ← XIAO D8 (P1.13 SCK),-,33Ω源端阻尼抑制时钟振铃
+J2_TO_P44E,"J2:12,13,14 ↔ J1:9,8,7",GND,-,东侧座子,n ↔ 21-n,-,-,-,-,GND ↔ GND,-,3针连续数字地隔离SCLK与DOUT
+J2_TO_P44E,J2:15 ↔ P44e J1:6,ADS_DOUT,-,东侧座子,n ↔ 21-n,-,-,-,-,U1.21 (DOUT) → XIAO D9 (P1.14 MISO),-,2通道24-bit数据输出
+J2_TO_P44E,J2:16 ↔ P44e J1:5,NC,-,东侧座子,n ↔ 21-n,-,-,-,-,悬空打叉,-,空脚
+J2_TO_P44E,J2:17 ↔ P44e J1:4,ADS_DRDY_N,-,东侧座子,n ↔ 21-n,-,-,-,-,U1.22 (DRDY) → XIAO D7 (P1.12),-,500Hz数据就绪中断
+J2_TO_P44E,J2:18 ↔ P44e J1:3,NC,-,东侧座子,n ↔ 21-n,-,-,-,-,悬空打叉,-,空脚
+J2_TO_P44E,"J2:19,20 ↔ P44e J1:2,1",3V3,-,东侧座子,n ↔ 21-n,L1(磁珠→DVDD),-,U3(TPS7A2030→AVDD),C16(10µF),XIAO 3V3 → 采集板 3V3 (TP2),-,双脚并联供入采集板3.3V
+J2_TO_P44E,"J2:21,22 ↔ P44e J1:21,22",GND,-,座子固定耳,两侧焊片,-,-,-,-,GND ↔ GND,-,机械屏蔽焊耳接地

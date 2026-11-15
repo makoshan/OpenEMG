@@ -67,13 +67,13 @@
 | **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
 | **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |
 | **16ch 采集板独立工程（圆孔 / 缺口）** | `16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20-原理图+PCB+3D.epro2`<br>`16ch-c08b-round/jlc-eda/C08B-AFE采集板-D20N-缺口-原理图+PCB+3D.epro2` | 16ch 双面采集板单板工程（圆孔版与四角缺口版） |
-| **8ch 纯单面圆孔全套汇总（配 `R12` 壳）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6-采集D20-8CH单面.epro2` | 同时包含 `R4U6` 主控、纯单面 `D20-8CH` 采集板与单片 4 层软板 `D2-8CH` + 9 页原理图 |
+| **8ch 纯单面圆孔全套汇总（配 `R12` 壳）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6-采集D20-8CH单面.epro2`<br>[11 页全套 PDF](8ch-ads1298/afe-d20-8ch/views/schematic.pdf) · [34P/20P 逐针核对表](8ch-ads1298/afe-d20-8ch/PINOUT-AND-REVIEW.md) | 同时包含 `R4U6` 主控、纯单面 `D20-8CH` 采集板与单片 4 层软板 `D2-8CH` + **11 页原理图（含 P1 整机框图、P2 电源树）** |
 | **8ch 纯单面缺口全套汇总（配 `R13` 壳）** | `8ch-ads1298/afe-d20n-8ch/jlc-eda/C08B-8ch全套汇总-主控R4U6N-采集D20N-8CH单面.epro2` | 同时包含 `R4U6N` 缺口主控、纯单面缺口 `D20N-8CH` 采集板与单片软板 `D2-8CH` + 9 页原理图 |
-| **8ch 纯单面采集板独立工程（圆孔 / 缺口）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-AFE采集板-D20-8CH-单面8路-原理图+PCB+3D.epro2`<br>`8ch-ads1298/afe-d20n-8ch/jlc-eda/C08B-AFE采集板-D20N-8CH-缺口单面8路-原理图+PCB+3D.epro2` | 纯单面 8 路采集板（正面 76 颗贴片，背面 0 器件绿油绝缘） |
+| **8ch 纯单面采集板独立工程（圆孔 / 缺口）** | `8ch-ads1298/afe-d20-8ch/jlc-eda/C08B-AFE采集板-D20-8CH-单面8路-原理图+PCB+3D.epro2`<br>[6 页采集板 PDF](8ch-ads1298/afe-d20-8ch/views/afe-schematic.pdf)<br>`8ch-ads1298/afe-d20n-8ch/jlc-eda/C08B-AFE采集板-D20N-8CH-缺口单面8路-原理图+PCB+3D.epro2` | 纯单面 8 路采集板（正面 76 颗贴片，背面 0 器件绿油绝缘；圆孔版含 **6 页原理图**与[排线朝向图](8ch-ads1298/afe-d20-8ch/views/d20-8ch-wiring-orientation.svg)） |
 | **8ch 单片 4 层表带软板 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/jlc-eda/C08B-表带软板-D2-8CH单片.epro2` | 单片 4 层 34P 软板（胶囊底双辅助 `200k` 串阻 + 6 窗 `0.20 mm` PI 垫片复用现成底盖） |
 | **共用主控 `R4U6` / `R4U6N` 源板** | `common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2`<br>`common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2` | 主控板定稿四层 `0.6 mm` PCB 源文件（圆孔版与四角缺口版） |
 | **入门上层 `P44e` XIAO 转接板** | `common-mainboard/adapter-p44e-xiao/jlc-eda/P44e-XIAO转接板-0.8mm-PCB+3D.epro2` | `17.78 × 21.00 mm` 双层（2 层）`0.8 mm` XIAO 转接主控工程 |
-| **入门 2ch `ADS1292` 六触点载板** | `2ch-ads1292/jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2` | 原理图 R9 + 四层 `0.8 mm` 底面六触点 PCB + 47 颗贴片 3D |
+| **入门 2ch `ADS1292` 六触点载板** | `2ch-ads1292/jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2`<br>[3 页原理图 PDF](2ch-ads1292/views/schematic.pdf) · [六触点极性核对表](2ch-ads1292/PINOUT-AND-REVIEW.md) | **3 页原理图 R9（含 P1 整机框图、P2 电源树与 8 测点表、P3 详图）** + 四层 `0.8 mm` 底面六触点 PCB + 47 颗贴片 3D |
 | **8ch 柔性电极软板 `F04`** | `8ch-ads1298/jlc-eda/F04-八通道软板-原理图+PCB.epro2` | 八通道双层（2 层）FPC 柔性电极软板嘉立创工程参考 |
 
 > **关于嘉立创 `.epro2` 与离线整板 3D 模型的说明**：嘉立创 `.epro2` 内部记录器件的云端 3D UUID，在嘉立创 EDA 专业版客户端联网打开会自动拉取立创商城 3D 预览；若使用 **FreeCAD / Fusion 360 / SolidWorks / Bambu Studio** 离线查看或做结构干涉核查，请直接使用下方已嵌齐全部器件的独立 `-3d.step`、`.stl`、`.3mf` 与 `.f3d` 文件。
