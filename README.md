@@ -35,6 +35,12 @@ OpenEMG 是一套开源的表面肌电（sEMG）手环，用来研究手腕上�
 
 [全部渲染图、俯视图与生成脚本](hardware/renders/)
 
+## 桌面工作台
+
+八通道连接页用圆环显示每个通道是否收到数据。顶部可依次进入佩戴检查、动作录制、训练和手势识别。截图使用合成信号回放。
+
+![OpenEMG 桌面工作台的八通道连接页](app/screenshots/desktop-connection.png)
+
 ## 开始使用
 
 [桌面工作台](app/) · [软件与开发环境](firmware/software.md) · [硬件与制造文件索引](hardware/README.md) · [通电与佩戴安全须知](SAFETY.md)

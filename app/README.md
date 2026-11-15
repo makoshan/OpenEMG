@@ -9,6 +9,12 @@
 页面（src/，Vite + React） ──window.pt.emg8──▶ electron/emg8-ipc.cjs ──HTTP──▶ emg8-server.py → ../host/emg_web.py --wl8
 ```
 
+## 桌面界面
+
+![OpenEMG 八通道工作台连接页，八个通道均收到回放数据](screenshots/desktop-connection.png)
+
+这是 Electron 桌面版的连接页。圆环对应八路电极，右上方是从连接到手势识别的五个步骤。截图使用合成信号回放。
+
 ## 跑起来
 
 ```bash
