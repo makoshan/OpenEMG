@@ -12,6 +12,8 @@ OpenEMG 是一个硬件和软件完全开源的表面肌电（sEMG）项目。�
 
 ![三款手环的 CAD 外观，从左到右为 2 通道 R7、8 通道 R12 与电极软板、16 通道 U9 广濑版](hardware/renders/openemg-channel-gallery.png)
 
+查看单张大图　[2 通道](hardware/renders/2ch-iso-dark.png) · [8 通道](hardware/renders/8ch-iso-dark.png) · [16 通道](hardware/renders/16ch-iso-dark.png)
+
 | 通道 | 硬件工程 | 固件 | 3D 外观 | 实板测试进展 |
 |---|---|---|---|---|
 | **2 通道** | [ADS1292 六触点板](hardware/2ch-ads1292/) | [XIAO 蓝牙采集](firmware/xiao-ads1292-2ch/) | [R7 六触点外壳](hardware/enclosure-46x40/ads1292-shell-r7/) | 已完成设计检查，待打样、上电。 |
