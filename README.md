@@ -8,15 +8,17 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 [当前状态与进展计划](#当前状态与进展计划) · [Gallery](#gallery) · [工作原理与调研](#工作原理) · [桌面工作台](#桌面工作台)
 
-![16 通道 OpenEMG 手环的 U9 外壳设计渲染](hardware/renders/16ch-iso-dark.png)
+![16 通道 OpenEMG 手环的 U9 外壳设计渲染](hardware/16ch-afe-hirose-1mm-1nf/views/v001-enclosure-iso-dark.png)
 
-**v0.01 是早期原型。** 6 层主控板通过 20 针排线连接 4 层采集板。采集板用两颗 ADS1298，设计为 16 路差分输入。[打开双板工程与制造文件](hardware/16ch-afe-hirose-1mm-1nf/)
+**OpenEMG 还在早期研制阶段。** 2026 年 11 月 15 日定下的是打样用的 PCB。固件、桌面软件与板子的联调、手势识别都还在开发，16 通道整机尚未上机验证。
+
+6 层主控板通过 20 针排线连接 4 层采集板。采集板用两颗 ADS1298，设计为 16 路差分输入。[打开双板工程与制造文件](hardware/16ch-afe-hirose-1mm-1nf/)
 
 ## Gallery
 
 ### PCB · 主控与采集板
 
-**v0.01 的 PCB 设计已完成，下一步是打板、贴片和上电测试。** 这版双板还没有实测数据。
+**v0.01 的 PCB 设计已完成，下一步是打板、贴片和上电测试。** 采集板新增 32 颗输入保护管（D101–D132），贴片 BOM 和坐标表共 146 个位号。
 
 ![OpenEMG 16 通道双板 PCB 正反面：上排为主控板，下排为采集板，左列为正面，右列为背面](hardware/16ch-afe-hirose-1mm-1nf/views/v001-pcb-four-views.png)
 
@@ -38,7 +40,7 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 从左到右、从上到下依次是顶层、内层和底层。各层都从板顶看，方便对照走线和过孔。[主控 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip) · [采集板 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip)
 
-[![第 6 页原理图，肌电采集与模拟电源，点击查看七页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[![第 7 页原理图，电极输入、滤波和静电保护，点击查看七页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
 **[下载七页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1–5 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 6–7 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)。
 
@@ -53,7 +55,7 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 捏指时，肌肉活动会让皮肤表面产生微小的电压变化。手环的每个通道测一对电极之间的电压差。电极位置不同，同一次捏指在各通道上录到的波形也不同。桌面软件把波形和动作标签一起保存，供模型学习区分放松、捏指等动作。
 
-摘下再戴，电极位置和松紧都会变。我们读过的一项四通道实验，在握拳、张手、屈腕和伸腕测试中判对了 152/160 次。论文没说明测试前是否重新佩戴。OpenEMG 计划把训练和测试分在两次佩戴中，单独记录重戴后的识别结果。[阅读项目调研节选与论文出处](docs/research/wrist-semg.md)
+摘下再戴，电极位置和松紧都会变。我们读过的一项四通道实验，在握拳、张手、屈腕和伸腕测试中判对了 152/160 次。论文没说明测试前是否重新佩戴。OpenEMG 计划把训练和测试分在两次佩戴中，单独记录重戴后的识别结果。[阅读项目调研节选与论文出处](research/wrist-semg.md)
 
 ## 当前状态与进展计划
 

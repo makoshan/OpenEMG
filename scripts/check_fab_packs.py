@@ -256,15 +256,15 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
     FabPackSpec(
         pack_id="16-16ch-afe-hirose-1mm-1nf",
         gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip",
-        gerber_sha_prefix="adab6ae096467496",
+        gerber_sha_prefix="85531a7651037110",
         cu_layers=4,
         bom_csv="hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_bom.csv",
-        bom_sha_prefix="c9b9a36ac6219c08",
+        bom_sha_prefix="831f60105e20fda1",
         cpl_csv="hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_cpl.csv",
-        cpl_sha_prefix="2316380c5cc5699b",
-        bom_rows=23,
-        top_count=64,
-        bot_count=50,
+        cpl_sha_prefix="596cb6d0c74007ea",
+        bom_rows=24,
+        top_count=80,
+        bot_count=66,
     ),
     FabPackSpec(
         pack_id="17-16ch-afe-xunpu-2mm-1nf",
@@ -348,7 +348,7 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
     bom_refs: list[str] = []
     for idx, row in enumerate(bom_rows, start=2):
-        lcsc = (row.get("LCSC Part #") or row.get("JLCPCB Part #") or "").strip()
+        lcsc = (row.get("LCSC Part #") or row.get("JLCPCB Part #") or row.get("Supplier Part") or "").strip()
         if not LCSC_PART_RE.match(lcsc):
             errs.append(f"{spec.pack_id}: BOM 第 {idx} 行立创料号非法 '{lcsc}'")
         raw_des = (row.get("Designator") or "").strip()

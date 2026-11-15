@@ -8,15 +8,17 @@ We want to do for EMG what DeepSeek did for AI: share the circuit, mechanical de
 
 [Status and roadmap](#status-and-roadmap) · [Gallery](#gallery) · [How it works](#how-it-works) · [Desktop app](#desktop-app)
 
-![U9 enclosure design for the 16-channel wristband](hardware/renders/16ch-iso-dark.png)
+![U9 enclosure design for the 16-channel wristband](hardware/16ch-afe-hirose-1mm-1nf/views/v001-enclosure-iso-dark.png)
 
-**v0.01 is an early prototype.** A 20-pin ribbon cable connects the six-layer controller board to the four-layer acquisition board. Two ADS1298 chips provide 16 differential inputs. [Design and fabrication files](hardware/16ch-afe-hirose-1mm-1nf/)
+**OpenEMG is in early development.** The November 15, 2026 PCB revision is ready for prototyping. Firmware, desktop integration, and gesture recognition are still in development. The 16-channel system has yet to be tested on hardware.
+
+A 20-pin ribbon cable connects the six-layer controller board to the four-layer acquisition board. Two ADS1298 chips provide 16 differential inputs. [Design and fabrication files](hardware/16ch-afe-hirose-1mm-1nf/)
 
 ## Gallery
 
 ### Controller and acquisition PCBs
 
-**PCB design is complete. Fabrication, assembly, and first power-on are next.** We have no bench measurements for this board pair yet.
+**PCB design is complete. Fabrication, assembly, and first power-on are next.** The acquisition board has 32 ESD protection diodes (D101–D132), one per input lead. The BOM and placement file cover 146 components.
 
 ![v0.01 PCB artwork: controller above, acquisition board below. Front views on the left and rear views on the right.](hardware/16ch-afe-hirose-1mm-1nf/views/v001-pcb-four-views.png)
 
@@ -38,7 +40,7 @@ These renders show the 0.8 mm bare-board configuration. The exploded view omits 
 
 Read left to right, then top to bottom. All copper layers are viewed from above so you can follow traces through vias. [Controller Gerbers and drill files](hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip) · [Acquisition Gerbers and drill files](hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip)
 
-[![Schematic sheet 6: acquisition and analog power](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[![Schematic sheet 7: electrode inputs, filtering, and ESD protection](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
 Sheets 1–5 cover controller power, Bluetooth, USB, inter-board connections, and the sampling MCU. Sheets 6–7 cover analog power, acquisition, electrode connectors, and input filters. [Searchable schematic PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf) · [Editable EasyEDA Pro project](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)
 
@@ -53,7 +55,7 @@ This acquisition board is for off-body bench testing. Check board thickness, via
 
 A pinch produces small voltage changes at the skin. Each channel measures the voltage difference between two electrodes. Pairs at different positions see different waveforms from the same movement. The app saves waveforms alongside gesture labels so a model can learn to distinguish a pinch from rest.
 
-Taking the band off and putting it back on changes electrode position and pressure. One four-channel study correctly classified 152 of 160 trials across four movements: making a fist, opening the hand, and flexing or extending the wrist. The paper does not say whether participants put the band on again before testing. We plan to train and test on separate wear sessions. [Research notes and paper](docs/research/wrist-semg.md)
+Taking the band off and putting it back on changes electrode position and pressure. One four-channel study correctly classified 152 of 160 trials across four movements: making a fist, opening the hand, and flexing or extending the wrist. The paper does not say whether participants put the band on again before testing. We plan to train and test on separate wear sessions. [Research notes and paper](research/wrist-semg.md)
 
 ## Status and roadmap
 
@@ -69,7 +71,7 @@ Taking the band off and putting it back on changes electrode position and pressu
 
 ![OpenEMG demo showing all 16 EMG traces and the per-channel RMS ring](app/screenshots/studio-16ch-demo.png)
 
-The demo shows all 16 waveforms on the left. Each segment of the ring on the right shows one channel’s root mean square (RMS) amplitude in µV.
+The screenshot uses demo data. It shows all 16 waveforms on the left. Each segment of the ring on the right shows one channel’s root mean square (RMS) amplitude in µV.
 
 View waveforms, record movements, and train gesture models. [App source](app/)
 
