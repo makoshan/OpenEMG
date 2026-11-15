@@ -67,6 +67,10 @@ Taking the band off and putting it back on changes electrode position and pressu
 
 ### Desktop app
 
+![OpenEMG demo showing all 16 EMG traces and the per-channel RMS ring](app/screenshots/studio-16ch-demo.png)
+
+The demo shows all 16 waveforms on the left. Each segment of the ring on the right shows one channel’s root mean square (RMS) amplitude in µV.
+
 View waveforms, record movements, and train gesture models. [App source](app/)
 
 ### Hardware variants
