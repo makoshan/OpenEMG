@@ -17,9 +17,9 @@
 
 [七页原理图（矢量 PDF）](views/schematic.pdf) · [主控六层走线](views/mcu-copper.png) · [采集四层走线](views/afe-copper.png) · [双板叠放](views/v001-stack-iso-dark.png) · [结构爆炸图](views/v001-exploded-iso-dark.png)
 
-公开工程只将一处内部打样批次标题替换为 OpenEMG；电路、PCB 和器件库记录与 11 月 15 日原包一致。
+公开工程沿用 11 月 15 日的 PCB 和器件库。第 7 页重新排列了输入保护管 D101–D132，避开右下角标题栏，每根输入线的名称只标一次。
 
-七页 PDF 由同版主控五页和[定版包内的采集板两页](views/afe-schematic.pdf)合并。D101–D132 分布在两面，分别保护 32 根输入线。走线图使用本目录两个 Gerber 包，按顶层、内层、底层排列，底层保持板顶视角。装配图使用相同 Gerber 的板框、阻焊和丝印，搭配 U9 壳体 CAD，按 0.8 mm 裸板展示。
+七页 PDF 由同版主控五页和[从公开工程导出的采集板两页](views/afe-schematic.pdf)合并。D101–D132 分布在两面，分别保护 32 根输入线。走线图使用本目录两个 Gerber 包，按顶层、内层、底层排列，底层保持板顶视角。装配图使用相同 Gerber 的板框、阻焊和丝印，搭配 U9 壳体 CAD，按 0.8 mm 裸板展示。
 
 ### 工程与制造文件
 
