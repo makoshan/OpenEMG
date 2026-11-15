@@ -10,7 +10,9 @@ We develop OpenEMG together with AI. It’s still early, and the circuits, code,
 
 [Status and roadmap](#status-and-roadmap) · [Gallery](#gallery) · [How it works](#how-it-works) · [Desktop app](#desktop-app)
 
-![U9 enclosure design for the 16-channel wristband](hardware/16ch-afe-hirose-1mm-1nf/views/v001-enclosure-iso-dark.png)
+![OpenEMG wristband laid flat, with the long strap, transparent U9 case, and short strap with buckle](hardware/16ch-afe-hirose-1mm-1nf/views/v001-wristband-iso-dark.png)
+
+The clear U9 case houses the v0.01 controller and acquisition boards. The render pairs it with the R13 straps. The electrodes face the skin. This combination still awaits a physical fit test. [Strap models](hardware/enclosure-46x40/c08b-shell-r13-notch/) · [Dual 30-pin electrode flex circuits](hardware/16ch-u9-dual30/strap-fpc-30p/)
 
 **OpenEMG is in early development.** The November 15, 2026 PCB revision is ready for prototyping. Firmware, desktop integration, and gesture recognition are still in development. The 16-channel system has yet to be tested on hardware.
 
