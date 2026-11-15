@@ -20,6 +20,14 @@ def locate_hw_files(design_arg: str | None, table_arg: str | None) -> tuple[Path
             HERE.parent.parent / "hardware" / "2ch-ads1292" / "schematics" / "design.json",
             HERE.parent.parent / "hardware" / "common-mainboard" / "adapter-p44e-xiao" / "pin-table.csv",
         ),
+        (
+            HERE.parent.parent / "v12" / "ads1292-2ch-20261104" / "design.json",
+            HERE.parent.parent / "v12" / "ads1292-p44e-xiao-adapter-20261106" / "pin-table.csv",
+        ),
+        (
+            HERE.parent / "ads1292-2ch-20261104" / "design.json",
+            HERE.parent / "ads1292-p44e-xiao-adapter-20261106" / "pin-table.csv",
+        ),
     ]
     for d_path, t_path in candidates:
         if d_path.is_file() and t_path.is_file():
