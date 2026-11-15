@@ -102,6 +102,8 @@ export type BringupItem = { bit: number; name: string; state: 'PASS' | 'FAIL' | 
 export type BringupDecodeResult = {
   source: 'ble_adv' | 'l432_report_97B';
   input_hex?: string;
+  crc_hex?: string;
+  seq?: number;
   verdict: 'PASS' | 'FAIL' | 'WAITING_L432';
   afe_channels: number;
   afe_mode_label: string;
@@ -112,6 +114,12 @@ export type BringupDecodeResult = {
   id_a_hex: string;
   id_b_hex: string;
   vbat_mv_approx?: number;
+  reg_bad?: { a: number; b: number };
+  drdy_rate_hz?: number;
+  drdy_desync_frames?: number;
+  bad_status_frames?: number;
+  test_sig_frames?: number;
+  imu?: { who_am_i_hex: string; accel_mg: number[]; norm_g: number };
   safety_alerts?: string[];
   notes?: string[];
   items: BringupItem[];

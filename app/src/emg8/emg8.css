@@ -355,3 +355,35 @@
 .emg8-rewear-ask::backdrop { background: #0004; }
 .emg8-rewear-ask h3 { margin: 0 0 6px; font-size: 15px; }
 .emg8-rewear-ask p { margin: 0 0 12px; font-size: 13px; }
+
+/* OpenEMG C08B 连接链路状态条与数据台首板自检紧凑排版 */
+.emg8-span-2 { grid-column: 1 / -1; }
+.emg8-c08b-strip {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px;
+  padding: 6px 12px; border-radius: 10px; border: 1px solid var(--emg8-line);
+  background: color-mix(in srgb, var(--emg8-accent) 4%, var(--emg8-panel));
+}
+.emg8-c08b-note { font-size: 12px; color: var(--emg8-dim); }
+.emg8-ch-collapse { border-top: 1px dashed var(--emg8-line); margin-top: 8px; padding-top: 4px; }
+.emg8-ch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 210px; overflow: auto; padding-right: 4px; }
+.emg8-report97-meta {
+  display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; padding: 5px 9px;
+  border-radius: 8px; background: color-mix(in srgb, var(--emg8-accent) 6%, var(--emg8-panel));
+  font-size: 11.5px; color: var(--emg8-dim); font-variant-numeric: tabular-nums;
+}
+.emg8-report97-meta b { color: var(--emg8-text); }
+.emg8-report97-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 6px;
+  margin-top: 8px; max-height: 148px; overflow: auto; font-variant-numeric: tabular-nums;
+}
+.emg8-ch-cell {
+  display: flex; flex-direction: column; padding: 3px 6px; border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--emg8-line) 80%, transparent);
+  font-size: 10.5px; line-height: 1.25; background: var(--emg8-panel);
+}
+.emg8-ch-cell span { color: var(--emg8-dim); }
+.emg8-ch-cell.bad {
+  border-color: var(--emg8-warn);
+  background: color-mix(in srgb, var(--emg8-warn) 14%, var(--emg8-panel));
+}
+@media (max-width: 900px) { .emg8-report97-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

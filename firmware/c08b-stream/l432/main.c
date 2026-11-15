@@ -178,22 +178,36 @@ static int ads_write_verify(int chip, const uint8_t *cfg, const uint8_t *mask, i
 }
 
 /* ---------- IMU（I2C1，LSM6DS3TR-C @ 0x6A，104 Hz，±8 g / ±1000 dps） ---------- */
+static void i2c_reset_bus(void)
+{
+    I2C1->CR1 = 0;
+    I2C1->TIMINGR = 0x0010061Au; /* PCLK1 16 MHz -> 400 kHz 快速模式，读 12 字节仅需 ~350 µs */
+    I2C1->CR1 = I2C_CR1_PE;
+}
+
 static int i2c_wait(uint32_t flag)
 {
     uint32_t t0 = DWT->CYCCNT;
-    uint32_t limit = 3000u * 16u; /* 最多等 3 ms，绝不拖慢流循环 */
+    uint32_t limit = 1500u * 16u; /* 最多等 1.5 ms，超时立即复位外设防死锁 */
     while (!(I2C1->ISR & flag)) {
         if (I2C1->ISR & I2C_ISR_NACKF) {
             I2C1->ICR = I2C_ICR_NACKCF | I2C_ICR_STOPCF;
             return -1;
         }
-        if ((DWT->CYCCNT - t0) > limit) return -2;
+        if ((DWT->CYCCNT - t0) > limit) {
+            i2c_reset_bus();
+            return -2;
+        }
     }
     return 0;
 }
 
 static int i2c_read(uint8_t addr, uint8_t reg, uint8_t *b, int n)
 {
+    if (I2C1->ISR & I2C_ISR_BUSY) {
+        i2c_reset_bus();
+        if (I2C1->ISR & I2C_ISR_BUSY) return -2;
+    }
     I2C1->ICR = 0x3F38u;
     I2C1->CR2 = ((uint32_t)addr << 1) | (1u << I2C_CR2_NBYTES_Pos) | I2C_CR2_START;
     if (i2c_wait(I2C_ISR_TXIS)) return -1;
@@ -211,6 +225,10 @@ static int i2c_read(uint8_t addr, uint8_t reg, uint8_t *b, int n)
 
 static int i2c_write(uint8_t addr, uint8_t reg, uint8_t v)
 {
+    if (I2C1->ISR & I2C_ISR_BUSY) {
+        i2c_reset_bus();
+        if (I2C1->ISR & I2C_ISR_BUSY) return -2;
+    }
     I2C1->ICR = 0x3F38u;
     I2C1->CR2 = ((uint32_t)addr << 1) | (2u << I2C_CR2_NBYTES_Pos) | I2C_CR2_AUTOEND | I2C_CR2_START;
     if (i2c_wait(I2C_ISR_TXIS)) return -1;
@@ -224,11 +242,21 @@ static int i2c_write(uint8_t addr, uint8_t reg, uint8_t v)
 
 static bool imu_setup_stream(void)
 {
-    I2C1->CR1 = 0;
-    I2C1->TIMINGR = 0x0010061Au; /* PCLK1 16 MHz -> 400 kHz 快速模式，读 12 字节仅需 ~350 µs */
-    I2C1->CR1 = I2C_CR1_PE;
+    /* 若裸板引脚被外部硬拉低，跳过 I2C 探测（0 µs 快速回退，绝不阻塞会话启动） */
+    if (!GET(IMU_SCL) || !GET(IMU_SDA)) {
+        I2C1->CR1 = 0;
+        return false;
+    }
+    i2c_reset_bus();
+    if (I2C1->ISR & I2C_ISR_BUSY) {
+        I2C1->CR1 = 0;
+        return false;
+    }
     uint8_t who = 0;
-    if (i2c_read(0x6Au, 0x0Fu, &who, 1) || who != 0x6Au) return false;
+    if (i2c_read(0x6Au, 0x0Fu, &who, 1) || who != 0x6Au) {
+        I2C1->CR1 = 0;
+        return false;
+    }
     /* CTRL3_C(0x12)=0x44: BDU=1, IF_INC=1
      * CTRL1_XL(0x10)=0x4C: 104 Hz, ±8 g (0.244 mg/LSB)
      * CTRL2_G(0x11)=0x48:  104 Hz, ±1000 dps (35 mdps/LSB)，严格对齐 host/v12_imu.py PROFILE */
@@ -335,6 +363,7 @@ static void fill_tx_telemetry(c08b_link_tx_t *tx)
     tx->id_a = g_sess.id_a;
     tx->id_b = g_sess.id_b;
     tx->active_mode = g_sess.active_mode;
+    tx->ack_epoch_lo = (uint16_t)g_sess.last_cmd_epoch;
 }
 
 /* 拉高 ANA_EN 等待 U10 反相器建立后，执行两轮 SPIS1 心跳握手：
@@ -536,19 +565,23 @@ static c08b_fault_t start_real_afe(uint8_t req_mode, uint16_t fs_hz, uint8_t nrf
 
 static void handle_rx_cmd(const c08b_link_rx_t *rx)
 {
+    bool nrf_interlock = (rx->nrf_flags & (C08B_NF_VBUS_INTERLOCK | C08B_NF_OE_OFF)) != 0;
     /* 无论命令序号是否更新，一旦 nRF 侧报告 VBUS 或 OE_N 互锁断开，运行中的真实 AFE 必须立刻断电并报 INTERLOCK(3) */
-    if (g_sess.active && !g_sess.is_synth) {
-        if ((rx->nrf_flags & (C08B_NF_VBUS_INTERLOCK | C08B_NF_OE_OFF)) != 0) {
-            session_stop(C08B_FAULT_INTERLOCK);
-            return;
+    if (g_sess.active && !g_sess.is_synth && nrf_interlock) {
+        session_stop(C08B_FAULT_INTERLOCK);
+        if (rx->req_mode == C08B_MODE_STOP || rx->req_mode == C08B_MODE_IDLE) {
+            g_sess.last_cmd_epoch = rx->cmd_epoch;
         }
+        return;
     }
     if (rx->cmd_epoch == g_sess.last_cmd_epoch) return;
     g_sess.last_cmd_epoch = rx->cmd_epoch;
 
     if (rx->req_mode == C08B_MODE_STOP || rx->req_mode == C08B_MODE_IDLE) {
-        session_stop(C08B_FAULT_NONE);
-        g_sess.fault = C08B_FAULT_NONE;
+        bool keep_interlock = (g_sess.fault == C08B_FAULT_INTERLOCK) &&
+                              (l432_vbus_present() || nrf_interlock);
+        session_stop(keep_interlock ? C08B_FAULT_INTERLOCK : C08B_FAULT_NONE);
+        if (!keep_interlock) g_sess.fault = C08B_FAULT_NONE;
         return;
     }
 
@@ -571,6 +604,7 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
     g_sess.drdy_desync = 0;
     g_sess.min_interval_us = 0xFFFFFFFFu;
     g_sess.last_sample_us = 0;
+    g_sess.last_imu_ms = g_ms;
     g_sess.sent_session_start = false;
 
     if (rx->req_mode == C08B_MODE_SYN1) {
@@ -678,8 +712,8 @@ static void clock_and_gpio_init(void)
     pin_mode(LINK_SCK_PORT, LINK_SCK_PIN, M_AF, 6, P_NONE, 0);
     pin_mode(LINK_MISO_PORT, LINK_MISO_PIN, M_AF, 6, P_DOWN, 0);
     pin_mode(LINK_MOSI_PORT, LINK_MOSI_PIN, M_AF, 6, P_NONE, 0);
-    pin_mode(IMU_SCL_PORT, IMU_SCL_PIN, M_AF, 4, P_NONE, 1);
-    pin_mode(IMU_SDA_PORT, IMU_SDA_PIN, M_AF, 4, P_NONE, 1);
+    pin_mode(IMU_SCL_PORT, IMU_SCL_PIN, M_AF, 4, P_UP, 1); /* 内部弱上拉兜底：防未贴 R198/R199 时浮空锁死 BUSY */
+    pin_mode(IMU_SDA_PORT, IMU_SDA_PIN, M_AF, 4, P_UP, 1);
 
     spi_init(SPI3, 0u, 0); /* 16 MHz / 2 = 8 MHz，模式 0 对接 nRF SPIS1 */
 }

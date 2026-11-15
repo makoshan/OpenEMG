@@ -6,7 +6,8 @@ import { SignalStream } from './src/emg8/signal.ts';
 import { lanePlan, RestSignalGate } from './src/emg8/rest-signal.ts';
 import { canWaive, noiseAdvice, noiseFloor, noiseVerdict } from './src/emg8/calibration.ts';
 import { bandSignal } from './src/emg8/gesture-actions.ts';
-import { wearSteps, wearVerdict } from './src/emg8/placement.ts';
+import { c08bLinkAdvice, isC08bTier, linkAdvice } from './src/emg8/link.ts';
+import { c08bWearSteps, wearSteps, wearVerdict } from './src/emg8/placement.ts';
 const require = createRequire(import.meta.url);
 const { studioRoute } = require('./electron/emg8-studio-routes.cjs');
 
@@ -97,9 +98,11 @@ assert.equal(b2.signal, '第 1 路接触差 · 已屏蔽，用 1 路识别');
 
 // 5. 5 档设备入口与多通道样式契约检查
 const mainSrc = readFileSync(new URL('./src/main.tsx', import.meta.url), 'utf8');
+const elecSrc = readFileSync(new URL('./electron/main.cjs', import.meta.url), 'utf8');
 for (const tier of ['c08b-16ch', 'wl8', 'c08b-8ch', 'c08b-2ch', 'emg']) {
   assert.ok(mainSrc.includes(`id: '${tier}'`), `missing device tier ${tier} in main.tsx`);
 }
+assert.ok(elecSrc.includes('ALL_DEVICES.has(process.env.YUANLI_DEVICE)') && mainSrc.includes("id: 'wl18'"), 'wl18 环境变量启动需前后端一致对齐');
 const cssSrc = readFileSync(new URL('./src/emg8/emg8.css', import.meta.url), 'utf8');
 for (const n of [2, 8, 16]) {
   assert.ok(cssSrc.includes(`data-channels="${n}"`), `missing CSS rule for data-channels="${n}"`);
@@ -107,10 +110,26 @@ for (const n of [2, 8, 16]) {
   assert.ok(wearSteps('left', 'ble', n).some((s) => s.d.includes(n === 8 ? '8 根金属棒' : `${n} 路电极触点`)));
 }
 
-// 6. 首板脚位与上电自检解码 Studio 路由白名单校验
+// 6. 首板脚位与上电自检解码 Studio 路由白名单校验（含 97B 内存详报 report16）
 assert.deepEqual(studioRoute('devicePinout', { deviceId: 'c08b-16ch' }), ['GET', '/api/device/pinout?device_id=c08b-16ch']);
 assert.deepEqual(studioRoute('bringupDecode', { sample: '16ch' }), ['POST', '/api/device/bringup_decode', { sample: '16ch' }]);
+assert.deepEqual(studioRoute('bringupDecode', { sample: 'report16' }), ['POST', '/api/device/bringup_decode', { sample: 'report16' }]);
 assert.deepEqual(studioRoute('bringupDecode', { hex: 'FFFF01FF03000003C60292D2' }), ['POST', '/api/device/bringup_decode', { hex: 'FFFF01FF03000003C60292D2' }]);
 assert.throws(() => studioRoute('bringupDecode', { hex: 'NOT_HEX_$$$' }), /十六进制/);
 
-console.log('check-multichannel OK (2 / 8 / 16 channels verified)');
+// 7. C08B 硬件感知连接/佩戴指引与唯理 WL8 隔离核查（正例 + 反例）
+assert.equal(isC08bTier('c08b-16ch'), true);
+assert.equal(isC08bTier('c08b-8ch'), true);
+assert.equal(isC08bTier('c08b-2ch'), true);
+assert.equal(isC08bTier('wl8'), false);
+assert.equal(isC08bTier(undefined), false);
+assert.match(linkAdvice('no-receiver', '', 'usb').steps[0], /灰白线/);
+const adv16 = c08bLinkAdvice('no-receiver', '', 16);
+assert.match(adv16.title, /OpenEMG 16 通道/);
+assert.ok(adv16.steps.some((s) => s.includes('YUANLI-C08B')));
+assert.ok(!adv16.steps.some((s) => s.includes('灰白线')), 'C08B 连接页不应混入唯理有线白线提示');
+assert.ok(c08bWearSteps('left', 16).some((s) => s.d.includes('大—辅—大') && s.d.includes('左手前臂') === false));
+assert.ok(c08bWearSteps('left', 16).some((s) => s.d.includes('VBUS 硬件互锁')));
+assert.ok(c08bWearSteps('right', 2).some((s) => s.d.includes('六触点')));
+
+console.log('check-multichannel OK (2 / 8 / 16 channels + C08B UX + report16 verified)');

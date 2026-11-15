@@ -199,17 +199,27 @@ static int capture(int alive_a, int alive_b, int ch_per_chip, uint32_t frames, u
 #define LSB_NV_1292 (2.0 * 2.42e9 / 6.0 / 16777215.0)
 
 /* ---------- IMU（I2C1，LSM6DS3TR-C，SA0 接地 → 0x6A） ---------- */
+static void i2c_reset_bus(void)
+{
+    I2C1->CR1 = 0;
+    I2C1->TIMINGR = 0x00303D5B;           /* PCLK1 16 MHz → 100 kHz */
+    I2C1->CR1 = I2C_CR1_PE;
+}
 static int i2c_wait(uint32_t flag)
 {
     uint32_t t = g_ms;
     while (!(I2C1->ISR & flag)) {
         if (I2C1->ISR & I2C_ISR_NACKF) { I2C1->ICR = I2C_ICR_NACKCF | I2C_ICR_STOPCF; return -1; }
-        if (g_ms - t > 10) return -2;
+        if (g_ms - t > 10) { i2c_reset_bus(); return -2; }
     }
     return 0;
 }
 static int i2c_read(uint8_t addr, uint8_t reg, uint8_t *b, int n)
 {
+    if (I2C1->ISR & I2C_ISR_BUSY) {
+        i2c_reset_bus();
+        if (I2C1->ISR & I2C_ISR_BUSY) return -2;
+    }
     I2C1->ICR = 0x3F38;
     I2C1->CR2 = ((uint32_t)addr << 1) | (1u << I2C_CR2_NBYTES_Pos) | I2C_CR2_START;
     if (i2c_wait(I2C_ISR_TXIS)) return -1;
@@ -223,6 +233,10 @@ static int i2c_read(uint8_t addr, uint8_t reg, uint8_t *b, int n)
 }
 static int i2c_write(uint8_t addr, uint8_t reg, uint8_t v)
 {
+    if (I2C1->ISR & I2C_ISR_BUSY) {
+        i2c_reset_bus();
+        if (I2C1->ISR & I2C_ISR_BUSY) return -2;
+    }
     I2C1->ICR = 0x3F38;
     I2C1->CR2 = ((uint32_t)addr << 1) | (2u << I2C_CR2_NBYTES_Pos) | I2C_CR2_AUTOEND | I2C_CR2_START;
     if (i2c_wait(I2C_ISR_TXIS)) return -1;
@@ -270,8 +284,8 @@ static void gpio_init(void)
     pin_mode(LINK_SCK_PORT, LINK_SCK_PIN, M_AF, 6, P_NONE, 0);
     pin_mode(LINK_MISO_PORT, LINK_MISO_PIN, M_AF, 6, P_DOWN, 0);
     pin_mode(LINK_MOSI_PORT, LINK_MOSI_PIN, M_AF, 6, P_NONE, 0);
-    pin_mode(IMU_SCL_PORT, IMU_SCL_PIN, M_AF, 4, P_NONE, 1);
-    pin_mode(IMU_SDA_PORT, IMU_SDA_PIN, M_AF, 4, P_NONE, 1);
+    pin_mode(IMU_SCL_PORT, IMU_SCL_PIN, M_AF, 4, P_UP, 1);       /* 内部弱上拉兜底：防未贴 R198/R199 时浮空锁死 BUSY */
+    pin_mode(IMU_SDA_PORT, IMU_SDA_PIN, M_AF, 4, P_UP, 1);
 }
 
 static void mark(int t, int ok)
@@ -429,9 +443,14 @@ static void test_ads(void)
 static void test_imu(void)
 {
     volatile c08b_report_t *r = &g_report;
-    I2C1->CR1 = 0;
-    I2C1->TIMINGR = 0x00303D5B;           /* PCLK1 16 MHz → 100 kHz */
-    I2C1->CR1 = I2C_CR1_PE;
+    if (!GET(IMU_SCL) || !GET(IMU_SDA)) {
+        I2C1->CR1 = 0;
+        r->imu_id = 0;
+        logf_("IMU 总线被拉低，跳过探测\n");
+        mark(T_IMU_ID, 0);
+        return;
+    }
+    i2c_reset_bus();
     uint8_t id = 0;
     int e = i2c_read(0x6A, 0x0F, &id, 1);
     r->imu_id = e ? 0 : id;

@@ -13,10 +13,10 @@ import { classicView, matchesProfile, PROFILES, profileId, trainingBlock, type C
 import { applyClassicNames, ClassicCapture, ClassicPorts } from './classic';
 import { storedGate } from './recognition-gate';
 import { Led, NOISE_LIMIT_UV, Stepper, overRange } from './instrument';
-import { shouldAutoReconnect } from './link';
+import { isC08bTier, shouldAutoReconnect } from './link';
 import { SetupView, type WearCheck } from './setup';
 import { Live } from './live';
-import { Workbench } from './workbench';
+import { Workbench, type WorkbenchSub } from './workbench';
 import { ElectrodeRing } from './ring';
 import { SignalStream } from './signal';
 import { Train } from './train';
@@ -89,6 +89,7 @@ export function EmgStudio({ projectId, deviceTier, deviceSlot }: { projectId: st
   // 本组练出新模型就放掉上一次手选的模型：否则重新校准后「开始识别」还用旧模型（2026-10-14 Mako 结印测试：校准完仍在用 21:43 的模型）
   useEffect(() => { if (latestRun) setLiveRun((id) => (id === latestRun ? id : null)); }, [latestRun]);
   const [setupSub, setSetupSub] = useState<0 | 1>(0);
+  const [workbenchSub, setWorkbenchSub] = useState<WorkbenchSub>(() => (isC08bTier(deviceTier) ? 'device' : 'record'));
   const [wear, setWear] = useState<WearCheck | null>(() => load(key('wear'), null));
   const [since, setSince] = useState(0);                                        // 这次连接从什么时候开始等数据
   const [quiet, setQuiet] = useState(() => load('emg8:nav-hidden', false));    // 训练时收起工程顶栏、手势组和步骤
@@ -151,6 +152,8 @@ export function EmgStudio({ projectId, deviceTier, deviceSlot }: { projectId: st
   useEffect(() => {
     if (tierSeen.current === deviceTier) return;
     tierSeen.current = deviceTier;
+    if (isC08bTier(deviceTier)) setWorkbenchSub('device');
+    setErr('');
     const t = setTimeout(() => { void poll(); reconnect((n) => n + 1); }, 140);
     return () => clearTimeout(t);
   }, [deviceTier, poll]);
@@ -284,7 +287,8 @@ export function EmgStudio({ projectId, deviceTier, deviceSlot }: { projectId: st
 
     <motion.main key={`${tab}:${tab === 'setup' ? setupSub : group}`} className="emg8-body" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, ease: [0.16, 1, 0.3, 1] }}>
       {tab === 'setup' && <SetupView stale={wearOk && wearStale} sub={setupSub} online={online} hz={flow.hz} dropped={flow.dropped} rms={rms} range={range} hand={hand} donning={donning} since={since} st={st} projectId={projectId} bridge={bridge}
-        wear={wear} busy={busy} onWear={setWear} onReconnect={() => reconnect((n) => n + 1)} onNext={() => pick(setupSub === 0 ? 1 : 2)} onError={setErr} />}
+        deviceTier={deviceTier} wear={wear} busy={busy} onWear={setWear} onReconnect={() => reconnect((n) => n + 1)} onNext={() => pick(setupSub === 0 ? 1 : 2)}
+        onOpenHardware={() => { setWorkbenchSub('device'); setTab('data'); }} onError={setErr} />}
       {tab === 'setup' && setupSub === 0 && classic && <ClassicPorts bridge={bridge} projectId={projectId} st={st} labels={profile.labels} runId={latestRun} onReconnect={() => reconnect((n) => n + 1)} onError={setErr} />}
       {tab === 'capture' && classic && <ClassicCapture base={base} pick={classicPick} setPick={setClassicPick} profile={profile} projectId={projectId} bridge={bridge} st={st} ab={ab} hand={hand} setHand={setHand} donning={donning} setDonning={setDonning}
         placement={placement} setPlacement={setPlacement} strap={strap} setStrap={setStrap} onError={setErr} rms={rms} rmsAt={rmsAt}
@@ -294,7 +298,7 @@ export function EmgStudio({ projectId, deviceTier, deviceSlot }: { projectId: st
         onTrained={(id, opts) => { setLiveRun(id); setArmMouse(!!opts?.armMouse); setTab('live'); void bridge.live(projectId, { action: 'start', runId: id }).then((r) => { if (!r.ok) setErr(r.message); }); }} />}
       {tab === 'train' && <Train profile={profile} projectId={projectId} bridge={bridge} st={st} hand={hand} onError={setErr} onLive={(id) => { setLiveRun(id); setTab('live'); }} />}
       {tab === 'bench' && <Bench mode={cursorMode ?? 'off'} donning={donning} />}
-      {tab === 'data' && <Workbench projectId={projectId} bridge={bridge} hand={hand} donning={donning} placement={placement} />}
+      {tab === 'data' && <Workbench projectId={projectId} bridge={bridge} hand={hand} donning={donning} placement={placement} initialSub={workbenchSub} onSubChange={setWorkbenchSub} />}
       {tab === 'control' && <Control projectId={projectId} bridge={bridge} cs={st?.wl8?.cursor ?? null} tick={tick} hand={hand} onError={setErr} />}
       {tab === 'live' && <Live donning={donning} rms={rms} rmsAt={rmsAt} profile={profile} projectId={projectId} bridge={bridge} st={st} pred={pred} runId={liveRun ?? latestRun} armMouse={armMouse} onError={setErr} onRewear={() => pick(2)} />}
       {tab === 'guide' && <GestureLibrary hand={hand} onHandChange={setHand} />}

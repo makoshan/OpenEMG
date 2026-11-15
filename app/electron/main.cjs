@@ -45,7 +45,31 @@ const freePort = () => new Promise((resolve, reject) => {
 let collector = null;
 let serialPort = '';      // 经典 5 步里手选的手环数据串口；空 = 按 VID 自动找
 const MULTI_DEVICES = new Set(['c08b-16ch', 'wl8', 'c08b-8ch', 'c08b-2ch', 'wl18']);
-let multiDevice = MULTI_DEVICES.has(process.env.YUANLI_DEVICE) ? process.env.YUANLI_DEVICE : 'wl8';
+const UI_DEVICES = new Set(['c08b-16ch', 'wl8', 'c08b-8ch', 'c08b-2ch', 'emg']);
+const ALL_DEVICES = new Set([...MULTI_DEVICES, 'emg']);
+const devicePrefPath = () => path.join(app.getPath('userData'), 'device.json');
+function readInitialDevice() {
+  if (process.env.YUANLI_DEVICE && ALL_DEVICES.has(process.env.YUANLI_DEVICE)) {
+    return { device: process.env.YUANLI_DEVICE, forced: true, persisted: true };
+  }
+  try {
+    const file = devicePrefPath();
+    if (fs.existsSync(file)) {
+      const saved = JSON.parse(fs.readFileSync(file, 'utf8'))?.device;
+      if (UI_DEVICES.has(saved)) return { device: saved, forced: false, persisted: true };
+    }
+  } catch { /* 损坏配置回退默认 wl8 */ }
+  return { device: 'wl8', forced: false, persisted: false };
+}
+function writeDevicePref(d) {
+  if (process.env.YUANLI_DEVICE) return;
+  try {
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    fs.writeFileSync(devicePrefPath(), JSON.stringify({ device: d }, null, 2));
+  } catch { /* 只读目录忽略 */ }
+}
+let currentUiDevice = MULTI_DEVICES.has(process.env.YUANLI_DEVICE) ? process.env.YUANLI_DEVICE : 'wl8';
+let multiDevice = currentUiDevice;
 // gone：上一个服务的进程彻底退出（或根本没起）才兑现。新服务排在它后面，快速 八→单→八 也不会两个进程同时开串口
 let gone = Promise.resolve();
 const ENTRY = { wl8: 'emg8-server.py', emg: 'emg1-server.py' };
@@ -103,8 +127,12 @@ app.whenReady().then(() => {
   const buildFile = path.join(process.resourcesPath, 'build-info.json');
   const revision = app.isPackaged && fs.existsSync(buildFile) ? JSON.parse(fs.readFileSync(buildFile, 'utf8')).commit.slice(0, 7) : '开发版';
   app.setAboutPanelOptions({ applicationName: 'OpenEMG', applicationVersion: app.getVersion() + ' · ' + revision });
-  // 预加载脚本拿工程 id 用（同步，只此一个值）
+  // 预加载脚本同步拿工程 id 与初始设备档位（消除冷启动双起 Python 采集进程）
+  const initialDevInfo = readInitialDevice();
+  currentUiDevice = initialDevInfo.device;
+  multiDevice = currentUiDevice === 'emg' ? 'wl8' : currentUiDevice;
   ipcMain.on('yuanli:projectId', (e) => { e.returnValue = project.id; });
+  ipcMain.on('yuanli:initialDevice', (e) => { e.returnValue = initialDevInfo; });
   // 设备服务：op 'open8' 起八通道（emg8-ipc），'open' 起单通道（emg8-single-ipc）；同 PrintThings device-service 的约定
   const deviceService = {
     emg: (id, op) => { if (id !== project.id) throw Object.assign(new Error('不是本机工程'), { code: 'wrong-project' }); return startCollector(project, op === 'open' ? 'emg' : 'wl8'); },
@@ -113,10 +141,17 @@ app.whenReady().then(() => {
     // 换数据串口：记下来并收掉正在跑的多通道服务，下次 open8 带 --serial 重起
     setSerial: (p) => { serialPort = p; if (collector?.kind === 'wl8') { collector.child?.kill(); collector = null; } },
   };
-  ipcMain.handle('yuanli:device:get', guarded(() => ({ device: multiDevice })));
+  ipcMain.handle('yuanli:device:get', guarded(() => ({ device: currentUiDevice })));
   ipcMain.handle('yuanli:device:set', guarded((d) => {
-    if (d === 'emg') return { device: 'emg' };
+    if (d === 'emg') {
+      currentUiDevice = 'emg';
+      writeDevicePref('emg');
+      if (collector?.kind === 'wl8') { collector.child?.kill(); collector = null; }
+      return { device: 'emg' };
+    }
     if (!MULTI_DEVICES.has(d)) throw Object.assign(new Error('未知设备档位'), { code: 'bad-device' });
+    currentUiDevice = d;
+    writeDevicePref(d);
     if (multiDevice !== d) {
       multiDevice = d;
       if (collector?.kind === 'wl8') { collector.child?.kill(); collector = null; }

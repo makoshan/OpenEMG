@@ -162,6 +162,7 @@ static uint8_t  g_req_mode = C08B_MODE_IDLE;
 static uint8_t  g_synth_ch = 16u;
 static uint16_t g_req_fs_hz = 1000u;
 static uint32_t g_cmd_epoch = 0;
+static uint16_t g_await_epoch_lo = 0;
 static bool     g_ble_subscribed = false;
 static bool     g_imu_subscribed = false;
 static bool     g_conn_emg_started = false;
@@ -249,6 +250,7 @@ static struct {
     uint32_t        min_interval_us;
     uint32_t        imu_seq;
     /* 样本聚合槽（最多攒 8 个 8CH 帧或 4 个 16CH 帧 -> 统一 232B 包） */
+    c08b_afe_mode_t pend_mode;
     uint8_t         pend_count;
     uint8_t         pend_flags;
     uint32_t        pend_seq;
@@ -261,6 +263,7 @@ static void bridge_reset_session(void)
     g_bridge.sent_samples = 0;
     g_bridge.notify_failures = 0;
     g_bridge.imu_seq = 0;
+    g_bridge.pend_mode = AFE_NONE;
     g_bridge.pend_count = 0;
     g_bridge.pend_flags = 0;
 }
@@ -471,11 +474,15 @@ static bool ble_send_notify(uint16_t val_handle, bool subscribed, const uint8_t 
     return sd_ble_gatts_hvx(g_conn_handle, &hvx) == NRF_SUCCESS;
 }
 
+static void flush_pending_ble_packet(void);
+
 static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
 {
     if (len < 4u) return;
     uint8_t mode = c08b_parse_ctrl4(data);
     if (!mode) return;
+    /* 切换或停止前先把上一会话已入槽且未满包的尾帧按原 pend_mode 发完，防止跨档混包 */
+    flush_pending_ble_packet();
     /* 可选第 5..6 字节覆盖采样率（如 "SYN1\xD0\x07" = 2000 Hz），第 7 字节选合成通道档 2/8/16 */
     if (len >= 6u) {
         uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
@@ -485,8 +492,13 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
         g_synth_ch = data[6];
     }
     g_req_mode = mode;
-    g_cmd_epoch++;
-    if (mode != C08B_MODE_STOP && mode != C08B_MODE_PRB1) {
+    g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+    if (mode == C08B_MODE_STOP) {
+        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
+        g_bridge.active = false;
+        if (!gpio_get(VBUS_SENSE_PIN)) g_bridge.fault = C08B_FAULT_NONE;
+    } else if (mode != C08B_MODE_PRB1) {
+        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
         bridge_reset_session();
     }
     spis_rearm_now();
@@ -522,9 +534,13 @@ static void ble_poll_events(void)
             g_conn_emg_started = false;
             g_conn_imu_started = false;
             /* 断连一律停采并置 C08B_FAULT_CANCELLED(9)，绝不自动重连拼接同一佩戴段（AGENTS 铁律） */
+            g_bridge.pend_mode = AFE_NONE;
+            g_bridge.pend_count = 0;
+            g_bridge.pend_flags = 0;
             if (g_req_mode != C08B_MODE_IDLE && g_req_mode != C08B_MODE_STOP) {
                 g_req_mode = C08B_MODE_STOP;
-                g_cmd_epoch++;
+                g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+                g_await_epoch_lo = (uint16_t)g_cmd_epoch;
                 g_bridge.fault = C08B_FAULT_CANCELLED;
                 spis_rearm_now();
             }
@@ -604,8 +620,9 @@ static bool ble_send_notify(uint16_t h, bool sub, const uint8_t *p, uint16_t n)
 static void flush_pending_ble_packet(void)
 {
     if (g_bridge.pend_count == 0) return;
-    c08b_afe_mode_t m = g_bridge.afe_mode;
+    c08b_afe_mode_t m = g_bridge.pend_mode ? g_bridge.pend_mode : g_bridge.afe_mode;
     if (m == AFE_NONE) {
+        g_bridge.pend_mode = AFE_NONE;
         g_bridge.pend_count = 0;
         g_bridge.pend_flags = 0;
         return;
@@ -648,20 +665,33 @@ static void flush_pending_ble_packet(void)
             if (flags & C08B_F01_SESSION_START) {
                 g_bridge.fault = C08B_FAULT_LINK_DROP;
                 g_req_mode = C08B_MODE_STOP;
-                g_cmd_epoch++;
+                g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+                g_await_epoch_lo = (uint16_t)g_cmd_epoch;
                 spis_rearm_now();
             }
         }
     }
+    g_bridge.pend_mode = AFE_NONE;
     g_bridge.pend_count = 0;
     g_bridge.pend_flags = 0;
 }
 
 static void ingest_l432_frame(const c08b_link_tx_t *f)
 {
+    /* 若刚下发新控制命令而 L432 发来的是上一命令纪元的异步在途残帧，仅同步物理互锁故障码，丢弃旧会话数据 */
+    if (!c08b_bridge_accept_frame(f, &g_await_epoch_lo)) {
+        if (f->fault == C08B_FAULT_INTERLOCK) g_bridge.fault = f->fault;
+        return;
+    }
+
     c08b_afe_mode_t prev_mode = g_bridge.afe_mode;
+    /* 若子板档位变化且仍有上一档位的未满包残帧，先按旧 pend_mode 刷净，再切换 afe_mode */
+    if (g_bridge.pend_count > 0 && g_bridge.pend_mode != (c08b_afe_mode_t)f->afe_mode) {
+        flush_pending_ble_packet();
+    }
     g_bridge.afe_mode        = (c08b_afe_mode_t)f->afe_mode;
-    g_bridge.fault           = f->fault;
+    g_bridge.fault           = (gpio_get(VBUS_SENSE_PIN) && g_bridge.fault == C08B_FAULT_INTERLOCK &&
+                                f->fault == C08B_FAULT_NONE) ? C08B_FAULT_INTERLOCK : f->fault;
     g_bridge.active          = (f->state_flags & C08B_SF_ACTIVE) != 0;
     g_bridge.produced        = f->produced;
     g_bridge.ring_dropped    = f->dropped;
@@ -686,6 +716,7 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
             flush_pending_ble_packet();
         }
         if (g_bridge.pend_count == 0) {
+            g_bridge.pend_mode  = g_bridge.afe_mode;
             g_bridge.pend_seq   = f->seq_first;
             g_bridge.pend_ts_us = f->timestamp_us;
             g_bridge.pend_flags = f->f01_flags;
@@ -755,11 +786,16 @@ int main(void)
         uint32_t now = g_ms;
         ble_poll_events();
 
-        /* 任何时刻在真实采集下检测到 USB VBUS，立即发 STOP 急停并置 INTERLOCK(3) */
+        /* 任何时刻在真实采集下检测到 USB VBUS，立即发 STOP 急停、拦截在途残帧并锁存 INTERLOCK(3) */
         if (gpio_get(VBUS_SENSE_PIN) && g_req_mode != C08B_MODE_IDLE &&
             g_req_mode != C08B_MODE_STOP && g_req_mode != C08B_MODE_SYN1) {
             g_req_mode = C08B_MODE_STOP;
-            g_cmd_epoch++;
+            g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+            g_await_epoch_lo = (uint16_t)g_cmd_epoch;
+            g_bridge.active = false;
+            g_bridge.pend_mode = AFE_NONE;
+            g_bridge.pend_count = 0;
+            g_bridge.pend_flags = 0;
             g_bridge.fault = C08B_FAULT_INTERLOCK;
             spis_rearm_now();
         } else if (calc_nrf_flags() != g_spis_tx.nrf_flags) {
