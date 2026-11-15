@@ -54,9 +54,9 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 从左到右、从上到下依次是顶层、内层和底层。各层都从板顶看，方便对照走线和过孔。[主控 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip) · [采集板 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip)
 
-[![第 7 页原理图，电极输入、滤波和静电保护，点击查看七页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[![第 9 页原理图，电极输入、滤波和静电保护，点击查看九页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
-**[下载七页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1–5 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 6–7 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)。
+**[下载九页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1 页是整机框图，第 2 页是电源树。第 3–7 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 8–9 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)。
 
 | 复刻资料 | 主控板 | 采集板 |
 |---|---|---|
@@ -73,7 +73,7 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 [![电源树：从 USB 充电和锂电池到主控、数字与模拟电源](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-zh.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-zh.svg)
 
-[查看同版七页原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[查看同版九页原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
 摘下再戴，电极位置和松紧都会变。我们读过的一项四通道实验，在握拳、张手、屈腕和伸腕测试中判对了 152/160 次（95%），但论文没说明测试前是否重新佩戴，现有材料也不足以原样复现。[阅读项目调研节选与论文出处](research/wrist-semg.md)
 
@@ -90,7 +90,7 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 | 当前已具备 / 可复现（✓） | 当前限制 / 尚未实测（✗） |
 |---|---|
-| ✓ **16 通道 `v0.01` 双板经人工工程师审核定版**，公开完整 `.epro2`、7 页可搜原理图 PDF、Gerber、BOM 与 CPL，准备下单打样 | ✗ **16 通道 `v0.01` 尚未回板实测**：双板叠装、16 路底噪、偏置环路稳定性与佩戴续航均待首板到货后实测 |
+| ✓ **16 通道 `v0.01` 双板经人工工程师审核定版**，公开完整 `.epro2`、9 页可搜原理图 PDF、Gerber、BOM 与 CPL，准备下单打样 | ✗ **16 通道 `v0.01` 尚未回板实测**：双板叠装、16 路底噪、偏置环路稳定性与佩戴续航均待首板到货后实测 |
 | ✓ **桌面工作台原生支持 `16 / 8 / 2` 通道统一工作流**：实时滚动波形、5 秒静息体检、跨佩戴留一评估、实时置信度门控与《掌中天劫》3D 游戏 | ✗ **不能即戴即用免校准**：跨用户零样本基模仍在研究，当前每次新用户或大幅换位佩戴后需重录几十秒校准数据 |
 | ✓ **8 路台架板 `V12-R01` 已实板跑通**：短接底噪 `2.8 µV`、10 分钟 `1,187,774` 帧连续无丢帧；唯理 8 通道有线腕带已在桌面端跑通完整训练链路 | ✗ **其余 AI 生成板卡、FPC 软板与 3D 外壳尚未下单验证**；严禁插着 USB 线或充电器将任何电极接触人体 |
 

@@ -54,9 +54,9 @@ These renders show the 0.8 mm bare-board configuration. The exploded view omits 
 
 Read left to right, then top to bottom. All copper layers are viewed from above so you can follow traces through vias. [Controller Gerbers and drill files](hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip) · [Acquisition Gerbers and drill files](hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip)
 
-[![Schematic sheet 7: electrode inputs, filtering, and ESD protection](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[![Schematic sheet 9: electrode inputs, filtering, and ESD protection](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
-Sheets 1–5 cover controller power, Bluetooth, USB, inter-board connections, and the sampling MCU. Sheets 6–7 cover analog power, acquisition, electrode connectors, and input filters. [Searchable schematic PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf) · [Editable EasyEDA Pro project](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)
+Sheet 1 shows the system block diagram and sheet 2 shows the power tree. Sheets 3–7 cover controller power, Bluetooth, USB, inter-board connections, and the sampling MCU. Sheets 8–9 cover analog power, acquisition, electrode connectors, and input filters. [Searchable schematic PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf) · [Editable EasyEDA Pro project](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)
 
 | Assembly files | Controller | Acquisition board |
 |---|---|---|
@@ -73,7 +73,7 @@ A pinch produces small voltage changes at the skin. Each channel measures the vo
 
 [![Power tree showing USB charging, the battery and the digital and analog rails](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-en.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-en.svg)
 
-[View the seven schematic sheets](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+[View the nine schematic sheets](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
 
 Taking the band off and putting it back on changes electrode position and pressure. One four-channel study correctly classified 152 of 160 trials (95%) across four movements: making a fist, opening the hand, and flexing or extending the wrist. The paper does not say whether participants put the band on again before testing. We plan to train and test on separate wear sessions. [Research notes and paper](research/wrist-semg.md)
 
@@ -90,7 +90,7 @@ Together with literature review and bench measurements on our earlier 8-channel 
 
 | Available & reproducible today (✓) | Current limitations & untested boundaries (✗) |
 |---|---|
-| ✓ **Human-reviewed 16-channel `v0.01` dual-board package** with editable `.epro2`, searchable 7-page schematic PDF, Gerbers, BOM, and CPL ready to order | ✗ **No assembled `v0.01` hardware data yet**: 16-channel bench noise, bias loop stability, mechanical fit, and battery runtime await first boards |
+| ✓ **Human-reviewed 16-channel `v0.01` dual-board package** with editable `.epro2`, searchable 9-page schematic PDF, Gerbers, BOM, and CPL ready to order | ✗ **No assembled `v0.01` hardware data yet**: 16-channel bench noise, bias loop stability, mechanical fit, and battery runtime await first boards |
 | ✓ **Unified `16 / 8 / 2`-channel desktop studio** with scrolling waveforms, 5-second signal check, cross-wear evaluation theater, live confidence gating, and the built-in 3D game *Palm Tribulation* | ✗ **Not plug-and-play across users**: zero-shot cross-user foundation models remain under study; refitting or switching users still requires a short calibration session |
 | ✓ **Proven 8-channel `V12-R01` bench capture** (`2.8 µV` shorted noise, 10-min zero-drop stream) and end-to-end training validated on an 8-channel wired wristband | ✗ **All other AI-generated PCBs, electrode FPCs, and 3D enclosures have not been human-reviewed or ordered**; never touch electrodes to skin while USB or mains power is connected |
 
