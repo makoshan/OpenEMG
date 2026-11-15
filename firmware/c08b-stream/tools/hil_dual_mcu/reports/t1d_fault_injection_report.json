@@ -1,0 +1,186 @@
+{
+  "timestamp": "2026-11-15T20:05:27+0800",
+  "port": "/dev/cu.usbmodem1101",
+  "cases": {
+    "1d_1_session_start_link_drop": {
+      "l432_tx": {
+        "crc_ok": true,
+        "afe_mode": 16,
+        "state_flags": 0,
+        "fault": 7,
+        "sample_count": 0,
+        "f01_flags": 0,
+        "seq_first": 0,
+        "produced": 4,
+        "dropped": 4,
+        "active_mode": 0
+      },
+      "xiao_status": {
+        "produced": 4,
+        "ring_dropped": 4,
+        "scheduler_skipped": 0,
+        "sent_samples": 0,
+        "notify_failures": 0,
+        "fault": 7,
+        "active": false,
+        "bench_measured": false,
+        "ads_status_hex": "0xC00000",
+        "drdy_edges": 4,
+        "drdy_min_interval_us": 1000,
+        "spi_hz": 4000000
+      },
+      "l432_pins": {
+        "ANA_EN_PC14": 0,
+        "ADS_PWDN_PA1": 0,
+        "ADS_START_PA3": 0,
+        "ADS_RESET_PA8": 0,
+        "CS_A_PB0": 1,
+        "CS_B_PB1": 1,
+        "BOOT0_S1_PH3": 0
+      }
+    },
+    "1d_2_midstream_stall_overflow": {
+      "xiao_status_before_stop": {
+        "produced": 1888,
+        "ring_dropped": 420,
+        "scheduler_skipped": 0,
+        "sent_samples": 1468,
+        "notify_failures": 0,
+        "fault": 0,
+        "active": true,
+        "bench_measured": false,
+        "ads_status_hex": "0xC00000",
+        "drdy_edges": 1888,
+        "drdy_min_interval_us": 1000,
+        "spi_hz": 4000000
+      },
+      "l432_tx": {
+        "crc_ok": true,
+        "afe_mode": 16,
+        "state_flags": 1,
+        "fault": 0,
+        "sample_count": 4,
+        "f01_flags": 1,
+        "seq_first": 2472,
+        "produced": 2476,
+        "dropped": 492,
+        "active_mode": 6
+      },
+      "host_gap_audit": {
+        "packets": 367,
+        "received_samples": 1468,
+        "missing_samples": 420,
+        "gap_events": [
+          {
+            "pkt_idx": 335,
+            "expected_seq": 1340,
+            "got_seq": 1760,
+            "gap": 420
+          }
+        ],
+        "lossless": false
+      }
+    },
+    "1d_3_vbus_interlock_and_lock_matrix": [
+      {
+        "mode": "TST1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      },
+      {
+        "mode": "SHT1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      },
+      {
+        "mode": "EXT1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      },
+      {
+        "mode": "EXR1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      },
+      {
+        "mode": "RLD1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      },
+      {
+        "mode": "PRB1",
+        "l432_latched_nrf_flags_hex": "0x03",
+        "l432_fault": 1,
+        "l432_vbus_flag": false,
+        "ph3_boot0_pad": 0,
+        "ana_en_pc14": 0
+      }
+    ],
+    "1d_4_disconnect_and_antisplice": {
+      "status_mid_stream": {
+        "produced": 828,
+        "ring_dropped": 0,
+        "scheduler_skipped": 0,
+        "sent_samples": 828,
+        "notify_failures": 0,
+        "fault": 0,
+        "active": true,
+        "bench_measured": false,
+        "ads_status_hex": "0xC00000",
+        "drdy_edges": 828,
+        "drdy_min_interval_us": 1000,
+        "spi_hz": 4000000
+      },
+      "status_after_disconnect": {
+        "produced": 972,
+        "ring_dropped": 0,
+        "scheduler_skipped": 0,
+        "sent_samples": 828,
+        "notify_failures": 0,
+        "fault": 0,
+        "active": false,
+        "bench_measured": false,
+        "ads_status_hex": "0xC00000",
+        "drdy_edges": 972,
+        "drdy_min_interval_us": 1000,
+        "spi_hz": 4000000
+      },
+      "clean_stream_audit": {
+        "packets": 207,
+        "received_samples": 828,
+        "missing_samples": 0,
+        "gap_events": [],
+        "lossless": true
+      },
+      "host_redlines": {
+        "acq_stall_samples": 1468,
+        "acq_stall_dropped_seq8": 164,
+        "acq_clean_samples": 828,
+        "acq_clean_dropped": 0,
+        "anti_splice": {
+          "rejected": true,
+          "error": "采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据） | 采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）",
+          "ble_mid_drop_error": "采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）",
+          "dongle_connects_inc_error": "采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）"
+        },
+        "c11_unlocked_vbus_interlock": "C11_INTERLOCK_GATE_OK"
+      }
+    }
+  },
+  "all_passed": true
+}

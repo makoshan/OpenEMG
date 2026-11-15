@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-11-15T20:05:19+0800",
+  "port": "/dev/cu.usbmodem1101",
+  "checks": {
+    "i2c_pullup_and_fast_startup": {
+      "pa9_imu_scl_idle": 1,
+      "pa10_imu_sda_idle": 1,
+      "syn1_first_pkt_latency_ms": 40.45,
+      "legacy_unpulled_latency_ms_ref": 520.0
+    },
+    "live_reconfigure_4_segments": {
+      "emg_segments": [
+        {
+          "pkt_start_idx": 0,
+          "f01_version": 4,
+          "first_flags_hex": "0x03",
+          "has_session_start": true,
+          "has_reconfigure": false,
+          "first_seq": 0,
+          "first_ts_us": 161681,
+          "packets": 16,
+          "samples": 64,
+          "gaps": 0,
+          "ch3_to_ch8_nonzero_slots": 0
+        },
+        {
+          "pkt_start_idx": 16,
+          "f01_version": 1,
+          "first_flags_hex": "0x07",
+          "has_session_start": true,
+          "has_reconfigure": true,
+          "first_seq": 0,
+          "first_ts_us": 278277,
+          "packets": 29,
+          "samples": 228,
+          "gaps": 0,
+          "ch3_to_ch8_nonzero_slots": 228
+        },
+        {
+          "pkt_start_idx": 45,
+          "f01_version": 1,
+          "first_flags_hex": "0x07",
+          "has_session_start": true,
+          "has_reconfigure": true,
+          "first_seq": 0,
+          "first_ts_us": 996405,
+          "packets": 35,
+          "samples": 276,
+          "gaps": 0,
+          "ch3_to_ch8_nonzero_slots": 0
+        },
+        {
+          "pkt_start_idx": 80,
+          "f01_version": 4,
+          "first_flags_hex": "0x07",
+          "has_session_start": true,
+          "has_reconfigure": true,
+          "first_seq": 0,
+          "first_ts_us": 1835990,
+          "packets": 32,
+          "samples": 128,
+          "gaps": 0,
+          "ch3_to_ch8_nonzero_slots": 0
+        }
+      ],
+      "imu_session_starts": [
+        {
+          "imu_pkt_idx": 0,
+          "seq": 0,
+          "flags_hex": "0x03",
+          "has_reconfigure": false
+        },
+        {
+          "imu_pkt_idx": 5,
+          "seq": 0,
+          "flags_hex": "0x07",
+          "has_reconfigure": true
+        },
+        {
+          "imu_pkt_idx": 23,
+          "seq": 0,
+          "flags_hex": "0x07",
+          "has_reconfigure": true
+        },
+        {
+          "imu_pkt_idx": 57,
+          "seq": 0,
+          "flags_hex": "0x07",
+          "has_reconfigure": true
+        }
+      ]
+    },
+    "stop_clears_non_interlock_fault": {
+      "after_tst1_fault": 1,
+      "after_stop_xiao_fault": 0,
+      "after_stop_l432_fault": 0
+    }
+  },
+  "all_passed": true
+}

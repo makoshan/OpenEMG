@@ -1,0 +1,272 @@
+{
+  "firmware_baseline": "OpenEMG v0.01 (0ad202c) + physical LSM6DS3TR-C (0x6A)",
+  "stages": {
+    "stage1_cold_boot_and_hw_imu": {
+      "meta_idle": {
+        "profile": "C08B_DUAL_STREAM_CANDIDATE",
+        "board": "C08B_R4U6",
+        "afe": "NONE",
+        "build_id": "c08b261112000001",
+        "protocol": 1,
+        "channels": 8,
+        "active_channels": 0,
+        "fs_Hz": 500,
+        "spi_Hz": 1000000,
+        "vref_mV": 2400,
+        "gain": 6,
+        "bench_measured": false,
+        "imu_enabled": true,
+        "clock_source": "L432_DWT_1MHz",
+        "clock_resolution_us": 1,
+        "usb_interlock": "HW_U10_OE_N_AND_SW_DUAL_MCU"
+      },
+      "imu_who_am_i_hex": "0x6A",
+      "twim0_read_us": 479,
+      "desk_acc_g": [
+        0.0293,
+        0.4016,
+        0.9265
+      ],
+      "desk_acc_norm_g": 1.0102,
+      "desk_gyro_dps": [
+        2.03,
+        -3.71,
+        0.035
+      ]
+    },
+    "stage2_all_locked_modes_and_gpio": {
+      "TST1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      },
+      "SHT1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      },
+      "EXT1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      },
+      "EXR1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      },
+      "RLD1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      },
+      "PRB1": {
+        "fault": 1,
+        "active": 0,
+        "l432_gpio": {
+          "ANA_EN_PC14": 0,
+          "ADS_PWDN_PA1": 0,
+          "ADS_START_PA3": 0,
+          "ADS_RESET_PA8": 0,
+          "CS_A_PB0": 1,
+          "CS_B_PB1": 1,
+          "BOOT0_S1_PH3": 0
+        }
+      }
+    },
+    "stage3_arg_and_verb_guards": {
+      "unknown_verb_fault": 0,
+      "bad_fs_777hz_fault": 2
+    },
+    "stage4_hotswap_matrix": {
+      "16ch_1000hz": {
+        "afe": "ADS1298_DUAL",
+        "protocol": 4,
+        "fs_Hz": 1000,
+        "active_channels": 16,
+        "vref_mV": 2400,
+        "samples": 812,
+        "packets": 203,
+        "imu_samples": 68,
+        "missing_samples": 0,
+        "bad_status_frames": 0,
+        "l432_ring_dropped": 0,
+        "min_interval_us": 1000,
+        "first_pkt_flags_hex": "0x03",
+        "reconfigure_bit": false
+      },
+      "8ch_2000hz": {
+        "afe": "ADS1298_SINGLE",
+        "protocol": 1,
+        "fs_Hz": 2000,
+        "active_channels": 8,
+        "vref_mV": 2400,
+        "samples": 646,
+        "packets": 81,
+        "imu_samples": 53,
+        "missing_samples": 0,
+        "bad_status_frames": 0,
+        "l432_ring_dropped": 0,
+        "min_interval_us": 500,
+        "first_pkt_flags_hex": "0x07",
+        "reconfigure_bit": true
+      },
+      "2ch_500hz": {
+        "afe": "ADS1292",
+        "protocol": 1,
+        "fs_Hz": 500,
+        "active_channels": 2,
+        "vref_mV": 2420,
+        "samples": 396,
+        "packets": 50,
+        "imu_samples": 50,
+        "missing_samples": 0,
+        "bad_status_frames": 0,
+        "l432_ring_dropped": 0,
+        "min_interval_us": 2000,
+        "first_pkt_flags_hex": "0x07",
+        "reconfigure_bit": true
+      },
+      "16ch_500hz": {
+        "afe": "ADS1298_DUAL",
+        "protocol": 4,
+        "fs_Hz": 500,
+        "active_channels": 16,
+        "vref_mV": 2400,
+        "samples": 396,
+        "packets": 99,
+        "imu_samples": 50,
+        "missing_samples": 0,
+        "bad_status_frames": 0,
+        "l432_ring_dropped": 0,
+        "min_interval_us": 2000,
+        "first_pkt_flags_hex": "0x07",
+        "reconfigure_bit": true
+      }
+    },
+    "stage5_crc16_fault_injection": {
+      "uplink_corrupt_replies": [
+        2,
+        2,
+        2
+      ],
+      "xiao_crc_bad_delta": 3,
+      "downlink_corrupt_stop_ignored": true
+    },
+    "stage6_10s_soak_16ch": {
+      "samples_16ch": 10032,
+      "channel_words_24bit": 160512,
+      "f01_v4_packets": 2508,
+      "imu_packets": 836,
+      "missing_samples": 0,
+      "bad_status_frames": 0,
+      "imu_missing": 0,
+      "l432_ring_dropped": 0,
+      "min_interval_us": 1000,
+      "mcu_dwt_span_s": 10.028,
+      "host_elapsed_s": 10.0022,
+      "effective_host_sps": 1002.98,
+      "hsi16_vs_host_ppm_approx": 2978,
+      "real_imu_mean_norm_g": 1.0126,
+      "real_imu_acc_std_mg": [
+        3.01,
+        1.65,
+        2.91
+      ],
+      "real_imu_gyro_std_dps": [
+        0.228,
+        0.063,
+        0.141
+      ],
+      "real_imu_twim0_mean_us": 498.3,
+      "real_imu_twim0_max_us": 701
+    },
+    "stage7_openemg_workbench_bridge": {
+      "c08b-16ch": {
+        "blocks": 262,
+        "uv_shape": [
+          1000,
+          16
+        ],
+        "imu_frames": 12,
+        "dropped": 0,
+        "segment": 0,
+        "uv_std_ch0": 220.24
+      },
+      "c08b-8ch": {
+        "blocks": 93,
+        "uv_shape": [
+          646,
+          8
+        ],
+        "imu_frames": 12,
+        "dropped": 0,
+        "segment": 0,
+        "uv_std_ch0": 142.28
+      },
+      "c08b-2ch": {
+        "blocks": 62,
+        "uv_shape": [
+          396,
+          2
+        ],
+        "imu_frames": 12,
+        "dropped": 0,
+        "segment": 0,
+        "uv_std_ch0": 87.94
+      },
+      "reconfigure_boundary_16ch_1k_to_500": {
+        "sessions": 2,
+        "boundary_reason": "configuration",
+        "segment_after_reconfigure": 1,
+        "dropped": 0
+      }
+    }
+  },
+  "relay_totals": {
+    "tx_frames": 3536,
+    "rx_cmds": 41,
+    "xiao_crc_rejects": 0,
+    "usb_batches": 793
+  }
+}

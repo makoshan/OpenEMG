@@ -1,0 +1,54 @@
+{
+  "commit": "364deaf60692600de4fa5664ecc94468a1704ec2",
+  "packaged_app": "<local-path>",
+  "userdata": "<tmp-path>",
+  "checks": {
+    "cold_start_single_spawn": {
+      "initialDevice": "c08b-16ch",
+      "selectedValue": "c08b-16ch",
+      "weiliKindSwitchCount": 0,
+      "hasC08bStrip": true,
+      "c08bStripText": "C08B-SYNTH 合成预览\n真机走 BLE YUANLI-C08B 或 XIAO 接收器 · 默认双硬件锁关闭\n首板自检与脚位表 →",
+      "hasSynthBanner": true,
+      "collector_procs": 1,
+      "collector_cmd_has_c08b16": true
+    },
+    "c08b_wear_steps": {
+      "has_12_2_2": true,
+      "has_vbus_note": true,
+      "has_weili_silk": false
+    },
+    "workbench_first_screen": {
+      "viewportHeight": 825,
+      "chEditorCollapsedByDefault": true,
+      "lockCardTop": 256,
+      "bringupCardTop": 256,
+      "pinCardTop": 587
+    },
+    "bringup_97b_report": {
+      "cells": 16,
+      "meta": "DRDY 实测 500 Hz\n双片失步 0 帧\n状态字错 0 帧\nIMU 0x6A 0.9982 g",
+      "sampleCell0": "CH1\n1950 µVpp · 0.85 µVrms",
+      "sampleCell15": "CH16\n1950 µVpp · 0.85 µVrms"
+    },
+    "pinout_filter": {
+      "fullRows": 16,
+      "fpc3Rows": 8,
+      "restoredRows": 16
+    },
+    "wl8_regression_ok": {
+      "savedDeviceJson": {
+        "device": "wl8"
+      },
+      "wl8Setup": {
+        "weiliKindSwitchCount": 1,
+        "c08bStripCount": 0,
+        "text": "USB 版\n蓝牙版"
+      }
+    }
+  },
+  "screenshots": [
+    "<local-path>",
+    "<local-path>"
+  ]
+}
