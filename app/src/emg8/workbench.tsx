@@ -9,13 +9,18 @@ import { CH_COLORS, pct } from './contract';
 import { dataReadout } from './readout';
 import { grayTitle } from './gray-title';
 
-type Sub = 'device' | 'record' | 'data' | 'train' | 'rules';
-const SUBS: [Sub, string][] = [['device', '设备'], ['record', '录制'], ['data', '数据'], ['train', '训练'], ['rules', '规则']];
+export type WorkbenchSub = 'device' | 'record' | 'data' | 'train' | 'rules';
+const SUBS: [WorkbenchSub, string][] = [['device', '设备'], ['record', '录制'], ['data', '数据'], ['train', '训练'], ['rules', '规则']];
 const WRITES = new Set<StudioOp>(['sessionStart', 'sessionStop', 'takeStart', 'takeStop', 'datasetSave', 'trainStart', 'trainFreeze', 'gestureGate', 'gestureFewshot', 'gestureDump']);
 type Call = <K extends StudioOp>(op: K, a?: StudioOps[K][0]) => Promise<StudioOps[K][1] | null>;
 
-export function Workbench({ projectId, bridge, hand, donning, placement }: { projectId: string; bridge: Emg8Bridge | undefined; hand: Hand; donning: number; placement: string }) {
-  const [sub, setSub] = useState<Sub>('record');
+export function Workbench({ projectId, bridge, hand, donning, placement, initialSub = 'record', onSubChange }: {
+  projectId: string; bridge: Emg8Bridge | undefined; hand: Hand; donning: number; placement: string;
+  initialSub?: WorkbenchSub; onSubChange?: (s: WorkbenchSub) => void;
+}) {
+  const [sub, setSub] = useState<WorkbenchSub>(initialSub);
+  useEffect(() => { setSub(initialSub); }, [initialSub]);
+  const pickSub = (next: WorkbenchSub) => { setSub(next); onSubChange?.(next); };
   const [err, setErr] = useState('');
   const [dev, setDev] = useState<StudioDevice | null>(null);
   const [gates, setGates] = useState<StudioEvent[]>([]);
@@ -50,7 +55,7 @@ export function Workbench({ projectId, bridge, hand, donning, placement }: { pro
   return <div className="emg8-control">
     <section className="emg8-card emg8-control-head">
       <div><h3>数据台</h3><small>{dev ? `${dev.name} · ${dev.fs_Hz} Hz × ${dev.n_channels} 路 · ${dev.session ? `会话 ${dev.session}` : '没有进行中的会话'}${dev.recording ? ' · 录制中' : ''}` : '读取设备…'}</small></div>
-      <nav className="emg8-tabs" aria-label="数据台页面">{SUBS.map(([k, t]) => <button key={k} aria-pressed={sub === k} onClick={() => setSub(k)}>{t}</button>)}</nav>
+      <nav className="emg8-tabs" aria-label="数据台页面">{SUBS.map(([k, t]) => <button key={k} aria-pressed={sub === k} onClick={() => pickSub(k)}>{t}</button>)}</nav>
     </section>
     {err && <p className="emg8-warn" role="alert">{err}</p>}
     {page()}
@@ -61,66 +66,107 @@ const GatePill = ({ ok, why }: { ok: boolean; why?: string }) => <span className
 
 function ReadoutCard({ fsHz }: { fsHz: number | undefined }) {
   if (!fsHz) return null;
-  return <section className="emg8-card"><header><h4>这份数据怎么读</h4></header>
+  return <section className="emg8-card emg8-span-2"><header><h4>这份数据怎么读</h4></header>
     <ol className="emg8-gates">{dataReadout(fsHz).map((line) => <li key={line}>{line}</li>)}</ol></section>;
 }
 
 function DevicePage({ call, dev }: { call: Call; dev: StudioDevice | null }) {
   const [cfg, setCfg] = useState<StudioConfig | null>(null);
   const [names, setNames] = useState<string[]>([]);
+  const [editingNames, setEditingNames] = useState(false);
+  const [savedToast, setSavedToast] = useState(false);
   const [pinout, setPinout] = useState<DevicePinout | null>(null);
+  const [pinFilter, setPinFilter] = useState('');
   const [hexIn, setHexIn] = useState('');
   const [bringup, setBringup] = useState<BringupDecodeResult | null>(null);
   useEffect(() => {
     void call('deviceConfig').then((c) => { if (c) { setCfg(c); setNames(c.channels.map((x) => x.label)); } });
     void call('devicePinout').then((p) => { if (p) setPinout(p); });
   }, [call, dev?.device_id]);
-  const save = async () => { const c = await call('deviceConfigPut', { channels: names.map((label, index) => ({ index, label })) }); if (c) setCfg(c); };
+  const save = async () => {
+    const c = await call('deviceConfigPut', { channels: names.map((label, index) => ({ index, label })) });
+    if (c) { setCfg(c); setSavedToast(true); setTimeout(() => setSavedToast(false), 1800); }
+  };
   const runDecode = async (sample?: '16ch' | '8ch' | '2ch' | 'report16') => {
     const r = await call('bringupDecode', sample ? { sample } : { hex: hexIn });
     if (r) { setBringup(r); if (r.input_hex) setHexIn(r.input_hex); }
   };
+  const q = pinFilter.trim().toLowerCase();
+  const filteredRows = pinout?.rows.filter((r) => !q || `ch${r.ch} ${r.connector} ${r.esd} ${r.filter} ${r.adc_pin} ${r.zone}`.toLowerCase().includes(q)) ?? [];
   return <div className="emg8-control-grid">
-    <section className="emg8-card"><header><h4>设备</h4><span className="emg8-fine">{dev?.device_id}</span></header>
+    <section className="emg8-card"><header><h4>设备与安全门锁</h4><span className="emg8-fine">{dev?.device_id}</span></header>
       {dev ? <table className="emg8-table"><tbody>
-        <tr><td>名称</td><td>{dev.name}</td></tr><tr><td>连接</td><td>{dev.rig.streaming ? '在线' : dev.state} · {dev.rig.banner.replace(/ @ .*/, '')}</td></tr>
-        <tr><td>采样</td><td>{dev.fs_Hz} Hz × {dev.n_channels} 路</td></tr>
-        <tr><td>能力</td><td>{Object.entries(dev.capabilities).filter(([, v]) => v).map(([k]) => k).join(' · ')}</td></tr>
-        <tr><td>安全门锁</td><td>{dev.capabilities.record ? '已开启录制' : '默认锁定（record=false，需离体台架实测后解锁）'}</td></tr>
-        <tr><td>丢帧</td><td>{dev.dropped}</td></tr></tbody></table> : <p className="emg8-fine">读取中…</p>}
+        <tr><td>名称</td><td><b>{dev.name}</b></td></tr>
+        <tr><td>连接</td><td>{dev.rig.streaming ? '在线' : dev.state} · {dev.rig.banner.replace(/ @ .*/, '')}</td></tr>
+        <tr><td>采样</td><td>{dev.fs_Hz} Hz × {dev.n_channels} 路 · 丢帧 {dev.dropped}</td></tr>
+        <tr><td>能力</td><td>{Object.entries(dev.capabilities).filter(([, v]) => v).map(([k]) => k).join(' · ') || '只读预览'}</td></tr>
+        <tr><td>安全门锁</td><td><span className={dev.capabilities.record ? 'emg8-gate ok' : 'emg8-gate bad'}>{dev.capabilities.record ? '已开启录制' : '默认锁定（record=false，需离体台架实测后解锁）'}</span></td></tr>
+      </tbody></table> : <p className="emg8-fine">读取中…</p>}
       {pinout?.notes && <p className="emg8-fine">{pinout.notes}</p>}
-      <p className="emg8-fine">设备描述来自 host/devices/*.json。换设备和改采样率要重启采集服务（B5 才支持热切换）。</p></section>
-    <section className="emg8-card"><header><h4>通道名</h4><button onClick={() => { void save(); }} disabled={!cfg} title={grayTitle(!cfg && '通道表还在读')}>保存</button></header>
-      <div className="emg8-form">{names.map((n, i) => <label key={i}><span style={{ color: CH_COLORS[i % CH_COLORS.length] }}>CH{i + 1} · {cfg?.channels[i]?.sensor}</span>
-        <input value={n} maxLength={24} onChange={(e) => setNames(names.map((x, j) => (j === i ? e.target.value : x)))} /></label>)}</div>
-      <p className="emg8-fine">通道名写进之后每段 .h5 与导出 .txt 的文件头；只在本次服务运行期间有效。</p></section>
+      <div className="emg8-ch-collapse">
+        <div className="emg8-row tight" style={{ justifyContent: 'space-between', marginTop: 8 }}>
+          <span className="emg8-fine" style={{ margin: 0 }}>通道名（{names.length} 路）：{names.slice(0, 6).join(' · ')}{names.length > 6 ? ` … CH${names.length}` : ''}{savedToast ? ' · 已保存' : ''}</span>
+          <div className="emg8-row tight">
+            {editingNames && <button className="emg8-primary" onClick={() => { void save(); }} disabled={!cfg} title={grayTitle(!cfg && '通道表还在读')}>保存通道名</button>}
+            <button type="button" onClick={() => setEditingNames((v) => !v)}>{editingNames ? '收起通道名' : '展开改名'}</button>
+          </div>
+        </div>
+        {editingNames && <div className="emg8-form emg8-ch-grid" style={{ marginTop: 8 }}>{names.map((n, i) => <label key={i}><span style={{ color: CH_COLORS[i % CH_COLORS.length] }}>CH{i + 1} · {cfg?.channels[i]?.sensor}</span>
+          <input value={n} maxLength={24} onChange={(e) => setNames(names.map((x, j) => (j === i ? e.target.value : x)))} /></label>)}</div>}
+      </div>
+    </section>
+
     <section className="emg8-card"><header><h4>首板上电自检解码 · c08b-bringup</h4>
       <div className="emg8-row tight">
         <button onClick={() => { void runDecode('16ch'); }}>示例 16CH</button>
         <button onClick={() => { void runDecode('8ch'); }}>示例 8CH</button>
         <button onClick={() => { void runDecode('2ch'); }}>示例 2CH</button>
+        <button onClick={() => { void runDecode('report16'); }}>示例 97B 详报</button>
       </div></header>
-      <div className="emg8-form">
-        <label className="wide">nRF Connect 0xFFFF 广播串或 97B 内存报告 HEX
-          <input value={hexIn} placeholder="粘贴 10B / 12B / 31B BLE 广播或 97B 报告 HEX" onChange={(e) => setHexIn(e.target.value)} /></label>
+      <div className="emg8-row tight" style={{ marginBottom: 8 }}>
+        <input style={{ flex: 1, minWidth: 200 }} aria-label="上电自检十六进制输入" value={hexIn} placeholder="粘贴 10B / 12B / 31B BLE 0xFFFF 广播或 97B SWD 内存报告 HEX" onChange={(e) => setHexIn(e.target.value)} />
+        <button className="emg8-primary" disabled={!hexIn.trim()} onClick={() => { void runDecode(); }}>解码十项自检</button>
+        {bringup && <button type="button" onClick={() => { setBringup(null); setHexIn(''); }}>清空</button>}
       </div>
-      <div className="emg8-row tight">
-        <button className="primary" disabled={!hexIn.trim()} onClick={() => { void runDecode(); }}>解码十项自检</button>
-      </div>
-      {bringup && <>
-        <p className={bringup.verdict === 'PASS' && !bringup.safety_alerts?.length ? 'emg8-ok' : 'emg8-warn'}>
-          <b>{bringup.verdict}</b> · {bringup.afe_mode_label} · {bringup.led_pattern} · done={bringup.done_mask_hex}/{bringup.expected_done_hex} · fail={bringup.fail_mask_hex}{bringup.vbat_mv_approx ? ` · VBAT≈${bringup.vbat_mv_approx} mV` : ''}
+      {bringup ? <>
+        <p className={bringup.verdict === 'PASS' && !bringup.safety_alerts?.length ? 'emg8-ok' : 'emg8-warn'} style={{ marginTop: 4 }}>
+          <b>{bringup.verdict}</b> · {bringup.afe_mode_label} · {bringup.led_pattern} · done={bringup.done_mask_hex}/{bringup.expected_done_hex} · fail={bringup.fail_mask_hex}
+          {bringup.vbat_mv_approx ? ` · VBAT≈${bringup.vbat_mv_approx} mV` : ''}
+          {bringup.crc_hex ? ` · CRC=${bringup.crc_hex}` : ''}
         </p>
+        {bringup.source === 'l432_report_97B' && <div className="emg8-report97-meta">
+          <span>DRDY 实测 <b>{bringup.drdy_rate_hz ?? '—'} Hz</b></span>
+          <span>双片失步 <b>{bringup.drdy_desync_frames ?? 0} 帧</b></span>
+          <span>状态字错 <b>{bringup.bad_status_frames ?? 0} 帧</b></span>
+          {bringup.imu && <span>IMU {bringup.imu.who_am_i_hex} <b>{bringup.imu.norm_g} g</b></span>}
+        </div>}
         {bringup.safety_alerts?.map((a) => <p key={a} className="emg8-warn">{a}</p>)}
         {bringup.notes?.map((n) => <p key={n} className="emg8-fine">{n}</p>)}
-        <div className="emg8-row tight" style={{ flexWrap: 'wrap', gap: 6 }}>{bringup.items.map((it) => <span key={it.name} className={it.state === 'PASS' ? 'emg8-gate ok' : it.state === 'SKIP' ? 'emg8-fine' : 'emg8-gate bad'}>{it.name}:{it.state}</span>)}</div>
-      </>}
-      <p className="emg8-fine">支持 OpenEMG v0.01（MCU-U9 + AFE-30P）及 R4U6/R4U6N 首板离线对表，无需串口直连。</p></section>
-    {pinout && <section className="emg8-card"><header><h4>硬件通道与座子脚位对线表</h4><span className="emg8-fine">{pinout.device_id}</span></header>
-      <p className="emg8-fine"><b>{pinout.board}</b> · {pinout.interlock}</p>
-      <div style={{ maxHeight: 260, overflow: 'auto' }}>
+        <div className="emg8-row tight" style={{ flexWrap: 'wrap', gap: 5, marginTop: 6 }}>{bringup.items.map((it) => <span key={it.name} className={it.state === 'PASS' ? 'emg8-gate ok' : it.state === 'SKIP' ? 'emg8-fine' : 'emg8-gate bad'}>{it.name}:{it.state}</span>)}</div>
+        {bringup.channels && bringup.channels.length > 0 && <div className="emg8-report97-grid" aria-label="97B 逐通道方波与短接底噪">
+          {bringup.channels.map((ch) => {
+            const sigOk = ch.sig_pp_uv >= 500 && ch.sig_pp_uv <= 5000;
+            const noiseOk = ch.noise_rms_nv >= 100 && ch.noise_rms_nv < 5000;
+            const ok = sigOk && noiseOk;
+            return <div key={ch.ch} className={ok ? 'emg8-ch-cell' : 'emg8-ch-cell bad'}>
+              <b style={{ color: CH_COLORS[(ch.ch - 1) % CH_COLORS.length] }}>CH{ch.ch}</b>
+              <span>{ch.sig_pp_uv} µVpp · {(ch.noise_rms_nv / 1000).toFixed(2)} µVrms</span>
+            </div>;
+          })}
+        </div>}
+      </> : <p className="emg8-fine">首板不焊串口也能对表：贴入手机 nRF Connect 扫到的 0xFFFF 广播串或 SWD 读出的 97B `g_report` 即可离线判读 10 项指标。</p>}
+    </section>
+
+    {pinout && <section className="emg8-card emg8-span-2"><header>
+      <div><h4>硬件通道与座子脚位对线表</h4><small>{pinout.board} · {pinout.interlock}</small></div>
+      <div className="emg8-row tight" style={{ flexWrap: 'nowrap', flexShrink: 0 }}>
+        <input value={pinFilter} aria-label="筛选通道或脚位" placeholder="搜 CH / FPC / ESD / ADC…" onChange={(e) => setPinFilter(e.target.value)} style={{ width: 210 }} />
+        <span className="emg8-spec-badge" style={{ whiteSpace: 'nowrap' }}>{filteredRows.length} / {pinout.rows.length} 路</span>
+      </div></header>
+      <div style={{ maxHeight: 220, overflow: 'auto' }}>
         <table className="emg8-table"><thead><tr><th>通道</th><th>连接器脚位</th><th>ESD 保护</th><th>RC / 阻排</th><th>ADC 引脚</th><th>分区</th></tr></thead><tbody>
-          {pinout.rows.map((r) => <tr key={r.ch}><td style={{ color: CH_COLORS[(r.ch - 1) % CH_COLORS.length] }}><b>CH{r.ch}</b></td><td>{r.connector}</td><td>{r.esd}</td><td>{r.filter}</td><td>{r.adc_pin}</td><td>{r.zone}</td></tr>)}
+          {filteredRows.map((r) => <tr key={r.ch}><td style={{ color: CH_COLORS[(r.ch - 1) % CH_COLORS.length] }}><b>CH{r.ch}</b></td><td>{r.connector}</td><td>{r.esd}</td><td>{r.filter}</td><td>{r.adc_pin}</td><td>{r.zone}</td></tr>)}
+          {!filteredRows.length && <tr><td colSpan={6} className="emg8-fine">没有匹配「{pinFilter}」的通道或器件。</td></tr>}
         </tbody></table>
       </div>
       <p className="emg8-fine">{pinout.aux_pins}</p></section>}

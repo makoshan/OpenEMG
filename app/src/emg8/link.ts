@@ -118,3 +118,39 @@ export function shouldAutoReconnect(prev: string | undefined, next: string | und
   if (prev !== 'no-receiver' && prev !== 'dropped') return false;
   return next === 'waiting-band' || next === 'streaming';
 }
+
+export function isC08bTier(deviceTier: string | undefined): boolean {
+  return deviceTier === 'c08b-16ch' || deviceTier === 'c08b-8ch' || deviceTier === 'c08b-2ch';
+}
+
+const C08B_ABSENT = [
+  '无线直连：开启 OpenEMG 主控电源（广播名 YUANLI-C08B），或插上 XIAO BLE 接收器（MAKO-DONGLE）',
+  '严禁插着主机 Type-C 线接触人体：VBUS_SENSE 硬件互锁会自动拉高 OE_N 切断采集前端',
+  '首板到货对表可点上方「首板自检与脚位表」离线解码 0xFFFF 广播或 97B 内存报告',
+];
+const C08B_WAIT = [
+  '确认主控指示灯进入待机呼吸闪（0.5 Hz）且未亮常亮故障灯',
+  '默认固件双硬件锁关闭（仅允许 SYN1 合成预览；离体台架实测通过前不开启真实 AFE）',
+  '不要同时在别的终端运行 c08b_stream.py 抢占同一台设备连接',
+];
+
+/** OpenEMG C08B（16 / 8 / 2 通道）专属连接指引：不混用唯理 WL8 有线白线/白色接收器文案。 */
+export function c08bLinkAdvice(link: RigLink | undefined, reason = '', totalCh = 16): LinkAdvice {
+  switch (link) {
+    case 'no-receiver':
+      return { title: `正在寻找 OpenEMG ${totalCh} 通道设备`, detail: '尚未发现 YUANLI-C08B 广播或 XIAO 接收器。', steps: [...C08B_ABSENT] };
+    case 'waiting-band':
+      return { title: '接收器已就绪，等待 C08B 响应', detail: '正在建立 V12 F01 链路，默认不自动拼接佩戴段。', steps: [...C08B_WAIT] };
+    case 'dropped':
+      return { title: 'C08B 链路已断开', detail: reason || '无线连接中断（按规矩自动停采，重连算新会话）', steps: [...C08B_ABSENT] };
+    case 'streaming':
+      return { title: `OpenEMG ${totalCh} 路链路已就绪`, detail: '', steps: [] };
+    case undefined:
+      return UNKNOWN;
+    default: {
+      const unexpected: never = link;
+      void unexpected;
+      return UNKNOWN;
+    }
+  }
+}

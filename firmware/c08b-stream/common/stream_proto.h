@@ -337,7 +337,7 @@ typedef struct __attribute__((packed)) {
     uint8_t  active_mode;         /* 当前运行 c08b_req_mode_t */
     uint8_t  imu_fresh;           /* 1 = 本帧携带新采到的 6 轴 IMU 样本 */
     uint16_t imu_read_us;         /* L432 I2C 读取耗时 µs（< 9000） */
-    uint16_t imu_pad;
+    uint16_t ack_epoch_lo;        /* L432 已生效的 cmd_epoch 低 16 位（供 nRF 过滤在线切档时的异步在途旧帧） */
     uint64_t imu_timestamp_us;    /* 同源 L432_DWT_1MHz 64 位 IMU 采样微秒时间戳 */
     int16_t  imu_raw[6];          /* gx, gy, gz, ax, ay, az（对齐 host/v12_imu.py 顺序） */
     uint8_t  samples[C08B_LINK_MAX_BATCH][C08B_RAW_SLOT_BYTES];
@@ -391,6 +391,26 @@ static inline bool c08b_link_rx_ok(const c08b_link_rx_t *c)
 {
     if (c->magic != C08B_LINK_RX_MAGIC || c->version != C08B_LINK_VERSION) return false;
     return c->crc == c08b_crc16(c, C08B_LINK_RX_CRC_LEN);
+}
+
+/* 递增 32 位命令纪元并跳过低 16 位 0x0000 回绕值，保证 await_epoch_lo 判别标志始终非 0 */
+static inline uint32_t c08b_next_cmd_epoch(uint32_t cur)
+{
+    cur++;
+    if ((uint16_t)cur == 0u) cur++;
+    return cur;
+}
+
+/* 判断 L432 发来的 280B 帧是否属于当前生效的控制命令纪元（cmd_epoch）。
+ * 在同一条连接上热切通道档位或采样率（如 16CH@1000 -> 8CH@2000）时，nRF 先推进 cmd_epoch 并置 *await_epoch_lo != 0；
+ * 此时 SPI3 流水线上尚未感知新命令的旧会话在途帧（f->ack_epoch_lo != *await_epoch_lo）必须被丢弃，
+ * 直至 L432 确认新纪元（或主动带 SESSION_START 且纪元匹配）才放行，杜绝旧 16CH 槽位混入新 8CH 包或抢占 IMU seq=0。 */
+static inline bool c08b_bridge_accept_frame(const c08b_link_tx_t *f, uint16_t *await_epoch_lo)
+{
+    if (!await_epoch_lo || *await_epoch_lo == 0u) return true;
+    if (f->ack_epoch_lo != *await_epoch_lo) return false;
+    *await_epoch_lo = 0u;
+    return true;
 }
 
 /* ---------- 6. BLE GATT F01 数据包与 64B 状态特征编码器 ----------

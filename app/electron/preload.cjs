@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('pt', {
   isDesktop: true,
   projectId: ipcRenderer.sendSync('yuanli:projectId'),
+  initialDevice: ipcRenderer.sendSync('yuanli:initialDevice'),
   device: {
     get: () => ipcRenderer.invoke('yuanli:device:get'),
     set: (d) => ipcRenderer.invoke('yuanli:device:set', d),

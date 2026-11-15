@@ -193,6 +193,54 @@ int main(void)
     assert(mlen > 100 && strstr(meta, "\"afe\":\"ADS1298_DUAL\"") && strstr(meta, "\"protocol\":4") &&
            strstr(meta, "\"channels\":16") && strstr(meta, "\"spi_Hz\":4000000"));
 
-    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、ADS1292 1050ms POR、280B/16B全字节防篡改、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
+    /* 12. 双核在线切档（16CH -> 8CH -> 2CH）ack_epoch_lo 异步在途旧会话帧过滤（反例拦截 + 正例放行） */
+    {
+        c08b_link_tx_t stale16, fresh8;
+        memset(&stale16, 0, sizeof(stale16));
+        stale16.afe_mode = AFE_16CH;
+        stale16.sample_count = 4u;
+        stale16.seq_first = 400u;
+        stale16.ack_epoch_lo = 3u; /* 旧命令纪元 3 */
+        c08b_link_tx_seal(&stale16);
+        assert(c08b_link_tx_ok(&stale16));
+
+        uint16_t await_ep = 4u; /* nRF 已推进到新命令纪元 4（例如切 8CH@2000Hz） */
+        /* 反例：在途旧纪元帧必须被拦截，且 await_ep 保持为 4 不被误清 */
+        assert(!c08b_bridge_accept_frame(&stale16, &await_ep));
+        assert(await_ep == 4u);
+
+        memset(&fresh8, 0, sizeof(fresh8));
+        fresh8.afe_mode = AFE_8CH;
+        fresh8.sample_count = 2u;
+        fresh8.f01_flags = C08B_F01_SYNTHETIC | C08B_F01_SESSION_START;
+        fresh8.seq_first = 0u;
+        fresh8.ack_epoch_lo = 4u; /* L432 已执行新命令纪元 4 */
+        c08b_link_tx_seal(&fresh8);
+        assert(c08b_link_tx_ok(&fresh8));
+
+        /* 正例：匹配纪元 4 的首帧放行，并自动清零 await_ep 放行后续流式帧 */
+        assert(c08b_bridge_accept_frame(&fresh8, &await_ep));
+        assert(await_ep == 0u);
+        assert(c08b_bridge_accept_frame(&fresh8, &await_ep));
+
+        /* 16 位纪元回绕测试：0x0000FFFF -> 0x00010001（低 16 位跳过 0x0000 变为 0x0001） */
+        uint32_t ep_before_wrap = 0x0000FFFFu;
+        uint32_t ep_after_wrap  = c08b_next_cmd_epoch(ep_before_wrap);
+        assert(ep_after_wrap == 0x00010001u && (uint16_t)ep_after_wrap == 1u);
+        assert(c08b_next_cmd_epoch(0xFFFFFFFFu) == 1u);
+
+        uint16_t wrap_await = (uint16_t)ep_after_wrap;
+        stale16.ack_epoch_lo = 0xFFFFu;
+        c08b_link_tx_seal(&stale16);
+        assert(!c08b_bridge_accept_frame(&stale16, &wrap_await));
+        assert(wrap_await == 1u);
+
+        fresh8.ack_epoch_lo = 1u;
+        c08b_link_tx_seal(&fresh8);
+        assert(c08b_bridge_accept_frame(&fresh8, &wrap_await));
+        assert(wrap_await == 0u);
+    }
+
+    puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");
     return 0;
 }
