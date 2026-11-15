@@ -16,9 +16,9 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 | v0.01 主控板 · C08B-U9 | v0.01 采集板 · 16 通道 |
 |---|---|
-| ![v0.01 主控板正面，左侧为 USB 接口，中部为电池开窗](hardware/renders/v001-main-controller.png) | ![v0.01 采集板正面，可见 ADS1298 与排线接口](hardware/renders/v001-16ch-acquisition.png) |
+| ![v0.01 主控板正面，左侧为 USB 接口，中部为电池开窗](hardware/renders/v001-mcu-front.png) | ![v0.01 采集板正面，可见 ADS1298 与排线接口](hardware/renders/v001-afe-front.png) |
 
-采集板正反面各有一颗 ADS1298。[查看同版原理图、PCB 与制造文件](hardware/16ch-afe-hirose-1mm-1nf/)
+两图按同一比例从元件面垂直观察。采集板正反面各有一颗 ADS1298。[查看同版原理图、PCB 与制造文件](hardware/16ch-afe-hirose-1mm-1nf/)
 
 ### 结构与装配
 
