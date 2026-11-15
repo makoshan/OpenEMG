@@ -20,11 +20,11 @@ OpenEMG 是一个硬件和软件完全开源的表面肌电（sEMG）项目。�
 
 ### PCB · 主控与采集板
 
-| R4U6 主控板 · 读取并传输采样数据 | D20 采集板 · 16 路模拟输入 |
+| v0.01 主控板 · C08B-U9 | v0.01 采集板 · 16 通道 |
 |---|---|
-| ![R4U6 主控板元件布局](hardware/renders/c08b-mainboard-top-dark.png) | ![D20 采集板元件布局](hardware/renders/c08b-afe-d20-top-dark.png) |
+| ![v0.01 主控板正面，左侧为 USB 接口，中部为电池开窗](hardware/renders/v001-main-controller.png) | ![v0.01 采集板正面，可见 ADS1298 与排线接口](hardware/renders/v001-16ch-acquisition.png) |
 
-这两张图对应 R4U6 和 D20。打样最新的 v0.01 双板时，请使用同一版的原理图和制造文件。[v0.01 工程](hardware/16ch-afe-hirose-1mm-1nf/)
+两图均为 OpenEMG v0.01 双板的正面 3D 视图。采集板正反面各有一颗 ADS1298，通过 20 针排线与主控板连接。[查看同版原理图、PCB 与制造文件](hardware/16ch-afe-hirose-1mm-1nf/)
 
 ### 结构与装配
 
