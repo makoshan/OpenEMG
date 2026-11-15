@@ -9,6 +9,8 @@
 
 本目录收录 OpenEMG 全系硬件的 **KiCad 10 原生工程**、**嘉立创 EDA 专业版（`.epro2` / `.epcb2`）工程**、**生产制造包（Gerber / BOM / CPL / IPC-D-356，全系 17 套直接上传包清单与 SHA-256 核对见 [ORDER-MATRIX.md](ORDER-MATRIX.md)）** 与 **3D 打印圆润外壳（`build123d` Python + STEP/STL/GLB）**，统一按 **[CERN-OHL-S-2.0](../LICENSE-HARDWARE)** 强互惠开源硬件协议发布。
 
+最新工程师版见 [U9 主控与 D2 双 34P 采集板开发稿](u9-d2/README.md)。采集板正在重布线。
+
 ### 三维光追渲染预览（[`renders/`](renders/)，基于源工程一键复现，非实物照片）
 
 > **边界说明**：以下 8 组 16 张图片均为 Blender Cycles 光追设计预览（哑光黑阻焊 + `#c8964a` 沉金焊盘 + 工程高透壳示意），不代表制造或人体佩戴验收；套件收纳图为模块化开源复刻防静电 EVA 收纳示意，非商业零售包装。复现脚本见 [`renders/README.md`](renders/README.md)。
