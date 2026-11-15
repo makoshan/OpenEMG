@@ -64,6 +64,12 @@ This acquisition board is for off-body bench testing. Check board thickness, via
 
 A pinch produces small voltage changes at the skin. Each channel measures the voltage difference between two electrodes. Pairs at different positions see different waveforms from the same movement. The app saves waveforms alongside gesture labels so a model can learn to distinguish a pinch from rest.
 
+[![System block diagram showing the electrodes, converters, controller and Bluetooth link](hardware/16ch-afe-hirose-1mm-1nf/views/v001-system-en.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-system-en.svg)
+
+[![Power tree showing USB charging, the battery and the digital and analog rails](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-en.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-en.svg)
+
+[View the seven schematic sheets](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+
 Taking the band off and putting it back on changes electrode position and pressure. One four-channel study correctly classified 152 of 160 trials across four movements: making a fist, opening the hand, and flexing or extending the wrist. The paper does not say whether participants put the band on again before testing. We plan to train and test on separate wear sessions. [Research notes and paper](research/wrist-semg.md)
 
 ## Status and roadmap

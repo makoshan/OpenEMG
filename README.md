@@ -64,6 +64,12 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 捏指时，肌肉活动会让皮肤表面产生微小的电压变化。手环的每个通道测一对电极之间的电压差。电极位置不同，同一次捏指在各通道上录到的波形也不同。桌面软件把波形和动作标签一起保存，供模型学习区分放松、捏指等动作。
 
+[![整机框图：从表带电极到双 ADS1298、STM32 主控与蓝牙](hardware/16ch-afe-hirose-1mm-1nf/views/v001-system-zh.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-system-zh.svg)
+
+[![电源树：从 USB 充电和锂电池到主控、数字与模拟电源](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-zh.svg)](hardware/16ch-afe-hirose-1mm-1nf/views/v001-power-zh.svg)
+
+[查看同版七页原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+
 摘下再戴，电极位置和松紧都会变。我们读过的一项四通道实验，在握拳、张手、屈腕和伸腕测试中判对了 152/160 次。论文没说明测试前是否重新佩戴。OpenEMG 计划把训练和测试分在两次佩戴中，单独记录重戴后的识别结果。[阅读项目调研节选与论文出处](research/wrist-semg.md)
 
 ## 当前状态与进展计划
