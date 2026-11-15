@@ -155,8 +155,8 @@ function registerEmg8({ ipcMain, guarded, getWin, deviceService }) {
       }
       if (threshold != null) body.threshold_uv = threshold;
       if (sensitivity != null) body.sensitivity = sensitivity;
-      if (a?.mask != null) {   // 屏蔽坏路：1–8 的整数，最多 7 路
-        if (!Array.isArray(a.mask) || a.mask.length > 7 || a.mask.some((l) => !Number.isInteger(l) || l < 1 || l > 8)) throw Object.assign(new Error('屏蔽的路必须是 1 到 8 的整数'), { code: 'bad-gate' });
+      if (a?.mask != null) {   // 屏蔽坏路：1–16 的整数，最多 15 路（服务端再按当前设备真实通道数精确校验）
+        if (!Array.isArray(a.mask) || a.mask.length > 15 || a.mask.some((l) => !Number.isInteger(l) || l < 1 || l > 16)) throw Object.assign(new Error('屏蔽的路必须是 1 到 16 的整数'), { code: 'bad-gate' });
         body.mask = [...new Set(a.mask)].sort((x, y) => x - y);
       }
     }

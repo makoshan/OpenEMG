@@ -4,6 +4,10 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('pt', {
   isDesktop: true,
   projectId: ipcRenderer.sendSync('yuanli:projectId'),
+  device: {
+    get: () => ipcRenderer.invoke('yuanli:device:get'),
+    set: (d) => ipcRenderer.invoke('yuanli:device:set', d),
+  },
   // 单通道（Cheez + ESP32-S3）工作室：与 PrintThings desktop/preload.cjs 的 emg1 段同一份接口
   emg1: {
     state: (a) => ipcRenderer.invoke('pt:emg1:state', a),

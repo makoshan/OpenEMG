@@ -41,31 +41,36 @@ const freePort = () => new Promise((resolve, reject) => {
   s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); });
 });
 
-// 采集服务只起一个（串口独占）；页面连手环时才起。kind：'wl8' 八通道 / 'emg' 单通道，换设备先收掉旧的再起新的
+// 采集服务只起一个（串口独占）；页面连手环时才起。kind：'wl8' 多通道（2 / 8 / 16 路） / 'emg' 单通道，换设备先收掉旧的再起新的
 let collector = null;
 let serialPort = '';      // 经典 5 步里手选的手环数据串口；空 = 按 VID 自动找
+const MULTI_DEVICES = new Set(['c08b-16ch', 'wl8', 'c08b-8ch', 'c08b-2ch', 'wl18']);
+let multiDevice = MULTI_DEVICES.has(process.env.YUANLI_DEVICE) ? process.env.YUANLI_DEVICE : 'wl8';
 // gone：上一个服务的进程彻底退出（或根本没起）才兑现。新服务排在它后面，快速 八→单→八 也不会两个进程同时开串口
 let gone = Promise.resolve();
 const ENTRY = { wl8: 'emg8-server.py', emg: 'emg1-server.py' };
 function startCollector(project, kind = 'wl8') {
-  if (collector?.kind === kind) return collector.ready;
+  const key = kind === 'wl8' ? `wl8:${multiDevice}` : kind;
+  if (collector?.key === key) return collector.ready;
   collector?.child?.kill();
   const before = gone;
   let release;
   gone = new Promise((r) => { release = r; });
   // self：旧服务的 exit 晚到时只清自己，不能把新起的那个从 collector 上摘掉（否则两路抢同一串口）
-  const self = collector = { kind, child: null, ready: null };
+  const self = collector = { kind, key, child: null, ready: null };
   self.ready = (async () => {
     await before;
     if (!fs.existsSync(PY)) throw Object.assign(new Error(`没找到 Python：${PY}`), { code: 'toolchain' });
     const port = await freePort();
     // 排队期间又换了设备：不再起这一个
     if (collector !== self) throw Object.assign(new Error('已切换到另一种设备'), { code: 'superseded' });
-    // YUANLI_DEVICE=wl18：八通道入口改连唯理 18 通道腕带（emg_web 的 --device 优先于 --wl8）；页面还按 8 路画，先只给开发自测录制
+    // 多通道设备档位：默认 wl8（唯理 8 通道）；选 c08b-16ch / c08b-8ch / c08b-2ch 时传 --device <id>
     // -I：不读用户机器上的 PYTHONPATH / 用户 site-packages，只用自带的库；-u：日志不缓冲，才能及时看到就绪行
     const fake1 = kind === 'emg' && process.env.YUANLI_FAKE;
     const where = fake1 ? ['--fake', '--data', path.join(app.getPath('userData'), 'fake-single')] : ['--project', project.dir];
-    const child = spawn(PY, ['-I', '-B', '-u', path.join(__dirname, ENTRY[kind]), '--firmware-root', HOST_DIR, '--port', String(port), ...where, ...(kind === 'wl8' && process.env.YUANLI_FAKE ? ['--fake'] : []), ...(kind === 'wl8' && serialPort ? ['--serial', serialPort] : []), ...(kind === 'wl8' && process.env.YUANLI_REPLAY ? ['--replay', process.env.YUANLI_REPLAY] : []), ...(kind === 'wl8' && process.env.YUANLI_DEVICE ? ['--device', process.env.YUANLI_DEVICE] : [])],
+    const devId = process.env.YUANLI_DEVICE || (multiDevice !== 'wl8' ? multiDevice : '');
+    const devArg = kind === 'wl8' && devId ? ['--device', devId] : [];
+    const child = spawn(PY, ['-I', '-B', '-u', path.join(__dirname, ENTRY[kind]), '--firmware-root', HOST_DIR, '--port', String(port), ...where, ...(kind === 'wl8' && process.env.YUANLI_FAKE ? ['--fake'] : []), ...(kind === 'wl8' && serialPort ? ['--serial', serialPort] : []), ...(kind === 'wl8' && process.env.YUANLI_REPLAY ? ['--replay', process.env.YUANLI_REPLAY] : []), ...devArg],
       { cwd: HOST_DIR, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
     self.child = child;
     child.once('exit', release); child.once('error', release);   // 起不来时只有 error 没有 exit
@@ -105,9 +110,19 @@ app.whenReady().then(() => {
     emg: (id, op) => { if (id !== project.id) throw Object.assign(new Error('不是本机工程'), { code: 'wrong-project' }); return startCollector(project, op === 'open' ? 'emg' : 'wl8'); },
     dir: project.dir,
     serial: () => serialPort,
-    // 换数据串口：记下来并收掉正在跑的八通道服务，下次 open8 带 --serial 重起
+    // 换数据串口：记下来并收掉正在跑的多通道服务，下次 open8 带 --serial 重起
     setSerial: (p) => { serialPort = p; if (collector?.kind === 'wl8') { collector.child?.kill(); collector = null; } },
   };
+  ipcMain.handle('yuanli:device:get', guarded(() => ({ device: multiDevice })));
+  ipcMain.handle('yuanli:device:set', guarded((d) => {
+    if (d === 'emg') return { device: 'emg' };
+    if (!MULTI_DEVICES.has(d)) throw Object.assign(new Error('未知设备档位'), { code: 'bad-device' });
+    if (multiDevice !== d) {
+      multiDevice = d;
+      if (collector?.kind === 'wl8') { collector.child?.kill(); collector = null; }
+    }
+    return { device: multiDevice };
+  }));
   registerEmg8({ ipcMain, guarded, getWin: () => win, deviceService });
   registerEmg1({ ipcMain, guarded, getWin: () => win, deviceService });
   const game = registerGame({ ipcMain, guarded });   // 结印小游戏窗口（electron/game.cjs）

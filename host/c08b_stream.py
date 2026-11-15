@@ -748,6 +748,9 @@ def pack_c08b_imu_packet(seq, timestamp_us, raw6, flags=SYNTHETIC, read_latency_
 class C08BRig:
     """C08B 2/8/16 通道统一数据源，直接输出 float32 µV 与 6 轴 int16 IMU 给 AcqHandler。"""
 
+    gyro_scale = C08B_IMU_PROFILE['gyro_dps_per_count'] * math.pi / 180.0
+    acc_scale = C08B_IMU_PROFILE['accel_g_per_count'] * 9.80665
+
     def __init__(self, n_channels=16, fs_Hz=1000, allow_real=False, profile=None, raw_dir=None):
         self.profile = profile or C08BAdcProfile.for_n_channels(n_channels, fs_Hz=fs_Hz)
         if self.profile.active_channels != n_channels:
@@ -762,16 +765,34 @@ class C08BRig:
         self.archive = _open_archive(raw_dir, self.profile, self.codec, allow_real) if raw_dir is not None else None
         if self.archive is not None:
             self.archive.enable_imu(C08B_IMU_PROFILE)
+        self.subscribers = []
+        self.frame_subscribers = []
+        self.imu_subscribers = []
         self.chunk_subscribers = []
         self.boundary_subscribers = []
         self.bad_status = []
         self.seq = 0
         self.streaming = False
+        self.link_since = None
+        self.last_frame_at = None
         self.replay = 'C08B' if not allow_real else None
         self.banner = f'C08B {n_channels}ch 协议 v{self.profile.transport_protocol}（候选）'
 
     def open(self):
         self.streaming = True
+
+    def subscribe(self):
+        q = queue.Queue(maxsize=2000)
+        self.subscribers.append(q)
+        self.open()
+        return q
+
+    def unsubscribe(self, q):
+        if q in self.subscribers:
+            self.subscribers.remove(q)
+
+    def take(self, *a, **k):
+        raise ValueError('C08B 硬件锁关闭：尚未完成实物供电与时序验收，当前仅合成流预览，禁止写入训练集')
 
     def feed_packet(self, data, mtu=247):
         host_ns = time.monotonic_ns()
@@ -800,12 +821,18 @@ class C08BRig:
 
         if not good_rows:
             return
+        now_wall = time.time()
+        if self.link_since is None:
+            self.link_since = now_wall
+        self.last_frame_at = time.monotonic()
         emg_uv = (np.asarray(good_rows, dtype=np.float64) * self.profile.uv_per_count).astype(np.float32)
         imu_empty = np.zeros((0, 6), dtype=np.int16)
         seq_arr = np.asarray(seq_u8, dtype=np.uint8)
         kinds_arr = np.ones(len(seq_u8), dtype=np.uint8)
         for cb in list(self.chunk_subscribers):
             cb(emg_uv, imu_empty, seq_arr, kinds_arr, host_ns)
+        for cb in list(self.frame_subscribers):
+            cb(emg_uv)
 
     def feed_imu_packet(self, data, mtu=247):
         host_ns = time.monotonic_ns()
@@ -820,6 +847,8 @@ class C08BRig:
         kinds_arr = np.asarray([2], dtype=np.uint8)
         for cb in list(self.chunk_subscribers):
             cb(emg_empty, imu_arr, seq_arr, kinds_arr, host_ns)
+        for cb in list(self.imu_subscribers):
+            cb(imu_arr)
 
     def disconnect(self):
         if self.archive is not None:
@@ -848,6 +877,8 @@ class C08BRig:
             fs_Hz=self.fs_Hz,
             banner=self.banner,
             streaming=self.streaming,
+            link='streaming' if self.streaming else 'waiting-band',
+            link_since=self.link_since,
             replay=self.replay,
             c08b=dict(
                 n_channels=self.n_channels,
@@ -887,9 +918,23 @@ class SynthC08BRig(C08BRig):
         n = 0
         imu_seq = 0
         t0 = time.monotonic()
+        ch_idx = np.arange(self.n_channels, dtype=np.float64)
+        base_sigma = 6.5 + 2.5 * np.sin(ch_idx * 1.1)
         while self.streaming:
-            sigma = 45.0 if (n // self.fs_Hz) % 2 else 8.0
-            uv = self.rng.normal(0.0, sigma, (block, self.n_channels))
+            t_sec = (n + np.arange(block, dtype=np.float64)) / self.fs_Hz
+            # 每 2.4 秒做一次平滑前臂局部肌群激活（0.9 s 收缩包络 + 1.5 s 放松底噪），模拟环腕电极空间分布差异
+            phase = np.mod(t_sec, 2.4)
+            env = np.where(phase < 0.9, np.sin(np.pi * np.clip(phase / 0.9, 0.0, 1.0)) ** 1.6, 0.0)
+            cycle = int(n // int(2.4 * self.fs_Hz))
+            center = (cycle * 0.37 * self.n_channels) % max(1, self.n_channels)
+            dist = np.minimum(np.abs(ch_idx - center), self.n_channels - np.abs(ch_idx - center))
+            width = max(0.75, self.n_channels * 0.18)
+            spatial = np.exp(-0.5 * (dist / width) ** 2)
+            sigma_mat = base_sigma[None, :] + (88.0 * env[:, None]) * spatial[None, :]
+            carrier = 0.65 * self.rng.normal(0.0, 1.0, (block, self.n_channels)) + 0.35 * np.sin(
+                2.0 * math.pi * (95.0 * t_sec[:, None] + ch_idx[None, :] * 0.43)
+            ) * self.rng.normal(0.8, 0.35, (block, self.n_channels))
+            uv = carrier * sigma_mat
             for pkt in synth_c08b_packets(uv, profile=self.profile, seq0=n, t0_us=1000, codec=self.codec):
                 if not self.streaming:
                     return

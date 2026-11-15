@@ -44,9 +44,11 @@ def install(firmware_root):
         for label, g in (p.get('gestures') or {}).items():
             calibration_voice.NAMES.setdefault(label, g.get('voice') or g['name'])
 
-    def train(root, labels=wl8_train.DEFAULT_LABELS, since=None, progress=print, seed=0):
+    def train(root, labels=wl8_train.DEFAULT_LABELS, since=None, progress=print, seed=0, data_folder='emg-wl8-data', n_channels=None):
         labels = list(labels)
         validation = None
+        rewear_folder = f'{data_folder}-rewear'
+        allowed_ch = {int(n_channels)} if n_channels is not None else {2, 8, 16, 18}
         special = next((p for p in PROFILES.values() if p.get('protocol') and set(labels) == set(p['labels']) and len(labels) == len(p['labels'])), None)
         protocol_labels = {l for p in PROFILES.values() if p.get('protocol') for l in p.get('captureLabels', p['labels'])}
         if protocol_labels & set(labels) and special is None:
@@ -56,7 +58,7 @@ def install(firmware_root):
             # 每次佩戴校准：不查重戴目录，只要求这次佩戴每类够数；load 已按最新佩戴编号过滤
             current = {}
             for label in labels:
-                for f in (Path(root) / 'emg-wl8-data' / label).glob('*.npz'):
+                for f in (Path(root) / data_folder / label).glob('*.npz'):
                     try: d = json.loads(f.with_suffix('.json').read_text()).get('donning')
                     except (OSError, ValueError, AttributeError): d = None
                     if type(d) is int: current.setdefault(d, {}).setdefault(label, 0); current[d][label] += 1
@@ -68,32 +70,37 @@ def install(firmware_root):
                 raise ValueError(f'第 {wear} 次佩戴每类至少 {need} 条，还缺：' + '、'.join(checked['gestures'][l]['name'] for l in missing))
             # 逐文件校验这次佩戴的训练样本（与普通专训同口径）：坏文件、短样本、非数值都拒绝，别进 load 里回绕出垃圾窗；放松异常条排除后再数条数
             rest_rms = {}
+            seen_ch = None
             for label in labels:
-                for f in sorted((Path(root) / 'emg-wl8-data' / label).glob('*.npz')):
+                for f in sorted((Path(root) / data_folder / label).glob('*.npz')):
                     try: d = json.loads(f.with_suffix('.json').read_text()).get('donning')
                     except (OSError, ValueError, AttributeError): d = None
                     if d != wear: continue
                     try:
-                        with np.load(f, allow_pickle=False) as z: emg = z['emg_uv']
+                        with np.load(f, allow_pickle=False) as z:
+                            emg = z['emg_uv']
+                            fs_file = int(z['fs']) if 'fs' in z.files else wl8_train.FS
                     except (OSError, KeyError, BadZipFile, EOFError, CompressionError, ValueError):
-                        raise ValueError(f'{label}/{f.name} 不是有效的八通道样本，请移出后重录')
-                    if emg.dtype.kind not in 'fiu' or emg.ndim != 2 or emg.shape[1] != 8 or len(emg) < wl8_train.FS or not np.isfinite(emg).all():
-                        raise ValueError(f'{label}/{f.name} 不是有效的八通道样本，请移出后重录')
+                        raise ValueError(f'{label}/{f.name} 不是有效的多通道样本，请移出后重录')
+                    if emg.dtype.kind not in 'fiu' or emg.ndim != 2 or emg.shape[1] not in allowed_ch or (seen_ch is not None and emg.shape[1] != seen_ch) or len(emg) < fs_file or not np.isfinite(emg).all():
+                        raise ValueError(f'{label}/{f.name} 不是有效的多通道样本，请移出后重录')
+                    seen_ch = int(emg.shape[1])
                     if checked['gestures'].get(label, {}).get('kind') == 'rest': rest_rms[f'{label}/{f.name}'] = float(np.median(np.std(emg.astype(float), axis=0)))
             outliers = wl8_train.rest_outliers(rest_rms)
             for x in outliers: n[x.split('/')[0]] -= 1
             missing = [l for l in labels if n.get(l, 0) < need]
             if missing:
                 raise ValueError(f'第 {wear} 次佩戴有 {len(outliers)} 条放松样本底噪异常（手在动或电极脱落）已排除，还缺：' + '、'.join(checked['gestures'][l]['name'] for l in missing) + '；用「再补一轮」补')
-            report, model = original(root, labels, since, progress, seed)
+            report, model = original(root, labels, since, progress, seed, data_folder=data_folder, n_channels=seen_ch or n_channels)
+            ch_used = int(report.get('n_channels') or seen_ch or 8)
             report['validation'] = {'status': 'calibration', 'donning': wear, 'reason': f'每次佩戴校准：只用第 {wear} 次佩戴的 {sum(n.values())} 条训练；分数是同次佩戴留一估计，摘下重戴要重新校准'}
             report['window_ms'] = model['window_ms'] = int(special.get('windowMs', 200)); model['short'] = True   # 短窗特征（emg8-meta features），实时识别按这个标志选管线，不再靠 ms<1000 猜
-            report['features'] = f"{report['window_ms']} ms 八通道频段功率；每条取滤波能量最大处的短窗"
+            report['features'] = f"{report['window_ms']} ms {ch_used} 通道频段功率；每条取滤波能量最大处的短窗"
             report['excluded'] = {'files': sorted(outliers), 'rule': f'本次佩戴放松条底噪 > max(放松条下四分位 × {wl8_train.REST_FACTOR:g}, {int(wl8_train.REST_FLOOR_UV)} µV) 视为手在动 / 脱落，不进训练；动作条不剔，录制时按幅度门槛当场重录'}
             if not all(np.isfinite(model[key]).all() for key in ('mu', 'sinv', 'W')):
                 raise ValueError('训练产生无效数值，请检查信号并重录')
-            # 新算法仅旁路记录；失败不影响原分类器，也不把未验证模型接到游戏。
-            if special.get('game') == 'tianjie':
+            # 新算法仅在 8 路模式下旁路记录；失败不影响原分类器，也不把未验证模型接到游戏。
+            if special.get('game') == 'tianjie' and ch_used == 8 and data_folder == 'emg-wl8-data':
                 try:
                     import adaptive_intent
                     rest = next(l for l in labels if special['gestures'][l].get('kind') == 'rest')
@@ -109,7 +116,8 @@ def install(firmware_root):
             wears = {'train': set(), 'rewear': set()}
             counts = {}
             validation_errors = []
-            for split, folder in [('train', 'emg-wl8-data'), ('rewear', 'emg-wl8-data-rewear')]:
+            seen_ch = None
+            for split, folder in [('train', data_folder), ('rewear', rewear_folder)]:
                 counts[split] = {}
                 for label in labels:
                     n = 0
@@ -120,11 +128,13 @@ def install(firmware_root):
                         try:
                             loaded = np.load(f, allow_pickle=False)
                             if not isinstance(loaded, np.lib.npyio.NpzFile):
-                                raise ValueError(f'{label}/{f.name} 不是有效的八通道样本，请移出后重录')
+                                raise ValueError(f'{label}/{f.name} 不是有效的多通道样本，请移出后重录')
                             with loaded as z:
                                 emg = z['emg_uv']
-                            if emg.dtype.kind not in 'fiu' or emg.ndim != 2 or emg.shape[1] != 8 or len(emg) < wl8_train.FS or not np.isfinite(emg).all():
-                                raise ValueError(f'{label}/{f.name} 不是有效的八通道样本，请移出后重录')
+                                fs_file = int(z['fs']) if 'fs' in z.files else wl8_train.FS
+                            if emg.dtype.kind not in 'fiu' or emg.ndim != 2 or emg.shape[1] not in allowed_ch or (seen_ch is not None and emg.shape[1] != seen_ch) or len(emg) < fs_file or not np.isfinite(emg).all():
+                                raise ValueError(f'{label}/{f.name} 不是有效的多通道样本，请移出后重录')
+                            seen_ch = int(emg.shape[1])
                             meta = json.loads(f.with_suffix('.json').read_text())
                             if not isinstance(meta, dict):
                                 raise ValueError(f'{label}/{f.name} 缺少有效佩戴编号，请重录')
@@ -154,25 +164,26 @@ def install(firmware_root):
         if validation and validation['status'] == 'unverified':
             # 临时视图只让分类器看到训练集；不合格验证不能产生准确率、混淆矩阵或学习曲线验证分数。
             with tempfile.TemporaryDirectory(prefix='pt-emg-train-only-') as tmp:
-                (Path(tmp) / 'emg-wl8-data').symlink_to((Path(root) / 'emg-wl8-data').resolve(), target_is_directory=True)
+                (Path(tmp) / data_folder).symlink_to((Path(root) / data_folder).resolve(), target_is_directory=True)
                 # 训练集有多次佩戴时 wl8_train 会按佩戴编号留一次佩戴估分；本组规矩是没有合格重戴不出分，进度和结果里都拿掉
-                report, model = original(tmp, labels, since, lambda e: e.get('stage') == 'rewear' or progress(dict(e, rewear=None) if e.get('stage') == 'done' else e), seed)
+                report, model = original(tmp, labels, since, lambda e: e.get('stage') == 'rewear' or progress(dict(e, rewear=None) if e.get('stage') == 'done' else e), seed, data_folder=data_folder, n_channels=n_channels)
             if report.pop('rewear_source', None) == '留一次佩戴':
                 for k in ('confusion', 'shuffled', 'per_channel'): report.pop(k, None)
                 report['rewear'] = None
             report['note'] = '基础模型已生成，未完成重戴验证。' + validation['reason'] + '。原始验证数据已保留，本次未用于评分。'
         else:
-            report, model = original(root, labels, since, progress, seed)
+            report, model = original(root, labels, since, progress, seed, data_folder=data_folder, n_channels=n_channels)
         if validation:
             report['validation'] = validation
         if special:
+            ch_used = int(report.get('n_channels') or n_channels or 8)
             report['window_ms'] = int(special.get('windowMs', 200))
             report['sequence_validation'] = {'status': 'unverified', 'reason': '分类分数仅验证接触状态；双击、长按和转动组合仍需现场试用'}
-            report['features'] = '200 ms 八通道频段功率；每条录制取中间短窗，按整条样本划分验证'
+            report['features'] = f"200 ms {ch_used} 通道频段功率；每条录制取中间短窗，按整条样本划分验证"
             model['window_ms'] = report['window_ms']; model['short'] = True
-            if special['protocol'] == 'taps':
+            if special['protocol'] == 'taps' and data_folder == 'emg-wl8-data':
                 report['sequence_trials'] = meta_module.sequence_trials(Path(root), model, wl8_train, since)
-            if special['protocol'] == 'motion':
+            if special['protocol'] == 'motion' and data_folder == 'emg-wl8-data':
                 report['motion_calibration'] = meta_module.calibrate(Path(root), since)
         if not all(np.isfinite(model[key]).all() for key in ('mu', 'sinv', 'W')):
             raise ValueError('训练产生无效数值，请检查信号并重录')
@@ -190,7 +201,7 @@ def install(firmware_root):
         dest.mkdir(parents=True, exist_ok=False)
         report = dict(run, id=rid, created=datetime.now().isoformat(timespec='seconds'))
         np.savez(dest / 'model.npz', classes=np.array(model['classes']), mu=model['mu'],
-                 sinv=model['sinv'], W=model['W'], bands=np.array(wl8_train.BANDS), fs=wl8_train.FS, shrink=wl8_train.SHRINK, window_ms=model.get('window_ms', 1000), short=bool(model.get('short', False)), **wl8_train.rest_extra(model))
+                 sinv=model['sinv'], W=model['W'], bands=np.array(wl8_train.BANDS), fs=int(model.get('fs', wl8_train.FS)), shrink=wl8_train.SHRINK, window_ms=model.get('window_ms', 1000), short=bool(model.get('short', False)), **wl8_train.rest_extra(model))
         if 'adaptive_intent' in model:
             import adaptive_intent, hashlib
             try:

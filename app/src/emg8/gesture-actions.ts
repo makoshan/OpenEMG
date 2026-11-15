@@ -127,10 +127,24 @@ export function examScore(trials: ExamTrial[]) {
 export type BandStatus = { state: 'off' | 'link' | 'live' | 'paused'; text: string; pose: '' | 'sword' | 'guard' | 'thunder'; acc: number[] | null;
   lanes?: Lane[]; signal?: string; rec?: string };   // 识别中才带：8 路状态、信号结论、识别 / 出招结果（游戏左下角面板）
 export type Lane = 'ok' | 'mask' | 'bad' | '';
-/** 游戏面板里的肌电一栏：最近一次放松检查的 8 路状态 + 一句结论。mask / high 都是 1 起的路号 */
-export function bandSignal(check: { allowed: boolean; high: number[]; over: number[]; text: string }, mask: number[], rmsFresh: boolean): { lanes: Lane[]; signal: string } {
-  const lanes = Array.from({ length: 8 }, (_, i): Lane => mask.includes(i + 1) ? 'mask' : check.high.includes(i + 1) || check.over.includes(i + 1) ? 'bad' : rmsFresh ? 'ok' : '');
-  const signal = !rmsFresh ? '没收到肌电数据' : !check.allowed ? check.text : mask.length ? `第 ${mask.join('、')} 路接触差 · 已屏蔽，用 ${8 - mask.length} 路识别` : '信号正常';
+/** 游戏面板里的肌电一栏：最近一次放松检查的 8 槽状态 + 一句结论。mask / high 都是 1 起的路号 */
+export function bandSignal(check: { allowed: boolean; high: number[]; over: number[]; text: string }, mask: number[], rmsFresh: boolean, totalCh = 8): { lanes: Lane[]; signal: string } {
+  const nCh = Math.max(2, totalCh);
+  const slotChs = (slot: number): number[] => {
+    if (nCh === 8) return [slot + 1];
+    if (nCh > 8) {
+      const a = Math.floor((slot * nCh) / 8) + 1, b = Math.max(a, Math.floor(((slot + 1) * nCh) / 8));
+      return Array.from({ length: b - a + 1 }, (_, k) => a + k);
+    }
+    return [Math.min(nCh, Math.floor((slot * nCh) / 8) + 1)];
+  };
+  const lanes = Array.from({ length: 8 }, (_, i): Lane => {
+    const chs = slotChs(i);
+    if (chs.some((c) => mask.includes(c))) return 'mask';
+    if (chs.some((c) => check.high.includes(c) || check.over.includes(c))) return 'bad';
+    return rmsFresh ? 'ok' : '';
+  });
+  const signal = !rmsFresh ? '没收到肌电数据' : !check.allowed ? check.text : mask.length ? `第 ${mask.join('、')} 路接触差 · 已屏蔽，用 ${Math.max(1, nCh - mask.length)} 路识别` : '信号正常';
   return { lanes, signal };
 }
 /** 没在识别时：没数据 = off（游戏用按键）；有数据但没开识别 / 在回放 = link */

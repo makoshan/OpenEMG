@@ -73,8 +73,8 @@ export const Waveform = forwardRef<WaveHandle, { rangeUv: number; seconds?: numb
       },
     }), [emg, gyro, n, decim]);
 
-    return <div className="emg8-wave">
-      <div className="emg8-wave-emg">
+    return <div className="emg8-wave" data-channels={n}>
+      <div className="emg8-wave-emg" data-channels={n} style={{ ['--ch-count' as string]: n }}>
         <canvas ref={emgCanvas} aria-label={`${n} 路肌电实时波形`} />
         <ol className="emg8-lanes">{colors.map((col, c) => <li key={c}><b style={{ color: col }}>CH{c + 1}</b><span>{rms && rms[c] != null ? `${rms[c].toFixed(0)} ${unit}` : '—'}</span></li>)}</ol>
       </div>

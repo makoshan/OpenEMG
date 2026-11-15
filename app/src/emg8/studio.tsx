@@ -8,7 +8,7 @@ import { Capture, CABLE_CN, CH0_CN, WearContext, type CableDir, type Ch0Site } f
 import { guardRecord } from './gesture-actions';
 import { Control, CURSOR_MODE_CN } from './control';
 import type { AbState, CursorTick, Emg8Bridge, Hand, Pred, ServiceState } from './contract';
-import { emg8Bridge, LABEL_CN } from './contract';
+import { CH_COLORS, emg8Bridge, LABEL_CN } from './contract';
 import { classicView, matchesProfile, PROFILES, profileId, trainingBlock, type ClassicPick, type ProfileId } from './profiles';
 import { applyClassicNames, ClassicCapture, ClassicPorts } from './classic';
 import { storedGate } from './recognition-gate';
@@ -38,8 +38,8 @@ const load = <T,>(k: string, d: T): T => { try { const v = localStorage.getItem(
 const agoText = (ms: number) => { const m = Math.round(ms / 60000); return m < 60 ? `${m} 分钟` : `${Math.floor(m / 60)} 小时 ${m % 60} 分钟`; };
 const save = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* 预览里可能不可用 */ } };
 
-// deviceSlot：外壳的「设备」选择（八通道 / 单通道）放进顶栏，不再浮在页面右上角压住回放横幅
-export function EmgStudio({ projectId, deviceSlot }: { projectId: string; deviceSlot?: ReactNode }) {
+// deviceSlot：外壳的「设备」选择（16 / 8 / 2 / 单通道）放进顶栏，不再浮在页面右上角压住回放横幅
+export function EmgStudio({ projectId, deviceTier, deviceSlot }: { projectId: string; deviceTier?: string; deviceSlot?: ReactNode }) {
   const raw = emg8Bridge();
   const key = (k: string) => `emg8:${projectId}:${k}`;
   const [tab, setTab] = useState<Tab>(() => load(key('tab'), 'setup'));                       // 第一次打开从「① 连上」走，不直接落在录动作页（2026-10-09 走查）
@@ -147,6 +147,13 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
 
   const rigChannels = st?.rig.n_channels ?? 8;
   const rigFs = st?.rig.fs_Hz ?? 2000;
+  const tierSeen = useRef(deviceTier);
+  useEffect(() => {
+    if (tierSeen.current === deviceTier) return;
+    tierSeen.current = deviceTier;
+    const t = setTimeout(() => { void poll(); reconnect((n) => n + 1); }, 140);
+    return () => clearTimeout(t);
+  }, [deviceTier, poll]);
   useEffect(() => {
     const c1 = signalStream.current.setSpec(rigChannels, rigFs);
     const c2 = viewStream.current.setSpec(rigChannels, rigFs);
@@ -205,14 +212,16 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
   }, [bridge, st?.project?.id, projectId, profile, trainDone]);
   const envelope = useCallback(() => (performance.now() - stats.current.lastData < 500 ? env.current : 0), []);
 
-  if (!bridge) return <section className="v3-area"><h2>八通道肌电工作室</h2><p className="v3-note">只在桌面版里有：浏览器碰不到本机采集服务。</p></section>;
+  const studioTitle = rigChannels === 8 ? '八通道肌电工作室' : `${rigChannels} 通道肌电工作室`;
+  const chLabel = rigChannels === 8 ? '八路' : `${rigChannels} 路`;
+  if (!bridge) return <section className="v3-area"><h2>{studioTitle}</h2><p className="v3-note">只在桌面版里有：浏览器碰不到本机采集服务。</p></section>;
   const replay = st?.rig.replay ?? st?.wl8?.replay;
   const mismatch = st && st.project && st.project.id !== projectId;
   const notWl8 = st && st.rig.kind !== 'wl8';
   const liveTop = st?.wl8?.live ? pred?.stable : null;
   const guided = !!profile.gestures;
   const online = flow.online && !!st?.rig.streaming;
-  const wearOk = wear?.donning === donning && wear.perChannel.every((v) => v <= NOISE_LIMIT_UV);   // 与戴好页同口径：8 路贴好就算过，条件告警只提醒（复核 P2）
+  const wearOk = wear?.donning === donning && wear.perChannel.every((v) => v <= NOISE_LIMIT_UV);   // 与戴好页同口径：各路贴好就算过，条件告警只提醒（复核 P2）
   // 「戴好」的勾要跟着当前信号走：不在录的时候，最近 5 s 每路最低 RMS（样本跨度 ≥4 s）仍超红线 1.2 倍就撤勾（2026-10-12：勾着但 8 路全红）。
   // 窗与余量对齐服务端检查（wl8_ab 测 5 s、滤 19 次谐波；前端只滤 3 次，读数偏高），免得刚检查过又被撤（复核 P2）
   const wearHist = useRef<{ t: number; v: number[] }[]>([]);
@@ -235,16 +244,17 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
   const signal = <section className="emg8-signal"><Waveform ref={wave} rangeUv={range} channels={rigChannels} fsHz={rigFs} rms={viewRms ?? undefined} showGyro={!onCapture} /><ElectrodeRing values={viewRms} max={range} channels={rigChannels} hand={hand} label="实时 RMS µV" /></section>;
 
   now.current = { cable, ch0, linkSince: st?.rig.link_since };   // 包过的 record 读最新值，不重建 bridge
-  return <WearContext.Provider value={{ cable, ch0, setCable, setCh0 }}><div className="emg8" data-stage={stage ? 'on' : undefined} data-guided={guided ? 'on' : undefined}>
+  return <WearContext.Provider value={{ cable, ch0, setCable, setCh0 }}><div className="emg8" data-channels={rigChannels} data-stage={stage ? 'on' : undefined} data-guided={guided ? 'on' : undefined}>
     {replay && <div className="emg8-replay">▶ 回放 · {replay} · 这不是现场数据</div>}
     <div className={guided ? 'emg8-chrome' : undefined} data-focus={hideNav ? '1' : undefined}>
     {guided && <button type="button" className="emg8-focus" aria-pressed={quiet} onClick={() => setQuiet((v) => !v)}>{quiet ? '展开导航' : '收起导航'}</button>}
     {!hideNav && <header className="emg8-head">
-      <div className="emg8-project-heading"><h2>{guided ? profile.name : '八通道肌电工作室'}</h2><small title={st?.project?.name}>{st?.project?.name ?? '采集服务未绑定工程'} · {hand === 'left' ? '左手' : '右手'} · 第 {donning} 次佩戴</small></div>
-      {guided ? <span className="ins-cap" role="status"><Led state={online ? 'on' : 'off'} /> {online ? `在线 · ${Math.round(flow.hz)} Hz · 丢帧 ${flow.dropped}` : '未连接'} · {st?.busy ?? '空闲'}</span> : <nav className="emg8-tabs" aria-label="工作室页面">{TABS.map(([k, t]) => <button key={k} aria-pressed={tab === k} onClick={() => setTab(k)}>
+      <div className="emg8-project-heading"><h2>{guided ? profile.name : studioTitle}</h2><small title={st?.project?.name}>{st?.project?.name ?? '采集服务未绑定工程'} · {hand === 'left' ? '左手' : '右手'} · 第 {donning} 次佩戴</small></div>
+      {guided ? <span className="ins-cap" role="status"><Led state={online ? 'on' : 'off'} /> <span className="emg8-spec-badge">{rigChannels} CH · {rigFs} Hz</span> {online ? `在线 · ${Math.round(flow.hz)} Hz · 丢帧 ${flow.dropped}` : '未连接'} · {st?.busy ?? '空闲'}</span> : <nav className="emg8-tabs" aria-label="工作室页面">{TABS.map(([k, t]) => <button key={k} aria-pressed={tab === k} onClick={() => setTab(k)}>
         {tab === k && <motion.i className="emg8-tab-pill" layoutId="emg8-tab-pill" transition={{ type: 'spring', stiffness: 420, damping: 32 }} />}<span>{t}</span></button>)}</nav>}
       <div className="emg8-row tight">
         {deviceSlot}
+        {!guided && <span className="emg8-spec-badge">{rigChannels} CH · {rigFs} Hz</span>}
         {!guided && <button disabled={busy} onClick={() => reconnect((n) => n + 1)}>重新连接</button>}
         <select aria-label="训练手势组" value={group} disabled={busy || !!ab?.active} onChange={(e) => void changeGroup(e.target.value)}>{SHOWN.map((id) => <option key={id} value={id}>{PROFILES[id].name}</option>)}</select>
         {!guided && <><select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select>
@@ -261,14 +271,14 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
       <div>录制<b>{st?.busy ?? '空闲'}</b></div>
     </div>)}
     </div>
-    {/* 八路段放在钉顶的 chrome 外面：校准页它是左侧整栏（Mako 2026-10-12），其他录动作页跟着内容走 */}
-    {onCapture && <section className="emg8-channels" aria-label={rigChannels === 8 ? '八路实时信号' : `${rigChannels} 路实时信号`}>
-      <div className="emg8-channels-bar"><b>{rigChannels === 8 ? '八路' : `${rigChannels} 路`}</b><label>量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{anyOver && range < WAVE_UV[WAVE_UV.length - 1] && <button type="button" className="emg8-range-up" onClick={() => setRange(WAVE_UV[WAVE_UV.length - 1])}>换到 ±{WAVE_UV[WAVE_UV.length - 1]} µV</button>}</div>
-      {/* 采样率顶栏已有，这里不重复；RMS × 3 ≈ 峰值，超过量程的那一路标「超量程」，波形在那条上已顶格（2026-10-12 截图 8 条全是色块） */}
-      <ol className="emg8-ch-readout">{Array.from({ length: rigChannels }, (_, i) => { const v = viewRms?.[i]; const over = overRange(v, range); return <li key={i} className={over ? 'over' : undefined}><b>CH{i + 1}</b><span>{Number.isFinite(v as number) ? `${Math.round(v as number)} µV` : '—'}{over ? ' · 超量程' : ''}</span></li>; })}<li className="note" title="波形和读数：45 Hz 高通 + 50 Hz 各次谐波陷波（最高至奈奎斯特安全边界或 900 Hz）。放松检查、戴好检查和 82.5 / 150 µV 两条线用检查口径（20 Hz 高通 + 50 Hz 陷波 Q=5 + 100/150 Hz 陷波 Q=30），不用这里的去噪显示。">已去噪显示 · 检查另用检查口径</li></ol>
+    {/* 多路段放在钉顶的 chrome 外面：校准页它是左侧整栏（Mako 2026-10-12），其他录动作页跟着内容走 */}
+    {onCapture && <section className="emg8-channels" aria-label={`${chLabel}实时信号`}>
+      <div className="emg8-channels-bar"><b>{chLabel}</b><span className="emg8-spec-badge">{rigChannels} CH · {rigFs} Hz</span><label>量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{anyOver && range < WAVE_UV[WAVE_UV.length - 1] && <button type="button" className="emg8-range-up" onClick={() => setRange(WAVE_UV[WAVE_UV.length - 1])}>换到 ±{WAVE_UV[WAVE_UV.length - 1]} µV</button>}</div>
+      {/* RMS × 3 ≈ 峰值，超过量程的那一路标「超量程」，波形在那条上已顶格（2026-10-12 截图 8 条全是色块） */}
+      <ol className="emg8-ch-readout">{Array.from({ length: rigChannels }, (_, i) => { const v = viewRms?.[i]; const over = overRange(v, range); return <li key={i} className={over ? 'over' : undefined} style={{ ['--ch-col' as string]: CH_COLORS[i % CH_COLORS.length] }}><b>CH{i + 1}</b><span>{Number.isFinite(v as number) ? `${Math.round(v as number)} µV` : '—'}{over ? ' · 超量程' : ''}</span></li>; })}<li className="note" title="波形和读数：45 Hz 高通 + 50 Hz 各次谐波陷波（最高至奈奎斯特安全边界或 900 Hz）。放松检查、戴好检查和 82.5 / 150 µV 两条线用检查口径（20 Hz 高通 + 50 Hz 陷波 Q=5 + 100/150 Hz 陷波 Q=30），不用这里的去噪显示。">已去噪显示 · 检查另用检查口径</li></ol>
       {signal}
     </section>}
-    {(err || mismatch || notWl8) && <p className="emg8-warn">{mismatch ? '采集服务绑定的是另一个工程，录制会被拒绝。' : notWl8 ? '采集服务不是八通道模式：用 emg_web.py --wl8 启动。' : err}</p>}
+    {(err || mismatch || notWl8) && <p className="emg8-warn">{mismatch ? '采集服务绑定的是另一个工程，录制会被拒绝。' : notWl8 ? '采集服务未切到多通道模式。' : err}</p>}
 
     {!guided && tab !== 'control' && tab !== 'bench' && tab !== 'guide' && signal}
 
@@ -289,7 +299,7 @@ export function EmgStudio({ projectId, deviceSlot }: { projectId: string; device
       {tab === 'live' && <Live donning={donning} rms={rms} rmsAt={rmsAt} profile={profile} projectId={projectId} bridge={bridge} st={st} pred={pred} runId={liveRun ?? latestRun} armMouse={armMouse} onError={setErr} onRewear={() => pick(2)} />}
       {tab === 'guide' && <GestureLibrary hand={hand} onHandChange={setHand} />}
     </motion.main>
-    {guided && !onCapture && tab !== 'control' && tab !== 'bench' && tab !== 'setup' && tab !== 'guide' && <details className="emg8-thumb-details emg8-thumb-signals"><summary>八路实时信号与电极分布 · 展开查看</summary><div className="emg8-thumb-details-body"><label>波形量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{signal}<p className="emg8-fine">IMU 数据年龄：{Number.isFinite(flow.imuAge) ? `${Math.round(flow.imuAge)} ms` : '—'}。模式：{CURSOR_MODE_CN[cursorMode ?? 'off']}。识别：{liveTop ? LABEL_CN[liveTop] : '未开启'}。</p></div></details>}
+    {guided && !onCapture && tab !== 'control' && tab !== 'bench' && tab !== 'setup' && tab !== 'guide' && <details className="emg8-thumb-details emg8-thumb-signals"><summary>{chLabel}实时信号与电极分布 · 展开查看</summary><div className="emg8-thumb-details-body"><label>波形量程 <select value={range} onChange={(e) => setRange(Number(e.target.value))} aria-label="量程">{WAVE_UV.map((v) => <option key={v} value={v}>±{v} µV</option>)}</select></label>{signal}<p className="emg8-fine">IMU 数据年龄：{Number.isFinite(flow.imuAge) ? `${Math.round(flow.imuAge)} ms` : '—'}。模式：{CURSOR_MODE_CN[cursorMode ?? 'off']}。识别：{liveTop ? LABEL_CN[liveTop] : '未开启'}。</p></div></details>}
     {rewearAsk && <dialog ref={askRef} className="emg8-rewear-ask" aria-labelledby="emg8-rewear-ask-t" onCancel={(e) => e.preventDefault()} onClose={() => rewearAsk.answer(rewearAsk.donning)}>
       <h3 id="emg8-rewear-ask-t">这是同一次佩戴吗？</h3>
       <p>上一条录音是 {agoText(Date.now() - rewearAsk.at)}前（第 {rewearAsk.donning} 次佩戴）。摘下再戴，电极位置会变，要算新的一次。</p>

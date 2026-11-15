@@ -22,17 +22,21 @@ export const NOISE_LIMIT_UV = 150;
 export const overRange = (rms: number | null | undefined, range: number) => Number.isFinite(rms as number) && (rms as number) * 3 > range;
 
 const C = [260, 215] as const, RX = 158, RY = 124;
-/** 第 i 路电极在腕截面上的位置；左手镜像，和 ring.tsx 一致 */
-const at = (i: number, hand: 'left' | 'right', dr = 0) => {
-  const a = (-90 + (hand === 'left' ? -1 : 1) * i * 45) * Math.PI / 180;
+/** 第 i 路电极在腕截面上的位置（支持 2 / 8 / 16 路）；左手镜像，和 ring.tsx 一致 */
+const at = (i: number, count: number, hand: 'left' | 'right', dr = 0) => {
+  const stepDeg = 360 / Math.max(1, count);
+  const a = (-90 + (hand === 'left' ? -1 : 1) * i * stepDeg) * Math.PI / 180;
   return { x: C[0] + (RX + dr) * Math.cos(a), y: C[1] + (RY + dr * RY / RX) * Math.sin(a), a };
 };
 
-/** 表盘：腕截面 + 8 个金属电极。LED = 该路有数据；VU = 实时 RMS / max；checks 给出时显示阈值刻度与逐路结论 */
-export function Dial({ values, max, online, hand, checks, limit, sweep, needle, big, small }: {
-  values: number[] | null; max: number; online: boolean; hand: 'left' | 'right';
+/** 表盘：腕截面 + N 个金属电极（2 / 8 / 16）。LED = 该路有数据；VU = 实时 RMS / max；checks 给出时显示阈值刻度与逐路结论 */
+export function Dial({ values, max, online, hand, channels, checks, limit, sweep, needle, big, small }: {
+  values: number[] | null; max: number; online: boolean; hand: 'left' | 'right'; channels?: number;
   checks?: ('ok' | 'bad')[] | null; limit?: number; sweep?: number | null; needle?: number | null; big: string; small: string;
 }) {
+  const count = Math.max(1, values?.length ?? checks?.length ?? channels ?? 8);
+  const padW = count > 12 ? 18 : count <= 2 ? 32 : 26;
+  const padH = count > 12 ? 11 : count <= 2 ? 18 : 16;
   const ticks = Array.from({ length: 96 }, (_, k) => {
     const a = k * 3.75 * Math.PI / 180, r0 = k % 12 ? 242 : 236;
     return <line key={k} className={k % 12 ? 'tick' : 'tick major'} x1={C[0] + r0 * Math.cos(a)} y1={C[1] + r0 * .8 * Math.sin(a)} x2={C[0] + 250 * Math.cos(a)} y2={C[1] + 200 * Math.sin(a)} />;
@@ -41,14 +45,14 @@ export function Dial({ values, max, online, hand, checks, limit, sweep, needle, 
     const a1 = (-90 + sweep * 360) * Math.PI / 180, a0 = a1 - Math.PI / 6, R = 250;
     return `M${C[0]} ${C[1]} L${C[0] + R * Math.cos(a0)} ${C[1] + R * .8 * Math.sin(a0)} A${R} ${R * .8} 0 0 1 ${C[0] + R * Math.cos(a1)} ${C[1] + R * .8 * Math.sin(a1)}Z`;
   })();
-  return <svg className={`ins-dial ${checks || sweep != null ? 'check' : ''}`} viewBox="0 0 520 430" role="img" aria-label={`八路电极：${big} ${small}`}>
+  return <svg className={`ins-dial ${checks || sweep != null ? 'check' : ''}`} data-channels={count} viewBox="0 0 520 430" role="img" aria-label={`${count} 路电极：${big} ${small}`}>
     <defs><linearGradient id="ins-metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FBFAF7" /><stop offset=".55" stopColor="#DCD6CB" /><stop offset="1" stopColor="#C7C0B3" /></linearGradient></defs>
     {ticks}
     {sweepPath && <path className="sweep" d={sweepPath} />}
     <ellipse className="band" cx={C[0]} cy={C[1]} rx={RX} ry={RY} /><ellipse className="band2" cx={C[0]} cy={C[1]} rx={RX - 14} ry={RY - 14} />
-    {Array.from({ length: 8 }, (_, i) => {
-      const p = at(i, hand), v0 = at(i, hand, 22), v1 = at(i, hand, 62), t = at(i, hand, 84), l = at(i, hand, -24);
-      const len = Math.hypot(v1.x - v0.x, v1.y - v0.y), v = values ? Math.max(0, Math.min(1, values[i] / max)) : 0;
+    {Array.from({ length: count }, (_, i) => {
+      const p = at(i, count, hand), v0 = at(i, count, hand, 22), v1 = at(i, count, hand, 62), t = at(i, count, hand, count > 12 ? 82 : 84), l = at(i, count, hand, -24);
+      const len = Math.hypot(v1.x - v0.x, v1.y - v0.y), v = values && values[i] != null ? Math.max(0, Math.min(1, values[i] / max)) : 0;
       const lit = channelLit(online, values, i);
       const lim = limit != null ? Math.min(1, limit / max) : null, lx = v0.x + (v1.x - v0.x) * (lim ?? 0), ly = v0.y + (v1.y - v0.y) * (lim ?? 0);
       const state = checks?.[i];
@@ -57,9 +61,9 @@ export function Dial({ values, max, online, hand, checks, limit, sweep, needle, 
         <line className="vu" x1={v0.x} y1={v0.y} x2={v1.x} y2={v1.y} strokeDasharray={`${(lit ? v : 0) * len} ${len}`} />
         {lim != null && <line className="thr" x1={lx - 5 * Math.sin(p.a)} y1={ly + 5 * Math.cos(p.a)} x2={lx + 5 * Math.sin(p.a)} y2={ly - 5 * Math.cos(p.a)} />}
         {/* 旋转放在外层 g：rect 上的 CSS transform-box 会把 SVG transform 属性的旋转中心算偏 */}
-        <g transform={`rotate(${p.a * 180 / Math.PI + 90} ${p.x} ${p.y})`}><rect className="pad" x={p.x - 13} y={p.y - 8} width={26} height={16} rx={8} /></g>
-        <circle className="ledc" cx={l.x} cy={l.y} r={3.2} />
-        <text x={t.x} y={t.y + 4}>CH{i + 1}</text>
+        <g transform={`rotate(${p.a * 180 / Math.PI + 90} ${p.x} ${p.y})`}><rect className="pad" x={p.x - padW / 2} y={p.y - padH / 2} width={padW} height={padH} rx={padH / 2} /></g>
+        <circle className="ledc" cx={l.x} cy={l.y} r={count > 12 ? 2.6 : 3.2} />
+        <text x={t.x} y={t.y + 4} style={count > 12 ? { fontSize: 9.5 } : undefined}>CH{i + 1}</text>
       </g>;
     })}
     {needle != null && <line className="needle" x1={C[0]} y1={C[1]} x2={C[0]} y2={C[1] - 100} transform={`rotate(${needle * 24} ${C[0]} ${C[1]})`} />}

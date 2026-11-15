@@ -2,6 +2,13 @@
 
 本文档提供全系 17 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
 
+> [!IMPORTANT]
+> **人工审核准备下单 vs AI 生成未下单**
+> - **人工审核通过、准备下单（首板推荐组合）**：采集板编号 **`16`**（[`16ch-afe-hirose-1mm-1nf/`](16ch-afe-hirose-1mm-1nf/) 广濑 `1.0 mm` `1 nF` + 32 颗 `ESD401DPYR`，146 颗贴片）搭配同目录人工评审主控单板 [`Gerber_C08B-U9_v0.01.zip`](16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip)（贴片 BOM/CPL 共用编号 `12` 的 `16ch-u9-dual30/fab-mcu-u9/jlc_smt_{bom,cpl}.csv`）。该套双板由人工硬件工程师设计并对照 TI `ADS1298` 手册与 `SBAU171D` 逐脚审核通过，准备下单打样。
+> - **AI 生成设计、尚未人工审核、尚未下单**：编号 **`01`–`15`（其中 `12` 的拼板 Gerber 为 AI 生成，BOM/CPL 与人工评审主控共用）、`17`** 及下方 C 节全部 3D 打印结构件均由 AI 生成，仅供开源参考，**尚未人工审核、尚未下单**；如需自行投产请先完成人工复核。
+
+以下三条安全与投产红线适用于本表全部板卡：
+
 > [!CAUTION]
 > **打样与安全必读**
 > 1. **切勿在嘉立创 EDA 内点击「从原理图更新 PCB」后直接下单**：`.epro2` 工程仅供查看原理图、走线与三维预览；正式打板与贴片请直接上传下表锁定的 Gerber `.zip`、`BOM.csv` 与 `CPL.csv`。
@@ -52,7 +59,8 @@
 1. **主控板 `01 / 02`（`R4U6 / R4U6N`）**：单板 Gerber（`43.10 × 36.50 mm`），板厚 **`0.6 mm`** + **双面 SMT** + **树脂塞孔电镀盖帽**，下单页须勾选人工代拼工艺边（`≥ 70 × 70 mm`），并在贴片预览页对照同目录 `polarity-top.png` / `polarity-bottom.png` 逐颗确认极性器件方向。
 2. **采集板 `03 / 04 / 06 / 07` 与 2 路板 `10`**：Gerber 均已自带 `70.20 × 70.20 mm` 一拼一工艺边与光学定位孔，下单选「自带拼板 / 1×1」即可，切勿重复加框；在贴片预览页确认 `ADS1298` / `ADS1292`、ESD 阵列与 FPC 连接器第一脚朝向。
 3. **表带软板 `05 / 08 / 09 / 14 / 15`**：走嘉立创 **FPC 软板打样**，压缩包内已包含拆分厚度的实心补强层 `*-BOT_STIFF_0p10mm_PI.gbr`（金手指背面 `0.10 mm`）与 `*-BOT_STIFF_0p20mm_PI.gbr`（岛区及 `D2-8CH` 胶囊 6 窗垫片 `0.20 mm`），下单时将同目录 `stiffener-map*.png` 与 `工艺要求.md` 附于工程备注；若随单 SMT 仅贴装限流电阻（`Φ6×2.0` 圆铜片与 `3×3×2` 方铜片收货后二次焊接），工程备注须写明：**「请 CAM 仅在正面 `F_Paste.gtp` 钢网中删去 `Φ6.5 / Φ4.5` 大圆电极开孔并保留正面 0402 电阻焊盘；背面 `B_Paste.gbp` 的 0402/0603 电阻焊盘全部保留」**。
-4. **新版 16 路旗舰双板 `12 / 13`（`MCU-U9` + `AFE-30P`）**：两套 `-panel702.zip` 均已自带 `70.20 × 70.20 mm` 一拼一工艺边（`2.0 mm` 铣槽 + 断口连接筋），下单选「自带拼板 / 1×1」；其中 `MCU-U9` 选 **6 层 `0.8 mm` 沉金 + 树脂塞孔电镀盖帽 + 双面 SMT**（`U7 STM32L432KCU6 C1337280` 视实时库存走邮寄或全球代购，`USB1` 沉板座勾选异形/沉板治具确认），`AFE-30P` 选 **4 层 `0.8 mm` `JLC04081H-3313` 沉金 + 过孔盖油 + 双面 SMT**。**上传 `jlc_smt_cpl.csv` 时必须保持平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项（切勿改选「嘉立创EDA」）**，并在 2D 预览页对照同目录 `orientation.csv` 与 `polarity-top.png` / `polarity-bottom.png` 逐颗确认顶/底层极性方向。
+4. **AI 派生版 16 路双板 `12 / 13`（`MCU-U9` + `AFE-30P` `22 pF` 版，未下单）**：两套 `-panel702.zip` 均已自带 `70.20 × 70.20 mm` 一拼一工艺边（`2.0 mm` 铣槽 + 断口连接筋），下单选「自带拼板 / 1×1」；其中 `MCU-U9` 选 **6 层 `0.8 mm` 沉金 + 树脂塞孔电镀盖帽 + 双面 SMT**（`U7 STM32L432KCU6 C1337280` 视实时库存走邮寄或全球代购，`USB1` 沉板座勾选异形/沉板治具确认），`AFE-30P` 选 **4 层 `0.8 mm` `JLC04081H-3313` 沉金 + 过孔盖油 + 双面 SMT**。**上传 `jlc_smt_cpl.csv` 时必须保持平台默认的「AD,99SE,Allegro,PADS(宏)等其他」选项（切勿改选「嘉立创EDA」）**，并在 2D 预览页对照同目录 `orientation.csv` 与 `polarity-top.png` / `polarity-bottom.png` 逐颗确认顶/底层极性方向。
+5. **人工审核定版 `v0.01` 双板（采集板 `16` + 评审主控单板，准备下单）**：采集板直接上传编号 `16` 的 `hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip` + `jlc_smt_bom.csv` + `jlc_smt_cpl.csv`（4 层沉金、勾选人工代拼工艺边、**树脂塞孔+电镀盖帽**、双面 SMT 146 颗，`CPL` 保持默认「AD 等其他」并对照 `assembly-top.png` / `assembly-bottom.png` 核对极性）；配套主控板上传 `hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip`（6 层 `0.8 mm` 沉金、勾选人工代拼工艺边、**树脂塞孔+电镀盖帽**、双面 SMT 110 颗），贴片 BOM/CPL 共用编号 `12` 的 `hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_{bom,cpl}.csv`。
 
 ---
 

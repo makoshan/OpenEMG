@@ -24,10 +24,10 @@ SHRINK = .5
 DEFAULT_LABELS = ('rest', 'pinch', 'fist')
 
 
-def features(e):
-    """(n,8) µV → 40 维：每路 5 个频段的 log 平均功率，工频格和 20 Hz 以下不算。"""
+def features(e, fs=FS):
+    """(n, C) µV → 5×C 维：每路 5 个频段的 log 平均功率，工频格和 20 Hz 以下不算。"""
     e = np.asarray(e, float)
-    f, P = welch(e - e.mean(0), FS, nperseg=min(512, len(e)), axis=0)
+    f, P = welch(e - e.mean(0), fs, nperseg=min(512, len(e)), axis=0)
     ok = f >= 20
     for k in range(1, 20): ok &= np.abs(f - 50 * k) > 4
     return np.array([np.log(P[ok & (f >= lo) & (f < hi)].mean(0) + 1e-9) for lo, hi in BANDS]).ravel()   # 频段在前、通道在后
@@ -87,17 +87,20 @@ def calibrated_probs(m, X, temp=None):
     return p / p.sum(1, keepdims=True)
 
 
-def noise_ratio_summary(rest_ptp, effort_ptp, max_ratio=0.10, min_pass_channels=6):
-    """8 路静息/发力峰谷噪声比诊断（Sharma 2025 Eq. 1/5/6 口径）：每路静息中位峰峰值 ÷ 发力 P90 峰峰值 <= 10%。"""
+def noise_ratio_summary(rest_ptp, effort_ptp, max_ratio=0.10, min_pass_channels=None):
+    """多路静息/发力峰谷噪声比诊断（Sharma 2025 Eq. 1/5/6 口径）：每路静息中位峰峰值 ÷ 发力 P90 峰峰值 <= 10%。"""
     r_med = np.median(np.asarray(rest_ptp, float), axis=0)
     e_p90 = np.maximum(np.percentile(np.asarray(effort_ptp, float), 90, axis=0), 1e-9)
     ratio = r_med / e_p90
+    total_ch = int(len(ratio))
+    if min_pass_channels is None:
+        min_pass_channels = 6 if total_ch == 8 else max(1, int(np.ceil(total_ch * 0.75)))
     ch_pass = ratio <= max_ratio
     n_pass = int(np.sum(ch_pass))
     return dict(
         ok=bool(n_pass >= min_pass_channels),
         pass_channels=n_pass,
-        total_channels=int(len(ratio)),
+        total_channels=total_ch,
         max_ratio_limit=float(max_ratio),
         mean_ratio_pct=round(float(np.mean(ratio) * 100.0), 2),
         ratio_pct=[round(float(v * 100.0), 2) for v in ratio],
@@ -105,9 +108,10 @@ def noise_ratio_summary(rest_ptp, effort_ptp, max_ratio=0.10, min_pass_channels=
     )
 
 
-def lane_keep(lanes, dim=len(BANDS) * 8):
-    """屏蔽这些路（1–8）后保留的特征列。特征是频段在前、通道在后：第 i 列属于第 i % 8 + 1 路。"""
-    return [i for i in range(dim) if i % 8 + 1 not in set(lanes)]
+def lane_keep(lanes, dim=len(BANDS) * 8, n_ch=None):
+    """屏蔽这些路（1..C）后保留的特征列。特征是频段在前、通道在后：第 i 列属于第 i % C + 1 路。"""
+    n_ch = int(n_ch or max(1, dim // len(BANDS)))
+    return [i for i in range(dim) if i % n_ch + 1 not in set(lanes)]
 
 
 def mask_model(m, lanes):
@@ -139,23 +143,30 @@ def donning_of(f):
     return d if type(d) is int else None
 
 
-def load(root, labels, since=None):
-    """<root>/<label>/*.npz → [(label, 特征, 元数据)]；元数据带文件名、时间、放松底噪。"""
+def load(root, labels, since=None, n_channels=None):
+    """<root>/<label>/*.npz → [(label, 特征, 元数据)]；元数据带文件名、时间、放松底噪与通道数。"""
     out = []
+    seen_ch = int(n_channels) if n_channels is not None else None
     for label in labels:
         for f in sorted(Path(root).glob(f'{label}/*.npz')):
             if since and f.stat().st_mtime < since: continue
-            with np.load(f, allow_pickle=False) as z: e = z['emg_uv'].astype(float)
-            if len(e) < FS: continue
+            with np.load(f, allow_pickle=False) as z:
+                e = z['emg_uv'].astype(float)
+                fs = int(z['fs']) if 'fs' in z.files else FS
+            if e.ndim != 2 or len(e) < fs: continue
+            if seen_ch is not None and e.shape[1] != seen_ch: continue
+            seen_ch = int(e.shape[1])
             rms_ch = np.sqrt(((e - e.mean(0)) ** 2).mean(0))
-            out.append((label, features(e), dict(file=f.name, mtime=f.stat().st_mtime, rms=float(np.median(rms_ch)), rms_ch=rms_ch, ptp=ptp_windows(e), donning=donning_of(f))))
+            out.append((label, features(e, fs=fs), dict(file=f.name, mtime=f.stat().st_mtime, rms=float(np.median(rms_ch)), rms_ch=rms_ch, ptp=ptp_windows(e, fs=fs), donning=donning_of(f), fs=fs, n_channels=seen_ch)))
     return out
 
 
-def train(data_root, labels=DEFAULT_LABELS, since=None, progress=print, seed=0):
-    """返回 (run 字典, model 字典)。progress(dict) 用来给界面推学习曲线等进度。"""
+def train(data_root, labels=DEFAULT_LABELS, since=None, progress=print, seed=0, data_folder='emg-wl8-data', n_channels=None):
+    """返回 (run 字典, model 字典)。支持 2 / 8 / 16 路；progress(dict) 用来给界面推学习曲线等进度。"""
     rng = np.random.default_rng(seed); t0 = time.time()
-    tr = load(Path(data_root) / 'emg-wl8-data', labels, since); te = load(Path(data_root) / 'emg-wl8-data-rewear', labels, since)
+    tr = load(Path(data_root) / data_folder, labels, since, n_channels=n_channels)
+    inferred_ch = int(tr[0][2].get('n_channels', n_channels or 8)) if tr else n_channels
+    te = load(Path(data_root) / f'{data_folder}-rewear', labels, since, n_channels=inferred_ch)
     # 训练集里的放松条：底噪超过放松中位数 1.5 倍的算"手在动"，不进训练（相对阈值，不写死 µV）；重戴集一条不挑
     rest_rms = [m['rms'] for l, _, m in tr if l == 'rest']; cut = 1.5 * float(np.median(rest_rms)) if rest_rms else np.inf
     excluded = [m['file'] for l, _, m in tr if l == 'rest' and m['rms'] > cut]
@@ -165,18 +176,24 @@ def train(data_root, labels=DEFAULT_LABELS, since=None, progress=print, seed=0):
     if len(labels) < 2: raise ValueError('每类至少要 3 条训练样本、至少两类')
     Xtr, ytr = np.array([r[1] for r in tr]), np.array([r[0] for r in tr])
     Xte, yte = (np.array([r[1] for r in te]), np.array([r[0] for r in te])) if te else (np.zeros((0, Xtr.shape[1])), np.array([]))
-    run = dict(labels=labels, counts=dict(train={l: int((ytr == l).sum()) for l in labels}, rewear={l: int((yte == l).sum()) for l in labels}),
-               excluded=dict(files=excluded, rule=f'训练集放松条底噪 > 放松中位数 × 1.5（{cut:.0f} µV）视为手在动'), features='8 路 × 5 频段 log 功率，去工频格', shrink=SHRINK)
+    n_ch = max(1, Xtr.shape[1] // len(BANDS))
+    fs_used = int(tr[0][2].get('fs', FS))
+    run = dict(labels=labels, n_channels=n_ch, fs_Hz=fs_used,
+               counts=dict(train={l: int((ytr == l).sum()) for l in labels}, rewear={l: int((yte == l).sum()) for l in labels}),
+               excluded=dict(files=excluded, rule=f'训练集放松条底噪 > 放松中位数 × 1.5（{cut:.0f} µV）视为手在动'),
+               features=f'{n_ch} 路 × 5 频段 log 功率，去工频格', shrink=SHRINK)
     progress(dict(stage='data', message=f"训练 {len(ytr)} 条（排除 {len(excluded)} 条手在动的放松），重戴 {len(yte)} 条"))
     # 同次佩戴：留一法
     loo = np.array([predict(fit(np.delete(Xtr, i, 0), np.delete(ytr, i)), Xtr[i:i + 1])[0] for i in range(len(ytr))])
     run['same_wear'] = bal(ytr, loo); progress(dict(stage='same_wear', value=run['same_wear']))
     # 缺一路时的同次佩戴留一：第 k 项 = 屏蔽第 k+1 路后的认对率，用来提示哪一路坏了会让哪对手势分不开
     run['lane_drop'] = []
-    for lane in range(1, 9):
-        k = lane_keep([lane], Xtr.shape[1])
-        run['lane_drop'].append(bal(ytr, np.array([predict(fit(np.delete(Xtr, i, 0)[:, k], np.delete(ytr, i)), Xtr[i:i + 1, k])[0] for i in range(len(ytr))])))
+    if n_ch >= 2:
+        for lane in range(1, n_ch + 1):
+            k = lane_keep([lane], Xtr.shape[1], n_ch=n_ch)
+            run['lane_drop'].append(bal(ytr, np.array([predict(fit(np.delete(Xtr, i, 0)[:, k], np.delete(ytr, i)), Xtr[i:i + 1, k])[0] for i in range(len(ytr))])))
     model = fit(Xtr, ytr)
+    model['fs'] = fs_used; model['n_channels'] = n_ch
     model['temp'] = run['temp'] = calibrate_temperature(Xtr, ytr, shrink=SHRINK)
     # 放松底噪（每路 1 秒窗峰峰值，取训练集放松条的中位）：识别时倍数门槛 = 倍数 × 这个数，所以每个人、每次重训都按自己的底噪
     # 只用最新一次佩戴的放松条：重戴、换人后底噪跟着这次的走，不被历史条数稀释（复核 #88）。别处自己拼的元数据可能没有 ptp
@@ -200,8 +217,8 @@ def train(data_root, labels=DEFAULT_LABELS, since=None, progress=print, seed=0):
         p = predict(model, Xte); run['rewear'] = bal(yte, p); run['rewear_source'] = '重戴目录'
         run['confusion'] = dict(rows=labels, matrix=[[int(((yte == a) & (p == b)).sum()) for b in labels] for a in labels])
         run['shuffled'] = float(np.mean([bal(yte, predict(fit(Xtr, rng.permutation(ytr)), Xte)) for _ in range(20)]))
-        B, Bt = Xtr.reshape(len(ytr), len(BANDS), 8), Xte.reshape(len(yte), len(BANDS), 8)
-        run['per_channel'] = [bal(yte, predict(fit(B[:, :, c], ytr, .3), Bt[:, :, c])) for c in range(8)]
+        B, Bt = Xtr.reshape(len(ytr), len(BANDS), n_ch), Xte.reshape(len(yte), len(BANDS), n_ch)
+        run['per_channel'] = [bal(yte, predict(fit(B[:, :, c], ytr, .3), Bt[:, :, c])) for c in range(n_ch)]
         progress(dict(stage='rewear', value=run['rewear'], source=run['rewear_source'], shuffled=run['shuffled'], per_channel=run['per_channel']))
     elif len(wear_ids) >= 2:
         # 没有重戴目录：按录音记的佩戴编号轮流留出一次佩戴测试、其余训练（BrainFlow 训练脚本的分组留出）。
@@ -215,7 +232,7 @@ def train(data_root, labels=DEFAULT_LABELS, since=None, progress=print, seed=0):
         p = by_wear(); run['rewear'] = bal(yh, p); run['rewear_source'] = '留一次佩戴'
         run['confusion'] = dict(rows=labels, matrix=[[int(((yh == a) & (p == b)).sum()) for b in labels] for a in labels])
         run['shuffled'] = float(np.mean([bal(yh, by_wear(rng.permutation(ytr))) for _ in range(20)]))
-        run['per_channel'] = [bal(yh, by_wear(cols=list(range(c, Xtr.shape[1], 8)), shrink=.3)) for c in range(8)]   # 第 c 路的 5 个频段列
+        run['per_channel'] = [bal(yh, by_wear(cols=list(range(c, Xtr.shape[1], n_ch)), shrink=.3)) for c in range(n_ch)]   # 第 c 路的 5 个频段列
         run['note'] = f'没有重戴目录：按佩戴编号留一次佩戴估计（{len(wear_ids)} 次佩戴轮流留出）'
         progress(dict(stage='rewear', value=run['rewear'], source=run['rewear_source'], shuffled=run['shuffled'], per_channel=run['per_channel']))
     else:
@@ -250,7 +267,7 @@ def save(run, model, out_root):
     run = dict(run, id=rid, created=time.strftime('%Y-%m-%dT%H:%M:%S'))
     (d / 'run.json').write_text(json.dumps(run, ensure_ascii=False, indent=1))
     np.savez(d / 'model.npz', classes=np.array(model['classes']), mu=model['mu'], sinv=model['sinv'], W=model['W'],
-             bands=np.array(BANDS), fs=FS, shrink=SHRINK, **rest_extra(model))
+             bands=np.array(BANDS), fs=int(model.get('fs', FS)), shrink=SHRINK, **rest_extra(model))
     return d
 
 
@@ -288,15 +305,19 @@ def gate_settings(threshold_uv, sensitivity):
 
 def signal_facts(window, fs=FS, skip=()):
     """1 秒窗上的三块读数。基线是绝对值中位数，时域噪声是各路峰峰值的平均，频域噪声是 45–55 Hz 功率相对 20–450 Hz 的分贝。
-    skip：已屏蔽的路（1–8），不算进读数，免得坏路的噪声抬高幅度门槛的读数。"""
+    skip：已屏蔽的路（1..C），不算进读数，免得坏路的噪声抬高幅度门槛的读数。"""
     x = np.asarray(window, float)
-    if x.ndim != 2 or x.shape[1] != 8 or len(x) < 32:
-        raise ValueError('信号窗至少要有 32 点、8 路')
-    x = x[:, [i for i in range(8) if i + 1 not in set(skip)]]
+    if x.ndim != 2 or x.shape[1] < 1 or len(x) < 32:
+        raise ValueError('信号窗至少要有 32 点、1 路以上')
+    n_ch = x.shape[1]
+    keep = [i for i in range(n_ch) if i + 1 not in set(skip)]
+    if not keep:
+        raise ValueError('至少保留一路未屏蔽通道')
+    x = x[:, keep]
     baseline = float(np.median(np.abs(x)))
     vpp = float(np.mean(np.ptp(x, axis=0)))
     f, power = welch(x - x.mean(0), fs, nperseg=min(256, len(x)), axis=0)
-    band = (f >= 20) & (f <= 450)
+    band = (f >= 20) & (f <= min(450, fs * 0.48))
     mains = (f >= 45) & (f <= 55)
     broad = float(np.mean(power[band])) if np.any(band) else 0.0
     hum = float(np.mean(power[mains])) if np.any(mains) else 0.0
@@ -334,37 +355,45 @@ def apply_recognition_gate(pred, facts, threshold_uv, sensitivity, min_prob=0.0,
 
 
 class LivePredictor:
-    """实时识别：保留最近 1 s 的 8 路原始数据，每 100 ms 算一次特征和概率。"""
+    """实时识别：保留最近 1 s 的 C 路原始数据（2 / 8 / 16 路），每 100 ms 算一次特征和概率。"""
     def __init__(self, model_path, window_s=1.0, step_s=.1):
         z = np.load(model_path)
         self.m = self.full = dict(classes=[str(c) for c in z['classes']], mu=z['mu'], sinv=z['sinv']); self.W = z['W']; self.mask = []
-        self.rest_ptp = np.asarray(z['rest_ptp'], float) if 'rest_ptp' in z.files else None   # 训练时放松窗每路峰峰值 (窗数, 8)
+        self.n_ch = max(1, int(z['mu'].shape[1] // len(BANDS)))
+        self.fs = int(z['fs']) if 'fs' in z.files else FS
+        self.rest_ptp = np.asarray(z['rest_ptp'], float) if 'rest_ptp' in z.files else None   # 训练时放松窗每路峰峰值 (窗数, C)
         self.rest_rms = (np.asarray(z['rest_rms'], float) if 'rest_rms' in z.files
                          else (np.median(self.rest_ptp, axis=0) / 6.0 if self.rest_ptp is not None else None))
         self.temp = float(z['temp']) if 'temp' in z.files else 1.0
         self.m['temp'] = self.full['temp'] = self.temp
-        self.win, self.step, self.buf, self.since = int(window_s * FS), int(step_s * FS), np.zeros((0, 8)), 0
+        self.win = max(1, int(window_s * self.fs))
+        self.step = max(1, int(step_s * self.fs))
+        self.buf, self.since = np.zeros((0, self.n_ch)), 0
 
     def set_mask(self, lanes):
-        """屏蔽坏路（1–8 的列表，空 = 不屏蔽）。只换模型，不清缓冲。"""
-        self.mask = sorted({int(l) for l in lanes}); self.m = mask_model(self.full, self.mask)
+        """屏蔽坏路（1..C 的列表，空 = 不屏蔽）。只换模型，不清缓冲。"""
+        self.mask = sorted({int(l) for l in lanes if 1 <= int(l) <= self.n_ch}); self.m = mask_model(self.full, self.mask)
         self.m['temp'] = getattr(self, 'temp', 1.0)
 
     def rest_ref(self):
         """没屏蔽的那几路放松底噪的平均（和 signal_facts(skip=mask) 的 vpp 同口径）；旧模型没记就是 None。"""
         if self.rest_ptp is None: return None
-        keep = [i for i in range(8) if i + 1 not in self.mask]
+        keep = [i for i in range(self.n_ch) if i + 1 not in self.mask]
         return float(np.median(self.rest_ptp[:, keep].mean(1))) if keep else None
 
     def reset(self):
         """配置变化后清掉整窗，重新积累，模型参数保留。"""
-        self.buf = np.zeros((0, 8)); self.since = 0
+        self.buf = np.zeros((0, self.n_ch)); self.since = 0
 
     def push(self, emg):
-        """喂一块 (n,8)；到点了就返回 {'probs': {类: 概率}, 'top': 类, 'xy': 投影坐标}，否则 None。"""
-        self.buf = np.concatenate([self.buf, np.asarray(emg, float)])[-self.win:]; self.since += len(emg)
+        """喂一块 (n, C)；到点了就返回 {'probs': {类: 概率}, 'top': 类, 'xy': 投影坐标}，否则 None。"""
+        arr = np.asarray(emg, float)
+        if arr.ndim != 2 or arr.shape[1] != self.n_ch or not np.isfinite(arr).all():
+            self.reset()
+            return None
+        self.buf = np.concatenate([self.buf, arr])[-self.win:]; self.since += len(arr)
         if len(self.buf) < self.win or self.since < self.step: return None
-        self.since = 0; x = features(self.buf)[None]
+        self.since = 0; x = features(self.buf, fs=self.fs)[None]
         _, p = scores(self.m, x); xy = (x @ self.W)[0]
         return dict(probs={c: round(float(v), 3) for c, v in zip(self.m['classes'], p[0])}, top=self.m['classes'][int(p[0].argmax())],
                     xy=[round(float(xy[0]), 3), round(float(xy[1]), 3)])
@@ -511,7 +540,37 @@ def check():
         for f in root3.glob('*/*/*.json'): f.write_text(json.dumps({'donning': 1}))
         run5, _ = train(root3, progress=lambda e: None)
         assert run5['rewear'] is None and 'rewear_source' not in run5, run5.get('rewear')
-    print(f"wl8_train check passed: 合成数据 同次 {run['same_wear']:.2f} / 重戴 {run['rewear']:.2f} / 打乱 {run['shuffled']:.2f}；学习曲线、投影、混淆、单路、进度事件、模型保存、实时识别；打乱标签后重戴 {run2['rewear']:.2f}（机会水平）；"
+        # 2 通道 (1000 Hz) 与 16 通道 (1000 Hz) 全链路训练 + 保存 + LivePredictor + 屏蔽坏路自检
+        for ch_test, folder in ((2, 'emg-c08b-2ch-data'), (16, 'emg-c08b-16ch-data')):
+            g_ch = dict(
+                rest=np.full(ch_test, 18.),
+                pinch=np.array([85. if c % 2 == 0 else 22. for c in range(ch_test)]),
+                fist=np.array([190. if c >= ch_test // 2 else 65. for c in range(ch_test)]),
+            )
+            for split_dir, cnt, wear_id in ((folder, 8, 1), (f'{folder}-rewear', 4, 2)):
+                for l in DEFAULT_LABELS:
+                    d_ch = root / 'multi' / split_dir / l; d_ch.mkdir(parents=True, exist_ok=True)
+                    for i in range(cnt):
+                        f_ch = d_ch / f'{l}-{i:02d}.npz'
+                        e_ch = rng.normal(0, 1, (2000, ch_test)) * (g_ch[l] * rng.uniform(.85, 1.15, ch_test))
+                        np.savez(f_ch, emg_uv=e_ch.astype(np.float32), fs=1000)
+                        f_ch.with_suffix('.json').write_text(json.dumps({'donning': wear_id}))
+            r_ch, m_ch = train(root / 'multi', progress=lambda e: None, data_folder=folder, n_channels=ch_test)
+            assert r_ch['n_channels'] == ch_test and r_ch['fs_Hz'] == 1000 and r_ch['rewear'] > .85, (ch_test, r_ch['rewear'])
+            assert len(r_ch['per_channel']) == ch_test and len(r_ch['lane_drop']) == ch_test and len(r_ch['rest_vpp_uv']) == ch_test
+            saved_ch = save(r_ch, m_ch, root / 'multi-models' / str(ch_test))
+            lp_ch = LivePredictor(saved_ch / 'model.npz')
+            assert lp_ch.n_ch == ch_test and lp_ch.fs == 1000 and lp_ch.rest_ref() > 0
+            pred_ch = None
+            for _ in range(12):
+                pred_ch = lp_ch.push(rng.normal(0, 1, (100, ch_test)) * g_ch['fist']) or pred_ch
+            assert pred_ch is not None and pred_ch['top'] == 'fist', (ch_test, pred_ch)
+            facts_ch = signal_facts(lp_ch.buf, fs=1000, skip=[ch_test])
+            assert facts_ch['vpp_uv'] > 0
+            lp_ch.set_mask([ch_test])
+            pred_masked = lp_ch.push(rng.normal(0, 1, (100, ch_test)) * g_ch['fist'])
+            assert pred_masked is not None and 'probs' in pred_masked
+    print(f"wl8_train check passed: 2/8/16 通道合成数据 同次 {run['same_wear']:.2f} / 重戴 {run['rewear']:.2f} / 打乱 {run['shuffled']:.2f}；学习曲线、投影、混淆、单路、进度事件、模型保存、实时识别；打乱标签后重戴 {run2['rewear']:.2f}（机会水平）；"
           f"无重戴目录留一次佩戴 {run3['rewear']:.2f}（打乱 {run3['shuffled']:.2f}）；佩戴间不可迁移时 留一条 {run4['same_wear']:.2f} / 留一次佩戴 {run4['rewear']:.2f}；单次佩戴不给分")
 
 

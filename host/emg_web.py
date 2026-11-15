@@ -336,19 +336,28 @@ class Session:
                 raise ValueError(f'模型通道 {model_channels} 不是腕带的 0–7：用 --channels 指定腕带上对应的 4 个电极')
             self.watch(classify, channels)
 
-    # ---------------------------------------------------------------- 八通道：连续录制 / 训练 / 实时识别 ----
+    # ---------------------------------------------------------------- 多通道（2 / 8 / 16 路）：连续录制 / 训练 / 实时识别 ----
     def wl8_root(self):
         return next(iter(self.sets['train'].values())).parent            # 工程的 data/emg
 
+    def wl8_folder_prefix(self):
+        # 8 通道保持原有 emg-wl8-data 目录；2 通道与 16 通道按设备 id 隔离，避免不同通道数的矩阵混装
+        return 'emg-wl8-data' if self.desc.n_channels == 8 else f'emg-{self.desc.id}-data'
+
     def wl8_models(self):
-        return (self.model_root or HERE / 'gesture-models') / 'wl8'
+        sub = 'wl8' if self.desc.n_channels == 8 else self.desc.id
+        return (self.model_root or HERE / 'gesture-models') / sub
 
     def ab_action(self, body):
-        if self.ab is None: raise ValueError('不是八通道模式（emg_web.py --wl8）')
         action = body.get('action')
         if action == 'conditions':
+            if not (self.ab or (self.multi and hasattr(self.rig, 'chunk_subscribers'))):
+                raise ValueError('当前设备不支持多通道信号条件检查')
             if self.busy: raise RuntimeError(f'正在 {self.busy}，等它完')
-            return self.ab.conditions(float(body.get('seconds', 5)))
+            probe = self.ab or wl8_ab.Recorder(self.rig, self.gesture_sets()['train'].parent.parent / 'ab-control-v1')
+            return probe.conditions(float(body.get('seconds', 5)))
+        if self.ab is None or not self.desc.cap('ab') or not self.desc.cap('record'):
+            raise ValueError(f'{self.desc.name} 未开放 ab-control-v1 录制（安全锁关闭或非对应模式）')
         if action == 'start':
             step = body.get('step'); meta = {k: body.get(k) for k in ('hand', 'donning', 'purpose', 'placement', 'conditions')}
             meta['strap_hole'] = strap_hole_ok(body.get('strap_hole'))
@@ -359,21 +368,24 @@ class Session:
         self.ab.control(action); return {'ok': True}
 
     def wl8_train_start(self, labels=None):
-        if self.desc.n_channels > 8: raise ValueError(f'{self.desc.name} 还不能训练和实时识别：训练器和识别器按 8 路写')
+        if self.desc.n_channels < 2: raise ValueError(f'{self.desc.name} 请使用单通道训练入口')
         labels = [l for l in (labels or wl8_train.DEFAULT_LABELS) if l in wl8.LABELS]
         job = self.wl8_job = {'running': True, 'events': [], 'run_id': None, 'error': None, 'labels': labels}
+        folder = self.wl8_folder_prefix()
+        expected_ch = self.desc.n_channels
         def run():
             try:
-                r, m = wl8_train.train(self.wl8_root(), labels, progress=lambda e: job['events'].append(e))
-                d = wl8_train.save(r, m, self.wl8_models()); job['run_id'] = d.name; self.say(f'八通道训练完成：{d.name}')
+                r, m = wl8_train.train(self.wl8_root(), labels, progress=lambda e: job['events'].append(e),
+                                       data_folder=folder, n_channels=expected_ch)
+                d = wl8_train.save(r, m, self.wl8_models()); job['run_id'] = d.name; self.say(f'{expected_ch} 通道训练完成：{d.name}')
             except Exception as e: job['error'] = str(e); raise
             finally: job['running'] = False
-        self.start('训练八通道模型', run)
+        self.start(f'训练 {expected_ch} 通道模型', run)
 
     def wl8_runs(self):
         out = []
         for f in sorted(self.wl8_models().glob('*/run.json'), reverse=True)[:20]:
-            r = json.loads(f.read_text()); out.append({k: r.get(k) for k in ('id', 'created', 'labels', 'same_wear', 'rewear', 'rewear_source', 'shuffled', 'counts')})
+            r = json.loads(f.read_text()); out.append({k: r.get(k) for k in ('id', 'created', 'labels', 'same_wear', 'rewear', 'rewear_source', 'shuffled', 'counts', 'n_channels', 'fs_Hz')})
         return out
 
     def wl8_run(self, rid):
@@ -403,10 +415,11 @@ class Session:
         return None if body.get('threshold_x') is None else wl8_train.times_setting(body['threshold_x'])
 
     @staticmethod
-    def _live_mask(mask):
-        """要屏蔽的路：1–8 的整数列表，最多 7 路（至少留一路）。"""
-        if not isinstance(mask, list) or len(mask) > 7 or any(isinstance(l, bool) or not isinstance(l, int) or not 1 <= l <= 8 for l in mask):
-            raise ValueError('屏蔽的路必须是 1 到 8 的整数列表，最多 7 路')
+    def _live_mask(mask, max_ch=8):
+        """要屏蔽的路：1–max_ch 的整数列表，最多 max_ch-1 路（至少留一路）。"""
+        max_skip = max(0, int(max_ch) - 1)
+        if not isinstance(mask, list) or len(mask) > max_skip or any(isinstance(l, bool) or not isinstance(l, int) or not 1 <= l <= max_ch for l in mask):
+            raise ValueError(f'屏蔽的路必须是 1 到 {max_ch} 的整数列表，最多 {max_skip} 路')
         return mask
 
     def _stop_live8(self):
@@ -427,12 +440,13 @@ class Session:
         action = body.get('action') or 'start'
         if action == 'stop':
             return {'ok': True, 'archive': self._stop_live8()}
-        if self.desc.n_channels > 8: raise ValueError(f'{self.desc.name} 还不能训练和实时识别：训练器和识别器按 8 路写')
+        if self.desc.n_channels < 2: raise ValueError(f'{self.desc.name} 请使用单通道实时识别入口')
+        max_ch = self.desc.n_channels
         if action == 'tune':
             if self.validation and self.validation.active: raise ValueError('连续验证期间请保持识别设置不变')
             if not self.live8: raise ValueError('实时识别未开启')
             threshold, sensitivity = self._live_gate(body, (self.live8['threshold_uv'], self.live8['sensitivity']))
-            mask = self._live_mask(body['mask']) if 'mask' in body else None   # 先校验完再改，坏 mask 不留半截门槛
+            mask = self._live_mask(body['mask'], max_ch) if 'mask' in body else None   # 先校验完再改，坏 mask 不留半截门槛
             min_prob = wl8_train.min_prob_setting(body['min_prob']) if 'min_prob' in body else self.live8['min_prob']
             times = self._live_times(body) if 'threshold_x' in body else self.live8['threshold_x']
             self.live8['threshold_uv'], self.live8['sensitivity'], self.live8['min_prob'], self.live8['threshold_x'] = threshold, sensitivity, min_prob, times
@@ -441,7 +455,7 @@ class Session:
         if action != 'start': raise ValueError('未知实时识别操作')
         rid = Path(body.get('run_id') or (self.wl8_runs() or [{}])[0].get('id') or '').name
         path = self.wl8_models() / rid / 'model.npz'
-        if not rid or not path.exists(): raise ValueError('还没有训练好的八通道模型')
+        if not rid or not path.exists(): raise ValueError(f'还没有训练好的 {max_ch} 通道模型')
         threshold, sensitivity = self._live_gate(body)
         min_prob = wl8_train.min_prob_setting(body.get('min_prob', 0))
         times = self._live_times(body)
@@ -452,7 +466,7 @@ class Session:
             infer_started = validation_recording.ms()
             r = lp.push(emg)
             if r and self.live8:
-                facts = wl8_train.signal_facts(lp.buf, skip=lp.mask)
+                facts = wl8_train.signal_facts(lp.buf, fs=getattr(lp, 'fs', wl8_train.FS), skip=lp.mask)
                 r = wl8_train.apply_recognition_gate(r, facts, self.live8['threshold_uv'], self.live8['sensitivity'], self.live8['min_prob'], self.live8['threshold_x'], lp.rest_ref())
                 r['t'] = time.time(); r['mask'] = list(lp.mask); self.live8['last'] = r
                 if self.validation: self.validation.prediction(r, len(lp.buf), infer_started)
@@ -479,12 +493,12 @@ class Session:
         raise ValueError('未知控制串口操作')
 
     def wl8_state(self):
-        if self.ab is None: return None
-        return {'ab': self.ab.state(), 'train': {k: v for k, v in self.wl8_job.items() if k != 'events'} | {'events': self.wl8_job.get('events', [])[-40:]},
+        if not self.multi and self.ab is None: return None
+        return {'ab': self.ab.state() if self.ab else None, 'train': {k: v for k, v in self.wl8_job.items() if k != 'events'} | {'events': self.wl8_job.get('events', [])[-40:]},
                 'live': None if not self.live8 else {
                     'run_id': self.live8.get('run_id'), 'last': self.live8['last'],
                     'archive': None if self.live8.get('archive') is None else self.live8['archive'].summary()},
-                'replay': getattr(self.rig, 'replay', None), 'cursor': self.cursor.state(), 'ai': self.ai.state(), 'ctrl': self.ctrl.state()}
+                'replay': getattr(self.rig, 'replay', None), 'cursor': self.cursor.state() if self.cursor else None, 'ai': self.ai.state(), 'ctrl': self.ctrl.state()}
 
     def watch(self, classify, channels):
         """Live events off the wristband stream: onset -> one CNN call -> event (emg_live)."""
@@ -500,9 +514,9 @@ class Session:
 
     @property
     def multi(self):
-        """多路腕带类（连续块流、wl8_train 路径、无单路 pipeline 任务）。没经 __init__ 的 Session（部分检查这么造）按 rig 推描述。"""
+        """多路腕带类（2 / 8 / 16 通道连续块流、wl8_train 路径、无单路 pipeline 任务）。没经 __init__ 的 Session 按 rig 推描述。"""
         desc = getattr(self, 'desc', None) or device_desc.for_rig(self.rig)
-        return desc.n_channels >= 8 and desc.cap('realtime')
+        return desc.n_channels >= 2 and desc.cap('realtime')
 
     def gesture_sets(self, group='five'):
         # 原五类沿用 emg-gesture-data；别的动作组各占一个目录，数据不混
@@ -593,15 +607,25 @@ class Session:
 
     def counts(self):
         kind = self.rig.kind or 'emg'
+        if self.multi and (self.desc.n_channels != 8 or kind not in self.sets.get('train', {})):
+            base = self.wl8_root()
+            prefix = self.wl8_folder_prefix()
+            return {'train': {p.name: len(list(p.glob('*.npz'))) for p in sorted((base / prefix).glob('*')) if p.is_dir()},
+                    'rewear': {p.name: len(list(p.glob('*.npz'))) for p in sorted((base / f'{prefix}-rewear').glob('*')) if p.is_dir()}}
         return {name: {p.name: len(list(p.glob('*.npz'))) for p in sorted(paths[kind].glob('*')) if p.is_dir()}
                 for name, paths in self.sets.items()}
 
     def state(self, include_training=True, group=None, labels=None):
         group, labels = single_group(group, labels)
-        try: rig = self.rig.status()
+        try: rig = dict(self.rig.status())
         except Exception as e: rig = {'error': str(e)}
+        rig.setdefault('n_channels', self.desc.n_channels)
+        rig.setdefault('fs_Hz', self.desc.fs_Hz)
+        rig.setdefault('device_id', self.desc.id)
+        rig.setdefault('device_name', self.desc.name)
+        tier_key = 'wl8' if self.multi else (self.rig.kind or 'emg')
         return {'project': self.project, 'rig': rig, 'counts': self.counts(), 'gesture_counts': self.gesture_counts(group, labels), 'gesture_group': group, 'diagnostic': self.diagnostic_state(), 'factor_check': self.factor_check_state(), 'rehearsal': emg_rehearsal.state(self.rehearsal_root()), 'busy': self.busy, 'progress': self.progress, 'capture_issue': self.issue, 'gesture_training': self.gesture_training(group, labels) if include_training else None,
-                'log': self.log[-40:], 'results': self.results, 'tiers': LABELS.get(self.rig.kind or 'emg', TIERS),
+                'log': self.log[-40:], 'results': self.results, 'tiers': LABELS.get(tier_key, TIERS),
                 'events': self.events[-10:], 'live': None if not self.live else ('ready' if self.live.ready else 'calibrating'),
                 'wl8': self.wl8_state(), 'live1': self.live1 and {'run_id': self.live1['run_id'], 'last': self.live1['last']}}
 
@@ -981,12 +1005,13 @@ def server_for(session, port=8767):
                 if requested != (session.project or {}).get('id', ''):
                     return self.respond(409, {'error': '工程不匹配'})
                 if not session.multi:
-                    return self.respond(409, {'error': '需要八通道手环'})
+                    return self.respond(409, {'error': '需要多通道手环'})
                 frames = queue.Queue(maxsize=128)
                 sample_index, dropped_frames, segment = 0, 0, 0
+                stream_hz = int(getattr(session.rig, 'fs_Hz', 0) or session.desc.fs_Hz or wl8.EMG_HZ)
                 def publish8(emg):
                     nonlocal sample_index, dropped_frames
-                    packet = {'hz': wl8.EMG_HZ, 'unit': 'uV', 'segment': segment, 'sample_index': sample_index,
+                    packet = {'hz': stream_hz, 'unit': 'uV', 'segment': segment, 'sample_index': sample_index,
                               'dropped_frames': dropped_frames, 'samples': emg.tolist()}
                     sample_index += len(emg)
                     try: frames.put_nowait(packet)

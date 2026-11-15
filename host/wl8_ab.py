@@ -149,14 +149,18 @@ class Recorder:
         return self._save(step, meta, hand, donning, chunks, cues, segs, stopped, voided, completed)
 
     def _save(self, step, meta, hand, donning, chunks, cues, segs, stopped, voided, completed):
+        fs = int(getattr(self.rig, 'fs_Hz', FS))
+        n_ch = int(getattr(self.rig, 'n_channels', 8))
+        gyro_scale = float(getattr(self.rig, 'gyro_scale', wl8.GYRO_SCALE))
+        acc_scale = float(getattr(self.rig, 'acc_scale', wl8.ACC_SCALE))
         cat = lambda i, shape, dt: np.concatenate([c[i] for c in chunks]) if chunks else np.zeros(shape, dt)
-        emg, imu, seq, kinds = cat(0, (0, 8), np.int32), cat(1, (0, 6), np.int16), cat(2, (0,), np.uint8), cat(3, (0,), np.uint8)
+        emg, imu, seq, kinds = cat(0, (0, n_ch), np.int32), cat(1, (0, 6), np.int16), cat(2, (0,), np.uint8), cat(3, (0,), np.uint8)
         chunk_ns = np.array([c[4] for c in chunks], np.int64)
         chunk_n = np.array([[len(c[0]), len(c[1]), len(c[2])] for c in chunks], np.int32).reshape(-1, 3)
         folder = self.root / hand / f'wear-{donning}'; folder.mkdir(parents=True, exist_ok=True)
         stem = folder / f'{step}-{time.strftime("%Y%m%d-%H%M%S")}'
         np.savez_compressed(stem.with_suffix('.npz'), emg_uv=emg, imu=imu, seq=seq, kinds=kinds, chunk_host_ns=chunk_ns, chunk_counts=chunk_n,
-                            emg_hz=FS, gyro_scale=wl8.GYRO_SCALE, acc_scale=wl8.ACC_SCALE)
+                            emg_hz=fs, gyro_scale=gyro_scale, acc_scale=acc_scale)
         info = dict(protocol=PROTOCOL, step=step, hand=hand, donning=donning, purpose=meta.get('purpose', 'dev'),
                     placement=meta.get('placement', ''), strap_hole=meta.get('strap_hole'), conditions=meta.get('conditions'), banner=getattr(self.rig, 'banner', ''),
                     recorded_at=time.strftime('%Y-%m-%dT%H:%M:%S'), stopped=stopped, completed_cycles=completed, voided_cycles=voided,
@@ -169,31 +173,40 @@ class Recorder:
 
     # ---------------------------------------------------------------- 条件 ----
     def conditions(self, seconds=5.0):
-        """测几秒：工频、放松底噪、IMU、供电。只给提醒，不拦。"""
+        """测几秒：工频、放松底噪、IMU、供电（自适应 2/8/16/18 路与 1000/2000 Hz）。只给提醒，不拦。"""
+        fs = int(getattr(self.rig, 'fs_Hz', FS))
+        n_ch = int(getattr(self.rig, 'n_channels', 8))
+        acc_scale = float(getattr(self.rig, 'acc_scale', wl8.ACC_SCALE))
+        gyro_scale = float(getattr(self.rig, 'gyro_scale', wl8.GYRO_SCALE))
         got = []
         sub = lambda e, m, s, k, t: got.append((e, m))
         self.rig.chunk_subscribers.append(sub); q = self.rig.subscribe()
         try: time.sleep(seconds)                                         # 真实时长，不随自检的日程加速缩短
         finally: self.rig.chunk_subscribers.remove(sub); self.rig.unsubscribe(q)
-        emg = np.concatenate([g[0] for g in got]).astype(float) if got else np.zeros((0, 8))
+        emg = np.concatenate([g[0] for g in got]).astype(float) if got else np.zeros((0, n_ch))
         imu = np.concatenate([g[1] for g in got]).astype(float) if got else np.zeros((0, 6))
         out, warn = dict(emg_samples=int(len(emg)), imu_samples=int(len(imu))), []
-        if len(emg) >= FS:
-            hp = sosfiltfilt(butter(4, 20, 'hp', fs=FS, output='sos'), emg, axis=0)
-            mains = sosfiltfilt(butter(4, [45, 55], 'bp', fs=FS, output='sos'), hp, axis=0)
+        win = max(1, fs // 4)                                            # 250 ms 分窗（2 kHz 为 500 点，1 kHz 为 250 点）
+        if len(emg) >= fs and len(emg) >= win and emg.ndim == 2 and emg.shape[1] in VALID_CHANNELS:
+            hp = sosfiltfilt(butter(4, 20, 'hp', fs=fs, output='sos'), emg, axis=0)
+            mains = sosfiltfilt(butter(4, [45, 55], 'bp', fs=fs, output='sos'), hp, axis=0)
             y = hp.copy()
             for k in range(1, 20):
-                b, a = iirnotch(50 * k, 30, FS); y = filtfilt(b, a, y, axis=0)
-            w = np.sqrt((y[:len(y) // 500 * 500].reshape(-1, 500, 8) ** 2).mean(1))
+                f0 = 50 * k
+                if f0 >= fs / 2:
+                    break
+                b, a = iirnotch(f0, 30, fs); y = filtfilt(b, a, y, axis=0)
+            n_win = len(y) // win
+            w = np.sqrt((y[:n_win * win].reshape(n_win, win, emg.shape[1]) ** 2).mean(1))
             out.update(mains_mv=round(float(np.median(np.sqrt((mains ** 2).mean(0)))) / 1000, 2), noise_uv=round(float(np.median(w)), 1),
                        noise_per_channel=np.median(w, 0).round(1).tolist())
-            out.update(signal_readout(emg, FS))
+            out.update(signal_readout(emg, fs))
             if out['mains_mv'] > 2: warn.append(f"工频 {out['mains_mv']} mV 偏大：离开插线板 / 充电器，触点补水")
             if out['noise_uv'] > 150: warn.append(f"放松底噪 {out['noise_uv']} µV 偏高：前臂搁稳、手放松，或补水")
         else: warn.append('没收到足够的肌电数据：检查手环是否开机、接收器是否插好')
         if len(imu):
-            acc = np.linalg.norm(imu[:, 3:] * wl8.ACC_SCALE, axis=1)
-            out.update(acc_g=round(float(acc.mean()), 2), gyro_rad_s=round(float(np.abs(imu[:, :3] * wl8.GYRO_SCALE).mean()), 3))
+            acc = np.linalg.norm(imu[:, 3:] * acc_scale, axis=1)
+            out.update(acc_g=round(float(acc.mean()), 2), gyro_rad_s=round(float(np.abs(imu[:, :3] * gyro_scale).mean()), 3))
             if not 8.5 < out['acc_g'] < 11: warn.append(f"IMU 重力 {out['acc_g']} m/s² 不对：检查接收器")
         else: warn.append('没收到 IMU 数据')
         try:
@@ -205,8 +218,11 @@ class Recorder:
         return out
 
 
+VALID_CHANNELS = (2, 8, 16, 18)
+
+
 def signal_readout(emg, fs=FS):
-    """5 秒、8 路、单位 µV 的三个只读数。样本不够、路数不对或含非数时返回空，不拿 0 冒充测过。
+    """5 秒、2/8/16/18 路、单位 µV 的三个只读数。样本不够、路数不对或含非数时返回空，不拿 0 冒充测过。
 
     基线：原始中位，µV。
     时域峰峰值：20 Hz 高通后的最大减最小，µV。
@@ -214,7 +230,7 @@ def signal_readout(emg, fs=FS):
     这是我们自己的算法，不是唯理软件里那三根柱子。
     """
     x = np.asarray(emg, float)
-    if x.ndim != 2 or x.shape[1] != 8 or len(x) < fs or not np.isfinite(x).all():
+    if x.ndim != 2 or x.shape[1] not in VALID_CHANNELS or len(x) < fs or not np.isfinite(x).all():
         return {}
     hp = sosfiltfilt(butter(4, 20, 'hp', fs=fs, output='sos'), x, axis=0)
     band = sosfiltfilt(butter(4, [20, min(450, fs / 2 - 1)], 'bp', fs=fs, output='sos'), x, axis=0)
@@ -283,9 +299,20 @@ def check():
         # 4) 条件检查：假手环没有工频，IMU 重力约 9.8，返回提醒列表
         c = rec.conditions(seconds=2.5)
         assert c['emg_samples'] > 0 and 'mains_mv' in c and isinstance(c['warnings'], list) and c['power'] in ('battery', 'ac', 'unknown'), c
-        for key in ('baseline_uv', 'vpp_uv', 'spectral_db'):
+        for key in ('baseline_uv', 'vpp_uv', 'spectral_db', 'noise_per_channel'):
             assert len(c[key]) == 8 and all(np.isfinite(c[key])), c[key]
-    print('wl8_ab check passed: 日程（20 次轻中力各半、2–4 s）、连续录制含包类型与口令、作废 / 暂停 / 继续 / 停止记账、佩戴统计、手别校验、条件检查')
+        # 5) C08B 2ch / 16ch @ 1000 Hz 条件检查与 IMU 量程对齐（含奇数个 250 ms 窗不崩溃、无假重力告警）
+        import c08b_stream
+        for n_ch in (2, 16):
+            crig = c08b_stream.SynthC08BRig(n_channels=n_ch, fs_Hz=1000, seed=7)
+            crec = Recorder(crig, tmp, voice=False)
+            cc = crec.conditions(seconds=1.25)  # 1250 点 = 5 个 250 ms 奇数窗，覆盖旧版 2ch ValueError 坑
+            crig.streaming = False
+            assert cc['emg_samples'] >= 1000 and 9.5 < cc['acc_g'] < 10.1, (n_ch, cc)
+            assert not any('IMU 重力' in w for w in cc['warnings']), (n_ch, cc['warnings'])
+            for key in ('baseline_uv', 'vpp_uv', 'spectral_db', 'noise_per_channel'):
+                assert len(cc[key]) == n_ch and all(np.isfinite(cc[key])), (n_ch, key, cc[key])
+    print('wl8_ab check passed: 日程（20 次轻中力各半、2–4 s）、连续录制含包类型与口令、作废 / 暂停 / 继续 / 停止记账、佩戴统计、手别校验、2/8/16ch 条件检查')
 
 
 if __name__ == '__main__':

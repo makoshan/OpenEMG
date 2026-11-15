@@ -46,10 +46,10 @@ export function advance(c: Cal, v: Verdict, name: string): Cal {
   return { ...c, marks, i, phase: done ? 'train' : 'arm', seenBusy: false, last: v === 'ok' ? `✓ ${name}` : `${name}：仍然偏弱，先收下，试一下时再看` };
 }
 
-/** 放松底噪判定：按 8 路实时 RMS（µV）。bad ≥ limit（戴好页同一条红线）；high ≥ 55% limit（2026-10-08 实录：贴好 43–51，贴坏 98–291）。 */
+/** 放松底噪判定：按多路实时 RMS（µV）。bad ≥ limit（戴好页同一条红线）；high ≥ 55% limit（2026-10-08 实录：贴好 43–51，贴坏 98–291）。 */
 export type Noise = { kind: 'unknown' | 'ok' | 'high' | 'bad'; bad: number[]; high: number[] };
 export function noiseVerdict(rms: number[] | null | undefined, limit: number): Noise {
-  if (!rms || rms.length < 8 || rms.some((v) => !Number.isFinite(v))) return { kind: 'unknown', bad: [], high: [] };
+  if (!rms || rms.length < 2 || rms.some((v) => !Number.isFinite(v))) return { kind: 'unknown', bad: [], high: [] };
   const bad = rms.flatMap((v, i) => (v > limit ? [i + 1] : [])), high = rms.flatMap((v, i) => (v >= limit * .55 && v <= limit ? [i + 1] : []));   // 与戴好页同口径：≤ limit 算过
   return { kind: bad.length ? 'bad' : high.length ? 'high' : 'ok', bad, high };
 }
@@ -68,23 +68,28 @@ export const calibrationHolds = (n: Noise) => n.kind === 'bad';
 export const waiveCal = (c: Cal, bad: number[]): Cal => ({ ...c, waived: [...new Set([...(c.waived ?? []), ...bad])].sort((a, b) => a - b), restDue: false });
 /** 完成页是否只给「重录放松」：现在过线（扣掉放过的路），或这一戴过线过、还没放过 */
 export const askRestFor = (c: Cal | null | undefined, holds: boolean) => c?.phase === 'done' && (holds || !!c.restDue);
-/** 能不能「仍然开始」：现在过线，且已放过的路加上现在过线的路合计不超过 2 路（只有黄线本来就不拦，不出按钮） */
-export const canWaive = (n: Noise, waived: number[] | null | undefined) =>
-  calibrationHolds(n) && new Set([...(waived ?? []), ...n.bad]).size <= 2;
+/** 能不能「仍然开始」：现在过线，且已放过的路加上现在过线的路合计不超过上限（2 通道最多放过 1 路，8/16 通道最多 2 路） */
+export const canWaive = (n: Noise, waived: number[] | null | undefined, totalCh = 8) => {
+  const maxWaive = Math.min(2, Math.max(1, totalCh - 1));
+  return calibrationHolds(n) && new Set([...(waived ?? []), ...n.bad]).size <= maxWaive;
+};
 
-/** 用手势页要不要暂停出招：1–2 路过线 = 电极没贴好，立刻停；≥3 路过线可能是在用力，持续 WIDE_LOOSE_MS 才算整条松了（底噪取近 4 s 最低值，从开始过线算实际约 14 s）。
- *  wideSince = ≥3 路连续过线的起点（0 = 现在没有）。2026-10-14 一局 6 路 >150 µV 持续 2.5 分钟没停，才加持续判定。 */
+/** 用手势页要不要暂停出招：1–2 路过线 = 电极没贴好，立刻停；多路过线可能是在用力，持续 WIDE_LOOSE_MS 才算整条松了（底噪取近 4 s 最低值，从开始过线算实际约 14 s）。
+ *  wideSince = 多路连续过线的起点（0 = 现在没有）。2026-10-14 一局 6 路 >150 µV 持续 2.5 分钟没停，才加持续判定。 */
 export const WIDE_LOOSE_MS = 10000;
-export function contactPause(n: Noise, wideSince: number, now: number): boolean {
+export function contactPause(n: Noise, wideSince: number, now: number, totalCh = 8): boolean {
   if (n.kind !== 'bad') return false;
-  return n.bad.length <= 2 || (wideSince > 0 && now - wideSince >= WIDE_LOOSE_MS);
+  const maxBad = Math.min(2, Math.max(1, totalCh - 1));
+  return n.bad.length <= maxBad || (wideSince > 0 && now - wideSince >= WIDE_LOOSE_MS);
 }
 
 /** 底噪 = 最近 windowMs 内每路 RMS 的最低值：动作时数值升高是肌肉信号，不该报红；放松那一截才是底噪（Mako 2026-10-08）。 */
 export function noiseFloor(history: { t: number; rms: number[] }[], now: number, windowMs = 4000): number[] | null {
-  const recent = history.filter((h) => now - h.t <= windowMs && h.rms.length >= 8);
-  if (!recent.length) return null;
-  return Array.from({ length: 8 }, (_, c) => Math.min(...recent.map((h) => h.rms[c])));
+  const valid = history.filter((h) => now - h.t <= windowMs && h.rms.length >= 2);
+  if (!valid.length) return null;
+  const nCh = valid[valid.length - 1].rms.length;
+  const recent = valid.filter((h) => h.rms.length === nCh);
+  return Array.from({ length: nCh }, (_, c) => Math.min(...recent.map((h) => h.rms[c])));
 }
 
 /** 开始整轮校准时该用几号佩戴：上一次校准完成的编号 = 现在的编号 → 这是新戴上的，自动 +1（上限 20）；否则照用。
@@ -109,12 +114,13 @@ export function doneActions(kind: ScoreVerdict['kind'], askRest: boolean): 'rest
   return 'look';
 }
 
-/** 把底噪判定翻成人话：只有 1–2 路高、其余正常 = 那几片电极没贴紧（接触噪声，不是肌肉——肌肉会让多路一起升）；≥3 路高 = 整体戴法 / 沾水问题。 */
-export function noiseAdvice(n: Noise, limit: number): string {
+/** 把底噪判定翻成人话：只有 1–2 路高、其余正常 = 那几片电极没贴紧（接触噪声，不是肌肉——肌肉会让多路一起升）；多路高 = 整体戴法 / 沾水问题。 */
+export function noiseAdvice(n: Noise, limit: number, totalCh = 8): string {
   if (n.kind === 'unknown') return '等信号';
   if (n.kind === 'ok') return '底噪正常';
   if (n.kind === 'high') return `底噪偏高：第 ${n.high.join('、')} 路，建议沾水压紧再录`;
-  return n.bad.length <= 2 ? `第 ${n.bad.join('、')} 路电极没贴紧（≥ ${limit} µV，其余 ${8 - n.bad.length} 路正常）：压一下亮红的那片，稳了自动继续`
+  const maxBad = Math.min(2, Math.max(1, totalCh - 1));
+  return n.bad.length <= maxBad ? `第 ${n.bad.join('、')} 路电极没贴紧（≥ ${limit} µV，其余 ${Math.max(0, totalCh - n.bad.length)} 路正常）：压一下亮红的那片，稳了自动继续`
     : `整体底噪太高：${n.bad.length} 路 ≥ ${limit} µV，摘下沾水重新戴紧`;
 }
 
@@ -135,7 +141,10 @@ export function contactGate(history: { t: number; rms: number[] }[], now: number
  * 动作窗无论多大都不参与；放松测量开始后的前 0.6 s 由页面跳过，避开上一动作尾巴。 */
 export function stopForRelaxationNoise(history: { t: number; rms: number[] }[], now: number, phase: string | undefined, limit: number, waived?: number[]): boolean {
   if (!phase || !/^[1-9]$/.test(phase)) return false;
-  const recent = pauseHistory(history, now).filter(h => h.rms.length === 8 && h.rms.every(Number.isFinite));
+  const valid = pauseHistory(history, now).filter(h => h.rms.length >= 2 && h.rms.every(Number.isFinite));
+  if (valid.length < 2) return false;
+  const nCh = valid[valid.length - 1].rms.length;
+  const recent = valid.filter(h => h.rms.length === nCh);
   if (recent.length < 2 || now - recent.at(-1)!.t > 500 || recent.at(-1)!.t - recent[0].t < 1200) return false;
   return waiveNoise(noiseVerdict(noiseFloor(recent, now, 2000), limit), waived).kind === 'bad';
 }

@@ -22,7 +22,14 @@
 .emg8 h2 { margin: 0; font-size: 18px; } .emg8 h3 { margin: 0; font-size: 14px; }
 .emg8 small { color: var(--emg8-dim); }
 .emg8-row { display: flex; gap: 8px; flex-wrap: wrap; } .emg8-row.tight { align-items: center; }
-.emg8-card { background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 12px 14px; backdrop-filter: blur(8px); min-width: 0; }
+.emg8-card { background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 12px 14px; backdrop-filter: blur(8px); min-width: 0; box-shadow: 0 1px 0 rgba(36, 53, 47, .04), 0 8px 22px -14px rgba(36, 53, 47, .16); }
+.emg8-spec-badge {
+  display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px;
+  font: 600 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em;
+  color: var(--emg8-accent); background: color-mix(in srgb, var(--emg8-accent) 9%, var(--emg8-panel));
+  border: 1px solid color-mix(in srgb, var(--emg8-accent) 22%, var(--emg8-line));
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
 .emg8-card > header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
 .emg8-fine { font-size: 11px; color: var(--emg8-dim); margin: 8px 0 0; }
 .emg8-warn { margin: 0; padding: 8px 12px; border-radius: 8px; background: color-mix(in srgb, var(--emg8-warn) 14%, transparent); color: var(--emg8-text); border: 1px solid color-mix(in srgb, var(--emg8-warn) 45%, transparent); }
@@ -47,17 +54,44 @@
 
 /* 信号：波形 + 电极环 */
 /* 波形随页面滚动，避免较矮窗口中遮住采集卡片和训练按钮。 */
-.emg8-signal { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; align-items: center;
-  background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 10px; backdrop-filter: blur(10px); }
+.emg8-signal { display: grid; grid-template-columns: minmax(0, 1fr) 204px; gap: 14px; align-items: center;
+  background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 11px 12px; backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 rgba(36, 53, 47, .04), 0 8px 22px -14px rgba(36, 53, 47, .14); }
 .emg8-wave { display: grid; gap: 6px; }
-.emg8-wave-emg { position: relative; height: 300px; border-radius: 8px; background: var(--emg8-wave-bg); }
-.emg8-wave-emg canvas { position: absolute; inset: 0 0 0 64px; width: calc(100% - 64px); height: 100%; filter: var(--emg8-glow); }
-.emg8-lanes { position: absolute; inset: 0 auto 0 0; width: 64px; margin: 0; padding: 0; list-style: none; display: grid; grid-template-rows: repeat(8, 1fr); }
-.emg8-lanes li { display: flex; flex-direction: column; justify-content: center; font-size: 10px; line-height: 1.2; color: var(--emg8-dim); font-variant-numeric: tabular-nums; }
-.emg8-lanes b { font-size: 11px; }
-.emg8-wave-gyro { position: relative; height: 56px; border-radius: 8px; background: var(--emg8-wave-bg); }
-.emg8-wave-gyro canvas { position: absolute; inset: 0 0 0 64px; width: calc(100% - 64px); height: 100%; }
-.emg8-wave-gyro span { position: absolute; left: 4px; top: 18px; font-size: 10px; color: var(--emg8-dim); }
+.emg8-wave-emg {
+  --ch-count: 8;
+  position: relative; height: 280px; border-radius: 9px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--emg8-line) 90%, transparent);
+  box-shadow: inset 0 1px 3px rgba(36, 53, 47, .06);
+  background-color: color-mix(in srgb, var(--emg8-bg) 55%, var(--emg8-panel));
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--emg8-line) 48%, transparent) 1px, transparent 1px),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(100% / var(--ch-count)),
+      color-mix(in srgb, var(--emg8-accent) 3.4%, transparent) calc(100% / var(--ch-count)),
+      color-mix(in srgb, var(--emg8-accent) 3.4%, transparent) calc(200% / var(--ch-count))
+    );
+  background-size: calc((100% - 68px) / 5) 100%, 100% 100%;
+  background-position: 68px 0, 0 0;
+}
+.emg8[data-stage] .emg8-wave-emg { background-color: var(--emg8-wave-bg); }
+.emg8-wave-emg[data-channels="2"] { height: 184px; }
+.emg8-wave-emg[data-channels="8"] { height: 280px; }
+.emg8-wave-emg[data-channels="16"] { height: 416px; }
+.emg8-wave-emg canvas { position: absolute; inset: 0 0 0 68px; width: calc(100% - 68px); height: 100%; filter: var(--emg8-glow); }
+.emg8-lanes { position: absolute; inset: 0 auto 0 0; width: 68px; margin: 0; padding: 0 6px; list-style: none; display: grid; grid-template-rows: repeat(var(--ch-count, 8), minmax(0, 1fr));
+  background: color-mix(in srgb, var(--emg8-bg) 72%, var(--emg8-panel)); border-right: 1px solid color-mix(in srgb, var(--emg8-line) 85%, transparent); }
+.emg8[data-stage] .emg8-lanes { background: rgba(15, 23, 42, .65); }
+.emg8-lanes li { display: flex; flex-direction: column; justify-content: center; font-size: 10px; line-height: 1.15; color: var(--emg8-dim); font-variant-numeric: tabular-nums; min-height: 0; }
+.emg8-lanes li:not(:last-child) { border-bottom: 1px dashed color-mix(in srgb, var(--emg8-line) 65%, transparent); }
+.emg8-lanes b { font-size: 10.5px; color: var(--emg8-text); }
+.emg8-wave-emg[data-channels="16"] .emg8-lanes li { flex-direction: row; align-items: center; justify-content: space-between; gap: 2px; font-size: 9px; line-height: 1; }
+.emg8-wave-emg[data-channels="16"] .emg8-lanes b { font-size: 9.5px; }
+.emg8-wave-gyro { position: relative; height: 56px; border-radius: 8px; background: var(--emg8-wave-bg); border: 1px solid color-mix(in srgb, var(--emg8-line) 75%, transparent); }
+.emg8-wave-gyro canvas { position: absolute; inset: 0 0 0 68px; width: calc(100% - 68px); height: 100%; }
+.emg8-wave-gyro span { position: absolute; left: 6px; top: 18px; font-size: 10px; color: var(--emg8-dim); }
 .emg8-ring { margin: 0 auto; } .emg8-ring svg { width: 100%; height: auto; overflow: visible; }
 .emg8-ring-v { font-size: 9px; fill: var(--emg8-text); font-variant-numeric: tabular-nums; } .emg8-ring-l { font-size: 9px; fill: var(--emg8-dim); }
 .emg8-ring-c { font-size: 12px; font-weight: 700; fill: var(--emg8-text); } .emg8-ring-s { font-size: 9px; fill: var(--emg8-dim); }

@@ -12,6 +12,21 @@
 .v3-note.warn { color: var(--warn); background: color-mix(in srgb, var(--pt-state-attention) 7%, var(--pt-surface-panel)); border-color: color-mix(in srgb, var(--pt-state-attention) 24%, var(--pt-surface-panel)); }
 
 
+/* 顶栏设备档位选择与云端上传入口 */
+.yuanli-top-slot { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.yuanli-device-select {
+  font-weight: 600 !important;
+  border-radius: 9px !important;
+  padding: 5px 11px !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F1E6 100%) !important;
+  border: 1px solid #D6CFC1 !important;
+  box-shadow: 0 1px 2px rgba(36, 53, 47, .06);
+}
+.emg8[data-stage] .yuanli-device-select {
+  background: rgba(17, 24, 39, .85) !important;
+  border-color: rgba(148, 163, 184, .28) !important;
+}
+
 /* 云端上传：顶栏小标签 + 同意书弹层 */
 .cloud-chip { font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--pt-surface-panel); color: var(--dim); cursor: pointer; white-space: nowrap; }
 .cloud-chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--pt-state-attention) 40%, var(--pt-surface-panel)); }

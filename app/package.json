@@ -20,7 +20,8 @@
     "check:wear-hint": "node --experimental-strip-types --no-warnings check-wear-hint.mjs",
     "check:gesture-library": "node check-gesture-library.mjs",
     "check:missing-label": "node check-missing-label.mjs",
-    "check:rewear-hint": "node --experimental-transform-types --no-warnings check-rewear-hint.mjs"
+    "check:rewear-hint": "node --experimental-transform-types --no-warnings check-rewear-hint.mjs",
+    "check:multichannel": "node --experimental-transform-types --no-warnings check-multichannel.mjs"
   },
   "dependencies": {
     "motion": "^13.4.6",

@@ -49,7 +49,8 @@ export function SetupView({ sub, online, hz, dropped, rms, range, hand, donning,
     <button type="button" aria-pressed={kind === 'ble'} onClick={() => choose('ble')}>蓝牙版</button>
   </div>;
   const serviceError = st?.rig.error || (st?.rig.banner?.startsWith('断开') ? st.rig.banner : '');
-  const mine = wear?.donning === donning ? wear : null;
+  const chCount = Math.max(2, st?.rig.n_channels ?? rms?.length ?? 8);
+  const mine = wear?.donning === donning && wear.perChannel.length === chCount ? wear : null;
   const checks = mine ? mine.perChannel.map((v) => (v <= NOISE_LIMIT_UV ? 'ok' : 'bad') as 'ok' | 'bad') : null;
   const bad = checks?.map((c, i) => (c === 'bad' ? i + 1 : 0)).filter(Boolean) ?? [];
   const sweep = checking == null ? null : Math.min(1, (now - checking) / 5000);
@@ -60,30 +61,30 @@ export function SetupView({ sub, online, hz, dropped, rms, range, hand, donning,
       const r = await bridge.ab(projectId, { action: 'conditions' });
       if (!r.ok) { onError(r.message); return; }
       const c = r.value as Conditions;
-      onWear({ donning, perChannel: c.noise_per_channel ?? Array(8).fill(c.noise_uv ?? Infinity), warnings: c.warnings });
+      onWear({ donning, perChannel: c.noise_per_channel?.length === chCount ? c.noise_per_channel : Array(chCount).fill(c.noise_uv ?? Infinity), warnings: c.warnings });
     } finally { setChecking(null); }
   };
 
   if (sub === 0) {
-    const big = online ? '8 / 8' : timedOut ? '15.0 s' : `${elapsed.toFixed(1)} s`;
+    const big = online ? `${chCount} / ${chCount}` : timedOut ? '15.0 s' : `${elapsed.toFixed(1)} s`;
     return <section className="emg8-card ins-stage">
       <div className="ins-corner"><span className="ins-cap">步骤 1 · 连接</span><span className="ins-cap"><Led state={online ? 'on' : timedOut ? 'warn' : 'off'} /> {online ? '在线' : timedOut ? '没有数据' : '启动中'}</span></div>
-      <div className={timedOut ? 'ins-shake' : ''}><Dial values={rms} max={range} online={online} hand={hand} needle={online ? null : Math.min(elapsed, CONNECT_TIMEOUT_S)} big={big} small={online ? `${Math.round(hz)} Hz` : '启动采集服务'} /></div>
+      <div className={timedOut ? 'ins-shake' : ''}><Dial values={rms} max={range} online={online} hand={hand} channels={chCount} needle={online ? null : Math.min(elapsed, CONNECT_TIMEOUT_S)} big={big} small={online ? `${Math.round(hz)} Hz` : '启动采集服务'} /></div>
       {kindSwitch}
       <h2 className="ins-headline">{online ? '手环醒了' : guidedLink ? advice.title : timedOut ? '15 秒没收到数据' : '正在唤醒手环'}</h2>
-      <p className="ins-sub">{online ? `8 路都在出数据 · 丢帧 ${dropped}` : guidedLink ? advice.detail : serviceError || (timedOut ? '点「重新连接」再试一次' : '正在确认电脑有没有看到手环')}</p>
+      <p className="ins-sub">{online ? `${chCount} 路都在出数据 · 丢帧 ${dropped}` : guidedLink ? advice.detail : serviceError || (timedOut ? '点「重新连接」再试一次' : '正在确认电脑有没有看到手环')}</p>
       {guidedLink && !!advice.steps.length && <ol className="ins-checklist">{advice.steps.map((step, i) => <li key={step} className={i === hot ? 'ins-now' : undefined}>{step}</li>)}</ol>}
       <div className="ins-actions">{online ? <button className="emg8-primary ins-next" onClick={onNext}>去戴好它 →</button> : <button className={timedOut ? 'emg8-primary' : ''} disabled={busy} onClick={onReconnect}>重新连接</button>}</div>
       <p className="ins-honest">每路的灯只在收到该路数据后才亮；VU 条长度 = 该路实时幅度（±{range} µV 满格）</p>
     </section>;
   }
-  // 8 路都贴好就算过；「Mac 接着充电器」这类条件只提醒，不拦（2026-10-09 走查：8/8 贴好却被挡住，同一句还显示了两遍）
+  // N 路都贴好就算过；「Mac 接着充电器」这类条件只提醒，不拦（2026-10-09 走查：8/8 贴好却被挡住，同一句还显示了两遍）
   const passed = !!mine && bad.length === 0 && !stale;
   const verdict = wearVerdict(bad, mine?.warnings ?? []);   // 文案和「露不露服务端提醒」都在 placement.ts，check-wear-hint.mjs 不开 Electron 就能自检
   return <section className="emg8-card ins-stage">
     <div className="ins-corner"><span className="ins-cap">步骤 2 · 佩戴 · 第 {donning} 次</span><span className="ins-cap"><Led state={online ? 'on' : 'off'} /> {online ? `在线 · ${Math.round(hz)} Hz` : '未连接'}</span></div>
-    <Dial values={rms} max={range} online={online} hand={hand} checks={checking == null ? checks : null} limit={NOISE_LIMIT_UV} sweep={sweep}
-      big={checking != null ? `${Math.min(8, Math.floor((sweep ?? 0) * 8))} / 8` : mine ? `${8 - bad.length} / 8` : '—'} small={checking != null ? '正在听每一路' : stale ? '底噪又高了' : mine ? bad.length ? `CH${bad.join('、CH')} 噪声高` : '全部贴好' : '还没检查'} />
+    <Dial values={rms} max={range} online={online} hand={hand} channels={chCount} checks={checking == null ? checks : null} limit={NOISE_LIMIT_UV} sweep={sweep}
+      big={checking != null ? `${Math.min(chCount, Math.floor((sweep ?? 0) * chCount))} / ${chCount}` : mine ? `${chCount - bad.length} / ${chCount}` : '—'} small={checking != null ? '正在听每一路' : stale ? '底噪又高了' : mine ? bad.length ? `CH${bad.join('、CH')} 噪声高` : '全部贴好' : '还没检查'} />
     {kindSwitch}
     <h2 className="ins-headline">{checking != null ? '别动，正在听每一路…' : !mine ? '像戴手表那样戴在手腕' : stale ? '刚才贴好了，现在底噪又高了' : verdict.headline}</h2>
     <p className="ins-sub">{checking != null ? '手放松，前臂搁稳' : stale ? '电极可能被碰松了：沾水压紧，再检查一次' : !mine ? '照下面几条戴好，再检查一遍' : verdict.sub}</p>

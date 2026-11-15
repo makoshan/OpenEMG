@@ -83,32 +83,34 @@ export function MetaLive({ profile, projectId, bridge, st, runId, donning, onErr
   const manualKey = manualLanes.join(',');
   const [offer, setOffer] = useState<number[]>([]);
   const blocked = useRef(0);   // 从什么时候起连续卡在 1–2 路偏高；0 = 没卡。偏高的是哪几路可以变（某路在 150 µV 上下跳），不清零
+  const rigCh = Math.max(2, st?.rig.n_channels ?? rms?.length ?? 8);
+  const maxMask = Math.min(2, rigCh - 1);
   // 只有结印组（select）把屏蔽发给服务端；别的协议前端也不放过坏路，免得前后端不一致（复核 P1：鼠标协议会动真鼠标）
   // 手动屏蔽不看留一分数（minScore 0）：用户自己选的，认对估计照旧写在 maskNote 里
   const lanes = profile.protocol !== 'select' ? { mask: [] as number[], estimate: null } : manualLanes.length ? lanePlan(manualLanes, laneDrop, 0) : lanePlan(signalCheck.stuck, laneDrop);
   const maskKey = lanes.mask.join(',');
   const maskRef = useRef(''); maskRef.current = maskKey;   // 数据循环里核对服务端实际屏蔽的路
   // 游戏面板：肌电一栏随放松检查和屏蔽实时算；识别一栏 live = 当前认成什么，text 是出招结果，保留 1.5 秒
-  const panelRef = useRef(bandSignal(signalCheck, lanes.mask, !!rms && Date.now() - rmsAt < 1000));
-  panelRef.current = bandSignal(signalCheck, lanes.mask, !!rms && Date.now() - rmsAt < 1000);
+  const panelRef = useRef(bandSignal(signalCheck, lanes.mask, !!rms && Date.now() - rmsAt < 1000, rigCh));
+  panelRef.current = bandSignal(signalCheck, lanes.mask, !!rms && Date.now() - rmsAt < 1000, rigCh);
   const recRef = useRef({ live: '', text: '', until: 0 });
   useEffect(() => { signalGate.setIgnore(maskKey ? maskKey.split(',').map(Number) : []); }, [signalGate, maskKey]);
   useEffect(() => { signalGate.force(manualKey ? manualKey.split(',').map(Number) : []); }, [signalGate, manualKey]);
   const recognition = useRecognitionGate(bridge, projectId, on, onError, st?.wl8?.live?.last, profile.protocol === 'select' ? lanes.mask : undefined);
-  // 按钮屏蔽「已屏蔽的 ∪ 现在偏高的」：只给偏高的会把已自动屏蔽的路放开，点完又卡住（复核 #102 P1）；合起来超过 2 路不给
+  // 按钮屏蔽「已屏蔽的 ∪ 现在偏高的」：只给偏高的会把已自动屏蔽的路放开，点完又卡住（复核 #102 P1）；合起来超过上限不给
   const offerLanes = offer.length ? [...new Set([...lanes.mask, ...offer])].sort((a, b) => a - b) : [];
   const maskNote = !lanes.mask.length ? '' : `已屏蔽第 ${lanes.mask.join('、')} 路（${manualLanes.length ? '手动' : '没贴好'}）${lanes.estimate != null ? ` · ${lanes.mask.length > 1 ? '单缺其中一路' : '缺它'}认对约 ${Math.round(lanes.estimate * 100)}%${lanes.mask.length > 1 ? '（两路同缺未估）' : ''}` : ''}`;
   useEffect(() => {
     blocked.current = 0; setOffer([]);   // 换门重新计时
     const timer = setInterval(() => {
       const now = Date.now(), check = signalGate.status(now); setSignalCheck(check);
-      const stuck = !check.allowed && check.high.length > 0 && check.high.length <= 2;   // ≥3 路是用力，不给屏蔽
+      const stuck = !check.allowed && check.high.length > 0 && check.high.length <= maxMask;   // 多路同涨是用力，不给屏蔽
       if (!stuck) blocked.current = 0; else blocked.current ||= now;
       setOffer(stuck && now - blocked.current >= OFFER_MS ? check.high : []);
       if (ready && !check.allowed) { if (profile.game !== 'tianjie') trigger.current.reset(); sequence.current.reset(); setContact('等待放松检查'); setCommand(check.text); }
     }, 100);
     return () => clearInterval(timer);
-  }, [signalGate, ready]);
+  }, [signalGate, ready, maxMask]);
   // 每题提示放松时重新检查；动作题固定4秒，不用动作信号反推接触。
   useEffect(() => { if (exam?.phase === 'rest') signalGate.reset(Date.now()); }, [signalGate, exam?.phase, exam?.i]);
   useEffect(() => {
@@ -144,7 +146,7 @@ export function MetaLive({ profile, projectId, bridge, st, runId, donning, onErr
   const activeId = st?.wl8?.live?.run_id ?? runId;
   useEffect(() => {
     let cancelled = false; setCal(null); setLaneDrop(null); setRunCreated(null);
-    if (activeId) void bridge.run(activeId).then((r) => { if (!cancelled && r.ok) { setRunCreated(r.value.created ?? null); const v = r.value as unknown as { motion_calibration?: MotionCalibration; lane_drop?: number[] }; setCal(v.motion_calibration ?? null); setLaneDrop(Array.isArray(v.lane_drop) && v.lane_drop.length === 8 ? v.lane_drop : null); } });
+    if (activeId) void bridge.run(activeId).then((r) => { if (!cancelled && r.ok) { setRunCreated(r.value.created ?? null); const v = r.value as unknown as { motion_calibration?: MotionCalibration; lane_drop?: number[] }; setCal(v.motion_calibration ?? null); setLaneDrop(Array.isArray(v.lane_drop) && v.lane_drop.length >= 2 ? v.lane_drop : null); } });
     return () => { cancelled = true; };
   }, [bridge, projectId, activeId]);
   useEffect(() => {
@@ -254,7 +256,7 @@ export function MetaLive({ profile, projectId, bridge, st, runId, donning, onErr
   return <div className="emg8-live"><section className="emg8-card emg8-live-head"><div><h3>{profile.protocol === 'select' ? `${profile.labels.length} 类识别` : '组合动作试用'}</h3><small>{profile.windowMs ?? 200} ms 信号窗 · 每 50 ms 更新 · 仅本页反馈</small></div><button className={on ? 'emg8-stop' : 'emg8-primary'} onClick={toggle} disabled={validationBusy || (!on && !runId)} title={grayTitle(!on && !runId && '先在训练页生成一个模型')}>{on ? '停止识别' : '开始识别'}</button></section>
 {rewear && <p className="emg8-warn emg8-rewear" role="alert"><span><b>{rewear.short}。</b><small>{rewear.detail}</small></span>{onRewear && <button type="button" onClick={onRewear}>去采集页</button>}</p>}
 <div className="emg8-thumb-workgrid"><section className="emg8-card"><div className="ins-live">{[...command].length <= 8 ? <Flap text={command} dim={!ready} /> : <h2 role="status">{command}</h2>}<Gauge value={ready ? conf : 0} threshold={.65} /><span className="ins-cap">信号：{signalCheck.text}{maskNote && ` · ${maskNote}`} · 认成：{contact} · 红线 = 0.65</span>
-        {profile.protocol === 'select' && ready && offerLanes.length > 0 && offerLanes.length <= 2 && <button type="button" onClick={() => setManual({ gate: signalGate, lanes: offerLanes })} title="手完全松开了这几路还偏高，多半没贴好。还握着印时别点：会把动作最强的路屏蔽掉（2026-10-15 握印录音里同样会出这个按钮）。屏蔽后缺这几路继续认；停止识别后恢复">松手后仍偏高 · 屏蔽第 {offerLanes.join('、')} 路</button>}</div>
+        {profile.protocol === 'select' && ready && offerLanes.length > 0 && offerLanes.length <= maxMask && <button type="button" onClick={() => setManual({ gate: signalGate, lanes: offerLanes })} title="手完全松开了这几路还偏高，多半没贴好。还握着印时别点：会把动作最强的路屏蔽掉（2026-10-15 握印录音里同样会出这个按钮）。屏蔽后缺这几路继续认；停止识别后恢复">松手后仍偏高 · 屏蔽第 {offerLanes.join('、')} 路</button>}</div>
       {profile.protocol === 'motion' ? <><div className="emg8-form"><label>试用动作<select value={mode} onChange={(e) => setMode(e.target.value as 'knob' | 'scroll')}><option value="knob">捏住转腕</option><option value="scroll">捏住摆臂</option></select></label><label>转腕用途<select value={target} onChange={(e) => setTarget(e.target.value)}>{['音量', '亮度', '缩放'].map((x) => <option key={x}>{x}</option>)}</select></label></div>{mode === 'knob' && <p>{target}试用：<b>{Math.round(value)}%</b><progress value={value} max={100} /></p>}<p className="emg8-fine">{cal?.status === 'calibrated' && cal.donning === donning ? '当前佩戴方向已校准。先静止捏住，再转动；松开即停止。' : cal?.reason ?? '请在采集页录完六个运动方向，每类至少 3 条，再重新训练。'}{cal?.status === 'calibrated' && cal.donning !== donning ? '佩戴已改变，方向校准失效，请重录。' : ''}</p></> : profile.protocol === 'mouse' ? <div className="ins-bind">
         <table><tbody>{Object.entries(mousePreset(step)).filter(([l]) => profile.labels.includes(l)).map(([l, a]) => <tr key={l}><td>{LABEL_CN[l] ?? l}</td><td>{a.text}</td></tr>)}</tbody></table>
         <div className="emg8-form"><label>每次挪<select value={step} onChange={(e) => setStep(Number(e.target.value))}>{[60, 120, 240].map((v) => <option key={v} value={v}>{v} 像素</option>)}</select></label>

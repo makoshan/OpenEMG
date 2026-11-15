@@ -35,8 +35,8 @@ function registerGame({ ipcMain, guarded }) {
     if (!s || !STATES.has(s.state) || typeof s.text !== 'string' || !POSES.has(s.pose ?? '')) throw Object.assign(new Error('手环状态不合法'), { code: 'bad-input' });
     if (!gameWin || gameWin.isDestroyed()) return 'closed';
     const acc = Array.isArray(s.acc) && s.acc.length === 3 && s.acc.every(Number.isFinite) ? s.acc : null;
-    // 面板字段可选：8 路状态只许 ok / mask / bad / ''，两句文字截 40 字；不合法就不带，游戏照旧只显示一行
-    const lanes = Array.isArray(s.lanes) && s.lanes.length === 8 && s.lanes.every((x) => ['ok', 'mask', 'bad', ''].includes(x)) ? s.lanes : undefined;
+    // 面板字段可选：2/8/16 路状态只许 ok / mask / bad / ''，两句文字截 40 字；不合法就不带，游戏照旧只显示一行
+    const lanes = Array.isArray(s.lanes) && s.lanes.length >= 2 && s.lanes.length <= 16 && s.lanes.every((x) => ['ok', 'mask', 'bad', ''].includes(x)) ? s.lanes : undefined;
     const str = (v) => (typeof v === 'string' ? v.slice(0, 40) : undefined);
     const detail = JSON.stringify({ state: s.state, text: s.text.slice(0, 40), pose: s.pose ?? '', acc, lanes, signal: str(s.signal), rec: str(s.rec) });
     return Boolean(await gameWin.webContents.executeJavaScript(`window.TianjieGame?.band ? window.TianjieGame.band(${detail}) : false`));

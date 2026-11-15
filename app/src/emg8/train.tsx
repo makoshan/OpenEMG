@@ -18,11 +18,12 @@ export const revealScore = (run: Pick<Run, 'rewear'>) => pct(run.rewear);
 /** 跨佩戴分的叫法：没有重戴目录时服务端按佩戴编号留一次佩戴估分，不叫「重戴」；旧 run 没这个字段，只可能来自重戴目录 */
 export const rewearName = (source?: Run['rewear_source']) => (source === '留一次佩戴' ? '留一次佩戴' : '重戴');
 
-/** 8 路都是有限数才算测过。测到的 0 留下，没测过是 null，页面写成「—」。 */
+/** 各路都是有限数才算测过。测到的 0 留下，没测过是 null，页面写成「—」。 */
 export function readoutMedian(xs: number[] | null | undefined): number | null {
-  if (!xs || xs.length !== 8 || xs.some((v) => typeof v !== 'number' || !Number.isFinite(v))) return null;
+  if (!xs || xs.length < 2 || xs.some((v) => typeof v !== 'number' || !Number.isFinite(v))) return null;
   const s = [...xs].sort((a, b) => a - b);
-  return (s[3] + s[4]) / 2;
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 === 1 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 export function readoutLabeled(v: number | null, digits: number, unit: string): string {
   if (v == null || !Number.isFinite(v)) return '—';
@@ -30,7 +31,7 @@ export function readoutLabeled(v: number | null, digits: number, unit: string): 
 }
 export function channelLine(xs: number[] | null | undefined): string {
   if (readoutMedian(xs) == null || !xs) return '还没测';
-  return `8 路 ${xs.map((v) => String(Math.round(v))).join(' ')}`;
+  return `${xs.length} 路 ${xs.map((v) => String(Math.round(v))).join(' ')}`;
 }
 
 function Ticker({ value, delay = 0 }: { value: number; delay?: number }) {
@@ -203,7 +204,7 @@ export function Train({ profile, projectId, bridge, st, hand, onError, onLive }:
       </section>
       <section className="emg8-card">
         <header><h3>电极贡献</h3><small>每一路单独用时的{rewearName(run?.rewear_source)}准确率</small></header>
-        <ElectrodeRing values={run?.per_channel ?? null} max={1} hand={hand} format={(v) => `${Math.round(v * 100)}`} label="单路准确率 %" />
+        <ElectrodeRing values={run?.per_channel ?? null} max={1} channels={run?.per_channel?.length ?? st?.rig.n_channels ?? 8} hand={hand} format={(v) => `${Math.round(v * 100)}`} label="单路准确率 %" />
       </section>
     </div>
   </div>;

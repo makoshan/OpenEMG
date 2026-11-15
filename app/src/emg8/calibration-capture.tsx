@@ -45,6 +45,7 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
   const zero = zeroStopped(st);
   const job = st?.wl8?.train;
   const score = job?.events?.find((e): e is Extract<typeof e, { stage: 'done' }> => e.stage === 'done')?.same_wear;
+  const rigCh = Math.max(2, st?.rig.n_channels ?? rms?.length ?? 8);
   // 底噪样本只收两种时段：① 没在跑校准（含暂停等贴合）的空闲段——和戴好页同口径，开始前能看、能拦、贴好能自动继续；
   // ② 录制里明确要求放松的倒数段（跳过前 0.6 s 避开上一动作尾巴）。动作 NOW 段永远不收：Mako 2026-10-08「我捏的时候底噪肯定会很高」。
   const hist = useRef<{ t: number; rms: number[] }[]>([]);
@@ -54,7 +55,8 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
   const now = Date.now();
   const signalFresh = rmsAt > 0 && now - rmsAt >= 0 && now - rmsAt < 500;
   if (relaxing) relaxingSince.current ||= now; else relaxingSince.current = 0;
-  if ((idle || (relaxing && rmsAt - relaxingSince.current >= 600)) && signalFresh && rms?.length === 8 && rms.every(Number.isFinite) && hist.current.at(-1)?.t !== rmsAt) {
+  if (hist.current[0] && hist.current[0].rms.length !== rigCh) hist.current = [];
+  if ((idle || (relaxing && rmsAt - relaxingSince.current >= 600)) && signalFresh && rms?.length === rigCh && rms.every(Number.isFinite) && hist.current.at(-1)?.t !== rmsAt) {
     hist.current.push({ t: rmsAt, rms }); hist.current = hist.current.filter(h => now - h.t <= 4000);
   }
   if (!connected || !signalFresh || !rms) { hist.current = []; relaxingSince.current = 0; }
@@ -63,15 +65,15 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
   const noise = noiseVerdict(floor, NOISE_LIMIT_UV);   // 开始前拦、放松倒数里拦（2026-10-08 第 6 次佩戴底噪 158 µV 训出 50%，门槛才加）
   const gate = waiveNoise(noise, cal?.waived);          // 拦不拦按 gate（扣掉「仍然开始」放过的路）；电极环、柱子仍按原判定画
   const noiseText = recording && gp?.phase === 'NOW' ? '动作录制中 · 底噪检查已暂停'
-    : cal?.waived && gate.kind === 'ok' && noise.kind !== 'ok' ? `已放过：${noiseAdvice(noise, NOISE_LIMIT_UV)}；这几路先不拦，分数低再回来压紧` : noiseAdvice(noise, NOISE_LIMIT_UV);
-  const tape = useMemo(() => ({ uv: () => { const f = noiseFloor(hist.current, hist.current.at(-1)?.t ?? Date.now()); return f ? Math.max(...f) : NaN; }, limit: NOISE_LIMIT_UV }), []);   // 走纸条画 8 路最高的放松底噪
+    : cal?.waived && gate.kind === 'ok' && noise.kind !== 'ok' ? `已放过：${noiseAdvice(noise, NOISE_LIMIT_UV, rigCh)}；这几路先不拦，分数低再回来压紧` : noiseAdvice(noise, NOISE_LIMIT_UV, rigCh);
+  const tape = useMemo(() => ({ uv: () => { const f = noiseFloor(hist.current, hist.current.at(-1)?.t ?? Date.now()); return f ? Math.max(...f) : NaN; }, limit: NOISE_LIMIT_UV }), []);   // 走纸条画各路最高的放松底噪
 
-  // 幅度：录制的 NOW 阶段记 8 路 RMS（µV，不封顶）的最高值；基线 = 放松底噪最低值里最高的一路。
+  // 幅度：录制的 NOW 阶段记实时 RMS（µV，不封顶）的最高值；基线 = 放松底噪最低值里最高的一路。
   // 之前读走纸条 envelope（0–1，125 µV 就满格），动作再大也算不到 3 倍，2026-10-08 第 7 次佩戴 24 条全被判弱（离线实为 5–21 倍）。
   const amp = useRef({ peak: 0, phase: '' });
   const nowKey = recording && gp?.phase === 'NOW' ? `${gp.take}` : '';
   if (nowKey && amp.current.phase !== nowKey) amp.current = { peak: 0, phase: nowKey };
-  if (nowKey && rms && rms.length >= 8) amp.current.peak = Math.max(amp.current.peak, ...rms);
+  if (nowKey && rms && rms.length === rigCh) amp.current.peak = Math.max(amp.current.peak, ...rms);
 
   // 状态机：arm 发一条录制 → wait 等服务端忙完 → 判定推进 → 录满 train → training 等模型 → done
   const [tick, setTick] = useState(0);                       // wait 阶段没见到 busy 时每秒自检一次超时
@@ -173,7 +175,7 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
     <div className="emg8-thumb-workgrid">
       <section className="emg8-card emg8-thumb-action">
         <header><h3>动作示范</h3><div className="emg8-thumb-session"><label>佩戴手 <select aria-label="佩戴手" value={hand} disabled={running} onChange={(e) => setHand(e.target.value as Hand)}><option value="left">左手</option><option value="right">右手</option></select></label><small>第 {donning} 次佩戴 · 校准</small></div></header>
-        {alarm && <div className="ins-alert emg8-contact" role="alert"><ElectrodeRing values={floor} max={NOISE_LIMIT_UV * 1.6} hand={hand} size={132} label="放松底噪 µV" hot={(v) => v > NOISE_LIMIT_UV} onlyHot /><div><b>{waitingContact ? (noise.kind === 'unknown' ? '已暂停，等信号' : '已暂停，等电极贴好') : '电极没贴紧'}</b><span>{noiseText}</span><small>红的那片就是要压的位置；肌肉发力会让多路一起升，只有一两路高是接触问题</small></div></div>}
+        {alarm && <div className="ins-alert emg8-contact" role="alert"><ElectrodeRing values={floor} max={NOISE_LIMIT_UV * 1.6} channels={rigCh} hand={hand} size={132} label="放松底噪 µV" hot={(v) => v > NOISE_LIMIT_UV} onlyHot /><div><b>{waitingContact ? (noise.kind === 'unknown' ? '已暂停，等信号' : '已暂停，等电极贴好') : '电极没贴紧'}</b><span>{noiseText}</span><small>红的那片就是要压的位置；肌肉发力会让多路一起升，只有一两路高是接触问题</small></div></div>}
         {zero && <div className="ins-alert ins-zero" role="alert"><b>没收到数据 · 0 帧</b><span>这一条已停下。{zeroNote(st?.rig.link)}</span></div>}
         {/* 底噪报警时示范收成一行：报警框已占半屏，示范图被挤到下面看不全；贴好后自动展开（2026-10-12） */}
         {alarm ? <p className="emg8-guide-folded">示范：{gesture.name.split(' · ')[0]} · 电极贴好后展开</p> : <>
@@ -187,11 +189,11 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
         <div className={`emg8-thumb-cue ${recording && gp?.phase === 'NOW' ? 'go' : ''}`} role="status"><div><strong>{recording ? gp?.phase === 'NOW' ? gesture.kind === 'rest' ? '保持放松' : gesture.kind === 'hold' ? '摆好，保持住' : gesture.kind === 'cont' ? '做！连续来回做，到提示结束' : '做！只做一次' : '准备，先不要动' : waitingContact ? '压一下亮红的电极，稳了自动继续' : cal?.phase === 'arm' ? '下一条马上开始' : cal?.phase === 'training' ? '正在训练…' : cal?.phase === 'done' ? verdict.title : cal?.phase === 'stopped' ? '已停下' : '先看动作，再开始校准'}</strong><small>{running && cal ? `第 ${Math.min(cal.i + 1, total)} / ${total} 次 · ${gesture.name.split(' · ')[0]}` : cal?.phase === 'stopped' ? `停在第 ${Math.min(cal.i + 1, total)} / ${total} 次 · 「继续校准」接着录，或「放弃这轮」` : cal?.phase === 'done' ? `${total} 次录完 · 第 ${donning} 次佩戴的模型，分数和建议看右栏` : `先听口令放松、3 秒倒数，再录动作；${profile.labels.length} 类轮流，同一类不连录。`}</small></div></div>
         <footer className="emg8-thumb-actionbar">
           {!cal && <button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={() => start(cfg.rounds)}>{`开始校准 · ${total} 次 · 约 ${Math.round(seconds / 60)} 分钟`}</button>}
-          {!cal && connected && canWaive(noise, null) && <button disabled={!signalFresh || !!st?.busy || replay} title={calWhy({ replay: true })} onClick={() => start(cfg.rounds, noise.bad)}>仍然开始 · {waiveLabel}</button>}
-          {waitingContact && canWaive(noise, cal?.waived) && <button onClick={waive}>{waiveLabel}，接着录</button>}
+          {!cal && connected && canWaive(noise, null, rigCh) && <button disabled={!signalFresh || !!st?.busy || replay} title={calWhy({ replay: true })} onClick={() => start(cfg.rounds, noise.bad)}>仍然开始 · {waiveLabel}</button>}
+          {waitingContact && canWaive(noise, cal?.waived, rigCh) && <button onClick={waive}>{waiveLabel}，接着录</button>}
           {running && <button onClick={() => stop()}>停下</button>}
-          {cal?.phase === 'stopped' && <><button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={resume}>{noiseHolds ? `第 ${noisyLanes} 路底噪过线 · 先沾水压紧` : '继续校准'}</button>{noiseHolds && canWaive(noise, cal.waived) && <button disabled={!connected || !signalFresh || !!st?.busy || replay} title={calWhy({ replay: true })} onClick={() => { waive(); resume(); }}>仍然继续 · {waiveLabel}</button>}<button disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button><button onClick={() => setCal(null)}>放弃这轮</button></>}
-          {cal?.phase === 'done' && doneKind === 'rest' && <><button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={rerecordRest}>{noiseHolds ? `第 ${noisyLanes} 路底噪过线 · 先沾水压紧` : '沾水压紧后重录放松'}</button>{noiseHolds && canWaive(noise, cal.waived) && <button onClick={waive}>仍然用 · {waiveLabel}</button>}<button disabled={!connected || !signalFresh || !!st?.busy || noiseHolds} title={calWhy({ noise: true })} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button></>}
+          {cal?.phase === 'stopped' && <><button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={resume}>{noiseHolds ? `第 ${noisyLanes} 路底噪过线 · 先沾水压紧` : '继续校准'}</button>{noiseHolds && canWaive(noise, cal.waived, rigCh) && <button disabled={!connected || !signalFresh || !!st?.busy || replay} title={calWhy({ replay: true })} onClick={() => { waive(); resume(); }}>仍然继续 · {waiveLabel}</button>}<button disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button><button onClick={() => setCal(null)}>放弃这轮</button></>}
+          {cal?.phase === 'done' && doneKind === 'rest' && <><button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy || replay || noiseHolds} title={calWhy({ replay: true, noise: true })} onClick={rerecordRest}>{noiseHolds ? `第 ${noisyLanes} 路底噪过线 · 先沾水压紧` : '沾水压紧后重录放松'}</button>{noiseHolds && canWaive(noise, cal.waived, rigCh) && <button onClick={waive}>仍然用 · {waiveLabel}</button>}<button disabled={!connected || !signalFresh || !!st?.busy || noiseHolds} title={calWhy({ noise: true })} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button></>}
           {cal?.phase === 'done' && doneKind === 'retry' && <><button className="emg8-primary" disabled={!connected || !signalFresh || !!st?.busy} title={calWhy()} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button><button onClick={() => cal.runId && onTrained?.(cal.runId)}>先试试看 →</button></>}
           {cal?.phase === 'done' && doneKind === 'look' && <><button className="emg8-primary" onClick={() => cal.runId && onTrained?.(cal.runId)}>看认到哪一类</button><button disabled={!connected || !signalFresh || !!st?.busy} title={calWhy()} onClick={() => start(1)}>再补一轮 · {profile.labels.length} 次</button></>}
           <label>示范 <select aria-label="示范动作" value={selected} disabled={running} onChange={(e) => setSelected(e.target.value)}>{profile.labels.map((l) => <option key={l} value={l}>{profile.gestures![l].name.split(' · ')[0]}</option>)}</select></label>
@@ -202,12 +204,12 @@ export function CalibrationCapture({ profile, projectId, bridge, st, hand, donni
       <aside className="emg8-card emg8-thumb-gestures"><header><h3>校准这次佩戴</h3><small>第 {donning} 次</small></header>
         <div className="emg8-cal-body">
           {cal?.phase === 'done' ? <><div className={`big emg8-score-${verdict.kind}`}>{score != null ? `${Math.round(score * 100)}%` : '模型好了'}</div><p className="emg8-fine">{noiseHolds ? '底噪还高。先沾水压紧，重录放松，再看这个数。' : verdict.hint}</p><p className="emg8-fine">这次佩戴的留一估计。摘下或转一下，这个数作废。</p><p className="emg8-fine">光标移动在「控制」页，用手腕角速度。</p></>
-            : !cal && connected && noise.kind === 'bad' ? <><div className="big">先降底噪</div><p className="emg8-fine">8 路放松底噪最好都低于 {NOISE_LIMIT_UV} µV。红的那几路先沾水压紧；只有 1–2 路压不下来，可以点「仍然开始」，看录完的分数再定；3 路及以上要重新戴。</p></>
+            : !cal && connected && noise.kind === 'bad' ? <><div className="big">先降底噪</div><p className="emg8-fine">{rigCh} 路放松底噪最好都低于 {NOISE_LIMIT_UV} µV。红的那几路先沾水压紧；{rigCh === 2 ? '只有 1 路压不下来，可以点「仍然开始」，看录完的分数再定；2 路都高要重新戴。' : '只有 1–2 路压不下来，可以点「仍然开始」，看录完的分数再定；3 路及以上要重新戴。'}</p></>
             : <><div className="big">{running && cal ? `${Math.min(cal.i + 1, total)} / ${total}` : `${total} 次动作`}</div><p className="emg8-fine">{REDON_NOTE}每个手势做 {cfg.rounds} 次，{profile.labels.length} 个手势轮流来；只用这次佩戴的数据训练。</p></>}
           <div className="emg8-cal-last" role="status">{cal?.last ?? ''}</div>
           {note && cal && <p className="emg8-fine emg8-cal-note" role="status">{note}</p>}
           <div className={`emg8-noise emg8-noise-${noise.kind}`} aria-label="放松底噪">{gate.kind !== 'bad' && <small>{noiseText}{noise.kind !== 'unknown' ? ` · 红线 ${NOISE_LIMIT_UV} µV` : ''}</small>}
-            <div className="bars">{Array.from({ length: 8 }, (_, i) => { const v = floor?.[i]; const h = Number.isFinite(v as number) ? Math.min(100, (v as number) / (NOISE_LIMIT_UV * 1.6) * 100) : 0; return <i key={i} className={!Number.isFinite(v as number) ? '' : (v as number) > NOISE_LIMIT_UV ? 'bad' : (v as number) >= NOISE_LIMIT_UV * .55 ? 'high' : 'ok'} style={{ height: `${Math.max(4, h)}%` }} title={`第 ${i + 1} 路放松底噪 ${Number.isFinite(v as number) ? Math.round(v as number) : '—'} µV`} />; })}</div>{noise.kind === 'ok' && <small>这里只看本条倒数时的放松测量；动作段不检查底噪。校准口令由 Mac 本地播报。</small>}</div>
+            <div className="bars" style={{ ['--ch-count' as string]: rigCh }}>{Array.from({ length: rigCh }, (_, i) => { const v = floor?.[i]; const h = Number.isFinite(v as number) ? Math.min(100, (v as number) / (NOISE_LIMIT_UV * 1.6) * 100) : 0; return <i key={i} className={!Number.isFinite(v as number) ? '' : (v as number) > NOISE_LIMIT_UV ? 'bad' : (v as number) >= NOISE_LIMIT_UV * .55 ? 'high' : 'ok'} style={{ height: `${Math.max(4, h)}%` }} title={`第 ${i + 1} 路放松底噪 ${Number.isFinite(v as number) ? Math.round(v as number) : '—'} µV`} />; })}</div>{noise.kind === 'ok' && <small>这里只看本条倒数时的放松测量；动作段不检查底噪。校准口令由 Mac 本地播报。</small>}</div>
           <label className="emg8-cal-place">佩戴位置<input value={placement} disabled={running} onChange={(e) => setPlacement(e.target.value)} placeholder={PLACEMENT_HINT} title={PLACEMENT_HINT} /></label>
           <StrapField className="emg8-cal-place" strap={strap} setStrap={setStrap} disabled={running} />
           {!!st?.log.length && <p className="emg8-fine" role="status">采集服务：{st.log.at(-1)}</p>}

@@ -64,8 +64,10 @@
 .emg8-thumb-details-body > button { justify-self: start; font-size: 12px; }
 .emg8-thumb-foot { display: flex; justify-content: space-between; gap: 12px; }
 .emg8 .emg8-thumb-validation { margin: 0; padding: 0 16px 12px; }
-.emg8[data-guided] .emg8-signal { border: 0; padding: 0; }
-.emg8[data-guided] .emg8-wave-emg { height: 240px; }
+.emg8[data-guided] .emg8-signal { border: 0; padding: 0; box-shadow: none; }
+.emg8[data-guided] .emg8-wave-emg { height: 264px; }
+.emg8[data-guided] .emg8-wave-emg[data-channels="2"] { height: 176px; }
+.emg8[data-guided] .emg8-wave-emg[data-channels="16"] { height: 392px; }
 @container (max-width: 900px) {
   .emg8-thumb-workgrid { grid-template-columns: minmax(0,1fr) 180px; gap: 11px; }
   .emg8-demo-body { gap: 11px; padding: 13px; }
@@ -130,15 +132,26 @@
 .emg8-channels-bar { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--emg8-dim); }
 .emg8-channels-bar b { color: var(--emg8-text); font-size: 13px; }
 .emg8-channels-bar select { font: inherit; }
-/* 只有校准页压到 96px（:has 提到 0,5,0，压过第 68 行 240px）。八路名字放不进 96px，幅度用上面那一行数字，画布铺满。其他录动作页保持 240px。 */
+/* 只有校准页走左侧栏铺满。八路名字放不进窄高栏，幅度用上面那一行数字，画布铺满。其他录动作页按通道数自适应高度。 */
 .emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-lanes { display: none; }
 .emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-wave-emg canvas { inset: 0; width: 100%; }
-.emg8-ch-readout { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0 8px; list-style: none; }
-.emg8-ch-readout li { display: flex; justify-content: space-between; gap: 4px; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--emg8-dim); }
-.emg8-ch-readout b { color: var(--emg8-text); font-size: 11px; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels .emg8-wave-emg { background-position: 0 0, 0 0; background-size: 20% 100%, 100% 100%; }
+.emg8-ch-readout { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 5px 8px; margin: 0; padding: 0 2px; list-style: none; }
+.emg8[data-channels="2"] .emg8-ch-readout { grid-template-columns: repeat(2, minmax(0, 220px)); }
+.emg8-ch-readout li { display: flex; align-items: center; justify-content: space-between; gap: 5px; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--emg8-dim); }
+.emg8-ch-readout li:not(.note) {
+  padding: 3px 8px; border-radius: 7px;
+  background: color-mix(in srgb, var(--emg8-bg) 52%, var(--emg8-panel));
+  border: 1px solid color-mix(in srgb, var(--emg8-line) 82%, transparent);
+}
+.emg8-ch-readout li:not(.note)::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ch-col, var(--emg8-accent)); flex: none;
+}
+.emg8-ch-readout b { color: var(--emg8-text); font-size: 11px; margin-right: auto; }
 .emg8-readfirst { margin: 10px 16px 0; font-size: 13px; line-height: 1.5; color: var(--emg8-text); }
 .emg8-calibration .emg8-contact,.emg8-calibration .ins-zero { margin: 12px 16px 0; }
-.emg8-channels .emg8-signal { grid-template-columns: minmax(0, 1fr) 180px; }   /* 电极环固定 180px 宽，栏只给 132px 时右边被裁 */
+.emg8-channels .emg8-signal { grid-template-columns: minmax(0, 1fr) 192px; }   /* 电极环固定 180px+ 宽，栏只给 132px 时右边被裁 */
 .emg8-channels .emg8-wave-gyro { display: none; }
 
 /* 专训首屏只留一个手势组标题，给口令与录制按钮让出空间。 */
@@ -188,9 +201,9 @@
 .emg8-calibration .emg8-demo-body:has(.with-photo) { grid-template-columns: 236px minmax(0, 1fr); }
 .emg8-calibration .emg8-meta-photo { height: 112px; width: auto; justify-self: center; }
 
-/* 校准页底噪：8 根小柱，红线 = NOISE_LIMIT_UV */
+/* 校准页底噪：多路小柱，红线 = NOISE_LIMIT_UV */
 .emg8-noise { display: grid; gap: 4px; } .emg8-noise small { font-size: 12px; color: var(--emg8-dim); }
-.emg8-noise .bars { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; height: 34px; align-items: end; position: relative; padding-top: 2px; }
+.emg8-noise .bars { display: grid; grid-template-columns: repeat(var(--ch-count, 8), minmax(0, 1fr)); gap: 3px; height: 34px; align-items: end; position: relative; padding-top: 2px; }
 .emg8-noise .bars::before { content: ""; position: absolute; left: 0; right: 0; top: 37.5%; border-top: 1px dashed #D0606A; opacity: .7; }
 .emg8-noise .bars i { display: block; border-radius: 3px 3px 0 0; background: var(--emg8-line); transition: height .3s; }
 .emg8-noise .bars i.ok { background: var(--emg8-accent); } .emg8-noise .bars i.high { background: #E9B949; } .emg8-noise .bars i.bad { background: #D0606A; }
@@ -202,8 +215,11 @@
 .emg8-contact .emg8-ring-seg[data-hot="1"] { animation: emg8-breathe 1.1s ease-in-out infinite; }
 @keyframes emg8-breathe { 50% { opacity: .45; } }
 
-/* 校准页：八路波形改到左侧整栏（Mako 2026-10-12），动作说明、进度和开始按钮同一屏；读数两行四列。 */
-.emg8[data-guided]:has(.emg8-calibration) .emg8-ch-readout { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; row-gap: 2px; padding: 0 2px; }   /* 220px 塞 4 列会把「µV」挤到下一行、两个数黏在一起：改 2 列（2026-10-12） */
+/* 校准页：多路波形改到左侧整栏（Mako 2026-10-12），动作说明、进度和开始按钮同一屏；读数两列紧凑卡片。 */
+.emg8[data-guided]:has(.emg8-calibration) .emg8-ch-readout { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 6px; row-gap: 3px; padding: 0 2px; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-ch-readout li:not(.note) { padding: 2px 5px; font-size: 10px; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-ch-readout b { font-size: 10px; }
+.emg8[data-guided]:has(.emg8-calibration) .emg8-channels-bar .emg8-spec-badge { display: none; }
 .emg8[data-guided]:has(.emg8-calibration) { height: 100%; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 220px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 8px 12px; padding: 8px 12px 4px; box-sizing: border-box; }
 .emg8[data-guided]:has(.emg8-calibration) .emg8-chrome { grid-column: 1 / -1; grid-row: 1; }   /* #317 后标题 + 步骤包在 .emg8-chrome 里（钉顶），它是网格第一行 */
 .emg8[data-guided]:has(.emg8-calibration) .emg8-channels { grid-column: 1; grid-row: 2; margin: 0; min-height: 0; display: flex; flex-direction: column; background: var(--emg8-panel); border: 1px solid var(--emg8-line); border-radius: 12px; padding: 10px 8px 8px; overflow: hidden; }

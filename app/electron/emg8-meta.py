@@ -22,11 +22,18 @@ def install(trainer, profiles, wl8):
     original_load, original_live = trainer.load, trainer.LivePredictor
     sets = [set(p['labels']) for p in profiles.values() if p.get('protocol')]
     by_labels = {frozenset(p['labels']): p for p in profiles.values() if p.get('protocol')}
-    sos = butter(4, [20, 450], 'bandpass', fs=trainer.FS, output='sos')
+    sos_cache = {trainer.FS: butter(4, [20, 450], 'bandpass', fs=trainer.FS, output='sos')}
+    def get_sos(fs):
+        fs = int(fs)
+        if fs not in sos_cache:
+            hi = min(450, int(fs * 0.45))
+            sos_cache[fs] = butter(4, [20, hi], 'bandpass', fs=fs, output='sos')
+        return sos_cache[fs]
 
-    def features(e):
+    def features(e, fs=trainer.FS):
         e = np.asarray(e, float)
-        f, power = welch(e - e.mean(0), trainer.FS, nperseg=400, axis=0)
+        nperseg = min(len(e), max(128, int(round(0.2 * fs))))
+        f, power = welch(e - e.mean(0), fs, nperseg=nperseg, axis=0)
         ok = f >= 20
         for k in range(1, 20):
             ok &= np.abs(f - 50 * k) > 4
@@ -38,7 +45,7 @@ def install(trainer, profiles, wl8):
     # 线 = max(下四分位 × 3, 1000 µV)：真实 49 条放松（第 5–11 次）只按 ×3 会剔 37%，加 1000 µV 下限剔 22%、目标垃圾（1.3–4.4 万）全中（复核 P2）
     REST_FACTOR, REST_FLOOR_UV = 3., 1000.
     def rest_outliers(rms_by_file):
-        """{文件: 八路中位 RMS} → 要剔除的文件列表：> max(下四分位 × REST_FACTOR, REST_FLOOR_UV)。"""
+        """{文件: 多路中位 RMS} → 要剔除的文件列表：> max(下四分位 × REST_FACTOR, REST_FLOOR_UV)。"""
         if len(rms_by_file) < 2: return []
         cut = max(REST_FACTOR * float(np.percentile(list(rms_by_file.values()), 25)), REST_FLOOR_UV)
         return [f for f, r in rms_by_file.items() if r > cut]
@@ -49,19 +56,20 @@ def install(trainer, profiles, wl8):
             m = json.loads(f.with_suffix('.json').read_text()); return m.get('donning') if isinstance(m, dict) else None
         except (OSError, ValueError): return None
 
-    def window(e, half, align):
+    def window(e, half, align, fs=trainer.FS):
         """每条独立录制只取一个短窗，邻近窗不分到训练和验证两边。
         校准组对准动作：20–450 Hz 滤波后 0.2 s 平滑能量最大处（2026-10-07 第 5/6 次佩戴：正中 0.2 s 留一 52%，对准 0.4 s 68–85%）。"""
         mid = len(e) // 2
         if align and len(e) > 2 * half:
-            env = np.convolve((sosfiltfilt(sos, e, axis=0) ** 2).sum(1), np.ones(400) / 400, 'same')
+            k_len = max(16, int(round(0.2 * fs)))
+            env = np.convolve((sosfiltfilt(get_sos(fs), e, axis=0) ** 2).sum(1), np.ones(k_len) / k_len, 'same')
             mid = half + int(np.argmax(env[half:len(e) - half]))
         return e[mid - half:mid + half]
 
-    def load(root, labels, since=None):
+    def load(root, labels, since=None, n_channels=None):
         if set(labels) not in sets:
-            return original_load(root, labels, since)
-        p = by_labels[frozenset(labels)]; half = int(p.get('windowMs', 200)) // 2 * trainer.FS // 1000
+            return original_load(root, labels, since, n_channels=n_channels)
+        p = by_labels[frozenset(labels)]
         calibrate = bool(p.get('calibrate'))
         files = [(label, f) for label in labels for f in sorted((Path(root) / label).glob('*.npz')) if not (since and f.stat().st_mtime < since)]
         if calibrate:
@@ -72,13 +80,18 @@ def install(trainer, profiles, wl8):
             current = max(wears)
             files = [(l, f) for l, f in files if donning_of(f) == current]
         out = []
+        seen_ch = int(n_channels) if n_channels is not None else None
         for label, f in files:
             with np.load(f, allow_pickle=False) as z:
                 e = z['emg_uv'].astype(float)
+                fs = int(z['fs']) if 'fs' in z.files else (int(z['emg_hz']) if 'emg_hz' in z.files else trainer.FS)
+            if seen_ch is not None and e.shape[1] != seen_ch: continue
+            seen_ch = int(e.shape[1])
+            half = max(16, int(p.get('windowMs', 200)) // 2 * fs // 1000)
             if len(e) < 2 * half: continue                        # 比窗口还短的样本跳过，负索引会回绕
-            x = features(window(e, half, calibrate))
+            x = features(window(e, half, calibrate, fs=fs), fs=fs)
             rms_ch = np.std(e, axis=0)
-            out.append((label, x, dict(file=f.name, mtime=f.stat().st_mtime, rms=float(np.median(rms_ch)), rms_ch=rms_ch, ptp=trainer.ptp_windows(e), donning=donning_of(f))))
+            out.append((label, x, dict(file=f.name, mtime=f.stat().st_mtime, rms=float(np.median(rms_ch)), rms_ch=rms_ch, ptp=trainer.ptp_windows(e, fs=fs), donning=donning_of(f), fs=fs, n_channels=seen_ch)))
         if calibrate:
             rests = [l for l in labels if p['gestures'].get(l, {}).get('kind') == 'rest']
             bad = set(rest_outliers({f'{l}/{m["file"]}': m['rms'] for l, _, m in out if l in rests}))   # 和 emg8-server 的训练包装同一规则、同一输入
@@ -98,9 +111,9 @@ def install(trainer, profiles, wl8):
             self.gap_epoch = gap_epoch[0]
             self.pool = []; self.rest_streak = 0
             super().__init__(path, window_s=ms / 1000 if self.short else 1., step_s=.05 if self.short else .1)
-            self.pool_steps = 8 if self.win < 1000 else 3
+            self.pool_steps = 8 if self.short else 3
             sidecar = Path(path).with_name('adaptive-intent.json')
-            if sidecar.exists():
+            if sidecar.exists() and self.n_ch == 8:
                 try:
                     import adaptive_intent, hashlib
                     data = adaptive_intent.load(sidecar)
@@ -142,7 +155,7 @@ def install(trainer, profiles, wl8):
                 self.gap_epoch = gap_epoch[0]; self.reset()
                 return dict(probs={}, top='', xy=[0, 0])
             e = np.asarray(emg, float)
-            if e.ndim != 2 or e.shape[1] != 8 or not np.isfinite(e).all():
+            if e.ndim != 2 or e.shape[1] != self.n_ch or not np.isfinite(e).all():
                 self.reset()
                 return None
             shadow = self.shadow_result(e)
@@ -151,14 +164,14 @@ def install(trainer, profiles, wl8):
             if len(self.buf) < self.win or self.since < self.step:
                 return None
             self.since = 0
-            x = features(self.buf)[None]
+            x = features(self.buf, fs=self.fs)[None]
             _, p = trainer.scores(self.m, x)
             p_out = p[0]
             xy = (x @ self.W)[0]
             self.shadow_pending = []
             extra = {}
             if getattr(self, 'rest_rms', None) is not None:
-                keep_ch = [i for i in range(8) if i + 1 not in getattr(self, 'mask', ())]
+                keep_ch = [i for i in range(self.n_ch) if i + 1 not in getattr(self, 'mask', ())]
                 if keep_ch:
                     rms_w = np.std(self.buf[:, keep_ch], axis=0)
                     snr_db = float(20.0 * np.log10(np.percentile(rms_w / np.maximum(self.rest_rms[keep_ch], 1e-6), 75) + 1e-9))
