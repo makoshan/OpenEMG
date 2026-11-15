@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""OpenEMG 全家族 17 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 6 项必失败反例）。
+"""OpenEMG 全家族 18 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 6 项必失败反例）。
 
 核验范围：
-1. 全家族 17 套直接上传制造包（01..17：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
+1. 全家族 18 套直接上传制造包（01..17 及 v0.01 主控板：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
    16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、
    新版超薄双 30P 穿戴采集板 AFE-30P、新版双 30P 四层软板 strap-30p A/B、
    v0.01 广濑 1.0mm 1nF 台架采集板、讯普 2.0mm 1nF 台架采集板）
@@ -256,7 +256,7 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
     FabPackSpec(
         pack_id="16-16ch-afe-hirose-1mm-1nf",
         gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip",
-        gerber_sha_prefix="85531a7651037110",
+        gerber_sha_prefix="76a889ab137d44e4",
         cu_layers=4,
         bom_csv="hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_bom.csv",
         bom_sha_prefix="831f60105e20fda1",
@@ -265,6 +265,19 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         bom_rows=24,
         top_count=80,
         bot_count=66,
+    ),
+    FabPackSpec(
+        pack_id="v001-mainboard-c08b-u9",
+        gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip",
+        gerber_sha_prefix="f46e706337b063ca",
+        cu_layers=6,
+        bom_csv="hardware/16ch-afe-hirose-1mm-1nf/mainboard_bom.csv",
+        bom_sha_prefix="0a533ad3a4d878e4",
+        cpl_csv="hardware/16ch-afe-hirose-1mm-1nf/mainboard_cpl.csv",
+        cpl_sha_prefix="0b23a3398b60d311",
+        bom_rows=45,
+        top_count=42,
+        bot_count=68,
     ),
     FabPackSpec(
         pack_id="17-16ch-afe-xunpu-2mm-1nf",
@@ -407,8 +420,8 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
 def verify_repo(repo_root: Path, check_hashes: bool = True) -> list[str]:
     errs: list[str] = []
-    if len(PACK_SPECS) != 17:
-        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 17")
+    if len(PACK_SPECS) != 18:
+        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 18")
 
     for spec in PACK_SPECS:
         gz = repo_root / spec.gerber_zip
@@ -551,7 +564,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}", file=sys.stderr)
         return 1
-    print(f"嘉立创制造包门禁通过：{target}（全家族 17 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
+    print(f"嘉立创制造包门禁通过：{target}（全家族 18 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
     return 0
 
 
