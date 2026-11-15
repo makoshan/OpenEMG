@@ -95,7 +95,7 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 | 工作 | 还要做什么 |
 |---|---|
 | 打板与贴片 | 用 11 月 15 日定版包打样。核对板厚、盘中孔和钢网，在贴装预览里逐面检查两颗 ADS1298、三只排线座和 32 颗保护管。 |
-| 固件适配 | [`c08b-bringup`](firmware/c08b-bringup/) 与 [`c08b-stream`](firmware/c08b-stream/) 已对照 `v0.01` 双板网表完成适配（双片独立 `INT_TEST=1` 测试源、`Pin 62 RLDIN=+2.5 V` 禁置 `RLD_MEAS/MUX=010`、`Pin 60 RLDREF=AGND` 禁置 `RLDREF_INT`），待回板后实机烧录验证。 |
+| 固件适配 | [`c08b-bringup`](firmware/c08b-bringup/) 与 [`c08b-stream`](firmware/c08b-stream/) 已对照 `v0.01` 双板网表完成适配（双片独立 `INT_TEST=1` 测试源、`Pin 62 RLDIN=+2.5 V` 禁置 `RLD_MEAS/MUX=010`、`Pin 60 RLDREF=AGND` 禁置 `RLDREF_INT`，支持经蓝牙或 USB 接收器在线切换 `500/1000/2000 SPS` 及安全读写校验 `ADS1298` 寄存器，见[板间与传输协议说明](firmware/transport-protocol.md)），待回板后实机烧录验证。 |
 | 测试准备 | 准备 20 针排线、转接线和离体信号源。把每个输入脚对应到桌面的 CH1–CH16，列好短接、已知信号和断流三组测试。 |
 
 #### 样板到手后：先在台架测
@@ -143,6 +143,6 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 ## 开始使用
 
-[桌面工作台](app/) · [软件与开发环境](firmware/software.md) · [硬件与制造文件索引](hardware/README.md) · [通电与佩戴安全须知](SAFETY.md)
+[桌面工作台](app/) · [软件与开发环境](firmware/software.md) · [板间与传输协议](firmware/transport-protocol.md) · [硬件与制造文件索引](hardware/README.md) · [通电与佩戴安全须知](SAFETY.md)
 
 [软件许可 MIT](LICENSE) · [硬件许可 CERN-OHL-S-2.0](LICENSE-HARDWARE) · [第三方声明](THIRD_PARTY_NOTICES.md)

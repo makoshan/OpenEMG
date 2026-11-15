@@ -72,12 +72,21 @@ typedef enum {
     C08B_MODE_SYN1 = 6,  /* 免开 AFE 供电的双核合成流测试（锁定状态下允许，强制打 SYNTHETIC=1） */
     C08B_MODE_RLD1 = 7,  /* RLD 环路监测（ADS1292 CH2=RLD_MEASURE；ADS1298 U1 PD_RLD=1，禁置 RLD_MEAS/MUX=0x02） */
     C08B_MODE_PRB1 = 8,  /* 只读子板 ID 探测（需解锁台架安全门；读完 ID 更新 afe_mode 后立即关断 AFE） */
+    C08B_MODE_RREG = 9,  /* 在线单寄存器只读回读："RREG" + chip_sel(0/1/2) + reg_addr（需解锁安全门） */
+    C08B_MODE_WREG = 10, /* 在线安全寄存器写核与会话覆盖："WREG" + chip_sel(0/1/2) + reg_addr + reg_val（需解锁安全门） */
+    C08B_MODE_CLRO = 11, /* 清空运行时寄存器覆盖项："CLRO"（恢复预设寄存器表，任意锁态可执行） */
 } c08b_req_mode_t;
+
+typedef enum {
+    C08B_CHIP_U1   = 0,  /* 主片 U1（ADS1298 CH1..8 或单芯片 ADS1292） */
+    C08B_CHIP_U2   = 1,  /* 副片 U2（仅 16CH ADS1298 CH9..16） */
+    C08B_CHIP_BOTH = 2,  /* 双片同步读写（16CH U1+U2；单芯片板做 RREG 时等价读 U1） */
+} c08b_chip_sel_t;
 
 typedef enum {
     C08B_FAULT_NONE      = 0,
     C08B_FAULT_LOCKED    = 1,  /* 台架安全门未解锁（默认锁关闭） */
-    C08B_FAULT_ARG       = 2,  /* 采样率或命令参数无效 */
+    C08B_FAULT_ARG       = 2,  /* 采样率或命令参数无效（含寄存器越界或违反硬件安全掩码） */
     C08B_FAULT_INTERLOCK = 3,  /* USB VBUS 插入、OE_N 未拉低或 2CH AVDD_SENSE 掉电急停 */
     C08B_FAULT_AFE_ID    = 4,  /* 采集板未接或 A/B 片 ID 损坏不匹配 */
     C08B_FAULT_READBACK  = 5,  /* ADS 寄存器写后回读不一致 */
@@ -97,6 +106,9 @@ static inline uint8_t c08b_parse_ctrl4(const uint8_t cmd[4])
     if (!C08B_MEMCMP(cmd, "SYN1", 4)) return C08B_MODE_SYN1;
     if (!C08B_MEMCMP(cmd, "RLD1", 4)) return C08B_MODE_RLD1;
     if (!C08B_MEMCMP(cmd, "PRB1", 4)) return C08B_MODE_PRB1;
+    if (!C08B_MEMCMP(cmd, "RREG", 4)) return C08B_MODE_RREG;
+    if (!C08B_MEMCMP(cmd, "WREG", 4)) return C08B_MODE_WREG;
+    if (!C08B_MEMCMP(cmd, "CLRO", 4)) return C08B_MODE_CLRO;
     return 0;
 }
 
@@ -104,14 +116,18 @@ static inline uint8_t c08b_parse_ctrl4(const uint8_t cmd[4])
 static inline c08b_fault_t c08b_gate_mode_request(
     uint8_t req_mode, uint16_t fs_hz, bool afe_unlocked, bool vbus_present)
 {
-    if (req_mode == C08B_MODE_STOP || req_mode == C08B_MODE_IDLE) return C08B_FAULT_NONE;
+    if (req_mode == C08B_MODE_STOP || req_mode == C08B_MODE_IDLE ||
+        req_mode == C08B_MODE_CLRO) {
+        return C08B_FAULT_NONE;
+    }
     if (fs_hz != 500u && fs_hz != 1000u && fs_hz != 2000u) return C08B_FAULT_ARG;
     if (req_mode == C08B_MODE_SYN1) {
         return C08B_FAULT_NONE;
     }
     if (req_mode != C08B_MODE_TST1 && req_mode != C08B_MODE_SHT1 &&
         req_mode != C08B_MODE_EXT1 && req_mode != C08B_MODE_EXR1 &&
-        req_mode != C08B_MODE_RLD1 && req_mode != C08B_MODE_PRB1) {
+        req_mode != C08B_MODE_RLD1 && req_mode != C08B_MODE_PRB1 &&
+        req_mode != C08B_MODE_RREG && req_mode != C08B_MODE_WREG) {
         return C08B_FAULT_ARG;
     }
     if (!afe_unlocked) return C08B_FAULT_LOCKED;
@@ -274,6 +290,138 @@ static inline bool c08b_build_ads1292_regs(
     return true;
 }
 
+/* 在线单寄存器读取地址范围校验（RREG 用） */
+static inline bool c08b_validate_reg_read(c08b_afe_mode_t mode, uint8_t chip_sel, uint8_t addr)
+{
+    if (chip_sel > C08B_CHIP_BOTH) return false;
+    if (mode == AFE_2CH) {
+        return (chip_sel != C08B_CHIP_U2) && (addr <= 0x0Bu);
+    }
+    if (mode == AFE_8CH) {
+        return (chip_sel != C08B_CHIP_U2) && (addr <= 0x19u);
+    }
+    if (mode == AFE_16CH) {
+        return (addr <= 0x19u);
+    }
+    return false;
+}
+
+/* 在线单寄存器写入硬件安全掩码校验（WREG 与会话覆盖共用）：
+ *   1. ADS1298（AFE_8CH / AFE_16CH）：
+ *      - 严禁写只读寄存器 ID(0x00)、LOFF_STATP(0x12)、LOFF_STATN(0x13)；
+ *      - CONFIG3(0x03) 强制 PD_REFBUF=1、bit6=1，且严禁置 VREF_4V(0x20)、RLD_MEAS(0x10，v0.01 Pin62=+2.5V)、
+ *        RLDREF_INT(0x08，Pin60 硬连 AGND)，即 (val & 0x38u)==0；副片 U2 严禁开 PD_RLD(0x04) 或 RLD_SENSP/N；
+ *      - CH1SET..CH8SET(0x05..0x0C) 严禁设 MUX=0x02(RLD_MEASURE) 或未定义 GAIN=111；
+ *      - GPIO(0x14) 低 4 位必须为 0x0F（GPIO1/2/4 硬连 GND，严禁推挽输出）；
+ *      - PACE(0x15)=0x00，RESP(0x16)=0x20（手册 Always write 1h），CONFIG4(0x17) 禁 SINGLE_SHOT，WCT=0x00。
+ *   2. ADS1292（AFE_2CH）：
+ *      - 仅允许 chip_idx=0，地址 0x01..0x0B（排除只读 0x00 ID、0x08 LOFF_STAT）；
+ *      - CONFIG2(0x02) 强制内部 2.42V 基准且禁置 VREF_4V（3.0V AVDD）；RESP1=0x02、RESP2=0x07、GPIO=0x0C。
+ */
+static inline bool c08b_validate_reg_write(
+    c08b_afe_mode_t mode, uint8_t chip_idx, uint8_t addr, uint8_t val, uint8_t *verify_mask_out)
+{
+    uint8_t vm = 0xFFu;
+    if (mode == AFE_8CH || mode == AFE_16CH) {
+        if (chip_idx > ((mode == AFE_16CH) ? 1u : 0u)) return false;
+        if (addr > 0x19u || addr == 0x00u || addr == 0x12u || addr == 0x13u) return false;
+        switch (addr) {
+        case 0x01u: /* CONFIG1: bit4:3=0, DR!=111, 且禁 HR=1&DR=000 (16-bit 32kSPS) */
+            if ((val & 0x18u) != 0u) return false;
+            if ((val & 0x07u) == 0x07u) return false;
+            if ((val & 0x87u) == 0x80u) return false;
+            break;
+        case 0x02u: /* CONFIG2: bit7:6=0, bit3=0, TEST_FREQ!=10 */
+            if ((val & 0xC8u) != 0u) return false;
+            if ((val & 0x03u) == 0x02u) return false;
+            break;
+        case 0x03u: /* CONFIG3: PD_REFBUF=1, bit6=1, (val & 0x38)==0 */
+            if ((val & 0xC0u) != 0xC0u) return false;
+            if ((val & 0x38u) != 0u) return false;
+            if (chip_idx != 0u && (val & 0x04u) != 0u) return false;
+            vm = 0xFEu; /* bit0 RLD_STAT 只读 */
+            break;
+        case 0x04u: /* LOFF: FLEAD_OFF!=10 */
+            if ((val & 0x03u) == 0x02u) return false;
+            break;
+        case 0x05u: case 0x06u: case 0x07u: case 0x08u:
+        case 0x09u: case 0x0Au: case 0x0Bu: case 0x0Cu: /* CH1SET..CH8SET */
+            if ((val & 0x08u) != 0u) return false;
+            if ((val & 0x70u) == 0x70u) return false;
+            if ((val & 0x07u) == 0x02u) return false; /* 严禁 MUX=0x02 (RLD_MEASURE) */
+            break;
+        case 0x0Du: case 0x0Eu: /* RLD_SENSP / RLD_SENSN：副片 U2 必须保持 0x00 */
+            if (chip_idx != 0u && val != 0x00u) return false;
+            break;
+        case 0x0Fu: case 0x10u: case 0x11u: /* LOFF_SENSP / LOFF_SENSN / LOFF_FLIP */
+            break;
+        case 0x14u: /* GPIO：低 4 位必须保持全输入 0x0F */
+            if ((val & 0x0Fu) != 0x0Fu) return false;
+            vm = 0x0Fu;
+            break;
+        case 0x15u: /* PACE：禁向 17/18 脚驱动 */
+            if (val != 0x00u) return false;
+            break;
+        case 0x16u: /* RESP：bit5=1 且非 R 版禁开呼吸调制 */
+            if (val != 0x20u) return false;
+            break;
+        case 0x17u: /* CONFIG4：bit4=0, SINGLE_SHOT=0, bit0=0 */
+            if ((val & 0x19u) != 0u) return false;
+            break;
+        case 0x18u: case 0x19u: /* WCT1 / WCT2：板上未接 WCT，固定 0x00 */
+            if (val != 0x00u) return false;
+            break;
+        default:
+            return false;
+        }
+        if (verify_mask_out) *verify_mask_out = vm;
+        return true;
+    }
+
+    if (mode == AFE_2CH) {
+        if (chip_idx != 0u || addr > 0x0Bu || addr == 0x00u || addr == 0x08u) return false;
+        switch (addr) {
+        case 0x01u: /* CONFIG1: SINGLE_SHOT=0, bit6:3=0, DR!=111 */
+            if ((val & 0xF8u) != 0u || (val & 0x07u) == 0x07u) return false;
+            vm = 0x87u;
+            break;
+        case 0x02u: /* CONFIG2: bit7=1, PDB_REFBUF=1, VREF_4V(bit4)=0(3.0V AVDD), CLK_EN(bit3)=0, bit2=0 */
+            if ((val & 0xBCu) != 0xA0u) return false;
+            vm = 0x7Bu;
+            break;
+        case 0x03u: /* LOFF: bit4=1, bit1=0 */
+            if ((val & 0x12u) != 0x10u) return false;
+            vm = 0xFFu;
+            break;
+        case 0x04u: case 0x05u: /* CH1SET / CH2SET: GAIN!=111 */
+            if ((val & 0x70u) == 0x70u) return false;
+            vm = 0xFFu;
+            break;
+        case 0x06u: case 0x07u: /* RLD_SENS / LOFF_SENS: bit7:6=0 */
+            if ((val & 0xC0u) != 0u) return false;
+            vm = 0x3Fu;
+            break;
+        case 0x09u: /* RESP1: 非 R 版固定 0x02 */
+            if (val != 0x02u) return false;
+            vm = 0xFFu;
+            break;
+        case 0x0Au: /* RESP2: bit2=1, RLDREF_INT=1, bit0=1 -> 0x07 */
+            if (val != 0x07u) return false;
+            vm = 0x87u;
+            break;
+        case 0x0Bu: /* GPIO: GPIO1/2 全输入 0x0C */
+            if ((val & 0x0Cu) != 0x0Cu) return false;
+            vm = 0x0Cu;
+            break;
+        default:
+            return false;
+        }
+        if (verify_mask_out) *verify_mask_out = vm;
+        return true;
+    }
+    return false;
+}
+
 /* ---------- 4. CRC16-CCITT（初值 0xFFFF，多项式 0x1021） ---------- */
 static inline uint16_t c08b_crc16(const void *p, size_t n)
 {
@@ -365,15 +513,54 @@ typedef struct __attribute__((packed)) {
     uint8_t  version;          /* 1 */
     uint8_t  req_mode;         /* c08b_req_mode_t */
     uint8_t  nrf_flags;        /* C08B_NF_* */
-    uint8_t  synth_channels;   /* SYN1 请求的模拟通道档位：2 / 8 / 16（默认 16） */
+    uint8_t  synth_channels;   /* SYN1: 模拟通道档 2/8/16；RREG/WREG: chip_sel (0=U1, 1=U2, 2=BOTH) */
     uint16_t fs_hz;            /* 请求采样率：500 / 1000 / 2000 */
     uint32_t cmd_epoch;        /* 每次新命令递增，防重复触发 */
-    uint16_t reserved;
+    uint8_t  reg_addr;         /* RREG/WREG 目标寄存器地址（0x00..0x19） */
+    uint8_t  reg_val;          /* WREG 目标写入值 */
     uint16_t crc;
 } c08b_link_rx_t;
 
 #define C08B_LINK_RX_CRC_LEN offsetof(c08b_link_rx_t, crc)
 _Static_assert(sizeof(c08b_link_rx_t) == 16, "c08b_link_rx_t 尺寸固定 16 字节");
+
+/* 在线 RREG/WREG 回读摘要：当 sample_count < 4 时捎带于 samples[3][46..53]（受 280B 整帧 CRC16 保护，不改帧长） */
+#define C08B_REG_REPLY_MAGIC 0x52u /* 'R' */
+
+typedef struct {
+    bool     valid;      /* true = 最近一次 RREG/WREG 已完成，seq/addr/val_a/val_b 有效 */
+    uint16_t seq;        /* 触发本次回读的 cmd_epoch 低 16 位（防同地址连续 RREG 读回旧栈值） */
+    uint8_t  addr;       /* 寄存器地址 (0x00..0x19) */
+    uint8_t  val_a;      /* U1 / ADS1292 实读值 */
+    uint8_t  val_b;      /* U2 实读值（单芯片板固定 0） */
+    uint8_t  ovr_count;  /* 当前生效的安全寄存器覆盖项数量 */
+} c08b_reg_reply_t;
+
+static inline void c08b_link_tx_put_reg_reply(c08b_link_tx_t *f, const c08b_reg_reply_t *rep)
+{
+    if (!f || !rep || f->sample_count >= C08B_LINK_MAX_BATCH) return;
+    f->samples[3][46] = (uint8_t)(rep->seq & 0xFFu);
+    f->samples[3][47] = (uint8_t)(rep->seq >> 8);
+    f->samples[3][48] = C08B_REG_REPLY_MAGIC;
+    f->samples[3][49] = rep->valid ? 1u : 0u;
+    f->samples[3][50] = rep->addr;
+    f->samples[3][51] = rep->val_a;
+    f->samples[3][52] = rep->val_b;
+    f->samples[3][53] = rep->ovr_count;
+}
+
+static inline bool c08b_link_tx_get_reg_reply(const c08b_link_tx_t *f, c08b_reg_reply_t *out)
+{
+    if (!f || !out || f->sample_count >= C08B_LINK_MAX_BATCH) return false;
+    if (f->samples[3][48] != C08B_REG_REPLY_MAGIC) return false;
+    out->seq       = (uint16_t)f->samples[3][46] | ((uint16_t)f->samples[3][47] << 8);
+    out->valid     = (f->samples[3][49] != 0u);
+    out->addr      = f->samples[3][50];
+    out->val_a     = f->samples[3][51];
+    out->val_b     = f->samples[3][52];
+    out->ovr_count = f->samples[3][53];
+    return true;
+}
 
 static inline void c08b_link_tx_seal(c08b_link_tx_t *f)
 {
@@ -642,9 +829,9 @@ static inline uint32_t c08b_spi_hz_for_mode(c08b_afe_mode_t mode)
     return (mode == AFE_NONE || mode == AFE_2CH) ? 1000000u : 4000000u;
 }
 
-static inline int c08b_format_meta_json(
+static inline int c08b_format_meta_json_ex(
     char *buf, size_t cap, c08b_afe_mode_t mode, uint16_t fs_hz,
-    bool bench_measured, bool imu_enabled)
+    bool bench_measured, bool imu_enabled, const c08b_reg_reply_t *reg_rep)
 {
     if (cap == 0u) return 0;
     /* 16CH 走无损双片协议 4（channels=16）；8CH / 2CH / 未探测 NONE 走协议 1（channels=8，active_channels=8/2/0） */
@@ -677,7 +864,30 @@ static inline int c08b_format_meta_json(
     p = c08b_append_str(buf, cap, p, ",\"imu_enabled\":");
     p = c08b_append_str(buf, cap, p, imu_enabled ? "true" : "false");
     p = c08b_append_str(buf, cap, p, ",\"clock_source\":\"L432_DWT_1MHz\",\"clock_resolution_us\":1,"
-                                     "\"usb_interlock\":\"HW_U10_OE_N_AND_SW_DUAL_MCU\"}");
+                                     "\"usb_interlock\":\"HW_U10_OE_N_AND_SW_DUAL_MCU\"");
+    if (reg_rep && (reg_rep->valid || reg_rep->ovr_count > 0u)) {
+        p = c08b_append_str(buf, cap, p, ",\"reg_overrides\":");
+        p = c08b_append_u32(buf, cap, p, reg_rep->ovr_count);
+        if (reg_rep->valid) {
+            p = c08b_append_str(buf, cap, p, ",\"last_reg\":{\"seq\":");
+            p = c08b_append_u32(buf, cap, p, reg_rep->seq);
+            p = c08b_append_str(buf, cap, p, ",\"addr\":");
+            p = c08b_append_u32(buf, cap, p, reg_rep->addr);
+            p = c08b_append_str(buf, cap, p, ",\"u1\":");
+            p = c08b_append_u32(buf, cap, p, reg_rep->val_a);
+            p = c08b_append_str(buf, cap, p, ",\"u2\":");
+            p = c08b_append_u32(buf, cap, p, reg_rep->val_b);
+            p = c08b_append_str(buf, cap, p, "}");
+        }
+    }
+    p = c08b_append_str(buf, cap, p, "}");
     buf[p < cap ? p : cap - 1u] = '\0';
     return (p < cap) ? (int)p : -1;
+}
+
+static inline int c08b_format_meta_json(
+    char *buf, size_t cap, c08b_afe_mode_t mode, uint16_t fs_hz,
+    bool bench_measured, bool imu_enabled)
+{
+    return c08b_format_meta_json_ex(buf, cap, mode, fs_hz, bench_measured, imu_enabled, NULL);
 }

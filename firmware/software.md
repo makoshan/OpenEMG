@@ -2,7 +2,7 @@
 
 | 模块 | 目录 | 说明 |
 |---|---|---|
-| **嵌入式固件与协议** | `firmware/` | `c08b-bringup`（`v0.01 MCU-U9` 及 `R4U6/R4U6N` 双核 `L432 + nRF52840` 首板十项自检与主机解码器）、`c08b-stream`（`2 / 8 / 16` 通道自适应 BLE `F01 v1/v4` 流式采集契约）、`xiao-ads1292-2ch`（`ADS1292 + P44e + XIAO` 2 路 BLE `F01` 流式固件）、`xiao-f04`（XIAO 合成参考流）、`ble-dongle`（低延迟无线接收器）、`offline-f01`（帧编解码）、`dsp-f03`（定点滤波）、`cheez-s3`（单路入门）；8 路真实 AFE + IMU 固件见 `hardware/8ch-ads1298/r01-bench/firmware-f05/` |
+| **嵌入式固件与协议** | `firmware/` | [`transport-protocol.md`](transport-protocol.md)（分离式 20P 板间接口、单晶振同步、BLE GATT / `SPI3↔SPIS1` / `0xA5` USB 接收器帧协议与 `RREG/WREG` 在线安全调参说明）、`c08b-bringup`（`v0.01 MCU-U9` 及 `R4U6/R4U6N` 双核 `L432 + nRF52840` 首板十项自检与主机解码器）、`c08b-stream`（`2 / 8 / 16` 通道自适应 BLE `F01 v1/v4` 流式采集与在线调参固件）、`xiao-ads1292-2ch`（`ADS1292 + P44e + XIAO` 2 路 BLE `F01` 流式固件）、`xiao-f04`（XIAO 合成参考流）、`ble-dongle`（`XIAO nRF52840` / `ESP32-C6` 低延迟 USB 无线接收器）、`offline-f01`（帧编解码）、`dsp-f03`（定点滤波）、`cheez-s3`（单路入门）；8 路真实 AFE + IMU 固件见 `hardware/8ch-ads1298/r01-bench/firmware-f05/` |
 | **电脑端核心服务** | `host/` | Python 多设备统一采集、50 Hz 陷波与 20–400 Hz 带通、Hudgins 特征、收缩 LDA / 自适应重戴识别、指尖按压力估计（`wl8_force.py`）、首板脚位与 `c08b-bringup` 在线解码 API、台架噪声/CMRR 评估与 SMT 门禁工具 |
 | **桌面与网页工作台** | `app/` | Electron + React + Web Serial：支持 `16 / 8 / 2 / 1` 通道切换、佩戴底噪红线检查、动作录制、模型训练、首板对线与自检解码面板及陀螺仪光标控制 |
 | **iPhone + Watch 端** | `apple/openEMG/` | SwiftUI iOS + watchOS 源码：BLE 接收 `F01` 数据流、实时八路波形与手表端手势/确认卡联动 |

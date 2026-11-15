@@ -160,6 +160,8 @@ static c08b_link_rx_t g_spis_tx;
 
 static uint8_t  g_req_mode = C08B_MODE_IDLE;
 static uint8_t  g_synth_ch = 16u;
+static uint8_t  g_reg_addr = 0u;
+static uint8_t  g_reg_val  = 0u;
 static uint16_t g_req_fs_hz = 1000u;
 static uint32_t g_cmd_epoch = 0;
 static uint16_t g_await_epoch_lo = 0;
@@ -186,6 +188,8 @@ static void spis_refresh_tx_cmd(void)
     g_spis_tx.synth_channels = g_synth_ch;
     g_spis_tx.fs_hz = g_req_fs_hz;
     g_spis_tx.cmd_epoch = g_cmd_epoch;
+    g_spis_tx.reg_addr = g_reg_addr;
+    g_spis_tx.reg_val = g_reg_val;
     c08b_link_rx_seal(&g_spis_tx);
 }
 
@@ -250,6 +254,7 @@ static struct {
     uint32_t        ads_status;
     uint32_t        min_interval_us;
     uint32_t        imu_seq;
+    c08b_reg_reply_t reg_reply;
     /* 样本聚合槽（最多攒 8 个 8CH 帧或 4 个 16CH 帧 -> 统一 232B 包） */
     c08b_afe_mode_t pend_mode;
     uint8_t         pend_count;
@@ -305,9 +310,9 @@ static uint8_t add_v12_uuid(uint8_t suffix, ble_uuid_t *out)
 static void refresh_gatt_meta_and_status(void)
 {
     c08b_afe_mode_t m = g_bridge.afe_mode;
-    int mlen = c08b_format_meta_json(
+    int mlen = c08b_format_meta_json_ex(
         g_meta_json, sizeof(g_meta_json), m, g_req_fs_hz,
-        MAKO_BENCH_MEASURED != 0, true);
+        MAKO_BENCH_MEASURED != 0, true, &g_bridge.reg_reply);
     if (mlen > 0) {
         ble_gatts_value_t val = { .len = (uint16_t)mlen, .offset = 0, .p_value = (uint8_t *)g_meta_json };
         (void)sd_ble_gatts_value_set(g_conn_handle, g_chr_meta.value_handle, &val);
@@ -484,22 +489,77 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
     if (!mode) return;
     /* 切换或停止前先把上一会话已入槽且未满包的尾帧按原 pend_mode 发完，防止跨档混包 */
     flush_pending_ble_packet();
-    /* 可选第 5..6 字节覆盖采样率（如 "SYN1\xD0\x07" = 2000 Hz），第 7 字节选合成通道档 2/8/16 */
-    if (len >= 6u) {
-        uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
-        if (fs == 500u || fs == 1000u || fs == 2000u) g_req_fs_hz = fs;
+
+    if (mode == C08B_MODE_RREG) {
+        if (len != 6u || data[4] > C08B_CHIP_BOTH || data[5] > 0x19u) {
+            g_bridge.reg_reply.valid = false;
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+        g_synth_ch = data[4];
+        g_reg_addr = data[5];
+        g_reg_val  = 0u;
+    } else if (mode == C08B_MODE_WREG) {
+        if (len != 7u || data[4] > C08B_CHIP_BOTH || data[5] > 0x19u) {
+            g_bridge.reg_reply.valid = false;
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+        g_synth_ch = data[4];
+        g_reg_addr = data[5];
+        g_reg_val  = data[6];
+    } else if (mode == C08B_MODE_CLRO) {
+        if (len != 4u) {
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+    } else {
+        /* 可选第 5..6 字节覆盖采样率（如 "SYN1\xD0\x07" = 2000 Hz），第 7 字节选合成通道档 2/8/16 */
+        if (len >= 6u) {
+            uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
+            if (fs == 500u || fs == 1000u || fs == 2000u) {
+                g_req_fs_hz = fs;
+            } else {
+                g_bridge.fault = C08B_FAULT_ARG;
+                refresh_gatt_meta_and_status();
+                return;
+            }
+        }
+        if (len >= 7u && (data[6] == 2u || data[6] == 8u || data[6] == 16u)) {
+            g_synth_ch = data[6];
+        }
     }
-    if (len >= 7u && (data[6] == 2u || data[6] == 8u || data[6] == 16u)) {
-        g_synth_ch = data[6];
-    }
+
+    bool unlocked = (MAKO_C08B_AFE_ENABLED != 0) && (MAKO_BENCH_MEASURED != 0);
+    bool vbus_on = gpio_get(VBUS_SENSE_PIN) != 0;
+    c08b_fault_t local_gate = c08b_gate_mode_request(mode, g_req_fs_hz, unlocked, vbus_on);
+
     g_req_mode = mode;
     g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+    g_await_epoch_lo = (uint16_t)g_cmd_epoch;
     if (mode == C08B_MODE_STOP) {
-        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
         g_bridge.active = false;
-        if (!gpio_get(VBUS_SENSE_PIN)) g_bridge.fault = C08B_FAULT_NONE;
-    } else if (mode != C08B_MODE_PRB1) {
-        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
+        if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
+    } else if (mode == C08B_MODE_CLRO) {
+        memset(&g_bridge.reg_reply, 0, sizeof(g_bridge.reg_reply));
+        g_bridge.active = false;
+        if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
+    } else if (local_gate != C08B_FAULT_NONE) {
+        /* nRF 与 L432 双侧同步门禁：锁定态或 VBUS 互锁态当场置故障码，无需等 L432 下一拍心跳 */
+        if (mode == C08B_MODE_RREG || mode == C08B_MODE_WREG) g_bridge.reg_reply.valid = false;
+        g_bridge.active = false;
+        g_bridge.fault = (uint8_t)local_gate;
+    } else if (mode == C08B_MODE_RREG || mode == C08B_MODE_WREG) {
+        g_bridge.reg_reply.valid = false;
+        g_bridge.active = false;
+        g_bridge.fault = C08B_FAULT_NONE;
+    } else if (mode == C08B_MODE_PRB1) {
+        g_bridge.active = false;
+        g_bridge.fault = C08B_FAULT_NONE;
+    } else {
         bridge_reset_session();
     }
     spis_rearm_now();
@@ -686,8 +746,8 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
         return;
     }
 
-    c08b_afe_mode_t prev_mode = g_bridge.afe_mode;
-    uint8_t         prev_fault = g_bridge.fault;
+    c08b_afe_mode_t prev_mode   = g_bridge.afe_mode;
+    uint8_t         prev_fault  = g_bridge.fault;
     bool            prev_active = g_bridge.active;
     /* 若子板档位变化且仍有上一档位的未满包残帧，先按旧 pend_mode 刷净，再切换 afe_mode */
     if (g_bridge.pend_count > 0 && g_bridge.pend_mode != (c08b_afe_mode_t)f->afe_mode) {
@@ -701,8 +761,26 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
     g_bridge.ring_dropped    = f->dropped;
     g_bridge.min_interval_us = (f->min_interval_us_sat == 0xFFFFu) ? 0xFFFFFFFFu : f->min_interval_us_sat;
 
-    /* 一旦子板模式、活动态或故障码变化，在发出通知前立刻更新 GATT META/STATUS */
-    if (prev_mode != g_bridge.afe_mode || prev_fault != g_bridge.fault || prev_active != g_bridge.active) {
+    bool reg_changed = false;
+    c08b_reg_reply_t rrep;
+    if (c08b_link_tx_get_reg_reply(f, &rrep)) {
+        if ((g_req_mode == C08B_MODE_RREG || g_req_mode == C08B_MODE_WREG) &&
+            rrep.valid && rrep.seq != (uint16_t)g_cmd_epoch) {
+            rrep.valid = false;
+        }
+        if (rrep.valid != g_bridge.reg_reply.valid ||
+            rrep.seq != g_bridge.reg_reply.seq ||
+            rrep.addr != g_bridge.reg_reply.addr ||
+            rrep.val_a != g_bridge.reg_reply.val_a ||
+            rrep.val_b != g_bridge.reg_reply.val_b ||
+            rrep.ovr_count != g_bridge.reg_reply.ovr_count) {
+            g_bridge.reg_reply = rrep;
+            reg_changed = true;
+        }
+    }
+
+    /* 一旦子板模式、活动态、故障码或在线寄存器回读更新，在发出通知前立刻刷新 GATT META/STATUS（消除 200 ms 轮询延迟） */
+    if (prev_mode != g_bridge.afe_mode || prev_fault != g_bridge.fault || prev_active != g_bridge.active || reg_changed) {
         refresh_gatt_meta_and_status();
     }
 
@@ -815,7 +893,8 @@ int main(void)
 
         /* 任何时刻在真实采集下检测到 USB VBUS，立即发 STOP 急停、拦截在途残帧并锁存 INTERLOCK(3) */
         if (gpio_get(VBUS_SENSE_PIN) && g_req_mode != C08B_MODE_IDLE &&
-            g_req_mode != C08B_MODE_STOP && g_req_mode != C08B_MODE_SYN1) {
+            g_req_mode != C08B_MODE_STOP && g_req_mode != C08B_MODE_SYN1 &&
+            g_req_mode != C08B_MODE_CLRO) {
             g_req_mode = C08B_MODE_STOP;
             g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
             g_await_epoch_lo = (uint16_t)g_cmd_epoch;

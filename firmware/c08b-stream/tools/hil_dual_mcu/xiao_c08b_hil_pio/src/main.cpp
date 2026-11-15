@@ -183,6 +183,8 @@ static c08b_link_rx_t   g_spis_tx;
 
 static uint8_t  g_req_mode = C08B_MODE_IDLE;
 static uint8_t  g_synth_ch = 16u;
+static uint8_t  g_reg_addr = 0u;
+static uint8_t  g_reg_val  = 0u;
 static uint16_t g_req_fs_hz = 1000u;
 static uint32_t g_cmd_epoch = 0;
 static uint16_t g_await_epoch_lo = 0;
@@ -203,6 +205,7 @@ static struct {
     uint32_t        ads_status;
     uint32_t        min_interval_us;
     uint32_t        imu_seq;
+    c08b_reg_reply_t reg_reply;
     c08b_afe_mode_t pend_mode;
     uint8_t         pend_count;
     uint8_t         pend_flags;
@@ -274,6 +277,7 @@ static uint8_t calc_nrf_flags(void)
     if (gpio_get_raw(VBUS_SENSE_PIN)) nf |= C08B_NF_VBUS_INTERLOCK;
     if (gpio_get_raw(OE_N_PIN))       nf |= C08B_NF_OE_OFF;
     if (any_emg_subscribed())         nf |= C08B_NF_BLE_SUBSCRIBED;
+    if (any_imu_subscribed())         nf |= C08B_NF_IMU_SUBSCRIBED;
     return nf;
 }
 
@@ -285,6 +289,8 @@ static void spis_refresh_tx_cmd(void)
     g_spis_tx.synth_channels = g_synth_ch;
     g_spis_tx.fs_hz = g_req_fs_hz;
     g_spis_tx.cmd_epoch = g_cmd_epoch;
+    g_spis_tx.reg_addr = g_reg_addr;
+    g_spis_tx.reg_val = g_reg_val;
     c08b_link_rx_seal(&g_spis_tx);
 }
 
@@ -350,9 +356,9 @@ static void bridge_reset_session(void)
 static int refresh_gatt_meta_and_status(void)
 {
     c08b_afe_mode_t m = g_bridge.afe_mode;
-    int mlen = c08b_format_meta_json(
+    int mlen = c08b_format_meta_json_ex(
         g_meta_json, sizeof(g_meta_json), m, g_req_fs_hz,
-        MAKO_BENCH_MEASURED != 0, true);
+        MAKO_BENCH_MEASURED != 0, true, &g_bridge.reg_reply);
     if (mlen > 0) {
         chr_meta.write(g_meta_json, (uint16_t)mlen);
     }
@@ -453,7 +459,9 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
         return;
     }
 
-    c08b_afe_mode_t prev_mode = g_bridge.afe_mode;
+    c08b_afe_mode_t prev_mode   = g_bridge.afe_mode;
+    uint8_t         prev_fault  = g_bridge.fault;
+    bool            prev_active = g_bridge.active;
     if (g_bridge.pend_count > 0 && g_bridge.pend_mode != (c08b_afe_mode_t)f->afe_mode) {
         flush_pending_ble_packet();
     }
@@ -465,11 +473,48 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
     g_bridge.ring_dropped    = f->dropped;
     g_bridge.min_interval_us = (f->min_interval_us_sat == 0xFFFFu) ? 0xFFFFFFFFu : f->min_interval_us_sat;
 
-    if (prev_mode != g_bridge.afe_mode) {
+    bool reg_changed = false;
+    c08b_reg_reply_t rrep;
+    if (c08b_link_tx_get_reg_reply(f, &rrep)) {
+        if ((g_req_mode == C08B_MODE_RREG || g_req_mode == C08B_MODE_WREG) &&
+            rrep.valid && rrep.seq != (uint16_t)g_cmd_epoch) {
+            rrep.valid = false;
+        }
+        if (rrep.valid != g_bridge.reg_reply.valid ||
+            rrep.seq != g_bridge.reg_reply.seq ||
+            rrep.addr != g_bridge.reg_reply.addr ||
+            rrep.val_a != g_bridge.reg_reply.val_a ||
+            rrep.val_b != g_bridge.reg_reply.val_b ||
+            rrep.ovr_count != g_bridge.reg_reply.ovr_count) {
+            g_bridge.reg_reply = rrep;
+            reg_changed = true;
+        }
+    }
+
+    if (prev_mode != g_bridge.afe_mode || prev_fault != g_bridge.fault || prev_active != g_bridge.active || reg_changed) {
         refresh_gatt_meta_and_status();
     }
 
     if (f->sample_count > 0 && g_bridge.afe_mode != AFE_NONE) {
+        for (uint8_t i = 0; i < f->sample_count; i++) {
+            if (!c08b_slot_status_valid(f->samples[i], g_bridge.afe_mode)) {
+                g_bridge.ads_status = ((uint32_t)f->samples[i][0] << 16) |
+                                      ((uint32_t)f->samples[i][1] << 8) |
+                                      (uint32_t)f->samples[i][2];
+                g_bridge.pend_mode  = AFE_NONE;
+                g_bridge.pend_count = 0;
+                g_bridge.pend_flags = 0;
+                g_bridge.active     = false;
+                g_bridge.fault      = gpio_get_raw(VBUS_SENSE_PIN) ? C08B_FAULT_INTERLOCK : C08B_FAULT_BAD_FRAME;
+                g_req_mode          = C08B_MODE_STOP;
+                g_cmd_epoch         = c08b_next_cmd_epoch(g_cmd_epoch);
+                g_await_epoch_lo    = (uint16_t)g_cmd_epoch;
+                spis_rearm_now();
+                refresh_gatt_meta_and_status();
+                return;
+            }
+        }
+
         g_bridge.ads_status = ((uint32_t)f->samples[0][0] << 16) |
                               ((uint32_t)f->samples[0][1] << 8) |
                               (uint32_t)f->samples[0][2];
@@ -478,7 +523,9 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
         if ((f->f01_flags & C08B_F01_SESSION_START) && g_bridge.pend_count > 0) {
             flush_pending_ble_packet();
         }
-        if (g_bridge.pend_count + f->sample_count > max_pkt_frames) {
+        if (g_bridge.pend_count > 0 &&
+            (g_bridge.pend_count + f->sample_count > max_pkt_frames ||
+             f->seq_first != g_bridge.pend_seq + g_bridge.pend_count)) {
             flush_pending_ble_packet();
         }
         if (g_bridge.pend_count == 0) {
@@ -531,21 +578,75 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
     uint8_t mode = c08b_parse_ctrl4(data);
     if (!mode) return;
     flush_pending_ble_packet();
-    if (len >= 6u) {
-        uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
-        if (fs == 500u || fs == 1000u || fs == 2000u) g_req_fs_hz = fs;
+
+    if (mode == C08B_MODE_RREG) {
+        if (len != 6u || data[4] > C08B_CHIP_BOTH || data[5] > 0x19u) {
+            g_bridge.reg_reply.valid = false;
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+        g_synth_ch = data[4];
+        g_reg_addr = data[5];
+        g_reg_val  = 0u;
+    } else if (mode == C08B_MODE_WREG) {
+        if (len != 7u || data[4] > C08B_CHIP_BOTH || data[5] > 0x19u) {
+            g_bridge.reg_reply.valid = false;
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+        g_synth_ch = data[4];
+        g_reg_addr = data[5];
+        g_reg_val  = data[6];
+    } else if (mode == C08B_MODE_CLRO) {
+        if (len != 4u) {
+            g_bridge.fault = C08B_FAULT_ARG;
+            refresh_gatt_meta_and_status();
+            return;
+        }
+    } else {
+        if (len >= 6u) {
+            uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
+            if (fs == 500u || fs == 1000u || fs == 2000u) {
+                g_req_fs_hz = fs;
+            } else {
+                g_bridge.fault = C08B_FAULT_ARG;
+                refresh_gatt_meta_and_status();
+                return;
+            }
+        }
+        if (len >= 7u && (data[6] == 2u || data[6] == 8u || data[6] == 16u)) {
+            g_synth_ch = data[6];
+        }
     }
-    if (len >= 7u && (data[6] == 2u || data[6] == 8u || data[6] == 16u)) {
-        g_synth_ch = data[6];
-    }
+
+    bool unlocked = (MAKO_C08B_AFE_ENABLED != 0) && (MAKO_BENCH_MEASURED != 0);
+    bool vbus_on = gpio_get_raw(VBUS_SENSE_PIN) != 0;
+    c08b_fault_t local_gate = c08b_gate_mode_request(mode, g_req_fs_hz, unlocked, vbus_on);
+
     g_req_mode = mode;
     g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
+    g_await_epoch_lo = (uint16_t)g_cmd_epoch;
     if (mode == C08B_MODE_STOP) {
-        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
         g_bridge.active = false;
-        if (!gpio_get_raw(VBUS_SENSE_PIN)) g_bridge.fault = C08B_FAULT_NONE;
-    } else if (mode != C08B_MODE_PRB1) {
-        g_await_epoch_lo = (uint16_t)g_cmd_epoch;
+        if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
+    } else if (mode == C08B_MODE_CLRO) {
+        memset(&g_bridge.reg_reply, 0, sizeof(g_bridge.reg_reply));
+        g_bridge.active = false;
+        if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
+    } else if (local_gate != C08B_FAULT_NONE) {
+        if (mode == C08B_MODE_RREG || mode == C08B_MODE_WREG) g_bridge.reg_reply.valid = false;
+        g_bridge.active = false;
+        g_bridge.fault = (uint8_t)local_gate;
+    } else if (mode == C08B_MODE_RREG || mode == C08B_MODE_WREG) {
+        g_bridge.reg_reply.valid = false;
+        g_bridge.active = false;
+        g_bridge.fault = C08B_FAULT_NONE;
+    } else if (mode == C08B_MODE_PRB1) {
+        g_bridge.active = false;
+        g_bridge.fault = C08B_FAULT_NONE;
+    } else {
         bridge_reset_session();
     }
     spis_rearm_now();
@@ -774,7 +875,8 @@ void loop()
 
     /* VBUS / OE_N 互锁实时监测（与 nrf/main.c 完全一致） */
     if (gpio_get_raw(VBUS_SENSE_PIN) && g_req_mode != C08B_MODE_IDLE &&
-        g_req_mode != C08B_MODE_STOP && g_req_mode != C08B_MODE_SYN1) {
+        g_req_mode != C08B_MODE_STOP && g_req_mode != C08B_MODE_SYN1 &&
+        g_req_mode != C08B_MODE_CLRO) {
         g_req_mode = C08B_MODE_STOP;
         g_cmd_epoch = c08b_next_cmd_epoch(g_cmd_epoch);
         g_await_epoch_lo = (uint16_t)g_cmd_epoch;

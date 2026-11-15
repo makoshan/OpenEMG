@@ -95,7 +95,7 @@ Together with literature review and bench measurements on our earlier 8-channel 
 | Work | What remains |
 |---|---|
 | Fabrication and assembly | Build from the November 15 package. Check board thickness, via-in-pad treatment, and stencil openings. Review both assembly sides for the two ADS1298 chips, three ribbon connectors, and 32 protection diodes. |
-| Firmware adaptation | [`c08b-bringup`](firmware/c08b-bringup/) and [`c08b-stream`](firmware/c08b-stream/) are aligned and verified against the `v0.01` dual-board netlist (`INT_TEST=1` on both chips for independent `TESTP/TESTN` pins, `RLD_MEAS=0` / no `MUX=010` for `RLDIN=+2.5 V`, and `RLDREF_INT=0` for `RLDREF=AGND`), ready for first-board flashing. |
+| Firmware adaptation | [`c08b-bringup`](firmware/c08b-bringup/) and [`c08b-stream`](firmware/c08b-stream/) are aligned and verified against the `v0.01` dual-board netlist (`INT_TEST=1` on both chips for independent `TESTP/TESTN` pins, `RLD_MEAS=0` / no `MUX=010` for `RLDIN=+2.5 V`, `RLDREF_INT=0` for `RLDREF=AGND`, and online `500/1000/2000 SPS` + hardware-guarded `ADS1298` `RREG/WREG` tuning over BLE or USB receiver — see [transport & inter-board protocol](firmware/transport-protocol.md)), ready for first-board flashing. |
 | Bench setup | Prepare the 20-pin cable, adapters, and an off-body signal source. Map the input pins to CH1–CH16 in the app and prepare shorted-input, known-signal, and stream-interruption tests. |
 
 #### When the boards arrive: bench tests first
@@ -143,6 +143,6 @@ Our immediate priority is fabricating and bench-testing the **human-reviewed 16-
 
 ## Getting started
 
-[Desktop app](app/) · [Development environment](firmware/software.md) · [Hardware index](hardware/README.md) · [Safety notes](SAFETY.md)
+[Desktop app](app/) · [Development environment](firmware/software.md) · [Transport protocol](firmware/transport-protocol.md) · [Hardware index](hardware/README.md) · [Safety notes](SAFETY.md)
 
 [Software license (MIT)](LICENSE) · [Hardware license (CERN-OHL-S-2.0)](LICENSE-HARDWARE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
