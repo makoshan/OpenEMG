@@ -28,22 +28,30 @@ OpenEMG 是一个硬件和软件完全开源的表面肌电（sEMG）项目。�
 
 ### 结构与装配
 
-下面的设计渲染展示不同代际的结构。左图是 D20 采集板与 R4U6 主控的叠装方式，右图展示 2、8、16 通道方案的装配层次。复刻 v0.01 时请使用上方双板工程核对板形和接口。
-
-| D20 与 R4U6 叠装 | 三档方案的爆炸图 |
+| v0.01 双板叠放 · 主控在上、采集在下 | U9 壳体与 v0.01 双板 · 分层视图 |
 |---|---|
-| ![D20 采集板、R4U6 主控板与整机叠装](hardware/renders/c08b-overall-iso-dark.png) | ![外壳、主控和采集板分层展开](hardware/renders/openemg-assembly-exploded-iso-dark.png) |
-| **柔性电极与表带** | **干电极与底盖** |
-| ![34 针柔性电极软板、定位层和表带](hardware/renders/openemg-strap-system-iso-dark.png) | ![六触点底盖与 Pod D1 干电极的局部结构](hardware/renders/openemg-electrodes-iso-dark.png) |
+| ![透过主控板电池开窗可见下方的采集板](hardware/16ch-afe-hirose-1mm-1nf/views/v001-stack-iso-dark.png) | ![从上到下为上盖、主控板、采集板与底壳](hardware/16ch-afe-hirose-1mm-1nf/views/v001-exploded-iso-dark.png) |
 
-<details>
-<summary>查看套件收纳设计</summary>
+板框、开窗、焊盘和丝印取自 v0.01 制造文件。图中以裸板展示层次，采用 0.8 mm 板厚的 U9 壳体装配方案；爆炸图拉开了层间距。元件、排线和电池未绘入这两张图，实物配合待验证。[U9 外壳模型](hardware/16ch-u9-dual30/enclosure-u9-watch/) · [历代结构与表带图集](hardware/renders/)
 
-![主板、软板和结构件在 EVA 收纳盒中的摆放示意](hardware/renders/openemg-kit-packaging-iso-dark.png)
+### 走线与原理图
 
-</details>
+| C08B-U9 主控板 · 6 层铜箔 | 16 通道采集板 · 4 层铜箔 |
+|---|---|
+| ![主控板从顶到底的六个铜层](hardware/16ch-afe-hirose-1mm-1nf/views/mcu-copper.png) | ![采集板从顶到底的四个铜层](hardware/16ch-afe-hirose-1mm-1nf/views/afe-copper.png) |
 
-[全部渲染图、俯视图与生成脚本](hardware/renders/)
+每张图按从左到右、再从上到下排列。各层均从板顶方向观察，方便对照同一过孔在不同层的位置。查看单根走线时可在 Gerber 查看器中单独打开对应铜层。[主控 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip) · [采集板 Gerber 与钻孔](hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip)
+
+[![第 6 页原理图，肌电采集与模拟电源，点击查看七页 PDF](hardware/16ch-afe-hirose-1mm-1nf/views/schematic-afe-preview.png)](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)
+
+**[下载七页矢量原理图](hardware/16ch-afe-hirose-1mm-1nf/views/schematic.pdf)**。第 1–5 页是主控板的供电、蓝牙、USB、板间接口与采样主控，第 6–7 页是采集板的模拟电源、采集芯片、电极接口与输入滤波。PDF 可放大和搜索位号；修改电路请打开[嘉立创 EDA 专业版双板源工程](hardware/16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2)。
+
+| 复刻资料 | 主控板 | 采集板 |
+|---|---|---|
+| 物料清单（BOM） | [主控 BOM](hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_bom.csv) | [采集 BOM](hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_bom.csv) |
+| 贴片坐标（CPL） | [主控坐标](hardware/16ch-u9-dual30/fab-mcu-u9/jlc_smt_cpl.csv) | [采集坐标](hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_cpl.csv) |
+
+板厚、盘中孔工艺、钢网和底面贴装方向见[同版制造说明](hardware/16ch-afe-hirose-1mm-1nf/)。本版采集板用于离体台架，通电前请阅读[测试与佩戴边界](SAFETY.md)。
 
 ## 工作原理
 

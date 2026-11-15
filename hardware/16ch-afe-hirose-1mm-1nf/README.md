@@ -11,6 +11,12 @@
 | 负电源反馈 `R4` | `104 kΩ ±0.1%`（0603，`RT0603BRD07104KL`，`C861070`，现货） | `105 kΩ`（0402，`C2984407`） | `105 kΩ ±0.1%`（0402，`C2984407`） |
 | 偏置串阻 `R34`、`R36` | `10 kΩ`（0402，`C25744`，离体台架直通软尾配置） | `392 kΩ`（暂选待回签） | `392 kΩ`（0402，`C99199`，配 `100 kΩ/200 kΩ` 保护软板） |
 
+### 在线看图
+
+[七页原理图（矢量 PDF）](views/schematic.pdf) · [主控六层走线](views/mcu-copper.png) · [采集四层走线](views/afe-copper.png) · [双板叠放](views/v001-stack-iso-dark.png) · [结构爆炸图](views/v001-exploded-iso-dark.png)
+
+原理图由嘉立创 EDA 专业版 4.1.93 从本目录双板工程导出。走线图使用本目录两个 Gerber 包，按顶层、内层、底层排列，底层保持板顶视角。装配图使用相同 Gerber 的板框、阻焊和丝印，搭配 U9 壳体 CAD，按 0.8 mm 裸板展示。
+
 ### 工程与制造文件
 
 [双板合并嘉立创工程 `.epro2`](OpenEMG_v0.01_DualBoard.epro2) · [采集板单板 Gerber（含钻孔与 `LM1` 双窗钢网）](Gerber_AFE-30P.zip) · [采集板贴片 BOM](jlc_smt_bom.csv) · [采集板贴片坐标 CPL](jlc_smt_cpl.csv)
