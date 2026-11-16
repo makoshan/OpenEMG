@@ -1012,10 +1012,10 @@ def server_for(session, port=8767):
                     return self.respond(409, {'error': '需要多通道手环'})
                 frames = queue.Queue(maxsize=128)
                 sample_index, dropped_frames, segment = 0, 0, 0
-                stream_hz = int(getattr(session.rig, 'fs_Hz', 0) or session.desc.fs_Hz or wl8.EMG_HZ)
+                current_hz = lambda: int(getattr(session.rig, 'fs_Hz', 0) or session.desc.fs_Hz or wl8.EMG_HZ)
                 def publish8(emg):
                     nonlocal sample_index, dropped_frames
-                    packet = {'hz': stream_hz, 'unit': 'uV', 'segment': segment, 'sample_index': sample_index,
+                    packet = {'hz': current_hz(), 'unit': 'uV', 'segment': segment, 'sample_index': sample_index,
                               'dropped_frames': dropped_frames, 'samples': emg.tolist()}
                     sample_index += len(emg)
                     try: frames.put_nowait(packet)
@@ -1027,7 +1027,7 @@ def server_for(session, port=8767):
                         try: frames.get_nowait()
                         except queue.Empty: break
                     segment += 1; sample_index = 0
-                    frames.put_nowait(dict(event, type='boundary', segment=segment))
+                    frames.put_nowait(dict(event, type='boundary', segment=segment, hz=current_hz()))
                 if hasattr(session.rig, 'boundary_subscribers'):
                     session.rig.boundary_subscribers.append(publish_boundary)
                 def publish_imu(imu):

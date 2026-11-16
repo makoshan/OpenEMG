@@ -1223,6 +1223,7 @@ class C08BRig:
         self.replay = 'C08B' if not allow_real else None
         self._allow_real = bool(allow_real)
         self._fs_epoch = 0
+        self._stream_lock = threading.RLock()
         self._reg_lock = threading.Lock()
         self._afe_name = 'ADS1298_DUAL' if n_channels == 16 else ('ADS1298_SINGLE' if n_channels == 8 else 'ADS1292')
         self._shadow_u1, self._shadow_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=self.fs_Hz)
@@ -1255,20 +1256,21 @@ class C08BRig:
     def set_fs_hz(self, fs_hz):
         if type(fs_hz) is not int or fs_hz not in (500, 1000, 2000):
             raise ValueError(f'C08B 采样率仅支持 500 / 1000 / 2000 Hz，收到 {fs_hz!r}')
-        with self._reg_lock:
-            if fs_hz == self.fs_Hz:
-                return self.fs_Hz
-            self.profile = C08BAdcProfile.for_n_channels(self.n_channels, fs_Hz=fs_hz)
-            self.fs_Hz = fs_hz
-            self._fs_epoch += 1
-            def_u1, def_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=fs_hz)
-            if ('u1', 0x01) not in self._reg_overrides:
-                self._shadow_u1[0x01] = def_u1[0x01]
-            if self._afe_name == 'ADS1298_DUAL' and ('u2', 0x01) not in self._reg_overrides:
-                self._shadow_u2[0x01] = def_u2[0x01]
-        self.rx.disconnect()
-        self.imu_rx.disconnect()
-        boundary = dict(reason='reconfigure_fs', fs_Hz=fs_hz)
+        with self._stream_lock:
+            with self._reg_lock:
+                if fs_hz == self.fs_Hz:
+                    return self.fs_Hz
+                self.profile = C08BAdcProfile.for_n_channels(self.n_channels, fs_Hz=fs_hz)
+                self.fs_Hz = fs_hz
+                self._fs_epoch += 1
+                def_u1, def_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=fs_hz)
+                if ('u1', 0x01) not in self._reg_overrides:
+                    self._shadow_u1[0x01] = def_u1[0x01]
+                if self._afe_name == 'ADS1298_DUAL' and ('u2', 0x01) not in self._reg_overrides:
+                    self._shadow_u2[0x01] = def_u2[0x01]
+            self.rx.disconnect()
+            self.imu_rx.disconnect()
+            boundary = dict(reason='reconfigure_fs', fs_Hz=fs_hz)
         for cb in list(self.boundary_subscribers):
             cb(boundary)
         return self.fs_Hz
@@ -1495,65 +1497,68 @@ class SynthC08BRig(C08BRig):
         if self.streaming:
             return
         self.streaming = True
-        threading.Thread(target=self._play, daemon=True).start()
+        self._play_thread = threading.Thread(target=self._play, daemon=True)
+        self._play_thread.start()
 
     def _play(self):
-        cur_epoch = self._fs_epoch
+        cur_epoch = -1
         fs = self.fs_Hz
         block = max(8, fs // 50)  # 约 20 ms 一批
         n = 0
         imu_seq = 0
         t0 = time.monotonic()
-        reconf_next = False
         ch_idx = np.arange(self.n_channels, dtype=np.float64)
         base_sigma = 6.5 + 2.5 * np.sin(ch_idx * 1.1)
         while self.streaming:
-            if self._fs_epoch != cur_epoch:
-                cur_epoch = self._fs_epoch
-                fs = self.fs_Hz
-                block = max(8, fs // 50)
-                n = 0
-                imu_seq = 0
-                t0 = time.monotonic()
-                reconf_next = True
-            t_sec = (n + np.arange(block, dtype=np.float64)) / fs
-            # 每 2.4 秒做一次平滑前臂局部肌群激活（0.9 s 收缩包络 + 1.5 s 放松底噪），模拟环腕电极空间分布差异
-            phase = np.mod(t_sec, 2.4)
-            env = np.where(phase < 0.9, np.sin(np.pi * np.clip(phase / 0.9, 0.0, 1.0)) ** 1.6, 0.0)
-            cycle = int(n // int(2.4 * fs))
-            center = (cycle * 0.37 * self.n_channels) % max(1, self.n_channels)
-            dist = np.minimum(np.abs(ch_idx - center), self.n_channels - np.abs(ch_idx - center))
-            width = max(0.75, self.n_channels * 0.18)
-            spatial = np.exp(-0.5 * (dist / width) ** 2)
-            sigma_mat = base_sigma[None, :] + (88.0 * env[:, None]) * spatial[None, :]
-            carrier = 0.65 * self.rng.normal(0.0, 1.0, (block, self.n_channels)) + 0.35 * np.sin(
-                2.0 * math.pi * (95.0 * t_sec[:, None] + ch_idx[None, :] * 0.43)
-            ) * self.rng.normal(0.8, 0.35, (block, self.n_channels))
-            uv = carrier * sigma_mat
-            for idx_p, pkt in enumerate(synth_c08b_packets(uv, profile=self.profile, seq0=n, t0_us=1000, codec=self.codec, reconfigure=(reconf_next and idx_p == 0))):
+            with self._stream_lock:
                 if not self.streaming:
                     return
-                self.feed_packet(pkt)
-            reconf_next = False
-            n += block
+                if self._fs_epoch != cur_epoch:
+                    cur_epoch = self._fs_epoch
+                    fs = self.fs_Hz
+                    block = max(8, fs // 50)
+                    n = 0
+                    imu_seq = 0
+                    t0 = time.monotonic()
+                prof = self.profile
+                t_sec = (n + np.arange(block, dtype=np.float64)) / fs
+                # 每 2.4 秒做一次平滑前臂局部肌群激活（0.9 s 收缩包络 + 1.5 s 放松底噪），模拟环腕电极空间分布差异
+                phase = np.mod(t_sec, 2.4)
+                env = np.where(phase < 0.9, np.sin(np.pi * np.clip(phase / 0.9, 0.0, 1.0)) ** 1.6, 0.0)
+                cycle = int(n // int(2.4 * fs))
+                center = (cycle * 0.37 * self.n_channels) % max(1, self.n_channels)
+                dist = np.minimum(np.abs(ch_idx - center), self.n_channels - np.abs(ch_idx - center))
+                width = max(0.75, self.n_channels * 0.18)
+                spatial = np.exp(-0.5 * (dist / width) ** 2)
+                sigma_mat = base_sigma[None, :] + (88.0 * env[:, None]) * spatial[None, :]
+                carrier = 0.65 * self.rng.normal(0.0, 1.0, (block, self.n_channels)) + 0.35 * np.sin(
+                    2.0 * math.pi * (95.0 * t_sec[:, None] + ch_idx[None, :] * 0.43)
+                ) * self.rng.normal(0.8, 0.35, (block, self.n_channels))
+                uv = carrier * sigma_mat
+                for pkt in synth_c08b_packets(uv, profile=prof, seq0=n, t0_us=1000, codec=self.codec):
+                    if not self.streaming:
+                        return
+                    self.feed_packet(pkt)
+                n += block
 
-            if self.with_imu:
-                target_imu = (n * 104) // fs
-                while imu_seq < target_imu and self.streaming:
-                    ts_us = 1000 + (imu_seq * 1_000_000) // 104
-                    flags = SYNTHETIC | (SESSION_START if imu_seq == 0 else 0)
-                    raw6 = (
-                        int(30 * math.sin(imu_seq * 0.1)),
-                        int(20 * math.cos(imu_seq * 0.1)),
-                        -10,
-                        0,
-                        0,
-                        4096,
-                    )
-                    self.feed_imu_packet(pack_c08b_imu_packet(imu_seq, ts_us, raw6, flags=flags))
-                    imu_seq += 1
+                if self.with_imu:
+                    target_imu = (n * 104) // fs
+                    while imu_seq < target_imu and self.streaming:
+                        ts_us = 1000 + (imu_seq * 1_000_000) // 104
+                        flags = SYNTHETIC | (SESSION_START if imu_seq == 0 else 0)
+                        raw6 = (
+                            int(30 * math.sin(imu_seq * 0.1)),
+                            int(20 * math.cos(imu_seq * 0.1)),
+                            -10,
+                            0,
+                            0,
+                            4096,
+                        )
+                        self.feed_imu_packet(pack_c08b_imu_packet(imu_seq, ts_us, raw6, flags=flags))
+                        imu_seq += 1
+                next_wake = t0 + n / fs
 
-            time.sleep(max(0.0, t0 + n / fs - time.monotonic()))
+            time.sleep(max(0.0, next_wake - time.monotonic()))
 
 
 async def run_dongle_c08b(
@@ -1811,6 +1816,23 @@ def _self_check():
             raise AssertionError(f'危险寄存器写入未被拦截：{bad_args}')
     c_rst = rig16.reg_action('clro')
     assert c_rst['reg_overrides'] == 0 and c_rst['last_reg'] is None
+    # 真开流运行态并发连续热切 1000 -> 2000 -> 500 -> 1000 Hz 线程存活与持续出帧测试
+    rig_live = SynthC08BRig(n_channels=16, fs_Hz=1000)
+    live_chunks = []
+    rig_live.chunk_subscribers.append(lambda emg, imu, seq, kinds, ns: live_chunks.append(len(emg)))
+    rig_live.open()
+    try:
+        time.sleep(0.06)
+        assert rig_live._play_thread.is_alive() and sum(live_chunks) > 0
+        for next_fs in (2000, 500, 1000):
+            before_n = sum(live_chunks)
+            rig_live.set_fs_hz(next_fs)
+            time.sleep(0.06)
+            assert rig_live._play_thread.is_alive(), f'切采样率 {next_fs} Hz 后 _play 线程意外退出'
+            assert sum(live_chunks) > before_n, f'切采样率 {next_fs} Hz 后未继续出帧'
+    finally:
+        rig_live.streaming = False
+        rig_live._play_thread.join(timeout=0.5)
     rig2 = SynthC08BRig(n_channels=2, fs_Hz=1000)
     assert rig2.reg_action('rreg', 'u1', 'ID')['last_reg']['u1_hex'] == '0x53'
     assert rig2.reg_action('wreg', 'u1', 'CH1SET', '0x60')['last_reg']['u1_hex'] == '0x60'
