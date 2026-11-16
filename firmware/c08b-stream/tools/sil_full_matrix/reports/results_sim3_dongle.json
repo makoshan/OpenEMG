@@ -1,0 +1,70 @@
+{
+  "suite": "Sim-3 (XIAO nRF52840 & ESP32-C6 USB BLE Central Dongles Silicon-in-the-Loop)",
+  "total_cases": 8,
+  "passed_cases": 8,
+  "cases": [
+    {
+      "id": "P3-XIAO-2K-16CH-IMU-256FIFO",
+      "title": "正例（Bug #7 已修复）：XIAO nRF52840 接收器在 256B TinyUSB FIFO 满载下跑 16CH@2000SPS + IMU + STATUS 轮询零撕裂（junk_bytes=0）",
+      "pass": true,
+      "valid_samples": 1148,
+      "imu_samples": 60,
+      "junk_bytes": 0,
+      "dongle_ring_peak": 1060,
+      "dongle_ring_drops": 0
+    },
+    {
+      "id": "P3-XIAO-ONLINE-REG",
+      "title": "正例：经 XIAO 接收器 0xA5 串口帧在线执行 WREG/CLRO，>360B 长 META 跨 256B TinyUSB FIFO 分片无损返回",
+      "pass": true,
+      "wreg_last_reg": {
+        "seq": 1,
+        "addr": 5,
+        "u1": 96,
+        "u2": 96
+      }
+    },
+    {
+      "id": "P3-C6-2K-16CH-IMU-FRAG22",
+      "title": "正例：ESP32-C6 NimBLE 接收器主动协商 MTU=247、22B 分片重组长读 META/STATUS 并无损转发 16CH@2k + IMU(kind=6)",
+      "pass": true,
+      "valid_samples": 1056,
+      "imu_samples": 55,
+      "c6_mtu_initiated": 2
+    },
+    {
+      "id": "P3-C6-R01-PASSIVE-MTU",
+      "title": "正例：ESP32-C6 在 MAKO-V12-ADS-2K 档过滤异名广播且保持 0 次主动 MTU 协商（兼容无 IMU 外设）",
+      "pass": true,
+      "connects": 1,
+      "c6_mtu_initiated_on_r01": 0
+    },
+    {
+      "id": "P3-XIAO-BENCH-CMD",
+      "title": "正例：XIAO 接收器 'B' USB 带宽测试命令与 0x80|'B' 应答经环形缓冲完整送达",
+      "pass": true
+    },
+    {
+      "id": "NC-3a",
+      "title": "反例：采集中途 BLE 空口闪断并自动重连（connects 递增）-> 主机当场拒绝跨连接拼接并作废本段",
+      "pass": true,
+      "expected_red_caught": true,
+      "error": "采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）"
+    },
+    {
+      "id": "NC-3b",
+      "title": "反例：USB 主机卡死致 32KB 环形缓冲溢出 -> 接收器按整帧丢弃记入 ring_drops，剩余入环帧 0 字节错位（junk=0）",
+      "pass": true,
+      "expected_red_caught": true,
+      "ring_drops": 24,
+      "intact_frames": 136,
+      "junk_bytes": 0
+    },
+    {
+      "id": "NC-3c",
+      "title": "反例：ESP32-C6 接收器准确拦截越界连接间隔(ci<6)与非法特征读请求，返回非零错误码",
+      "pass": true,
+      "expected_red_caught": true
+    }
+  ]
+}

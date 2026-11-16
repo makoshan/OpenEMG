@@ -1,0 +1,109 @@
+{
+  "suite": "Sim-1 (c08b-bringup Dual-MCU Silicon-in-the-Loop)",
+  "total_cases": 10,
+  "passed_cases": 10,
+  "cases": [
+    {
+      "id": "P1-16CH",
+      "title": "OpenEMG v0.01 AFE-30P 16CH 双片 ADS1298 全链路自检正例",
+      "pass": true,
+      "wall_ms": 1371.0,
+      "done_mask": "0x03FF",
+      "fail_mask": "0x0000",
+      "drdy_rate_hz": 500.0,
+      "ch1_pp_uv": 2006,
+      "ch9_pp_uv": 2006,
+      "ch1_noise_nv": 993,
+      "imu_norm_g": 0.9992,
+      "nrf_reset_count": 1,
+      "approtect_reg": "0x5A",
+      "hazard_mask": "0x0000",
+      "ble_led": "1 Hz 慢闪（当前板型自检全过）"
+    },
+    {
+      "id": "P1-8CH",
+      "title": "D20-8CH 单面 ADS1298 自检正例",
+      "pass": true,
+      "wall_ms": 1312.5,
+      "done_mask": "0x03F5",
+      "fail_mask": "0x0000",
+      "ch1_pp_uv": 2005,
+      "hazard_mask": "0x0000",
+      "ble_led": "1 Hz 慢闪（当前板型自检全过）"
+    },
+    {
+      "id": "P1-2CH-COLD",
+      "title": "ADS1292-2ch-R9 六触点板冷启动正例（Finding #3 已修复：1050ms POR + 1MHz SPI1 + 20µs PA1 复位，hazard=0x0000）",
+      "pass": true,
+      "wall_ms": 1595.1,
+      "done_mask": "0x03F5",
+      "fail_mask": "0x0000",
+      "spi1_sclk_hz": 1000000,
+      "ch1_pp_uv": 2022,
+      "ch2_pp_uv": 2022,
+      "hazard_mask": "0x0000"
+    },
+    {
+      "id": "P1-BTN-OFF",
+      "title": "SW300 松手解锁后长按 >3.0s 释放 PWR_HOLD 软关机",
+      "pass": true,
+      "pwr_hold_before": true,
+      "pwr_hold_after_3p2s": false
+    },
+    {
+      "id": "NC-1a",
+      "title": "反例：复现旧版固件 U2 CONFIG2=0x00 在 v0.01 AFE-30P 上 CH9..16=0 方波（Finding #1）",
+      "pass": true,
+      "expected_red_caught": true,
+      "fail_mask": "0x0040",
+      "ch1_pp_uv": 2006,
+      "ch9_pp_uv": 6,
+      "ble_led": "闪 7 下停顿（首项异常：TEST_SIG）"
+    },
+    {
+      "id": "NC-1b",
+      "title": "反例：注入 RLDREF_INT/Pin62_RLD_MEAS/VREF_4V/GPIO输出 电气短路位，安全监控器全数拦截",
+      "pass": true,
+      "expected_red_caught": true,
+      "hazard_mask": "0x000F"
+    },
+    {
+      "id": "NC-1c",
+      "title": "反例：VBUS=1 互锁切断 OE_N=1 读全零 vs JP701 短接触发 CRITICAL_USB_INTERLOCK_BYPASSED",
+      "pass": true,
+      "expected_red_caught": true,
+      "ilk_oe_n": true,
+      "ilk_id_ab": [
+        "0x00",
+        "0x00"
+      ],
+      "jp701_alert": "CRITICAL_USB_INTERLOCK_BYPASSED: 检测到 VBUS=1 但 OE_N=0（AFE 缓冲未切断：疑似贴了 JP701 或互锁故障，严禁接触人体！）"
+    },
+    {
+      "id": "NC-1d",
+      "title": "反例：2CH U3 3.0V LDO 开路（带 3.3V 寄生残荷），10µs P_DOWN 泄放准确检出 T_STATUS 失败",
+      "pass": true,
+      "expected_red_caught": true,
+      "fail_mask": "0x0020",
+      "bad_status_frames": 3201
+    },
+    {
+      "id": "NC-1e",
+      "title": "反例：DRDY_B 粘连 / U2 0x80 乱码 / SPI3 CRC 翻转全部被精确拒收",
+      "pass": true,
+      "expected_red_caught": true,
+      "drdy_desync_frames": 3200,
+      "garbled_b_mode": 0,
+      "crc_corrupt_ble_verdict": "WAITING_L432"
+    },
+    {
+      "id": "NC-1f",
+      "title": "反例：强制缩短冷启动至旧版 280ms 时，TI SBAS502C tPOR=512ms 门禁准确拦截 ID=0x00 与 VCAP1 隐患",
+      "pass": true,
+      "expected_red_caught": true,
+      "id_a_at_280ms": "0x00",
+      "hazard_mask": "0x0040",
+      "verdict": "FAIL"
+    }
+  ]
+}

@@ -145,8 +145,15 @@ def validate_c08b_reg_write_host(afe, chip_idx, addr, val):
             return False, 0
         vm = 0xFF
         if addr == 0x01:
-            if (val & 0x18) != 0 or (val & 0x07) == 0x07 or (val & 0x87) == 0x80:
+            if (val & 0x38) != 0:
                 return False, 0
+            dr = val & 0x07
+            if (val & 0x80) != 0:
+                if not (4 <= dr <= 6):
+                    return False, 0
+            else:
+                if not (3 <= dr <= 5):
+                    return False, 0
         elif addr == 0x02:
             if (val & 0xC8) != 0 or (val & 0x03) == 0x02:
                 return False, 0
@@ -189,7 +196,7 @@ def validate_c08b_reg_write_host(afe, chip_idx, addr, val):
         if chip_idx != 0 or addr > 0x0B or addr in (0x00, 0x08):
             return False, 0
         if addr == 0x01:
-            return ((val & 0xF8) == 0 and (val & 0x07) != 0x07), 0x87
+            return ((val & 0xF8) == 0 and 0x02 <= (val & 0x07) <= 0x04), 0x87
         if addr == 0x02:
             return ((val & 0xBC) == 0xA0), 0x7B
         if addr == 0x03:

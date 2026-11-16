@@ -326,10 +326,13 @@ static inline bool c08b_validate_reg_write(
         if (chip_idx > ((mode == AFE_16CH) ? 1u : 0u)) return false;
         if (addr > 0x19u || addr == 0x00u || addr == 0x12u || addr == 0x13u) return false;
         switch (addr) {
-        case 0x01u: /* CONFIG1: bit4:3=0, DR!=111, 且禁 HR=1&DR=000 (16-bit 32kSPS) */
-            if ((val & 0x18u) != 0u) return false;
-            if ((val & 0x07u) == 0x07u) return false;
-            if ((val & 0x87u) == 0x80u) return false;
+        case 0x01u: /* CONFIG1: 禁 CLK_EN(0x20, 防与脚37外部2.048MHz晶振X1冲突)，bit4:3=0(0x18)，速率限 500/1000/2000 SPS */
+            if ((val & 0x20u) != 0u || (val & 0x18u) != 0u) return false;
+            if ((val & 0x80u) != 0u) {
+                if ((val & 0x07u) < 0x04u || (val & 0x07u) > 0x06u) return false;
+            } else {
+                if ((val & 0x07u) < 0x03u || (val & 0x07u) > 0x05u) return false;
+            }
             break;
         case 0x02u: /* CONFIG2: bit7:6=0, bit3=0, TEST_FREQ!=10 */
             if ((val & 0xC8u) != 0u) return false;
@@ -381,8 +384,8 @@ static inline bool c08b_validate_reg_write(
     if (mode == AFE_2CH) {
         if (chip_idx != 0u || addr > 0x0Bu || addr == 0x00u || addr == 0x08u) return false;
         switch (addr) {
-        case 0x01u: /* CONFIG1: SINGLE_SHOT=0, bit6:3=0, DR!=111 */
-            if ((val & 0xF8u) != 0u || (val & 0x07u) == 0x07u) return false;
+        case 0x01u: /* CONFIG1: SINGLE_SHOT=0, bit6:3=0, 速率限 500/1000/2000 SPS (0x02..0x04) */
+            if ((val & 0xF8u) != 0u || (val & 0x07u) < 0x02u || (val & 0x07u) > 0x04u) return false;
             vm = 0x87u;
             break;
         case 0x02u: /* CONFIG2: bit7=1, PDB_REFBUF=1, VREF_4V(bit4)=0(3.0V AVDD), CLK_EN(bit3)=0, bit2=0 */

@@ -308,10 +308,14 @@ void loop() {
   xTaskResumeAll();
 
   if (request && command_epoch == epoch) {
-    ads.stop();
+    // STOP(4) 必须保留停机前锁存的故障码与发送/丢样计数供主机最终审计；仅在新启动命令时清零重置。
+    const v12::Fault previous_fault = ads.fault;
+    ads.stop(request == 4 ? previous_fault : v12::Fault::None);
     pending_request = (request == 4) ? 0 : request;
     pending_epoch = epoch;
-    v12_stream_restart(&stream, MAKO_V12_FS);
+    if (request != 4) {
+      v12_stream_restart(&stream, MAKO_V12_FS);
+    }
     status_update();
   }
 
@@ -332,7 +336,8 @@ void loop() {
       const bool started = ads.start(MAKO_V12_FS, v12::Input(request), proof);
       if (!start_session_valid()) {
         ads.stop(v12::Fault::Cancelled);
-      } else if (started) {
+      } else if (started && link_mtu < 247) {
+        // 仅在中心尚未主动协商 MTU>=247（如配对开启 DONGLE_PEER_MTU 的接收器）时发起，防止双向重复请求触发 S140 INVALID_STATE(8)
         sd_ble_gattc_exchange_mtu_request(handle, 247);
       }
     }
@@ -341,6 +346,7 @@ void loop() {
 
   if (!subscribed && ads.active) {
     ads.stop(v12::Fault::Cancelled);
+    status_update();
   }
 
   if (ads.active) {
@@ -390,6 +396,10 @@ void loop() {
                    uint32_t(v12::timer_us(2) - (have_edge ? last_edge_us : capture_started)),
                    MAKO_V12_FS)) {
       ads.stop(v12::Fault::Timeout);
+    }
+    // 运行中任意硬件/时序故障触发停机后必须立即刷新 GATT status_chr，避免 1 秒周期刷新延迟掩盖故障。
+    if (!ads.active) {
+      status_update();
     }
   }
 
