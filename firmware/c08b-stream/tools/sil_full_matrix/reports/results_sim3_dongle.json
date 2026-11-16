@@ -1,16 +1,16 @@
 {
   "suite": "Sim-3 (XIAO nRF52840 & ESP32-C6 USB BLE Central Dongles Silicon-in-the-Loop)",
-  "total_cases": 8,
-  "passed_cases": 8,
+  "total_cases": 11,
+  "passed_cases": 11,
   "cases": [
     {
       "id": "P3-XIAO-2K-16CH-IMU-256FIFO",
       "title": "正例（Bug #7 已修复）：XIAO nRF52840 接收器在 256B TinyUSB FIFO 满载下跑 16CH@2000SPS + IMU + STATUS 轮询零撕裂（junk_bytes=0）",
       "pass": true,
-      "valid_samples": 1148,
-      "imu_samples": 60,
+      "valid_samples": 1160,
+      "imu_samples": 61,
       "junk_bytes": 0,
-      "dongle_ring_peak": 1060,
+      "dongle_ring_peak": 1004,
       "dongle_ring_drops": 0
     },
     {
@@ -28,7 +28,7 @@
       "id": "P3-C6-2K-16CH-IMU-FRAG22",
       "title": "正例：ESP32-C6 NimBLE 接收器主动协商 MTU=247、22B 分片重组长读 META/STATUS 并无损转发 16CH@2k + IMU(kind=6)",
       "pass": true,
-      "valid_samples": 1056,
+      "valid_samples": 1054,
       "imu_samples": 55,
       "c6_mtu_initiated": 2
     },
@@ -40,9 +40,13 @@
       "c6_mtu_initiated_on_r01": 0
     },
     {
-      "id": "P3-XIAO-BENCH-CMD",
-      "title": "正例：XIAO 接收器 'B' USB 带宽测试命令与 0x80|'B' 应答经环形缓冲完整送达",
-      "pass": true
+      "id": "P3-XIAO-BENCH-1S",
+      "title": "正例（PR #14 Finding #14 已修复）：XIAO 接收器运行 seconds=1 正时长 USB 带宽压测，跨 256B FIFO 零丢帧零撕裂（实收帧数==应答帧数）",
+      "pass": true,
+      "bench_seconds": 1,
+      "intact_0x7f_frames": 1164,
+      "elapsed_sim_ms": 1153.5,
+      "junk_bytes": 0
     },
     {
       "id": "NC-3a",
@@ -65,6 +69,30 @@
       "title": "反例：ESP32-C6 接收器准确拦截越界连接间隔(ci<6)与非法特征读请求，返回非零错误码",
       "pass": true,
       "expected_red_caught": true
+    },
+    {
+      "id": "NC-3d",
+      "title": "反例（PR #14 Finding #13 已修复）：seconds=1 带宽测试中途电脑停止读取 -> 200ms 看门狗超时清空返回 status=2，恢复读取后 'Q' 零杂字节响应",
+      "pass": true,
+      "expected_red_caught": true,
+      "abort_elapsed_ms": 1201.2,
+      "bench_reply_status": 2,
+      "junk_bytes_after_resume": 0
+    },
+    {
+      "id": "NC-3e",
+      "title": "反例（PR #14 Finding #13 已修复）：seconds=1 带宽测试中途 USB 拔线(!Serial) -> 250ms 当场跳出不挂死，重连后主循环正常响应 'Q'",
+      "pass": true,
+      "expected_red_caught": true,
+      "disconnect_escape_ms": 250.2,
+      "junk_bytes_after_reconnect": 0
+    },
+    {
+      "id": "NC-3f",
+      "title": "反例（独立审计回绕边界）：0xFFFFFF00 跨 2^32 回绕 + 64B FIFO 停读截断 -> 模差比较零下溢、零撕裂，'Q' 正常恢复",
+      "pass": true,
+      "expected_red_caught": true,
+      "junk_bytes": 0
     }
   ]
 }

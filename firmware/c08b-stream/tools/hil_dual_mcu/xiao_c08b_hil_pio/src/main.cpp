@@ -186,12 +186,13 @@ static uint8_t  g_synth_ch = 16u;
 static uint8_t  g_reg_addr = 0u;
 static uint8_t  g_reg_val  = 0u;
 static uint16_t g_req_fs_hz = 1000u;
+static bool     g_req_fs_explicit = false;
 static uint32_t g_cmd_epoch = 0;
 static uint16_t g_await_epoch_lo = 0;
 static bool     g_conn_emg_started = false;
 static bool     g_conn_imu_started = false;
 
-static char     g_meta_json[440];
+static char     g_meta_json[512];
 static uint8_t  g_status_raw[C08B_STATUS_BYTES];
 
 static struct {
@@ -278,6 +279,7 @@ static uint8_t calc_nrf_flags(void)
     if (gpio_get_raw(OE_N_PIN))       nf |= C08B_NF_OE_OFF;
     if (any_emg_subscribed())         nf |= C08B_NF_BLE_SUBSCRIBED;
     if (any_imu_subscribed())         nf |= C08B_NF_IMU_SUBSCRIBED;
+    if (g_req_fs_explicit)            nf |= C08B_NF_EXPLICIT_FS;
     return nf;
 }
 
@@ -480,12 +482,21 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
             rrep.valid && rrep.seq != (uint16_t)g_cmd_epoch) {
             rrep.valid = false;
         }
+        if (rrep.has_eff_cfg && g_req_mode != C08B_MODE_SYN1 &&
+            (rrep.eff_fs_hz == 500u || rrep.eff_fs_hz == 1000u || rrep.eff_fs_hz == 2000u) &&
+            g_req_fs_hz != rrep.eff_fs_hz) {
+            g_req_fs_hz = rrep.eff_fs_hz;
+            reg_changed = true;
+        }
         if (rrep.valid != g_bridge.reg_reply.valid ||
             rrep.seq != g_bridge.reg_reply.seq ||
             rrep.addr != g_bridge.reg_reply.addr ||
             rrep.val_a != g_bridge.reg_reply.val_a ||
             rrep.val_b != g_bridge.reg_reply.val_b ||
-            rrep.ovr_count != g_bridge.reg_reply.ovr_count) {
+            rrep.ovr_count != g_bridge.reg_reply.ovr_count ||
+            rrep.has_eff_cfg != g_bridge.reg_reply.has_eff_cfg ||
+            rrep.eff_fs_hz != g_bridge.reg_reply.eff_fs_hz ||
+            memcmp(rrep.ch_gains, g_bridge.reg_reply.ch_gains, sizeof(rrep.ch_gains)) != 0) {
             g_bridge.reg_reply = rrep;
             reg_changed = true;
         }
@@ -586,6 +597,7 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
         g_synth_ch = data[4];
         g_reg_addr = data[5];
         g_reg_val  = 0u;
@@ -596,6 +608,7 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
         g_synth_ch = data[4];
         g_reg_addr = data[5];
         g_reg_val  = data[6];
@@ -605,7 +618,9 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
     } else {
+        g_req_fs_explicit = (len >= 6u && mode != C08B_MODE_PRB1);
         if (len >= 6u) {
             uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
             if (fs == 500u || fs == 1000u || fs == 2000u) {
@@ -632,7 +647,9 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
         g_bridge.active = false;
         if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
     } else if (mode == C08B_MODE_CLRO) {
-        memset(&g_bridge.reg_reply, 0, sizeof(g_bridge.reg_reply));
+        if (!g_bridge.reg_reply.valid && g_bridge.reg_reply.ovr_count == 0u) {
+            g_bridge.reg_reply.ovr_count = 1u;
+        }
         g_bridge.active = false;
         if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
     } else if (local_gate != C08B_FAULT_NONE) {
@@ -715,7 +732,7 @@ static void send_usb_link_info(void)
 
 static void handle_usb_cmd(uint8_t op, const uint8_t *p, uint16_t len)
 {
-    uint8_t r[480];
+    uint8_t r[560];
     r[0] = 1;
     uint16_t n = 1;
 
@@ -836,7 +853,7 @@ void setup()
 
     chr_meta.setProperties(CHR_PROPS_READ);
     chr_meta.setPermission(SECMODE_OPEN, SECMODE_NO_ACCESS);
-    chr_meta.setMaxLen(440);
+    chr_meta.setMaxLen(512);
     chr_meta.begin();
 
     chr_stat.setProperties(CHR_PROPS_READ);

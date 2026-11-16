@@ -469,6 +469,34 @@ static uint8_t         g_reg_ovr_set[2][0x1A];
 static uint8_t         g_reg_ovr_val[2][0x1A];
 static c08b_reg_reply_t g_reg_reply;
 
+static void sync_eff_cfg_snapshot(c08b_afe_mode_t mode, uint16_t fallback_fs_hz, bool force_nominal)
+{
+    uint16_t fs_out = (fallback_fs_hz == 500u || fallback_fs_hz == 1000u || fallback_fs_hz == 2000u)
+                          ? fallback_fs_hz : 1000u;
+    for (int i = 0; i < 16; i++) g_reg_reply.ch_gains[i] = 6u;
+    if (!force_nominal && (mode == AFE_2CH || mode == AFE_8CH || mode == AFE_16CH)) {
+        if (g_reg_ovr_set[0][0x01u]) {
+            uint16_t ovr_fs = c08b_decode_config1_fs_hz(mode, g_reg_ovr_val[0][0x01u]);
+            if (ovr_fs != 0u) fs_out = ovr_fs;
+        }
+        if (mode == AFE_2CH) {
+            if (g_reg_ovr_set[0][0x04u]) g_reg_reply.ch_gains[0] = c08b_ads_gain_from_chset(g_reg_ovr_val[0][0x04u]);
+            if (g_reg_ovr_set[0][0x05u]) g_reg_reply.ch_gains[1] = c08b_ads_gain_from_chset(g_reg_ovr_val[0][0x05u]);
+        } else {
+            int nchips = (mode == AFE_16CH) ? 2 : 1;
+            for (int c = 0; c < nchips; c++) {
+                for (uint8_t a = 0x05u; a <= 0x0Cu; a++) {
+                    if (g_reg_ovr_set[c][a]) {
+                        g_reg_reply.ch_gains[c * 8 + (a - 0x05u)] = c08b_ads_gain_from_chset(g_reg_ovr_val[c][a]);
+                    }
+                }
+            }
+        }
+    }
+    g_reg_reply.has_eff_cfg = true;
+    g_reg_reply.eff_fs_hz   = fs_out;
+}
+
 static uint8_t recount_reg_overrides(c08b_afe_mode_t mode)
 {
     uint8_t n = 0;
@@ -718,8 +746,9 @@ static c08b_fault_t start_real_afe(
         return C08B_FAULT_AFE_ID;
     }
 
-    /* PRB1 只读探测：识别出 2/8/16CH 后立刻关断 AFE 供电返回 */
+    /* PRB1 只读探测：识别出 2/8/16CH 后立刻同步生效配置快照并关断 AFE 供电返回 */
     if (req_mode == C08B_MODE_PRB1) {
+        sync_eff_cfg_snapshot(mode, fs_hz, false);
         afe_safe_off();
         return C08B_FAULT_NONE;
     }
@@ -738,7 +767,7 @@ static c08b_fault_t start_real_afe(
     memcpy(eff_set, g_reg_ovr_set, sizeof(eff_set));
     memcpy(eff_val, g_reg_ovr_val, sizeof(eff_val));
     if (req_mode == C08B_MODE_WREG) {
-        if (chip_sel > C08B_CHIP_BOTH || (chip_sel == C08B_CHIP_U2 && mode != AFE_16CH)) {
+        if (!c08b_validate_wreg_target(mode, chip_sel, reg_addr)) {
             afe_safe_off();
             return C08B_FAULT_ARG;
         }
@@ -752,6 +781,32 @@ static c08b_fault_t start_real_afe(
             /* 先写入局部候选覆盖表，统一经两步 150 ms 基准/RLD 预热状态机下发并校验，成功后再原子提交全局表 */
             eff_set[c][reg_addr] = 1u;
             eff_val[c][reg_addr] = reg_val;
+        }
+    }
+
+    /* 校验并对齐 CONFIG1(0x01) 采样率覆盖：
+     * 1) 16CH 双片若存在 CONFIG1 覆盖则 U1/U2 必须严格同值；
+     * 2) 启动真实流时若主机显式指定了与 CONFIG1 覆盖不一致的 fs_hz，立即报 FAULT_ARG 拒绝歧义采集；
+     * 3) 若主机未显式指定 fs_hz（4 字节命令），则自动以 CONFIG1 覆盖速率同步更新会话 fs_hz 与 META.fs_Hz。 */
+    if (mode == AFE_16CH && (eff_set[0][0x01u] != eff_set[1][0x01u] ||
+        (eff_set[0][0x01u] && eff_val[0][0x01u] != eff_val[1][0x01u]))) {
+        afe_safe_off();
+        return C08B_FAULT_ARG;
+    }
+    if (eff_set[0][0x01u]) {
+        uint16_t ovr_fs = c08b_decode_config1_fs_hz(mode, eff_val[0][0x01u]);
+        if (ovr_fs == 0u) {
+            afe_safe_off();
+            return C08B_FAULT_ARG;
+        }
+        if (!is_reg_op) {
+            if ((nrf_flags & C08B_NF_EXPLICIT_FS) && ovr_fs != fs_hz) {
+                sync_eff_cfg_snapshot(mode, ovr_fs, false);
+                afe_safe_off();
+                return C08B_FAULT_ARG;
+            }
+            fs_hz = ovr_fs;
+            g_sess.fs_hz = ovr_fs;
         }
     }
 
@@ -798,9 +853,11 @@ static c08b_fault_t start_real_afe(
             g_reg_reply.val_b     = 0u;
             g_reg_reply.ovr_count = recount_reg_overrides(mode);
             g_reg_reply.valid     = true;
+            sync_eff_cfg_snapshot(mode, g_sess.fs_hz, false);
             afe_safe_off();
             return C08B_FAULT_NONE;
         }
+        sync_eff_cfg_snapshot(mode, fs_hz, false);
         ads_cmd(0, ADS_RDATAC);
     } else {
         /* 8CH / 16CH ADS1298（LM27762 ±2.5V 双极供电，Pin 60 RLDREF 硬连 AGND，v0.01 Pin 62 RLDIN 接 +2.5V）：
@@ -866,9 +923,11 @@ static c08b_fault_t start_real_afe(
             g_reg_reply.val_b     = rb1;
             g_reg_reply.ovr_count = recount_reg_overrides(mode);
             g_reg_reply.valid     = true;
+            sync_eff_cfg_snapshot(mode, g_sess.fs_hz, false);
             afe_safe_off();
             return C08B_FAULT_NONE;
         }
+        sync_eff_cfg_snapshot(mode, fs_hz, false);
         ads_cmd(0, ADS_RDATAC);
         if (mode == AFE_16CH) ads_cmd(1, ADS_RDATAC);
     }
@@ -913,6 +972,7 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
         memset(g_reg_ovr_set, 0, sizeof(g_reg_ovr_set));
         memset(g_reg_ovr_val, 0, sizeof(g_reg_ovr_val));
         memset(&g_reg_reply, 0, sizeof(g_reg_reply));
+        sync_eff_cfg_snapshot(g_sess.afe_mode, g_sess.fs_hz ? g_sess.fs_hz : 1000u, true);
         logf_("已清空全部运行时 ADS 寄存器覆盖项\n");
         return;
     }
@@ -948,6 +1008,7 @@ static void handle_rx_cmd(const c08b_link_rx_t *rx)
     if (rx->req_mode == C08B_MODE_SYN1) {
         uint8_t sc = rx->synth_channels;
         g_sess.afe_mode = (sc == 2u) ? AFE_2CH : (sc == 8u) ? AFE_8CH : AFE_16CH;
+        sync_eff_cfg_snapshot(g_sess.afe_mode, fs, true);
         g_sess.is_synth = true;
         g_sess.active = true;
         g_sess.active_mode = C08B_MODE_SYN1;
@@ -1109,18 +1170,19 @@ int main(void)
 
         if (!g_sess.active) {
             if (g_ms - last_hb_ms >= 20u) {
-                last_hb_ms = g_ms;
                 fill_tx_telemetry(&tx);
                 tx.sample_count = 0;
-                if (link_exchange(&tx, &rx, &got_rx) && got_rx) {
-                    handle_rx_cmd(&rx);
+                if (link_exchange(&tx, &rx, &got_rx)) {
+                    last_hb_ms = g_ms;
+                    if (got_rx) handle_rx_cmd(&rx);
                 }
             }
             continue;
         }
 
-        /* 采集中：2000 SPS 每批 2 帧（1 ms 一次，防 500 µs 周期超限）；500/1000 SPS 每批 4 帧 */
-        uint8_t target_batch = (g_sess.fs_hz >= 2000u) ? 2u : 4u;
+        /* 会话首包强制用 2 帧 (<4)，确保 samples[3] 携带实际生效 fs_hz 与 16 路增益先于首条 BLE 通知到达 nRF；
+         * 后续 2000 SPS 每批 2 帧（1 ms 一次），500/1000 SPS 每批 4 帧 */
+        uint8_t target_batch = (!g_sess.sent_session_start || g_sess.fs_hz >= 2000u) ? 2u : 4u;
         uint32_t step_us = 1000000u / g_sess.fs_hz;
         uint32_t overrun_thresh_us = step_us + (step_us * 3u) / 5u; /* >= 1.6 * t_DR 判为硬件 DRDY 漏采 */
         bool imu_sub = (g_sess.nrf_flags & C08B_NF_IMU_SUBSCRIBED) != 0u;

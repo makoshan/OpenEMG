@@ -13,8 +13,14 @@ uint32_t g_mtu_req_count = 0;
 /* 真实模拟 Adafruit TinyUSB 256B 发送 FIFO（默认 CFG_TUD_CDC_TX_BUFSIZE=256）：
  * Serial.write 非阻塞，当 FIFO 剩余空间 < len 时仅写入可容纳的部分字节并返回实际写入数！ */
 size_t              g_usb_tx_cap = 256;
+bool                g_usb_connected = true;
+uint32_t            g_usb_sof_auto_drain = 0;   /* 模拟主机 USB SOF(每 1000 µs) 自动取走字节数 */
+uint64_t            g_last_sof_us = 0;
+uint64_t            g_stall_at_us = 0;          /* 非 0 时到达该时刻模拟电脑停止读取串口 */
+uint64_t            g_disconnect_at_us = 0;     /* 非 0 时到达该时刻模拟电脑拔掉/关闭 USB CDC (!Serial) */
 std::deque<uint8_t> g_usb_tx_fifo;
 std::deque<uint8_t> g_usb_rx_fifo;
+std::vector<uint8_t> g_usb_auto_captured;
 
 BLEConnection               g_conn_obj;
 std::vector<BLEClientCharacteristic *> g_all_chrs;
@@ -50,12 +56,37 @@ void xTaskResumeAll(void) {
     else g_suspend_depth--;
 }
 
+static void sim_advance_usb_sof(void) {
+    if (g_stall_at_us != 0 && g_now_us >= g_stall_at_us) {
+        g_usb_sof_auto_drain = 0;
+    }
+    if (g_disconnect_at_us != 0 && g_now_us >= g_disconnect_at_us) {
+        g_usb_connected = false;
+        g_usb_sof_auto_drain = 0;
+    }
+    while (g_now_us - g_last_sof_us >= 1000ull) {
+        g_last_sof_us += 1000ull;
+        if (g_usb_connected && g_usb_sof_auto_drain > 0) {
+            uint32_t n = 0;
+            while (n < g_usb_sof_auto_drain && !g_usb_tx_fifo.empty()) {
+                g_usb_auto_captured.push_back(g_usb_tx_fifo.front());
+                g_usb_tx_fifo.pop_front();
+                n++;
+            }
+        }
+    }
+}
+
 uint32_t millis(void) { return (uint32_t)(g_now_us / 1000ull); }
-void yield(void) { g_now_us += 10ull; }
+void yield(void) {
+    g_now_us += 250ull;
+    sim_advance_usb_sof();
+}
 
 void SimUsbCdcSerial::begin(uint32_t) {}
+SimUsbCdcSerial::operator bool() const { return g_usb_connected; }
 size_t SimUsbCdcSerial::write(const uint8_t *buf, size_t len) {
-    if (g_usb_tx_fifo.size() >= g_usb_tx_cap) return 0;
+    if (!g_usb_connected || g_usb_tx_fifo.size() >= g_usb_tx_cap) return 0;
     size_t avail = g_usb_tx_cap - g_usb_tx_fifo.size();
     size_t n = (len < avail) ? len : avail;
     for (size_t i = 0; i < n; i++) g_usb_tx_fifo.push_back(buf[i]);
@@ -149,8 +180,14 @@ void xd_init(uint32_t usb_tx_fifo_cap, bool peer_has_imu) {
     g_unbalanced_suspend = false;
     g_mtu_req_count = 0;
     g_usb_tx_cap = usb_tx_fifo_cap ? usb_tx_fifo_cap : 256u;
+    g_usb_connected = true;
+    g_usb_sof_auto_drain = 0;
+    g_last_sof_us = g_now_us;
+    g_stall_at_us = 0;
+    g_disconnect_at_us = 0;
     g_usb_tx_fifo.clear();
     g_usb_rx_fifo.clear();
+    g_usb_auto_captured.clear();
     g_conn_obj = BLEConnection{};
     g_peer_has_imu = peer_has_imu;
     for (int i = 0; i < 6; i++) g_xd_timer2.TASKS_CAPTURE[i].idx = i;
@@ -160,7 +197,7 @@ void xd_init(uint32_t usb_tx_fifo_cap, bool peer_has_imu) {
     want_ci = 6;
     last_param_req = 0;
     std::memset(tries, 0, sizeof(tries));
-    head = 0; tail = 0;
+    head = 0; tail = 0; pkt_end = 0;
     ring_drops = 0; notifies = 0; ring_peak = 0;
     svc_reports = 0; name_reports = 0; connects = 0; discover_fail = 0;
     cmd_len = 0;
@@ -220,7 +257,35 @@ int xd_usb_tx_fifo_used(void) { return (int)g_usb_tx_fifo.size(); }
 
 void xd_step_loop(uint32_t advance_us) {
     g_now_us += advance_us;
+    sim_advance_usb_sof();
     loop();
+}
+
+uint64_t xd_now_us(void) { return g_now_us; }
+
+void xd_seed_ring_cursor(uint32_t base) {
+    head = base;
+    tail = base;
+    pkt_end = base;
+}
+
+void xd_config_usb_host_sim(bool connected, uint32_t sof_auto_drain_bytes,
+                            uint64_t stall_after_delta_us, uint64_t disconnect_after_delta_us) {
+    g_usb_connected = connected;
+    g_usb_sof_auto_drain = sof_auto_drain_bytes;
+    g_last_sof_us = g_now_us;
+    g_stall_at_us = stall_after_delta_us ? (g_now_us + stall_after_delta_us) : 0;
+    g_disconnect_at_us = disconnect_after_delta_us ? (g_now_us + disconnect_after_delta_us) : 0;
+}
+
+int xd_pop_auto_captured(uint8_t *out, int max_len) {
+    int n = (int)g_usb_auto_captured.size();
+    if (n > max_len) n = max_len;
+    if (n > 0 && out) {
+        std::memcpy(out, g_usb_auto_captured.data(), (size_t)n);
+        g_usb_auto_captured.erase(g_usb_auto_captured.begin(), g_usb_auto_captured.begin() + n);
+    }
+    return n;
 }
 
 void xd_get_stats(uint32_t *out_connects, uint32_t *out_drops, uint32_t *out_notifies,

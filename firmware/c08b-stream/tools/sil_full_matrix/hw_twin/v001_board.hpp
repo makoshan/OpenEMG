@@ -152,6 +152,7 @@ void     sim_set_force_oe_n_high(bool force_high);
 void     sim_set_avdd_3v0(bool ok);
 void     sim_set_button(bool pressed);
 void     sim_set_readback_fault(bool enable);
+void     sim_set_corrupt_spi3_crc(bool enable);
 void     sim_get_telemetry(SimTelemetry *out);
 
 /* S140 BLE GATT 主机客户端接口（供 Python 适配 host/c08b_stream.py BleakClient 接口） */

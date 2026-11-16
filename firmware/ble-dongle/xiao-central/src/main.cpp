@@ -33,6 +33,7 @@ static uint8_t tries[3];
 static const uint32_t RING = 32768;  // 16CH 2 kHz 约 120 KB/s，够顶 >0.25 s USB 卡顿
 static uint8_t ring[RING];
 static volatile uint32_t head = 0, tail = 0;
+static uint32_t pkt_end = 0;  // drain() 当前在发帧的帧尾偏移，用于超时丢弃积压时对齐整帧边界防半帧撕裂
 static volatile uint32_t ring_drops = 0, notifies = 0, ring_peak = 0;
 static volatile uint32_t svc_reports = 0, name_reports = 0, connects = 0, discover_fail = 0;
 static void drain();
@@ -167,7 +168,12 @@ void setup() {
 static void drain() {
   uint32_t t = tail, h = head;
   while (t != h) {
-    uint32_t off = t % RING, n = min(h - t, RING - off);  // 回绕处分两段写
+    if (t == pkt_end) {
+      uint16_t plen = uint16_t(ring[(t + 2) % RING]) | (uint16_t(ring[(t + 3) % RING]) << 8);
+      pkt_end = t + 8u + plen;
+    }
+    uint32_t step = min(h - t, pkt_end - t);  // 模 2^32 无符号差值比较，跨 0xFFFFFFFF->0 回绕不失步
+    uint32_t off = t % RING, n = min(step, RING - off);
     size_t w = Serial.write(ring + off, n);
     if (!w) break;
     t += w;
@@ -180,17 +186,44 @@ static void bench(uint16_t seconds) {
   static uint8_t fill[240];
   for (unsigned i = 0; i < sizeof fill; i++) fill[i] = i;
   uint32_t end = millis() + seconds * 1000u, frames = 0;
+  bool aborted = false;
   while ((int32_t)(millis() - end) < 0) {
+    if (!Serial) { aborted = true; break; }
     if (RING - (head - tail) >= 8u + sizeof(fill) + 32u) {
       put_frame(0x7F, v12::timer_us(1), fill, sizeof fill);
       frames++;
     }
     drain();
+    yield();
   }
-  while (tail != head) { drain(); yield(); }
-  uint8_t r[5] = {0};
+  // 收尾排空设 200 ms 滑动有进展看门狗：主机持续读取时完整排空，主机停读或拔线时按整帧边界截断积压填充帧，绝不卡死主循环或撕裂半帧
+  uint32_t prev_tail = tail, stall_deadline = millis() + 200u;
+  while (tail != head) {
+    if (!Serial) { aborted = true; break; }
+    drain();
+    uint32_t cur_tail = tail;
+    if (cur_tail != prev_tail) {
+      prev_tail = cur_tail;
+      stall_deadline = millis() + 200u;
+    } else if ((int32_t)(millis() - stall_deadline) >= 0) {
+      aborted = true;
+      break;
+    }
+    yield();
+  }
+  if (aborted) {
+    vTaskSuspendAll();
+    if (!Serial) {
+      tail = head;
+      pkt_end = head;
+    } else {
+      head = (pkt_end - tail <= head - tail) ? pkt_end : tail;
+    }
+    xTaskResumeAll();
+  }
+  uint8_t r[5] = { uint8_t(aborted ? 2 : 0) };
   memcpy(r + 1, &frames, 4);
-  send_now(0x80 | 'B', r, 5);
+  if (Serial) send_now(0x80 | 'B', r, 5);
 }
 
 static uint8_t cmd[300];

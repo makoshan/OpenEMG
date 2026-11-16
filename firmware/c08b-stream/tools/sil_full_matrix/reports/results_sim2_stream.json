@@ -1,7 +1,7 @@
 {
   "suite": "Sim-2 (c08b-stream Dual-MCU + S140 GATT + c08b_stream.py + DSP-F03 Silicon-in-the-Loop)",
-  "total_cases": 16,
-  "passed_cases": 16,
+  "total_cases": 19,
+  "passed_cases": 19,
   "cases": [
     {
       "id": "L2-LOCKED-GATE-SYNTH",
@@ -10,7 +10,7 @@
       "adv_name": "YUANLI-C08B",
       "cold_meta_afe": "NONE",
       "fw_locked_fault": 1,
-      "syn16_samples": 504,
+      "syn16_samples": 506,
       "syn16_imu_samples": 53
     },
     {
@@ -50,7 +50,7 @@
           "fs_Hz": 1000,
           "protocol": 4,
           "spi1_hz": 4000000,
-          "valid_samples": 804,
+          "valid_samples": 806,
           "imu_samples": 84,
           "pp_uv": 2008.1,
           "rms_uv": 999.984,
@@ -60,10 +60,10 @@
           "fs_Hz": 1000,
           "protocol": 4,
           "spi1_hz": 4000000,
-          "valid_samples": 804,
+          "valid_samples": 806,
           "imu_samples": 84,
           "pp_uv": 8.7,
-          "rms_uv": 1.402,
+          "rms_uv": 1.403,
           "hazard_mask": "0x0000"
         },
         "8ch_2k_short": {
@@ -80,10 +80,10 @@
           "fs_Hz": 500,
           "protocol": 1,
           "spi1_hz": 1000000,
-          "valid_samples": 408,
-          "imu_samples": 85,
+          "valid_samples": 410,
+          "imu_samples": 86,
           "pp_uv": 2022.2,
-          "rms_uv": 1008.332,
+          "rms_uv": 1008.327,
           "hazard_mask": "0x0000"
         }
       }
@@ -124,15 +124,15 @@
       "expected_red_caught": true,
       "race_comparison": {
         "MCU_U9_v001": {
-          "nrf_stop_latency_us": 11,
-          "l432_ana_en_off_latency_us": 120,
+          "nrf_stop_latency_us": 170,
+          "l432_ana_en_off_latency_us": 280,
           "zero_frames_leaked_to_ble": 0,
           "final_fault": 3,
           "host_exception": "采集中触发设备故障码 3（fault=3）"
         },
         "R4U6_ref": {
-          "nrf_stop_latency_us": 315,
-          "l432_ana_en_off_latency_us": 0,
+          "nrf_stop_latency_us": 170,
+          "l432_ana_en_off_latency_us": 160,
           "zero_frames_leaked_to_ble": 0,
           "final_fault": 3,
           "host_exception": "采集中触发设备故障码 3（fault=3）"
@@ -146,7 +146,7 @@
       "expected_red_caught": true,
       "zero_frames_leaked_over_ble": 0,
       "fw_fault_code": 6,
-      "l432_ana_en_off_latency_us": 120,
+      "l432_ana_en_off_latency_us": 280,
       "host_caught_error": "采集中触发设备故障码 6（fault=6）"
     },
     {
@@ -206,11 +206,12 @@
     },
     {
       "id": "P2-REG-ONLINE-16CH-2CH",
-      "title": "正例：16CH/2CH 在线 RREG/WREG/CLRO 经真实 SPI3+SPI1 两步预热闭环，且 WREG 改增益后 TST1/SHT1 保持内部校准多路器不失波",
+      "title": "正例：16CH/2CH 在线 RREG/WREG/CLRO 经真实 SPI3+SPI1 闭环，WREG 改增益后 META channel_gains 精准折算 2000µVpp 且保持校准 MUX",
       "pass": true,
-      "ch1_gain12_tst_pp_uv_nominal": 4016.7,
+      "ch1_gain12_raw_code_ratio": 2.0,
+      "ch1_gain12_tst_pp_uv": 2008.4,
       "ch2_gain6_tst_pp_uv_nominal": 2008.4,
-      "ch1_gain12_sht_rms_uv": 2.72,
+      "ch1_gain12_sht_rms_uv": 1.37,
       "ch1_after_clro_pp_uv": 2008.7
     },
     {
@@ -218,9 +219,9 @@
       "title": "正例：同一 BLE 连接在线热切换 500 / 1000 / 2000 SPS，DRDY 实测采样率与 META 严格对齐零丢包",
       "pass": true,
       "measured_fs_hz": {
-        "500": 500.0,
-        "1000": 1000.01,
-        "2000": 2000.04
+        "500": 500.01,
+        "1000": 999.98,
+        "2000": 1999.97
       }
     },
     {
@@ -244,6 +245,29 @@
       "pass": true,
       "expected_red_caught": true,
       "preserved_overrides": 1
+    },
+    {
+      "id": "P2-CONFIG1-FS-RECONCILE",
+      "title": "正例（PR #13 Finding #11 已修复）：WREG both:CONFIG1=0x86(500SPS) 后会话步长与 META.fs_Hz 自动对齐 500 Hz，2ms 正常间隔零误判漏采",
+      "pass": true,
+      "meta_fs_hz": 500,
+      "measured_fs_hz": 500.0,
+      "missing_samples": 0
+    },
+    {
+      "id": "NC-2k",
+      "title": "反例（PR #13 Finding #11 已修复）：16CH 单改 u1:CONFIG1 异速失步与显式 fs_hz!=CONFIG1 歧义采集均被 FAULT_ARG(2) 拦截",
+      "pass": true,
+      "expected_red_caught": true,
+      "split_chip_error": "WREG 触发设备故障码 2",
+      "explicit_fs_conflict_error": "启动后未收到数据包（fault=2）"
+    },
+    {
+      "id": "NC-2l",
+      "title": "反例（PR #13 Finding #12 已修复）：双核 SPI3 中断期间下发 CLRO 绝不假清零（诚实超时），链路恢复后经纪元握手完成清空",
+      "pass": true,
+      "expected_red_caught": true,
+      "stalled_timeout_error": "CLRO 超时未收到固件寄存器应答（afe=ADS1298_DUAL）"
     }
   ]
 }
