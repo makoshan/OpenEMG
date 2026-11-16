@@ -1,0 +1,249 @@
+{
+  "suite": "Sim-2 (c08b-stream Dual-MCU + S140 GATT + c08b_stream.py + DSP-F03 Silicon-in-the-Loop)",
+  "total_cases": 16,
+  "passed_cases": 16,
+  "cases": [
+    {
+      "id": "L2-LOCKED-GATE-SYNTH",
+      "title": "默认双锁关闭镜像（0/0）：冷启动诚实报告 NONE，主机+固件双重拦截 TST1(FAULT_LOCKED=1, ANA_EN=0)，SYN1 16CH+IMU 全链路通过",
+      "pass": true,
+      "adv_name": "YUANLI-C08B",
+      "cold_meta_afe": "NONE",
+      "fw_locked_fault": 1,
+      "syn16_samples": 504,
+      "syn16_imu_samples": 53
+    },
+    {
+      "id": "P2-PRB1-ALL",
+      "title": "PRB1 子板只读探测（16CH v4 / 8CH v1 / 2CH v1 严格 512ms 冷启 POR）：动态识别并即刻关断 ANA_EN，零电气违规",
+      "pass": true,
+      "subboards": {
+        "16ch": {
+          "afe": "ADS1298_DUAL",
+          "protocol": 4,
+          "spi_Hz": 4000000,
+          "ana_en_after": false,
+          "hazard_mask": "0x0000"
+        },
+        "8ch": {
+          "afe": "ADS1298_SINGLE",
+          "protocol": 1,
+          "spi_Hz": 4000000,
+          "ana_en_after": false,
+          "hazard_mask": "0x0000"
+        },
+        "2ch": {
+          "afe": "ADS1292",
+          "protocol": 1,
+          "spi_Hz": 1000000,
+          "ana_en_after": false,
+          "hazard_mask": "0x0000"
+        }
+      }
+    },
+    {
+      "id": "P2-TST1-SHT1-MATRIX",
+      "title": "16CH@1k / 8CH@2k / 2CH@500 方波与输入短接底噪 + 104Hz 同源时间戳 IMU + ads1298_regs 零违规",
+      "pass": true,
+      "modes": {
+        "16ch_1k_test": {
+          "fs_Hz": 1000,
+          "protocol": 4,
+          "spi1_hz": 4000000,
+          "valid_samples": 804,
+          "imu_samples": 84,
+          "pp_uv": 2008.1,
+          "rms_uv": 999.984,
+          "hazard_mask": "0x0000"
+        },
+        "16ch_1k_short": {
+          "fs_Hz": 1000,
+          "protocol": 4,
+          "spi1_hz": 4000000,
+          "valid_samples": 804,
+          "imu_samples": 84,
+          "pp_uv": 8.7,
+          "rms_uv": 1.402,
+          "hazard_mask": "0x0000"
+        },
+        "8ch_2k_short": {
+          "fs_Hz": 2000,
+          "protocol": 1,
+          "spi1_hz": 4000000,
+          "valid_samples": 1610,
+          "imu_samples": 84,
+          "pp_uv": 12.7,
+          "rms_uv": 2.004,
+          "hazard_mask": "0x0000"
+        },
+        "2ch_500_test": {
+          "fs_Hz": 500,
+          "protocol": 1,
+          "spi1_hz": 1000000,
+          "valid_samples": 408,
+          "imu_samples": 85,
+          "pp_uv": 2022.2,
+          "rms_uv": 1008.332,
+          "hazard_mask": "0x0000"
+        }
+      }
+    },
+    {
+      "id": "P2-EXR1-DSP-XTALK",
+      "title": "EXR1 两步法 RLD 预热闭环 + DSP-F03 C99 陷波级联频谱验证 & 16CH 邻道串扰测定",
+      "pass": true,
+      "rld_cmrr_db": 26.05,
+      "rld_plus_dsp_50hz_rejection_db": 80.51,
+      "adjacent_crosstalk_db": -80.04,
+      "non_adjacent_crosstalk_db": -117.68,
+      "cmrr_detail": {
+        "external": {
+          "u1_u2_cfg3_hex": [
+            "0xC0",
+            "0xC0"
+          ],
+          "raw_50hz_peak_uv": 399.94,
+          "dsp_50hz_peak_uv": 0.05,
+          "dsp_80hz_semg_uv": 249.71
+        },
+        "rld": {
+          "u1_u2_cfg3_hex": [
+            "0xC4",
+            "0xC0"
+          ],
+          "raw_50hz_peak_uv": 19.94,
+          "dsp_50hz_peak_uv": 0.0377,
+          "dsp_80hz_semg_uv": 249.71
+        }
+      }
+    },
+    {
+      "id": "NC-2a",
+      "title": "反例：采集中热插 USB VBUS=1 互锁急停竞态测定（MCU-U9 PH3=0 跨核关断 vs R4U6 本地关断）",
+      "pass": true,
+      "expected_red_caught": true,
+      "race_comparison": {
+        "MCU_U9_v001": {
+          "nrf_stop_latency_us": 11,
+          "l432_ana_en_off_latency_us": 120,
+          "zero_frames_leaked_to_ble": 0,
+          "final_fault": 3,
+          "host_exception": "采集中触发设备故障码 3（fault=3）"
+        },
+        "R4U6_ref": {
+          "nrf_stop_latency_us": 315,
+          "l432_ana_en_off_latency_us": 0,
+          "zero_frames_leaked_to_ble": 0,
+          "final_fault": 3,
+          "host_exception": "采集中触发设备故障码 3（fault=3）"
+        }
+      }
+    },
+    {
+      "id": "NC-2b",
+      "title": "反例（Finding #2 已修复）：独立拉高 OE_N=1 时双核 0xC0 铁闸 0 零帧泄漏，立即切断 ANA_EN=0 并报 FAULT_BAD_FRAME(6)",
+      "pass": true,
+      "expected_red_caught": true,
+      "zero_frames_leaked_over_ble": 0,
+      "fw_fault_code": 6,
+      "l432_ana_en_off_latency_us": 120,
+      "host_caught_error": "采集中触发设备故障码 6（fault=6）"
+    },
+    {
+      "id": "NC-2c",
+      "title": "反例：DRDY_A 停振 >20ms -> 固件置 FAULT_DRDY_TO(8) 并切断 ANA_EN=0，主机准确捕获 fault=8",
+      "pass": true,
+      "expected_red_caught": true,
+      "fault": 8,
+      "host_error": "启动后未收到数据包（fault=8）",
+      "ana_en_after": false
+    },
+    {
+      "id": "NC-2d",
+      "title": "反例：ADS1298 寄存器回读单比特翻转 -> 固件置 FAULT_READBACK(5) 并切断 ANA_EN=0，主机准确捕获 fault=5",
+      "pass": true,
+      "expected_red_caught": true,
+      "fault": 5,
+      "host_error": "启动后未收到数据包（fault=5）",
+      "ana_en_after": false
+    },
+    {
+      "id": "NC-2e",
+      "title": "反例：2CH 采集中途 3.0V AVDD 欠压跌落 -> L432 PA4 实时监测立即置 FAULT_INTERLOCK(3) 并断 ANA_EN，主机捕获 fault=3",
+      "pass": true,
+      "expected_red_caught": true,
+      "fault": 3,
+      "host_error": "采集中触发设备故障码 3（fault=3）",
+      "ana_en_after": false
+    },
+    {
+      "id": "NC-2f",
+      "title": "反例：采集中途 BLE 异常断连 -> nRF 自动触发 STOP 使 L432 切断 ANA_EN=0，主机拒绝跨连接拼接",
+      "pass": true,
+      "expected_red_caught": true,
+      "ana_en_after_disconnect": false,
+      "host_caught_error": "采集过程中 BLE 连接中断或重连（严禁跨连接拼接数据）"
+    },
+    {
+      "id": "P2-2K-16CH-IMU",
+      "title": "正例（Finding #4 已修复）：64MHz L432 + 非阻塞 I2C1 下 16CH@2000SPS + 104Hz IMU 零漏采（2000.00 Hz），RLD+DSP-F03 Q30 50Hz 总抑制 >65 dB",
+      "pass": true,
+      "l432_hclk_hz": 64000000,
+      "measured_effective_fs_hz": 1999.993,
+      "missing_samples": 0,
+      "imu_samples_in_2p4s": 251,
+      "rld_plus_dsp_2ksps_50hz_rejection_db": 75.76,
+      "passband_100hz_amp_uv": 249.89
+    },
+    {
+      "id": "NC-2h",
+      "title": "反例：注入每 25ms 750µs CPU 停顿越界 -> L432 精确检出 DRDY 漏采跳号，STATUS.ring_dropped 与主机 missing_samples 诚实对齐",
+      "pass": true,
+      "expected_red_caught": true,
+      "fw_ring_dropped_mid": 22,
+      "host_missing_samples": 23,
+      "valid_samples": 1191
+    },
+    {
+      "id": "P2-REG-ONLINE-16CH-2CH",
+      "title": "正例：16CH/2CH 在线 RREG/WREG/CLRO 经真实 SPI3+SPI1 两步预热闭环，且 WREG 改增益后 TST1/SHT1 保持内部校准多路器不失波",
+      "pass": true,
+      "ch1_gain12_tst_pp_uv_nominal": 4016.7,
+      "ch2_gain6_tst_pp_uv_nominal": 2008.4,
+      "ch1_gain12_sht_rms_uv": 2.72,
+      "ch1_after_clro_pp_uv": 2008.7
+    },
+    {
+      "id": "P2-LIVE-FS-SWITCH",
+      "title": "正例：同一 BLE 连接在线热切换 500 / 1000 / 2000 SPS，DRDY 实测采样率与 META 严格对齐零丢包",
+      "pass": true,
+      "measured_fs_hz": {
+        "500": 500.0,
+        "1000": 1000.01,
+        "2000": 2000.04
+      }
+    },
+    {
+      "id": "NC-2i",
+      "title": "反例：冷启动直推 7 类危险 WREG（含 CLK_EN 顶牛晶振 X1 与 8kSPS 超速），L432 固件掩码 100% 拒收断电（hazard=0x0000）",
+      "pass": true,
+      "expected_red_caught": true,
+      "caught": [
+        "RLDREF_INT=1->WREG 触发设备故障码 2",
+        "RLD_MEAS=1->WREG 触发设备故障码 2",
+        "VREF_4V=1->WREG 触发设备故障码 2",
+        "U2_PD_RLD=1->WREG 触发设备故障码 2",
+        "GPIO1_OUT_SHORT_GND->WREG 触发设备故障码 2",
+        "CONFIG1_CLK_EN_PIN37_CONFLICT->WREG 触发设备故障码 2",
+        "CONFIG1_8000SPS_OVERRUN->WREG 触发设备故障码 2"
+      ]
+    },
+    {
+      "id": "NC-2j",
+      "title": "反例：在线 WREG 注入 SPI1 回读位翻转 -> 固件立即断电报 FAULT_READBACK(5) 且保持原会话覆盖表不被污染",
+      "pass": true,
+      "expected_red_caught": true,
+      "preserved_overrides": 1
+    }
+  ]
+}

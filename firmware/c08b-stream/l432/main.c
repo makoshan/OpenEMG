@@ -483,6 +483,7 @@ static uint8_t recount_reg_overrides(c08b_afe_mode_t mode)
 }
 
 static void apply_ads1292_overrides(
+    uint8_t base_mode,
     const uint8_t ovr_set[2][0x1A], const uint8_t ovr_val[2][0x1A],
     uint8_t cfg[0x0C], uint8_t mask[0x0C], uint8_t *rld_step2)
 {
@@ -498,6 +499,15 @@ static void apply_ads1292_overrides(
                 cfg[0x06] = v;
                 if (rld_step2) *rld_step2 = 0u;
             }
+        } else if (a == 0x02u && base_mode == C08B_MODE_TST1) {
+            cfg[0x02] = (uint8_t)(v | 0x03u); /* TST1 保持内部 1Hz 测试源开启 */
+            mask[0x02] = vm;
+        } else if ((a == 0x04u || a == 0x05u) &&
+                   (base_mode == C08B_MODE_TST1 || base_mode == C08B_MODE_SHT1) &&
+                   (v & 0x87u) == 0u) {
+            /* 在线调增益 (MUX=000) 后运行 TST1/SHT1 标定时，保留 PGA 增益覆盖并维持内部方波/短接多路器 */
+            cfg[a] = (uint8_t)((v & 0xF0u) | (base_mode == C08B_MODE_TST1 ? 0x05u : 0x01u));
+            mask[a] = vm;
         } else {
             cfg[a] = v;
             mask[a] = vm;
@@ -506,7 +516,7 @@ static void apply_ads1292_overrides(
 }
 
 static void apply_ads1298_overrides(
-    c08b_afe_mode_t mode, int chip_idx,
+    uint8_t base_mode, c08b_afe_mode_t mode, int chip_idx,
     const uint8_t ovr_set[2][0x1A], const uint8_t ovr_val[2][0x1A],
     uint8_t cfg[0x1A], uint8_t mask[0x1A],
     uint8_t *cfg3_step2, uint8_t *rld_p_step2, uint8_t *rld_n_step2)
@@ -526,6 +536,15 @@ static void apply_ads1298_overrides(
             if (rld_p_step2) *rld_p_step2 = v;
         } else if (a == 0x0Eu) {
             if (rld_n_step2) *rld_n_step2 = v;
+        } else if (a == 0x02u && base_mode == C08B_MODE_TST1) {
+            cfg[0x02] = (uint8_t)(v | 0x10u); /* TST1 保持双片 INT_TEST=1 */
+            mask[0x02] = vm;
+        } else if (a >= 0x05u && a <= 0x0Cu &&
+                   (base_mode == C08B_MODE_TST1 || base_mode == C08B_MODE_SHT1) &&
+                   (v & 0x87u) == 0u) {
+            /* 在线调增益 (MUX=000) 后运行 TST1/SHT1 标定时，保留 PGA 增益覆盖并维持内部方波(0x05)/短接(0x01) */
+            cfg[a] = (uint8_t)((v & 0xF0u) | (base_mode == C08B_MODE_TST1 ? 0x05u : 0x01u));
+            mask[a] = vm;
         } else {
             cfg[a] = v;
             mask[a] = vm;
@@ -749,7 +768,7 @@ static c08b_fault_t start_real_afe(
         if (!c08b_build_ads1292_regs(base_mode, fs_hz, cfg, mask, &rld_step2)) {
             afe_safe_off(); return C08B_FAULT_ARG;
         }
-        apply_ads1292_overrides(eff_set, eff_val, cfg, mask, &rld_step2);
+        apply_ads1292_overrides(base_mode, eff_set, eff_val, cfg, mask, &rld_step2);
         if (ads_write_verify(0, cfg, mask, 0x01, 0x0B) != 0) {
             afe_safe_off(); return C08B_FAULT_READBACK;
         }
@@ -800,7 +819,7 @@ static c08b_fault_t start_real_afe(
             }
             rld_p_step2[c] = rld_def;
             rld_n_step2[c] = rld_def;
-            apply_ads1298_overrides(mode, c, eff_set, eff_val, cfg, mask, &cfg3_step2[c], &rld_p_step2[c], &rld_n_step2[c]);
+            apply_ads1298_overrides(base_mode, mode, c, eff_set, eff_val, cfg, mask, &cfg3_step2[c], &rld_p_step2[c], &rld_n_step2[c]);
             if (ads_write_verify(c, cfg, mask, 0x01, 0x19) != 0) {
                 afe_safe_off(); return C08B_FAULT_READBACK;
             }

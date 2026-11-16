@@ -306,6 +306,10 @@ int main(void)
         assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x05u, 0x02u, &vm)); /* MUX=0x02 RLD_MEASURE */
         assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x05u, 0x70u, &vm)); /* GAIN=111 未定义 */
         assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x14u, 0x0Eu, &vm)); /* GPIO1 设输出短路 GND */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x01u, 0xA5u, &vm)); /* CONFIG1 CLK_EN=1 顶牛外部晶振 X1 */
+        assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x01u, 0x82u, &vm)); /* CONFIG1 8000 SPS 超速越界 */
+        assert(c08b_validate_reg_write(AFE_16CH,  0u, 0x01u, 0x04u, &vm)); /* CONFIG1 LP 1000 SPS 合法省电对照 */
+        assert(!c08b_validate_reg_write(AFE_2CH,  0u, 0x01u, 0x05u, &vm)); /* ADS1292 4000 SPS 超 C08B 上限 */
         assert(!c08b_validate_reg_write(AFE_16CH, 0u, 0x15u, 0x01u, &vm)); /* PACE 外驱 */
         assert(!c08b_validate_reg_write(AFE_8CH,  1u, 0x05u, 0x60u, &vm)); /* 8CH 无 U2 */
 

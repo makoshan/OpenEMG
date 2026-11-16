@@ -1,0 +1,58 @@
+{
+  "suite": "Sim-4 (Seeed XIAO nRF52840 + P44e + ADS1292 2CH Standalone Firmware Silicon-in-the-Loop)",
+  "total_cases": 8,
+  "passed_cases": 8,
+  "cases": [
+    {
+      "id": "L4-LOCKED-DEFAULT",
+      "title": "默认锁定镜像（MAKO_BENCH_MEASURED=0）：拒收 TST1 报 Fault::Locked(1)，D4(PWDN)=LOW 零漏电（hazard=0x00）",
+      "pass": true,
+      "fault": 1
+    },
+    {
+      "id": "P4-DIRECT-BLE-MTU247-TST1",
+      "title": "正例（Bug #8 已修复）：中心已协商 MTU=247 时外设跳过重复 MTU 请求（periph_mtu_reqs=0），2000SPS TST1 方波零丢包",
+      "pass": true,
+      "valid_samples": 2516,
+      "ch1_pp_uv": 2016.7,
+      "periph_mtu_reqs": 0
+    },
+    {
+      "id": "P4-DONGLE-PEER-MTU-EXR1-RLD",
+      "title": "正例：配对 dongle_1292_2k(MTU=23) 时外设主动升至 MTU=247，EXR1 两步 150ms RLD 预热闭环（hazard=0x00）",
+      "pass": true,
+      "valid_samples": 1200,
+      "periph_mtu_reqs": 1
+    },
+    {
+      "id": "P4-SHT1-NOISE",
+      "title": "正例：SHT1 内部短接底噪 < 5 µV 且 STOP 后 D4(PWDN) 立即归零断电",
+      "pass": true,
+      "valid_samples": 949
+    },
+    {
+      "id": "NC-4a",
+      "title": "反例：采集中途插入 USB VBUS -> USBREGSTATUS 双互锁立即拉低 D4 停机报 Fault::UsbInterlock(10)",
+      "pass": true,
+      "expected_red_caught": true
+    },
+    {
+      "id": "NC-4b",
+      "title": "反例：采集中 D5 AVDD 3.0V 轨跌落至 2.40V -> 50ms SAADC(TACQ=20µs) 巡检立即停机报 Fault::Rails(3)",
+      "pass": true,
+      "expected_red_caught": true
+    },
+    {
+      "id": "NC-4c",
+      "title": "反例（Bug #9 已修复）：注入 1500µs CPU 停顿致 DRDY 漏沿 -> uncertain_edge 立即刷新 GATT 状态且 STOP 保留 Fault::Overrun(7)",
+      "pass": true,
+      "expected_red_caught": true
+    },
+    {
+      "id": "NC-4d",
+      "title": "反例：插着 USB VBUS 请求启动 TST1 -> 启动前即拦截报 Fault::UsbInterlock(10)，D4 全程保持低电平",
+      "pass": true,
+      "expected_red_caught": true
+    }
+  ]
+}

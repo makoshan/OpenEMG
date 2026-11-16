@@ -28,22 +28,26 @@ static uint16_t want_ci = 6;                     // 7.5 ms；外设 1 s 后会�
 static uint32_t last_param_req = 0;
 static uint8_t tries[3];
 
-// 通知在 BLE 任务里只拷进环形缓冲，主循环往 USB 写；单生产者单消费者，32 位下标天然原子。
-static const uint32_t RING = 32768;  // 2 kHz 约 63 KB/s，够顶 0.5 s USB 卡顿
+// BLE 回调任务（on_notify）与主循环应答/链路帧（send_now）统一经 vTaskSuspendAll 串行入环，
+// 由唯一消费者 drain() 分片写入 TinyUSB 256B CDC FIFO，杜绝半帧插队撕裂与 >256B 长 META 截断。
+static const uint32_t RING = 32768;  // 16CH 2 kHz 约 120 KB/s，够顶 >0.25 s USB 卡顿
 static uint8_t ring[RING];
 static volatile uint32_t head = 0, tail = 0;
 static volatile uint32_t ring_drops = 0, notifies = 0, ring_peak = 0;
 static volatile uint32_t svc_reports = 0, name_reports = 0, connects = 0, discover_fail = 0;
+static void drain();
 
 static void put_frame(uint8_t kind, uint32_t t, const uint8_t *p, uint16_t len) {
+  vTaskSuspendAll();
   uint32_t need = 8u + len, h = head, used = h - tail;
-  if (RING - used < need) { ring_drops++; return; }  // 满了丢整帧，电脑据序号缺口和 ring_drops 都能看见
+  if (RING - used < need) { ring_drops++; xTaskResumeAll(); return; }  // 满了丢整帧，电脑据序号缺口和 ring_drops 都能看见
   uint8_t hdr[8] = {0xA5, kind, uint8_t(len), uint8_t(len >> 8), uint8_t(t), uint8_t(t >> 8), uint8_t(t >> 16), uint8_t(t >> 24)};
   for (uint32_t i = 0; i < 8; i++) ring[(h + i) % RING] = hdr[i];
   for (uint32_t i = 0; i < len; i++) ring[(h + 8 + i) % RING] = p[i];
   __DMB();
   head = h + need;
   if (head - tail > ring_peak) ring_peak = head - tail;
+  xTaskResumeAll();
 }
 
 static void on_notify(BLEClientCharacteristic *chr, uint8_t *data, uint16_t len) {
@@ -51,12 +55,9 @@ static void on_notify(BLEClientCharacteristic *chr, uint8_t *data, uint16_t len)
   put_frame(chr == &imu_chr ? 6 : 2, v12::timer_us(0), data, len);
 }
 
-// 主循环里直接写 USB（不经环形缓冲）；只在主循环调用，和 drain() 同一线程
 static void send_now(uint8_t kind, const void *p, uint16_t len) {
-  uint32_t t = v12::timer_us(1);
-  uint8_t hdr[8] = {0xA5, kind, uint8_t(len), uint8_t(len >> 8), uint8_t(t), uint8_t(t >> 8), uint8_t(t >> 16), uint8_t(t >> 24)};
-  Serial.write(hdr, 8);
-  if (len) Serial.write((const uint8_t *)p, len);
+  put_frame(kind, v12::timer_us(1), (const uint8_t *)p, len);
+  drain();
 }
 
 static void logf(const char *fmt, ...) {
@@ -179,7 +180,14 @@ static void bench(uint16_t seconds) {
   static uint8_t fill[240];
   for (unsigned i = 0; i < sizeof fill; i++) fill[i] = i;
   uint32_t end = millis() + seconds * 1000u, frames = 0;
-  while ((int32_t)(millis() - end) < 0) { send_now(0x7F, fill, sizeof fill); frames++; }
+  while ((int32_t)(millis() - end) < 0) {
+    if (RING - (head - tail) >= 8u + sizeof(fill) + 32u) {
+      put_frame(0x7F, v12::timer_us(1), fill, sizeof fill);
+      frames++;
+    }
+    drain();
+  }
+  while (tail != head) { drain(); yield(); }
   uint8_t r[5] = {0};
   memcpy(r + 1, &frames, 4);
   send_now(0x80 | 'B', r, 5);
