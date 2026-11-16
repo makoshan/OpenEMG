@@ -167,6 +167,7 @@ static uint32_t g_cmd_epoch = 0;
 static uint16_t g_await_epoch_lo = 0;
 static bool     g_ble_subscribed = false;
 static bool     g_imu_subscribed = false;
+static bool     g_req_fs_explicit = false;
 static bool     g_conn_emg_started = false;
 static bool     g_conn_imu_started = false;
 
@@ -177,6 +178,7 @@ static uint8_t calc_nrf_flags(void)
     if (gpio_get(OE_N_PIN))       nf |= C08B_NF_OE_OFF;
     if (g_ble_subscribed)         nf |= C08B_NF_BLE_SUBSCRIBED;
     if (g_imu_subscribed)         nf |= C08B_NF_IMU_SUBSCRIBED;
+    if (g_req_fs_explicit)        nf |= C08B_NF_EXPLICIT_FS;
     return nf;
 }
 
@@ -285,7 +287,7 @@ static uint16_t g_svc_handle;
 static ble_gatts_char_handles_t g_chr_data, g_chr_meta, g_chr_status, g_chr_ctrl, g_chr_imu;
 static uint8_t  g_adv_buf[31];
 static uint8_t  g_scan_rsp_buf[31];
-static char     g_meta_json[440];
+static char     g_meta_json[512];
 static uint8_t  g_status_raw[C08B_STATUS_BYTES];
 
 static void sd_fault_handler(uint32_t id, uint32_t pc, uint32_t info)
@@ -456,7 +458,7 @@ static void ble_stack_init(void)
 
     uint8_t dummy[4] = {0};
     add_char(0x02u, false, false, true,  1u, C08B_F01_MAX_PKT_BYTES, dummy, &g_chr_data);
-    add_char(0x03u, true,  false, false, 2u, 440u,                   (uint8_t *)"{}", &g_chr_meta);
+    add_char(0x03u, true,  false, false, 2u, 512u,                   (uint8_t *)"{}", &g_chr_meta);
     add_char(0x04u, true,  false, false, C08B_STATUS_BYTES, C08B_STATUS_BYTES, g_status_raw, &g_chr_status);
     add_char(0x05u, false, true,  false, 0u, 8u,                     dummy, &g_chr_ctrl);
     add_char(0x06u, false, false, true,  1u, C08B_IMU_PKT_BYTES,     dummy, &g_chr_imu);
@@ -497,6 +499,7 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
         g_synth_ch = data[4];
         g_reg_addr = data[5];
         g_reg_val  = 0u;
@@ -507,6 +510,7 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
         g_synth_ch = data[4];
         g_reg_addr = data[5];
         g_reg_val  = data[6];
@@ -516,8 +520,10 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
             refresh_gatt_meta_and_status();
             return;
         }
+        g_req_fs_explicit = false;
     } else {
         /* 可选第 5..6 字节覆盖采样率（如 "SYN1\xD0\x07" = 2000 Hz），第 7 字节选合成通道档 2/8/16 */
+        g_req_fs_explicit = (len >= 6u && mode != C08B_MODE_PRB1);
         if (len >= 6u) {
             uint16_t fs = (uint16_t)data[4] | ((uint16_t)data[5] << 8);
             if (fs == 500u || fs == 1000u || fs == 2000u) {
@@ -544,7 +550,10 @@ static void handle_ctrl_payload(const uint8_t *data, uint16_t len)
         g_bridge.active = false;
         if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
     } else if (mode == C08B_MODE_CLRO) {
-        memset(&g_bridge.reg_reply, 0, sizeof(g_bridge.reg_reply));
+        /* 不提前清空 reg_reply：必须等 L432 经 SPI3 确认本次 CLRO 纪元后才清零，防止链路卡死时谎报已清空 */
+        if (!g_bridge.reg_reply.valid && g_bridge.reg_reply.ovr_count == 0u) {
+            g_bridge.reg_reply.ovr_count = 1u;
+        }
         g_bridge.active = false;
         if (!vbus_on) g_bridge.fault = C08B_FAULT_NONE;
     } else if (local_gate != C08B_FAULT_NONE) {
@@ -768,12 +777,21 @@ static void ingest_l432_frame(const c08b_link_tx_t *f)
             rrep.valid && rrep.seq != (uint16_t)g_cmd_epoch) {
             rrep.valid = false;
         }
+        if (rrep.has_eff_cfg && g_req_mode != C08B_MODE_SYN1 &&
+            (rrep.eff_fs_hz == 500u || rrep.eff_fs_hz == 1000u || rrep.eff_fs_hz == 2000u) &&
+            g_req_fs_hz != rrep.eff_fs_hz) {
+            g_req_fs_hz = rrep.eff_fs_hz;
+            reg_changed = true;
+        }
         if (rrep.valid != g_bridge.reg_reply.valid ||
             rrep.seq != g_bridge.reg_reply.seq ||
             rrep.addr != g_bridge.reg_reply.addr ||
             rrep.val_a != g_bridge.reg_reply.val_a ||
             rrep.val_b != g_bridge.reg_reply.val_b ||
-            rrep.ovr_count != g_bridge.reg_reply.ovr_count) {
+            rrep.ovr_count != g_bridge.reg_reply.ovr_count ||
+            rrep.has_eff_cfg != g_bridge.reg_reply.has_eff_cfg ||
+            rrep.eff_fs_hz != g_bridge.reg_reply.eff_fs_hz ||
+            memcmp(rrep.ch_gains, g_bridge.reg_reply.ch_gains, sizeof(rrep.ch_gains)) != 0) {
             g_bridge.reg_reply = rrep;
             reg_changed = true;
         }

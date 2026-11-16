@@ -290,6 +290,49 @@ static inline bool c08b_build_ads1292_regs(
     return true;
 }
 
+/* 从 ADS1298 / ADS1292 CHnSET 寄存器高半字节 [6:4] 解码实际 PGA 增益（两款芯片编码表一致） */
+static inline uint8_t c08b_ads_gain_from_chset(uint8_t chset)
+{
+    static const uint8_t g_lut[8] = { 6u, 1u, 2u, 3u, 4u, 8u, 12u, 6u };
+    return g_lut[(chset >> 4) & 0x07u];
+}
+
+/* 从合法的 ADS1298 / ADS1292 CONFIG1(0x01) 寄存器值反解实际采样率（Hz）；非法返回 0 */
+static inline uint16_t c08b_decode_config1_fs_hz(c08b_afe_mode_t mode, uint8_t cfg1)
+{
+    uint8_t dr = cfg1 & 0x07u;
+    if (mode == AFE_8CH || mode == AFE_16CH) {
+        if ((cfg1 & 0x38u) != 0u) return 0u;
+        if ((cfg1 & 0x80u) != 0u) {
+            if (dr == 0x06u) return 500u;
+            if (dr == 0x05u) return 1000u;
+            if (dr == 0x04u) return 2000u;
+            return 0u;
+        }
+        if (dr == 0x05u) return 500u;
+        if (dr == 0x04u) return 1000u;
+        if (dr == 0x03u) return 2000u;
+        return 0u;
+    }
+    if (mode == AFE_2CH) {
+        if ((cfg1 & 0xF8u) != 0u) return 0u;
+        if (dr == 0x02u) return 500u;
+        if (dr == 0x03u) return 1000u;
+        if (dr == 0x04u) return 2000u;
+        return 0u;
+    }
+    return 0u;
+}
+
+/* 校验 WREG 目标芯片选择：16CH 双片锁步采集下 CONFIG1(0x01) 必须指定 BOTH 同写，严禁单改一片造成速率或滤波器群延迟失步 */
+static inline bool c08b_validate_wreg_target(c08b_afe_mode_t mode, uint8_t chip_sel, uint8_t addr)
+{
+    if (chip_sel > C08B_CHIP_BOTH) return false;
+    if (chip_sel == C08B_CHIP_U2 && mode != AFE_16CH) return false;
+    if (mode == AFE_16CH && addr == 0x01u && chip_sel != C08B_CHIP_BOTH) return false;
+    return (mode == AFE_2CH || mode == AFE_8CH || mode == AFE_16CH);
+}
+
 /* 在线单寄存器读取地址范围校验（RREG 用） */
 static inline bool c08b_validate_reg_read(c08b_afe_mode_t mode, uint8_t chip_sel, uint8_t addr)
 {
@@ -467,6 +510,7 @@ enum {
     C08B_NF_OE_OFF         = 1u << 1,
     C08B_NF_BLE_SUBSCRIBED = 1u << 2,
     C08B_NF_IMU_SUBSCRIBED = 1u << 3,
+    C08B_NF_EXPLICIT_FS    = 1u << 4, /* 本条启动命令显式携带第 5..6 字节采样率参数 */
 };
 
 /* 检查单槽（54B）在给定采集板档位下的 ADS 状态头高 4 位是否为合法 0xC (1100b)。
@@ -527,21 +571,37 @@ typedef struct __attribute__((packed)) {
 #define C08B_LINK_RX_CRC_LEN offsetof(c08b_link_rx_t, crc)
 _Static_assert(sizeof(c08b_link_rx_t) == 16, "c08b_link_rx_t 尺寸固定 16 字节");
 
-/* 在线 RREG/WREG 回读摘要：当 sample_count < 4 时捎带于 samples[3][46..53]（受 280B 整帧 CRC16 保护，不改帧长） */
+/* 在线 RREG/WREG 回读摘要与实时生效量程/采样率快照：
+ * 当 sample_count < 4（含待机心跳与每次新会话首包 sample_count=2）时捎带于 samples[3][27..53]
+ * （受 280B 整帧 CRC16 保护，不改结构体尺寸） */
 #define C08B_REG_REPLY_MAGIC 0x52u /* 'R' */
+#define C08B_EFF_CFG_MAGIC   0x47u /* 'G' */
 
 typedef struct {
-    bool     valid;      /* true = 最近一次 RREG/WREG 已完成，seq/addr/val_a/val_b 有效 */
-    uint16_t seq;        /* 触发本次回读的 cmd_epoch 低 16 位（防同地址连续 RREG 读回旧栈值） */
-    uint8_t  addr;       /* 寄存器地址 (0x00..0x19) */
-    uint8_t  val_a;      /* U1 / ADS1292 实读值 */
-    uint8_t  val_b;      /* U2 实读值（单芯片板固定 0） */
-    uint8_t  ovr_count;  /* 当前生效的安全寄存器覆盖项数量 */
+    bool     valid;         /* true = 最近一次 RREG/WREG 已完成，seq/addr/val_a/val_b 有效 */
+    uint16_t seq;           /* 触发本次回读的 cmd_epoch 低 16 位（防同地址连续 RREG 读回旧栈值） */
+    uint8_t  addr;          /* 寄存器地址 (0x00..0x19) */
+    uint8_t  val_a;         /* U1 / ADS1292 实读值 */
+    uint8_t  val_b;         /* U2 实读值（单芯片板固定 0） */
+    uint8_t  ovr_count;     /* 当前生效的安全寄存器覆盖项数量 */
+    bool     has_eff_cfg;   /* true = eff_fs_hz 与 ch_gains[0..15] 为 L432 当前真实生效值 */
+    uint16_t eff_fs_hz;     /* 实际生效采样率 (500 / 1000 / 2000 Hz) */
+    uint8_t  ch_gains[16];  /* CH1..CH16 实际生效 PGA 增益 (1 / 2 / 3 / 4 / 6 / 8 / 12) */
 } c08b_reg_reply_t;
 
 static inline void c08b_link_tx_put_reg_reply(c08b_link_tx_t *f, const c08b_reg_reply_t *rep)
 {
     if (!f || !rep || f->sample_count >= C08B_LINK_MAX_BATCH) return;
+    if (rep->has_eff_cfg) {
+        f->samples[3][27] = C08B_EFF_CFG_MAGIC;
+        f->samples[3][28] = (uint8_t)(rep->eff_fs_hz & 0xFFu);
+        f->samples[3][29] = (uint8_t)(rep->eff_fs_hz >> 8);
+        for (int i = 0; i < 16; i++) {
+            f->samples[3][30 + i] = rep->ch_gains[i] ? rep->ch_gains[i] : 6u;
+        }
+    } else {
+        f->samples[3][27] = 0u;
+    }
     f->samples[3][46] = (uint8_t)(rep->seq & 0xFFu);
     f->samples[3][47] = (uint8_t)(rep->seq >> 8);
     f->samples[3][48] = C08B_REG_REPLY_MAGIC;
@@ -556,12 +616,21 @@ static inline bool c08b_link_tx_get_reg_reply(const c08b_link_tx_t *f, c08b_reg_
 {
     if (!f || !out || f->sample_count >= C08B_LINK_MAX_BATCH) return false;
     if (f->samples[3][48] != C08B_REG_REPLY_MAGIC) return false;
+    C08B_MEMSET(out, 0, sizeof(*out));
     out->seq       = (uint16_t)f->samples[3][46] | ((uint16_t)f->samples[3][47] << 8);
     out->valid     = (f->samples[3][49] != 0u);
     out->addr      = f->samples[3][50];
     out->val_a     = f->samples[3][51];
     out->val_b     = f->samples[3][52];
     out->ovr_count = f->samples[3][53];
+    if (f->samples[3][27] == C08B_EFF_CFG_MAGIC) {
+        out->has_eff_cfg = true;
+        out->eff_fs_hz   = (uint16_t)f->samples[3][28] | ((uint16_t)f->samples[3][29] << 8);
+        for (int i = 0; i < 16; i++) {
+            uint8_t g = f->samples[3][30 + i];
+            out->ch_gains[i] = (g == 1u || g == 2u || g == 3u || g == 4u || g == 6u || g == 8u || g == 12u) ? g : 6u;
+        }
+    }
     return true;
 }
 
@@ -843,6 +912,29 @@ static inline int c08b_format_meta_json_ex(
     uint32_t ch_act  = (mode == AFE_NONE) ? 0u : (mode == AFE_2CH) ? 2u : (mode == AFE_8CH) ? 8u : 16u;
     uint32_t vref_mv = (mode == AFE_2CH) ? 2420u : 2400u;
     uint32_t spi_hz  = c08b_spi_hz_for_mode(mode);
+    uint32_t fs_out  = fs_hz;
+    uint32_t gain_scalar = 6u;
+    bool emit_ch_gains = false;
+    if (reg_rep && reg_rep->has_eff_cfg) {
+        if (reg_rep->eff_fs_hz == 500u || reg_rep->eff_fs_hz == 1000u || reg_rep->eff_fs_hz == 2000u) {
+            fs_out = reg_rep->eff_fs_hz;
+        }
+        if (ch_act > 0u) {
+            uint8_t g0 = reg_rep->ch_gains[0] ? reg_rep->ch_gains[0] : 6u;
+            bool all_same = true;
+            for (uint32_t i = 1u; i < ch_act; i++) {
+                uint8_t gi = reg_rep->ch_gains[i] ? reg_rep->ch_gains[i] : 6u;
+                if (gi != g0) all_same = false;
+            }
+            if (all_same) {
+                gain_scalar = g0;
+                emit_ch_gains = (g0 != 6u);
+            } else {
+                gain_scalar = 6u;
+                emit_ch_gains = true;
+            }
+        }
+    }
     const char *afe_str = (mode == AFE_NONE) ? "NONE" :
                           (mode == AFE_2CH)  ? "ADS1292" :
                           (mode == AFE_8CH)  ? "ADS1298_SINGLE" : "ADS1298_DUAL";
@@ -857,12 +949,22 @@ static inline int c08b_format_meta_json_ex(
     p = c08b_append_str(buf, cap, p, ",\"active_channels\":");
     p = c08b_append_u32(buf, cap, p, ch_act);
     p = c08b_append_str(buf, cap, p, ",\"fs_Hz\":");
-    p = c08b_append_u32(buf, cap, p, fs_hz);
+    p = c08b_append_u32(buf, cap, p, fs_out);
     p = c08b_append_str(buf, cap, p, ",\"spi_Hz\":");
     p = c08b_append_u32(buf, cap, p, spi_hz);
     p = c08b_append_str(buf, cap, p, ",\"vref_mV\":");
     p = c08b_append_u32(buf, cap, p, vref_mv);
-    p = c08b_append_str(buf, cap, p, ",\"gain\":6,\"bench_measured\":");
+    p = c08b_append_str(buf, cap, p, ",\"gain\":");
+    p = c08b_append_u32(buf, cap, p, gain_scalar);
+    if (emit_ch_gains) {
+        p = c08b_append_str(buf, cap, p, ",\"channel_gains\":[");
+        for (uint32_t i = 0u; i < ch_act; i++) {
+            if (i > 0u) p = c08b_append_str(buf, cap, p, ",");
+            p = c08b_append_u32(buf, cap, p, reg_rep->ch_gains[i] ? reg_rep->ch_gains[i] : 6u);
+        }
+        p = c08b_append_str(buf, cap, p, "]");
+    }
+    p = c08b_append_str(buf, cap, p, ",\"bench_measured\":");
     p = c08b_append_str(buf, cap, p, bench_measured ? "true" : "false");
     p = c08b_append_str(buf, cap, p, ",\"imu_enabled\":");
     p = c08b_append_str(buf, cap, p, imu_enabled ? "true" : "false");

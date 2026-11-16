@@ -918,16 +918,24 @@ async def async_main() -> int:
             tel_after_w = get_tel(lib_bench)
             assert not tel_after_w.ana_en_level and tel_after_w.hazard_mask == HAZ_NONE
 
-            # 紧接运行 TST1 1Hz 内部方波标定：CH1/CH9 因 Gain=12 码值翻倍（按标称 Gain=6 折算应为 ~4000 µVpp，绝不能丢 MUX=0x05 变 0！）
+            # 紧接运行 TST1 1Hz 内部方波标定（PR #13 Finding #10 修复验证）：
+            # 1) 原始 24 位 ADC 码值上 CH1/CH9 (Gain=12) 为 CH2/CH10 (Gain=6) 的精确 2.0 倍；
+            # 2) META 自动记录 channel_gains=[12,6,...,12,6,...]，replay_c08b 按各通道真实增益折算后全 16 路均准确还原为 2000 µVpp！
             reg_tst_dir = tmp / "p2_reg_tst1_gain12"
             await capture_c08b(cli, reg_tst_dir, seconds=1.15, mode="test", allow_real=True, expected=bid)
+            meta_tst_saved = json.loads((reg_tst_dir / "metadata.json").read_text(encoding="utf-8"))
+            assert meta_tst_saved["adc_profile"]["channel_gains"] == [12, 6, 6, 6, 6, 6, 6, 6, 12, 6, 6, 6, 6, 6, 6, 6]
+            raw_tst_codes = extract_16ch_raw_codes(reg_tst_dir)
+            raw_ratio_u1 = float(np.ptp(raw_tst_codes[:, 0])) / max(float(np.ptp(raw_tst_codes[:, 1])), 1.0)
+            raw_ratio_u2 = float(np.ptp(raw_tst_codes[:, 8])) / max(float(np.ptp(raw_tst_codes[:, 9])), 1.0)
+            assert 1.97 <= raw_ratio_u1 <= 2.03 and 1.97 <= raw_ratio_u2 <= 2.03, (raw_ratio_u1, raw_ratio_u2)
             rep_reg_tst = replay_c08b(reg_tst_dir, allow_real=True)
             ch1_pp = float(np.ptp(rep_reg_tst["uv"][:, 0]))
             ch2_pp = float(np.ptp(rep_reg_tst["uv"][:, 1]))
             ch9_pp = float(np.ptp(rep_reg_tst["uv"][:, 8]))
             ch10_pp = float(np.ptp(rep_reg_tst["uv"][:, 9]))
-            assert 3900.0 <= ch1_pp <= 4120.0 and 3900.0 <= ch9_pp <= 4120.0, (
-                f"WREG CH1SET=0x60 后 TST1 方波丢失或增益不对: ch1_pp={ch1_pp:.1f}, ch9_pp={ch9_pp:.1f}, ch2_pp={ch2_pp:.1f}"
+            assert 1950.0 <= ch1_pp <= 2060.0 and 1950.0 <= ch9_pp <= 2060.0, (
+                f"WREG CH1SET=0x60 后 channel_gains 折算失准: ch1_pp={ch1_pp:.1f}, ch9_pp={ch9_pp:.1f}, ch2_pp={ch2_pp:.1f}"
             )
             assert 1950.0 <= ch2_pp <= 2060.0 and 1950.0 <= ch10_pp <= 2060.0
 
@@ -957,9 +965,10 @@ async def async_main() -> int:
 
         cases_out.append({
             "id": "P2-REG-ONLINE-16CH-2CH",
-            "title": "正例：16CH/2CH 在线 RREG/WREG/CLRO 经真实 SPI3+SPI1 两步预热闭环，且 WREG 改增益后 TST1/SHT1 保持内部校准多路器不失波",
+            "title": "正例：16CH/2CH 在线 RREG/WREG/CLRO 经真实 SPI3+SPI1 闭环，WREG 改增益后 META channel_gains 精准折算 2000µVpp 且保持校准 MUX",
             "pass": True,
-            "ch1_gain12_tst_pp_uv_nominal": round(ch1_pp, 1),
+            "ch1_gain12_raw_code_ratio": round(raw_ratio_u1, 3),
+            "ch1_gain12_tst_pp_uv": round(ch1_pp, 1),
             "ch2_gain6_tst_pp_uv_nominal": round(ch2_pp, 1),
             "ch1_gain12_sht_rms_uv": round(ch1_sht_rms, 2),
             "ch1_after_clro_pp_uv": round(ch1_pp_after_clr, 1),
@@ -1045,6 +1054,96 @@ async def async_main() -> int:
             "pass": True,
             "expected_red_caught": True,
             "preserved_overrides": r_verify["reg_overrides"],
+        })
+
+        # P2-CONFIG1-FS-RECONCILE (PR #13 Finding #11 正例修复):
+        # 在线 WREG both:CONFIG1=0x86 (500 SPS) 后，不传 fs_hz 直接启动采集：
+        # L432 会话步长与 overrun 判据自动同步到 500 SPS（2000 µs 间隔零误判漏采），且 META.fs_Hz 与归档 fs_Hz 同步更新为 500！
+        boot_board(lib_bench, subboard_kind=SIM_SUBBOARD_AFE30P_16CH, imu_present=True)
+        bid = read_build_id(lib_bench)
+        async with SilBleClient(lib_bench) as cli:
+            w_cfg1 = await c08b_stream.reg_op_c08b(
+                cli, "wreg", chip="both", addr=0x01, val=0x86, allow_real=True, expected=bid
+            )
+            assert w_cfg1["reg_overrides"] == 2
+            cfg1_dir = tmp / "p2_cfg1_500sps_reconcile"
+            res_cfg1 = await capture_c08b(
+                cli, cfg1_dir, seconds=0.55, mode="short", allow_real=True, expected=bid, with_imu=True
+            )
+            assert res_cfg1["fs_Hz"] == 500 and res_cfg1["missing_samples"] == 0, res_cfg1
+            ev_500 = [json.loads(x) for x in (cfg1_dir / "events.jsonl").read_text().splitlines() if "packet_hex" in x]
+            pkts_500 = [decode_16ch(bytes.fromhex(e["packet_hex"]), e["mtu"]) for e in ev_500]
+            eff_500 = (pkts_500[-1].sequence - pkts_500[0].sequence) / ((pkts_500[-1].timestamp_us - pkts_500[0].timestamp_us) / 1e6)
+            assert 499.0 <= eff_500 <= 501.0, eff_500
+        cases_out.append({
+            "id": "P2-CONFIG1-FS-RECONCILE",
+            "title": "正例（PR #13 Finding #11 已修复）：WREG both:CONFIG1=0x86(500SPS) 后会话步长与 META.fs_Hz 自动对齐 500 Hz，2ms 正常间隔零误判漏采",
+            "pass": True,
+            "meta_fs_hz": res_cfg1["fs_Hz"],
+            "measured_fs_hz": round(eff_500, 2),
+            "missing_samples": res_cfg1["missing_samples"],
+        })
+
+        # NC-2k (PR #13 Finding #11 反例修复):
+        # 1) 16CH 冷启动或已探测态单写 u1:CONFIG1=0x86 必被 L432/主机拦截（防 U1/U2 异速失步）；
+        # 2) WREG both:CONFIG1=0x86(500SPS) 后显式传 fs_hz=2000 启动采集，L432 当场报 FAULT_ARG(2) 拒绝歧义时间轴！
+        boot_board(lib_bench, subboard_kind=SIM_SUBBOARD_AFE30P_16CH)
+        bid = read_build_id(lib_bench)
+        async with SilBleClient(lib_bench) as cli:
+            split_err = None
+            try:
+                await c08b_stream.reg_op_c08b(cli, "wreg", chip="u1", addr=0x01, val=0x86, allow_real=True, expected=bid)
+                raise AssertionError("16CH 单写 u1:CONFIG1 未被拦截")
+            except (RuntimeError, ValueError) as exc:
+                split_err = str(exc)
+            await cli.write_gatt_char(CONTROL, b"STOP")
+            lib_bench.sim_step_us(30_000)
+            await c08b_stream.reg_op_c08b(cli, "wreg", chip="both", addr=0x01, val=0x86, allow_real=True, expected=bid)
+            conflict_err = None
+            try:
+                await capture_c08b(
+                    cli, tmp / "nc2k_cfg1_fs_conflict", seconds=0.4, mode="short",
+                    allow_real=True, expected=bid, fs_hz=2000, poll_seconds=0.03,
+                )
+                raise AssertionError("CONFIG1=500SPS 与显式 fs_hz=2000 冲突未被拒")
+            except RuntimeError as exc:
+                conflict_err = str(exc)
+                assert "fault=2" in conflict_err, conflict_err
+        cases_out.append({
+            "id": "NC-2k",
+            "title": "反例（PR #13 Finding #11 已修复）：16CH 单改 u1:CONFIG1 异速失步与显式 fs_hz!=CONFIG1 歧义采集均被 FAULT_ARG(2) 拦截",
+            "pass": True,
+            "expected_red_caught": True,
+            "split_chip_error": split_err[:60],
+            "explicit_fs_conflict_error": conflict_err[:60],
+        })
+
+        # NC-2l (PR #13 Finding #12 反例修复):
+        # WREG 生效后注入双核 SPI3 双向 CRC 故障（模拟 L432 链路卡死），此时下发 CLRO：
+        # nRF 绝不提前清空 META.reg_overrides，reg_op_c08b('clro') 诚实超时报错；恢复 SPI3 后 L432 收到 CLRO 才真正清零！
+        boot_board(lib_bench, subboard_kind=SIM_SUBBOARD_AFE30P_16CH)
+        bid = read_build_id(lib_bench)
+        async with SilBleClient(lib_bench) as cli:
+            w_pre = await c08b_stream.reg_op_c08b(cli, "wreg", chip="both", addr=0x05, val=0x60, allow_real=True, expected=bid)
+            assert w_pre["reg_overrides"] == 2
+            lib_bench.sim_set_corrupt_spi3_crc(True)
+            clro_stall_err = None
+            try:
+                await c08b_stream.reg_op_c08b(cli, "clro", expected=bid, poll_seconds=0.02, timeout=0.18)
+                raise AssertionError("SPI3 链路中断期间 CLRO 竟提前谎报成功！")
+            except RuntimeError as exc:
+                clro_stall_err = str(exc)
+                assert "CLRO 超时" in clro_stall_err, clro_stall_err
+            lib_bench.sim_set_corrupt_spi3_crc(False)
+            lib_bench.sim_step_us(60_000)
+            m_rec = c08b_stream.validate_c08b_metadata(await cli.read_gatt_char(c08b_stream.META), bid)
+            assert m_rec.get("reg_overrides", 0) == 0 and "last_reg" not in m_rec, m_rec
+        cases_out.append({
+            "id": "NC-2l",
+            "title": "反例（PR #13 Finding #12 已修复）：双核 SPI3 中断期间下发 CLRO 绝不假清零（诚实超时），链路恢复后经纪元握手完成清空",
+            "pass": True,
+            "expected_red_caught": True,
+            "stalled_timeout_error": clro_stall_err[:64],
         })
 
     summary = {

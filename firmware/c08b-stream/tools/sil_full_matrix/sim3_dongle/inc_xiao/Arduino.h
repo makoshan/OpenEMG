@@ -43,7 +43,7 @@ struct SimUsbCdcSerial {
     size_t write(const uint8_t *buf, size_t len);
     int available(void);
     int read(void);
-    explicit operator bool() const { return true; }
+    explicit operator bool() const;
 };
 
 extern SimUsbCdcSerial Serial;

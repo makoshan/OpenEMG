@@ -185,7 +185,7 @@ int main(void)
     assert(st_raw[43] == 1u && st_raw[42] == 0u);
     assert(st_raw[56] == 0xFFu && st_raw[57] == 0xFFu && st_raw[58] == 0xFFu && st_raw[59] == 0xFFu);
 
-    char meta[440];
+    char meta[512];
     int m0 = c08b_format_meta_json(meta, sizeof(meta), AFE_NONE, 1000, false, true);
     assert(m0 > 100 && strstr(meta, "\"afe\":\"NONE\"") && strstr(meta, "\"protocol\":1") &&
            strstr(meta, "\"active_channels\":0") && strstr(meta, "\"spi_Hz\":1000000"));
@@ -347,6 +347,52 @@ int main(void)
         int mlen_ex = c08b_format_meta_json_ex(meta, sizeof(meta), AFE_16CH, 1000, false, true, &rep_in);
         assert(mlen_ex > 120 && strstr(meta, "\"reg_overrides\":2") &&
                strstr(meta, "\"last_reg\":{\"seq\":7,\"addr\":5,\"u1\":96,\"u2\":16}"));
+
+        /* 16CH CONFIG1(0x01) 必须 BOTH 同写，单写 U1 或 U2 必拒；其余寄存器允许单写 */
+        assert(c08b_validate_wreg_target(AFE_16CH, C08B_CHIP_BOTH, 0x01u));
+        assert(!c08b_validate_wreg_target(AFE_16CH, C08B_CHIP_U1,  0x01u));
+        assert(!c08b_validate_wreg_target(AFE_16CH, C08B_CHIP_U2,  0x01u));
+        assert(c08b_validate_wreg_target(AFE_16CH, C08B_CHIP_U1,   0x05u));
+        assert(c08b_validate_wreg_target(AFE_8CH,  C08B_CHIP_U1,   0x01u));
+        assert(c08b_validate_wreg_target(AFE_2CH,  C08B_CHIP_U1,   0x01u));
+
+        /* CONFIG1 -> 采样率反解与 CHnSET -> PGA 增益反解 */
+        assert(c08b_decode_config1_fs_hz(AFE_16CH, 0x86u) == 500u);
+        assert(c08b_decode_config1_fs_hz(AFE_16CH, 0x85u) == 1000u);
+        assert(c08b_decode_config1_fs_hz(AFE_16CH, 0x84u) == 2000u);
+        assert(c08b_decode_config1_fs_hz(AFE_16CH, 0x04u) == 1000u);
+        assert(c08b_decode_config1_fs_hz(AFE_16CH, 0xA5u) == 0u);
+        assert(c08b_decode_config1_fs_hz(AFE_2CH,  0x02u) == 500u);
+        assert(c08b_decode_config1_fs_hz(AFE_2CH,  0x04u) == 2000u);
+        assert(c08b_ads_gain_from_chset(0x00u) == 6u && c08b_ads_gain_from_chset(0x60u) == 12u && c08b_ads_gain_from_chset(0x10u) == 1u);
+
+        /* 生效 fs_Hz 与分通道 channel_gains 经 sample_count=2 首包无损捎带并输出到 META JSON */
+        memset(&rtx, 0, sizeof(rtx));
+        rtx.afe_mode = AFE_16CH;
+        rtx.sample_count = 2u;
+        rep_in.has_eff_cfg = true;
+        rep_in.eff_fs_hz = 500u;
+        for (int i = 0; i < 16; i++) rep_in.ch_gains[i] = 6u;
+        rep_in.ch_gains[0] = 12u;
+        rep_in.ch_gains[8] = 1u;
+        c08b_link_tx_put_reg_reply(&rtx, &rep_in);
+        c08b_link_tx_seal(&rtx);
+        assert(c08b_link_tx_ok(&rtx));
+        assert(c08b_link_tx_get_reg_reply(&rtx, &rep_out));
+        assert(rep_out.has_eff_cfg && rep_out.eff_fs_hz == 500u && rep_out.ch_gains[0] == 12u && rep_out.ch_gains[8] == 1u && rep_out.ch_gains[1] == 6u);
+        int mlen_cg = c08b_format_meta_json_ex(meta, sizeof(meta), AFE_16CH, 1000, true, true, &rep_out);
+        assert(mlen_cg > 150 && mlen_cg < (int)sizeof(meta));
+        assert(strstr(meta, "\"fs_Hz\":500") && strstr(meta, "\"gain\":6") &&
+               strstr(meta, "\"channel_gains\":[12,6,6,6,6,6,6,6,1,6,6,6,6,6,6,6]"));
+
+        /* 最坏长度边界：16 路两位数非均匀增益 + 最大 seq/addr/val/ovr_count + false 布尔字面量 < 512 字节 */
+        c08b_reg_reply_t rep_max = {
+            .valid = true, .seq = 65535u, .addr = 25u, .val_a = 255u, .val_b = 255u, .ovr_count = 52u,
+            .has_eff_cfg = true, .eff_fs_hz = 2000u,
+            .ch_gains = {12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,8}
+        };
+        int mlen_max = c08b_format_meta_json_ex(meta, sizeof(meta), AFE_16CH, 2000, false, false, &rep_max);
+        assert(mlen_max > 450 && mlen_max < 512 && strlen(meta) == (size_t)mlen_max);
     }
 
     puts("主机端 C11 流式固件测试全部通过（双硬件锁、3档识别与AFE_NONE如实暴露、ADS1298 ±2.5V RLDREF_INT=0两步RLD、在线RREG/WREG安全掩码、ADS1292 1050ms POR、280B/16B全字节防篡改、双核热重配防串扰、OE_N零帧状态头拦截、F01 v1/v4/IMU 64位同源时钟与UUID字节序）");

@@ -252,6 +252,20 @@ def parse_wreg_spec(spec):
     return chip_key, addr, val
 
 
+def validate_c08b_wreg_target_host(afe, chip_sel, addr):
+    """校验在线 WREG 芯片选择：16CH 双片 ADS1298 修改 CONFIG1(0x01) 必须选 both(2) 同写，防双片速率/群延迟失步。"""
+    chip_id = chip_sel if type(chip_sel) is int else CHIP_SELECT.get(str(chip_sel).lower(), -1)
+    if chip_id not in (0, 1, 2) or type(addr) is not int or not (0 <= addr <= 0x19):
+        return False
+    if afe not in ('ADS1298_DUAL', 'ADS1298_SINGLE', 'ADS1292'):
+        return False
+    if chip_id == 1 and afe != 'ADS1298_DUAL':
+        return False
+    if afe == 'ADS1298_DUAL' and addr == 0x01 and chip_id != 2:
+        return False
+    return True
+
+
 def validate_c08b_reg_write_host(afe, chip_idx, addr, val):
     """与 stream_proto.h:c08b_validate_reg_write 逐位对齐的主机端寄存器安全掩码校验。"""
     if type(chip_idx) is not int or type(addr) is not int or type(val) is not int:
@@ -460,7 +474,7 @@ def frame_status_valid(frame, protocol):
 
 @dataclass(frozen=True)
 class C08BAdcProfile:
-    """C08B 2/8/16ch 标称量程描述（不代表已完成实板寄存器读回或电压校准）。"""
+    """C08B 2/8/16ch 量程描述（支持分通道在线 PGA 增益覆盖 channel_gains；不代表已完成实板校准）。"""
     afe_topology: str = 'ADS1298_DUAL'
     vref_mV: int = 2400
     gain: int = 6
@@ -470,6 +484,7 @@ class C08BAdcProfile:
     transport_protocol: int = PROTO_V4_16CH
     afe: str = 'ADS1298'
     reference_verified: bool = False
+    channel_gains: tuple | None = None
 
     def __post_init__(self):
         if self.afe_topology not in ('ADS1298_DUAL', 'ADS1298_SINGLE', 'ADS1292'):
@@ -496,6 +511,15 @@ class C08BAdcProfile:
                 raise ValueError('ADS1292 必须对应 channels=8（F01 v1 槽位）, active_channels=2, protocol=1')
             if type(self.vref_mV) is not int or self.vref_mV not in (2420, 4033):
                 raise ValueError('ADS1292 参考电压仅支持 2420 mV 或 4033 mV')
+        if self.channel_gains is not None:
+            if not isinstance(self.channel_gains, (list, tuple)) or len(self.channel_gains) != self.active_channels:
+                raise ValueError(f'channel_gains 长度必须等于 active_channels={self.active_channels}')
+            norm_cg = []
+            for g in self.channel_gains:
+                if type(g) is not int or g not in (1, 2, 3, 4, 6, 8, 12):
+                    raise ValueError(f'channel_gains 包含无效 PGA 增益：{g!r}')
+                norm_cg.append(g)
+            object.__setattr__(self, 'channel_gains', tuple(norm_cg))
 
     @property
     def vref_V(self):
@@ -504,6 +528,11 @@ class C08BAdcProfile:
     @property
     def uv_per_count(self):
         return (self.vref_mV * 1e3) / (self.gain * (2 ** 23 - 1))
+
+    @property
+    def uv_per_count_vec(self):
+        gains = np.asarray(self.channel_gains if self.channel_gains is not None else (self.gain,) * self.active_channels, dtype=np.float64)
+        return (self.vref_mV * 1e3) / (gains * (2 ** 23 - 1))
 
     @classmethod
     def for_n_channels(cls, n_channels, fs_Hz=1000):
@@ -563,6 +592,15 @@ def validate_c08b_metadata(raw, expected=None):
         if (proto, ch, act) != (PROTO_V1_8CH, 8, 0):
             raise ValueError(f'{afe} 未就绪态元数据通道描述不一致')
 
+    if 'channel_gains' in meta:
+        cg = meta['channel_gains']
+        if (
+            not isinstance(cg, list)
+            or act == 0
+            or len(cg) != act
+            or any(type(g) is not int or g not in (1, 2, 3, 4, 6, 8, 12) for g in cg)
+        ):
+            raise ValueError(f'固件元数据 channel_gains={cg!r} 无效')
     if 'reg_overrides' in meta:
         ro = meta['reg_overrides']
         if type(ro) is not int or not (0 <= ro <= 52):
@@ -590,6 +628,7 @@ def profile_from_meta(meta, fallback_n_channels=16):
             channels=meta['channels'],
             active_channels=meta['active_channels'],
             transport_protocol=meta['protocol'],
+            channel_gains=tuple(meta['channel_gains']) if 'channel_gains' in meta else None,
         )
     if meta['protocol'] == PROTO_V4_16CH:
         return C08BAdcProfile.for_n_channels(16, fs_Hz=meta['fs_Hz'])
@@ -1005,6 +1044,10 @@ async def reg_op_c08b(
             if op == 'rreg' and meta['afe'] == 'ADS1292' and addr > 0x0B:
                 raise ValueError(f'ADS1292 寄存器地址超出 0x00..0x0B：0x{addr:02X}')
             if op == 'wreg':
+                if not validate_c08b_wreg_target_host(meta['afe'], chip_name, addr):
+                    raise ValueError(
+                        f'主机安全掩码拦截危险芯片目标：afe={meta["afe"]} chip={chip_name} addr=0x{addr:02X}（16CH 改 CONFIG1 必须指定 both 同写）'
+                    )
                 targets = [1] if chip_name == 'u2' else ([0] if (chip_name == 'u1' or meta['afe'] != 'ADS1298_DUAL') else [0, 1])
                 for c in targets:
                     ok, _vm = validate_c08b_reg_write_host(meta['afe'], c, addr, val)
@@ -1086,7 +1129,13 @@ def replay_c08b(directory, allow_real=False):
     active_ch = adc.get('active_channels', adc.get('channels', 8))
     vref_mV = adc.get('vref_mV', int(round(adc.get('vref_V', 2.4) * 1000)))
     gain = adc.get('gain', 6)
-    uv_scale = (vref_mV * 1e3) / (gain * (2 ** 23 - 1))
+    ch_gains = adc.get('channel_gains')
+    if ch_gains is not None:
+        if not isinstance(ch_gains, (list, tuple)) or len(ch_gains) != active_ch:
+            raise ValueError(f'归档 adc_profile.channel_gains 长度与 active_channels={active_ch} 不符')
+        uv_scale = (vref_mV * 1e3) / (np.asarray(ch_gains, dtype=np.float64) * (2 ** 23 - 1))
+    else:
+        uv_scale = (vref_mV * 1e3) / (gain * (2 ** 23 - 1))
 
     codec = load_codec()
     decoder = decode_16ch if proto == PROTO_V4_16CH else codec.decode
@@ -1154,7 +1203,7 @@ def synth_c08b_packets(uv, profile=None, seq0=0, t0_us=1000, codec=None, reconfi
     if arr.shape[1] != profile.active_channels:
         raise ValueError(f'输入通道数 {arr.shape[1]} 与 profile.active_channels={profile.active_channels} 不符')
 
-    counts = np.clip(np.round(arr / profile.uv_per_count), -0x800000, 0x7FFFFF).astype(np.int64)
+    counts = np.clip(np.round(arr / profile.uv_per_count_vec), -0x800000, 0x7FFFFF).astype(np.int64)
     start_bits = SESSION_START | (RECONFIGURE if reconfigure else 0)
     if profile.transport_protocol == PROTO_V4_16CH:
         step = MAX_FRAMES_16CH
@@ -1411,7 +1460,7 @@ class C08BRig:
         if self.link_since is None:
             self.link_since = now_wall
         self.last_frame_at = time.monotonic()
-        emg_uv = (np.asarray(good_rows, dtype=np.float64) * self.profile.uv_per_count).astype(np.float32)
+        emg_uv = (np.asarray(good_rows, dtype=np.float64) * self.profile.uv_per_count_vec).astype(np.float32)
         imu_empty = np.zeros((0, 6), dtype=np.int16)
         seq_arr = np.asarray(seq_u8, dtype=np.uint8)
         kinds_arr = np.ones(len(seq_u8), dtype=np.uint8)

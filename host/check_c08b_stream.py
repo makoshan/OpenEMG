@@ -346,6 +346,8 @@ class FakeC08BBleClient:
         self.last_reg = None
         self._pending_last_reg = None
         self._stale_reads_left = 0
+        self._pending_clro_reads = 0
+        self._synth_session = False
         self._init_default_regs(board_afe)
         self._apply_afe(initial_afe)
 
@@ -382,9 +384,37 @@ class FakeC08BBleClient:
             return len(self.reg_overrides[0])
         return 0
 
+    def _effective_channel_gains(self):
+        g_lut = (6, 1, 2, 3, 4, 8, 12, 6)
+        if self._synth_session or self.active_channels == 0:
+            return (6,) * self.active_channels
+        if self.afe == 'ADS1292':
+            return tuple(g_lut[(self.reg_overrides[0].get(0x04 + i, 0) >> 4) & 7] for i in range(2))
+        nchips = 2 if self.afe == 'ADS1298_DUAL' else 1
+        out = []
+        for c in range(nchips):
+            for a in range(0x05, 0x0D):
+                out.append(g_lut[(self.reg_overrides[c].get(a, 0) >> 4) & 7])
+        return tuple(out)
+
+    def _decode_ovr_fs(self):
+        if 0x01 not in self.reg_overrides[0]:
+            return None
+        v = self.reg_overrides[0][0x01]
+        if self.afe == 'ADS1292':
+            return {2: 500, 3: 1000, 4: 2000}.get(v & 7)
+        if (v & 0x80) != 0:
+            return {6: 500, 5: 1000, 4: 2000}.get(v & 7)
+        return {5: 500, 4: 1000, 3: 2000}.get(v & 7)
+
     async def read_gatt_char(self, uuid):
         u = str(uuid).lower()
         if u == cs.META:
+            if self._pending_clro_reads > 0:
+                self._pending_clro_reads -= 1
+                if self._pending_clro_reads == 0:
+                    self.reg_overrides = [{}, {}]
+                    self.last_reg = None
             vis_last_reg = self.last_reg
             if self._pending_last_reg is not None:
                 if self._stale_reads_left > 0:
@@ -393,6 +423,16 @@ class FakeC08BBleClient:
                     self.last_reg = self._pending_last_reg
                     self._pending_last_reg = None
                     vis_last_reg = self.last_reg
+            cg = self._effective_channel_gains()
+            gain_scalar = 6
+            emit_cg = False
+            if cg:
+                if all(g == cg[0] for g in cg):
+                    gain_scalar = cg[0]
+                    emit_cg = (cg[0] != 6)
+                else:
+                    gain_scalar = 6
+                    emit_cg = True
             payload = dict(
                 profile='C08B_DUAL_STREAM_CANDIDATE',
                 protocol=self.protocol,
@@ -402,14 +442,18 @@ class FakeC08BBleClient:
                 fs_Hz=self.fs_Hz,
                 spi_Hz=self.spi_Hz,
                 vref_mV=self.vref_mV,
-                gain=6,
+                gain=gain_scalar,
                 bench_measured=self.bench_measured,
                 imu_enabled=True,
                 clock_source='L432_DWT_1MHz',
                 clock_resolution_us=1,
                 build_id=BUILD_ID,
             )
+            if emit_cg:
+                payload['channel_gains'] = list(cg)
             ovr_n = self._ovr_count()
+            if self._pending_clro_reads > 0 and ovr_n == 0 and vis_last_reg is None:
+                ovr_n = 1
             if vis_last_reg is not None or ovr_n > 0:
                 payload['reg_overrides'] = ovr_n
                 if vis_last_reg is not None:
@@ -461,10 +505,13 @@ class FakeC08BBleClient:
             if len(cmd) != 4:
                 self.fault = 2
                 return
-            self.reg_overrides = [{}, {}]
-            self.last_reg = None
             self._pending_last_reg = None
             self._stale_reads_left = 0
+            if self.stale_reads_on_reg_op > 0:
+                self._pending_clro_reads = self.stale_reads_on_reg_op + 1
+            else:
+                self.reg_overrides = [{}, {}]
+                self.last_reg = None
             self.fault = 0
             return
 
@@ -503,7 +550,7 @@ class FakeC08BBleClient:
                 self.fault = 0
                 return
             val = cmd[6]
-            if self.afe != 'ADS1298_DUAL' and chip_sel == 1:
+            if not cs.validate_c08b_wreg_target_host(self.afe, chip_sel, addr):
                 self.fault = 2
                 return
             targets = [1] if chip_sel == 1 else ([0] if (chip_sel == 0 or self.afe != 'ADS1298_DUAL') else [0, 1])
@@ -515,6 +562,9 @@ class FakeC08BBleClient:
             for c in targets:
                 self.regs[c][addr] = val
                 self.reg_overrides[c][addr] = val
+            ovr_fs = self._decode_ovr_fs()
+            if ovr_fs is not None:
+                self.fs_Hz = ovr_fs
             self.reg_seq = (self.reg_seq + 1) & 0xFFFF
             u1 = self.regs[0].get(addr, 0)
             u2 = self.regs[1].get(addr, 0) if self.afe == 'ADS1298_DUAL' else 0
@@ -533,14 +583,17 @@ class FakeC08BBleClient:
             self.fault = 1
             return
 
+        explicit_fs = None
         if len(cmd) >= 6 and verb != b'PRB1':
             fs = struct.unpack_from('<H', cmd, 4)[0]
             if fs not in (500, 1000, 2000):
                 self.fault = 2
                 return
+            explicit_fs = fs
             self.fs_Hz = fs
 
         if verb == b'PRB1':
+            self._synth_session = False
             if self.board_afe == 'NONE':
                 self.fault = 4
             else:
@@ -550,13 +603,22 @@ class FakeC08BBleClient:
             return
 
         if is_synth:
+            self._synth_session = True
             sc = cmd[6] if len(cmd) >= 7 else 16
             self._apply_afe('ADS1292' if sc == 2 else 'ADS1298_SINGLE' if sc == 8 else 'ADS1298_DUAL')
         else:
+            self._synth_session = False
             if self.board_afe == 'NONE':
                 self.fault = 4
                 return
             self._apply_afe(self.board_afe)
+            ovr_fs = self._decode_ovr_fs()
+            if ovr_fs is not None:
+                if explicit_fs is not None and explicit_fs != ovr_fs:
+                    self.fs_Hz = ovr_fs
+                    self.fault = 2
+                    return
+                self.fs_Hz = ovr_fs
 
         self.fault = 0
         self.active = True
@@ -565,7 +627,17 @@ class FakeC08BBleClient:
     async def _pump(self, is_synth):
         codec = cs.load_codec()
         n_ch = self.active_channels
-        prof = cs.C08BAdcProfile.for_n_channels(n_ch, fs_Hz=self.fs_Hz)
+        cg = self._effective_channel_gains()
+        prof = cs.C08BAdcProfile(
+            afe_topology='ADS1298_DUAL' if n_ch == 16 else 'ADS1298_SINGLE' if n_ch == 8 else 'ADS1292',
+            vref_mV=2420 if n_ch == 2 else 2400,
+            gain=6,
+            fs_Hz=self.fs_Hz,
+            channels=16 if n_ch == 16 else 8,
+            active_channels=n_ch,
+            transport_protocol=4 if n_ch == 16 else 1,
+            channel_gains=cg,
+        )
         step = 4 if prof.transport_protocol == 4 else 8
         seq = 0
         imu_seq = 0
@@ -573,7 +645,7 @@ class FakeC08BBleClient:
             t = np.arange(seq, seq + step, dtype=np.float64)[:, None]
             ch_idx = np.arange(1, n_ch + 1, dtype=np.float64)[None, :]
             uv = np.sin(t * 0.05) * (10.0 * ch_idx)
-            counts = np.round(uv / prof.uv_per_count).astype(np.int64)
+            counts = np.round(uv / prof.uv_per_count_vec).astype(np.int64)
             use_synth_flag = is_synth if self.corrupt_synth_flag is None else self.corrupt_synth_flag
             flags = (cs.SYNTHETIC if use_synth_flag else 0) | (cs.SESSION_START if seq == 0 else 0)
             ts_us = 1000 + seq * 1_000_000 // self.fs_Hz
@@ -743,6 +815,41 @@ async def _run_ble_tests(tmp: Path):
     stale_cli.regs[0][0x12] = 0x84  # 导联状态变化为 0x84，紧接再发同地址 RREG 0x12
     r_s2 = await cs.reg_op_c08b(stale_cli, 'rreg', chip='u1', addr=0x12, allow_real=True, expected=BUILD_ID, poll_seconds=0.005)
     assert r_s2['last_reg'] == {'seq': 2, 'addr': 0x12, 'u1': 0x84, 'u2': 0x00}, r_s2
+
+    # 8b-2. 分通道增益 channel_gains 与 CONFIG1 采样率对齐校验（PR #13 Findings #10-#12）：
+    # reg_cli 当前覆盖：CH1=12(0x60), CH2=8(0x50), CH9=12(0x60)，其余 Gain=6 -> 采集并回放必须 0 倍率误差还原真实 µV！
+    out_cg = tmp / 'cap-ble-channel-gains'
+    r_cg = await cs.capture_c08b(reg_cli, out_cg, seconds=0.06, mode='test', allow_real=True, expected=BUILD_ID)
+    meta_cg = json.loads((out_cg / 'metadata.json').read_text())
+    assert meta_cg['adc_profile']['channel_gains'] == [12, 8, 6, 6, 6, 6, 6, 6, 12, 6, 6, 6, 6, 6, 6, 6]
+    rep_cg = cs.replay_c08b(out_cg, allow_real=True)
+    exp_cg_row1 = np.sin(0.05) * (10.0 * np.arange(1, 17))
+    assert np.max(np.abs(rep_cg['uv'][1] - exp_cg_row1)) < 0.05, (rep_cg['uv'][1], exp_cg_row1)
+
+    # 16CH 单写 u1:CONFIG1 必被拦截；both:CONFIG1=0x86(500 SPS) 后 4 字节启动自动对齐 fs_Hz=500，显式 fs_hz=2000 冲突必拒！
+    try:
+        await cs.reg_op_c08b(reg_cli, 'wreg', chip='u1', addr=0x01, val=0x86, allow_real=True, expected=BUILD_ID)
+        raise AssertionError('16CH 单写 u1:CONFIG1 未被拦截')
+    except ValueError:
+        pass
+    await cs.reg_op_c08b(reg_cli, 'wreg', chip='both', addr=0x01, val=0x86, allow_real=True, expected=BUILD_ID)
+    out_500 = tmp / 'cap-ble-cfg1-500'
+    r_500 = await cs.capture_c08b(reg_cli, out_500, seconds=0.06, mode='external', allow_real=True, expected=BUILD_ID)
+    assert r_500['fs_Hz'] == 500
+    try:
+        await cs.capture_c08b(reg_cli, tmp / 'cap-ble-cfg1-conflict', seconds=0.05, mode='external', allow_real=True, expected=BUILD_ID, fs_hz=2000)
+        raise AssertionError('CONFIG1=500SPS 与显式 fs_hz=2000 冲突未被拒')
+    except RuntimeError as err:
+        assert 'fault=2' in str(err), err
+
+    # CLRO 延迟/链路卡死反例：L432 未确认 CLRO 前绝不提前返回成功
+    stalled_clr = FakeC08BBleClient(board_afe='ADS1298_DUAL', initial_afe='ADS1298_DUAL', bench_measured=True, stale_reads_on_reg_op=50)
+    await cs.reg_op_c08b(stalled_clr, 'wreg', chip='both', addr=0x05, val=0x60, allow_real=True, expected=BUILD_ID, poll_seconds=0.002)
+    try:
+        await cs.reg_op_c08b(stalled_clr, 'clro', expected=BUILD_ID, poll_seconds=0.005, timeout=0.03)
+        raise AssertionError('L432 未确认 CLRO 却提前返回成功')
+    except RuntimeError as err:
+        assert 'CLRO 超时' in str(err), err
 
     r_clr = await cs.reg_op_c08b(reg_cli, 'clro', expected=BUILD_ID)
     assert r_clr['reg_overrides'] == 0

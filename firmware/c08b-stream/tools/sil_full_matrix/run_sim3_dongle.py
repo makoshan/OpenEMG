@@ -47,6 +47,14 @@ def load_xiao_dongle(dylib_name: str) -> ctypes.CDLL:
     lib.xd_usb_tx_fifo_used.argtypes = []
     lib.xd_usb_tx_fifo_used.restype = ctypes.c_int
     lib.xd_step_loop.argtypes = [ctypes.c_uint32]
+    lib.xd_now_us.argtypes = []
+    lib.xd_now_us.restype = ctypes.c_uint64
+    lib.xd_seed_ring_cursor.argtypes = [ctypes.c_uint32]
+    lib.xd_seed_ring_cursor.restype = None
+    lib.xd_config_usb_host_sim.argtypes = [ctypes.c_bool, ctypes.c_uint32, ctypes.c_uint64, ctypes.c_uint64]
+    lib.xd_config_usb_host_sim.restype = None
+    lib.xd_pop_auto_captured.argtypes = [ctypes.POINTER(ctypes.c_uint8), ctypes.c_int]
+    lib.xd_pop_auto_captured.restype = ctypes.c_int
     lib.xd_get_stats.argtypes = [
         ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32),
         ctypes.POINTER(ctypes.c_uint32), ctypes.POINTER(ctypes.c_uint32),
@@ -416,25 +424,48 @@ async def async_main() -> int:
             "c6_mtu_initiated_on_r01": cmtu0.value,
         })
 
-        # Case 5 (P3-XIAO-BENCH-CMD): XIAO 接收器 'B' 带宽自检帧流经 256B TinyUSB FIFO 后准确返回 0x80|'B' 应答帧
+        # Case 5 (P3-XIAO-BENCH-1S, PR #14 Finding #14 正例修复):
+        # 真实运行正时长 seconds=1 (1000 ms) 的 'B' USB 带宽压测（主机每 1ms SOF 取 512B）：
+        # 验证 256B TinyUSB FIFO 分片流控无损送达 >1000 个 0x7F 填充帧（256KB/s + 32KB 环形缓冲 ≈ 1164 帧），0 杂字节，0x80|'B' 报告帧数与实收 1:1 相等！
         SIM_EXEC.call(lambda: (lib_xd.xd_set_peer_callbacks(*(WRITE_CB(), READ_CB(), SUB_CB(), MTU_CB())), lib_xd.xd_init(256, True)))
-        b_cmd = bytes([0xA5, ord("B"), 2, 0, 0, 0])  # 0 秒快速往返校验 0x80|'B'
-        arr_b = (ctypes.c_uint8 * len(b_cmd))(*b_cmd)
-        lib_xd.xd_usb_host_send(arr_b, len(b_cmd))
+        lib_xd.xd_config_usb_host_sim(True, 512, 0, 0)
+        t0_b1 = lib_xd.xd_now_us()
+        b1_cmd = bytes([0xA5, ord("B"), 2, 0, 1, 0])  # seconds = 1 (正时长 1000 ms)
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(b1_cmd))(*b1_cmd), len(b1_cmd))
+        lib_xd.xd_step_loop(1000)
+        for _ in range(20):
+            lib_xd.xd_step_loop(1000)
+        dt_b1_us = int(lib_xd.xd_now_us() - t0_b1)
+        cap_buf = (ctypes.c_uint8 * 1_048_576)()
         rx_b = bytearray()
-        tbuf = (ctypes.c_uint8 * 128)()
-        for _ in range(10):
-            lib_xd.xd_step_loop(2000)
-            got_n = lib_xd.xd_usb_host_recv(tbuf, 128)
-            if got_n > 0:
-                rx_b.extend(bytes(tbuf[:got_n]))
-        frames_b = v12_dongle.Parser().feed(bytes(rx_b))
+        while True:
+            gn = lib_xd.xd_pop_auto_captured(cap_buf, 1_048_576)
+            if gn <= 0:
+                break
+            rx_b.extend(bytes(cap_buf[:gn]))
+        tbuf = (ctypes.c_uint8 * 512)()
+        while True:
+            gn = lib_xd.xd_usb_host_recv(tbuf, 512)
+            if gn <= 0:
+                break
+            rx_b.extend(bytes(tbuf[:gn]))
+        ps_b1 = v12_dongle.Parser()
+        frames_b = ps_b1.feed(bytes(rx_b))
+        fill_cnt = sum(1 for k, _, p in frames_b if k == 0x7F and len(p) == 240)
         b_replies = [p for k, _, p in frames_b if k == (0x80 | ord("B"))]
-        assert len(b_replies) == 1 and b_replies[0][0] == 0, frames_b
+        assert ps_b1.junk == 0, f"1s USB 带宽测试出现杂字节 junk={ps_b1.junk}"
+        assert len(b_replies) == 1 and len(b_replies[0]) == 5 and b_replies[0][0] == 0, b_replies
+        rep_frames = int.from_bytes(b_replies[0][1:5], "little")
+        assert rep_frames == fill_cnt and fill_cnt >= 1000, (rep_frames, fill_cnt)
+        assert 1_000_000 <= dt_b1_us <= 1_250_000, dt_b1_us
         cases_out.append({
-            "id": "P3-XIAO-BENCH-CMD",
-            "title": "正例：XIAO 接收器 'B' USB 带宽测试命令与 0x80|'B' 应答经环形缓冲完整送达",
+            "id": "P3-XIAO-BENCH-1S",
+            "title": "正例（PR #14 Finding #14 已修复）：XIAO 接收器运行 seconds=1 正时长 USB 带宽压测，跨 256B FIFO 零丢帧零撕裂（实收帧数==应答帧数）",
             "pass": True,
+            "bench_seconds": 1,
+            "intact_0x7f_frames": fill_cnt,
+            "elapsed_sim_ms": round(dt_b1_us / 1000.0, 1),
+            "junk_bytes": ps_b1.junk,
         })
 
         # Case 6 (NC-3a-MID-CAPTURE-RECONNECT): 采集中途 BLE 空口闪断自动重连 -> connects+1 被主机识别并拒绝拼接！
@@ -517,6 +548,137 @@ async def async_main() -> int:
             "title": "反例：ESP32-C6 接收器准确拦截越界连接间隔(ci<6)与非法特征读请求，返回非零错误码",
             "pass": True,
             "expected_red_caught": True,
+        })
+
+        # Case 9 (NC-3d-BENCH-HOST-STALL, PR #14 Finding #13 反例修复 A):
+        # 运行 seconds=1 带宽压测，电脑在 +300 ms 停止读取串口（Serial 仍连接但 FIFO 满）：
+        # 收尾 200 ms 滑动看门狗超时后自动清空积压填充帧并返回 status=2，绝不永久卡死主循环；恢复读取后 'Q' 立即正常应答！
+        SIM_EXEC.call(lambda: (lib_xd.xd_set_peer_callbacks(*(WRITE_CB(), READ_CB(), SUB_CB(), MTU_CB())), lib_xd.xd_init(256, True)))
+        lib_xd.xd_config_usb_host_sim(True, 512, 300_000, 0)
+        t0_st = lib_xd.xd_now_us()
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(b1_cmd))(*b1_cmd), len(b1_cmd))
+        lib_xd.xd_step_loop(1000)  # 若无 200ms 看门狗此处将无限死循环！
+        dt_st_ms = (lib_xd.xd_now_us() - t0_st) / 1000.0
+        assert 1180.0 <= dt_st_ms <= 1350.0, f"停读超时边界异常: {dt_st_ms} ms"
+        lib_xd.xd_config_usb_host_sim(True, 512, 0, 0)
+        q_cmd = bytes([0xA5, ord("Q"), 0, 0])
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(q_cmd))(*q_cmd), len(q_cmd))
+        for _ in range(15):
+            lib_xd.xd_step_loop(1000)
+        rx_st = bytearray()
+        while True:
+            gn = lib_xd.xd_pop_auto_captured(cap_buf, 1_048_576)
+            if gn <= 0:
+                break
+            rx_st.extend(bytes(cap_buf[:gn]))
+        while True:
+            gn = lib_xd.xd_usb_host_recv(tbuf, 512)
+            if gn <= 0:
+                break
+            rx_st.extend(bytes(tbuf[:gn]))
+        ps_st = v12_dongle.Parser()
+        fr_st = ps_st.feed(bytes(rx_st))
+        b_st_rep = [p for k, _, p in fr_st if k == (0x80 | ord("B"))]
+        q_st_rep = [p for k, _, p in fr_st if k == (0x80 | ord("Q"))]
+        assert ps_st.junk == 0, f"停读恢复后出现半帧撕裂 junk={ps_st.junk}"
+        assert len(b_st_rep) == 1 and b_st_rep[0][0] == 2, b_st_rep
+        assert len(q_st_rep) == 1 and q_st_rep[0][0] == 0, q_st_rep
+        cases_out.append({
+            "id": "NC-3d",
+            "title": "反例（PR #14 Finding #13 已修复）：seconds=1 带宽测试中途电脑停止读取 -> 200ms 看门狗超时清空返回 status=2，恢复读取后 'Q' 零杂字节响应",
+            "pass": True,
+            "expected_red_caught": True,
+            "abort_elapsed_ms": round(dt_st_ms, 1),
+            "bench_reply_status": b_st_rep[0][0],
+            "junk_bytes_after_resume": ps_st.junk,
+        })
+
+        # Case 10 (NC-3e-BENCH-USB-DISCONNECT, PR #14 Finding #13 反例修复 B):
+        # 运行 seconds=1 带宽压测，+250 ms 时电脑断开 USB CDC (!Serial)：
+        # bench() 当场检出 !Serial 立即退出（不等满 1s+200ms），重插 USB 后下发 'Q' 立即正常响应！
+        SIM_EXEC.call(lambda: (lib_xd.xd_set_peer_callbacks(*(WRITE_CB(), READ_CB(), SUB_CB(), MTU_CB())), lib_xd.xd_init(256, True)))
+        lib_xd.xd_config_usb_host_sim(True, 512, 0, 250_000)
+        t0_dc = lib_xd.xd_now_us()
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(b1_cmd))(*b1_cmd), len(b1_cmd))
+        lib_xd.xd_step_loop(1000)
+        dt_dc_ms = (lib_xd.xd_now_us() - t0_dc) / 1000.0
+        assert 240.0 <= dt_dc_ms <= 320.0, f"USB 断开未当场跳出 bench(): {dt_dc_ms} ms"
+        while lib_xd.xd_pop_auto_captured(cap_buf, 1_048_576) > 0:
+            pass
+        while lib_xd.xd_usb_host_recv(tbuf, 512) > 0:
+            pass
+        lib_xd.xd_config_usb_host_sim(True, 512, 0, 0)
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(q_cmd))(*q_cmd), len(q_cmd))
+        for _ in range(10):
+            lib_xd.xd_step_loop(1000)
+        rx_dc = bytearray()
+        while True:
+            gn = lib_xd.xd_pop_auto_captured(cap_buf, 1_048_576)
+            if gn <= 0:
+                break
+            rx_dc.extend(bytes(cap_buf[:gn]))
+        while True:
+            gn = lib_xd.xd_usb_host_recv(tbuf, 512)
+            if gn <= 0:
+                break
+            rx_dc.extend(bytes(tbuf[:gn]))
+        ps_dc = v12_dongle.Parser()
+        fr_dc = ps_dc.feed(bytes(rx_dc))
+        q_dc_rep = [p for k, _, p in fr_dc if k == (0x80 | ord("Q"))]
+        assert ps_dc.junk == 0 and len(q_dc_rep) == 1 and q_dc_rep[0][0] == 0, (ps_dc.junk, fr_dc)
+        cases_out.append({
+            "id": "NC-3e",
+            "title": "反例（PR #14 Finding #13 已修复）：seconds=1 带宽测试中途 USB 拔线(!Serial) -> 250ms 当场跳出不挂死，重连后主循环正常响应 'Q'",
+            "pass": True,
+            "expected_red_caught": True,
+            "disconnect_escape_ms": round(dt_dc_ms, 1),
+            "junk_bytes_after_reconnect": ps_dc.junk,
+        })
+
+        # Case 11 (NC-3f-UINT32-WRAP-0xFFFFFF00):
+        # 复现独立审计阻断场景：head/tail/pkt_end 位于 0xFFFFFF00u（距 2^32 回绕仅 256B），
+        # 入队 34B 短帧(0xFFFFFF22) + 248B 长帧(跨零至 0x0000001A) 并在 64B 受限 FIFO 下触发 bench(1) 停读截断：
+        # 验证模差 min(h - t, pkt_end - t) 严格守住单帧边界，不跨零下溢、不锁死 put_frame，恢复读取后 0 杂字节！
+        SIM_EXEC.call(lambda: (lib_xd.xd_set_peer_callbacks(*(WRITE_CB(), READ_CB(), SUB_CB(), MTU_CB())), lib_xd.xd_init(64, True)))
+        lib_xd.xd_feed_adv(b"YUANLI-C08B", True)
+        lib_xd.xd_seed_ring_cursor(0xFFFFFF00)
+        short26 = (ctypes.c_uint8 * 26)(*([0xC0] + [0x22] * 25))
+        long240 = (ctypes.c_uint8 * 240)(*([0xC0] + [0x33] * 239))
+        lib_xd.xd_feed_notify(2, short26, 26)   # +34B -> head = 0xFFFFFF22
+        lib_xd.xd_feed_notify(2, long240, 240)  # +248B -> head = 0x0000001A (跨 2^32 回绕！)
+        # FIFO 容量仅 64B，不自动排空，直接发 B(1) 触发 200ms 停读截断
+        lib_xd.xd_config_usb_host_sim(True, 0, 0, 0)
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(b1_cmd))(*b1_cmd), len(b1_cmd))
+        lib_xd.xd_step_loop(1000)
+        # 随后恢复高速读取并下发 'Q'，若发生跨零下溢则 ring 被永久锁死且出现半帧撕裂
+        lib_xd.xd_config_usb_host_sim(True, 512, 0, 0)
+        lib_xd.xd_usb_host_send((ctypes.c_uint8 * len(q_cmd))(*q_cmd), len(q_cmd))
+        for _ in range(20):
+            lib_xd.xd_step_loop(1000)
+        rx_wr = bytearray()
+        while True:
+            gn = lib_xd.xd_pop_auto_captured(cap_buf, 1_048_576)
+            if gn <= 0:
+                break
+            rx_wr.extend(bytes(cap_buf[:gn]))
+        while True:
+            gn = lib_xd.xd_usb_host_recv(tbuf, 512)
+            if gn <= 0:
+                break
+            rx_wr.extend(bytes(tbuf[:gn]))
+        ps_wr = v12_dongle.Parser()
+        fr_wr = ps_wr.feed(bytes(rx_wr))
+        b_wr_rep = [p for k, _, p in fr_wr if k == (0x80 | ord("B"))]
+        q_wr_rep = [p for k, _, p in fr_wr if k == (0x80 | ord("Q"))]
+        assert ps_wr.junk == 0, f"跨 2^32 回绕截断出现杂字节 junk={ps_wr.junk}"
+        assert len(b_wr_rep) == 1 and b_wr_rep[0][0] == 2, b_wr_rep
+        assert len(q_wr_rep) == 1 and q_wr_rep[0][0] == 0, q_wr_rep
+        cases_out.append({
+            "id": "NC-3f",
+            "title": "反例（独立审计回绕边界）：0xFFFFFF00 跨 2^32 回绕 + 64B FIFO 停读截断 -> 模差比较零下溢、零撕裂，'Q' 正常恢复",
+            "pass": True,
+            "expected_red_caught": True,
+            "junk_bytes": ps_wr.junk,
         })
 
     summary = {

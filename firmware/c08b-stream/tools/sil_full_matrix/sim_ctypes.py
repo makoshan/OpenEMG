@@ -142,6 +142,8 @@ def load_twin(dylib_name: str) -> ctypes.CDLL:
     lib.sim_set_button.restype = None
     lib.sim_set_readback_fault.argtypes = [ctypes.c_bool]
     lib.sim_set_readback_fault.restype = None
+    lib.sim_set_corrupt_spi3_crc.argtypes = [ctypes.c_bool]
+    lib.sim_set_corrupt_spi3_crc.restype = None
     lib.sim_get_telemetry.argtypes = [ctypes.POINTER(SimTelemetry)]
     lib.sim_get_telemetry.restype = None
 

@@ -13,7 +13,7 @@
       "id": "P4-DIRECT-BLE-MTU247-TST1",
       "title": "正例（Bug #8 已修复）：中心已协商 MTU=247 时外设跳过重复 MTU 请求（periph_mtu_reqs=0），2000SPS TST1 方波零丢包",
       "pass": true,
-      "valid_samples": 2516,
+      "valid_samples": 2438,
       "ch1_pp_uv": 2016.7,
       "periph_mtu_reqs": 0
     },
@@ -21,14 +21,14 @@
       "id": "P4-DONGLE-PEER-MTU-EXR1-RLD",
       "title": "正例：配对 dongle_1292_2k(MTU=23) 时外设主动升至 MTU=247，EXR1 两步 150ms RLD 预热闭环（hazard=0x00）",
       "pass": true,
-      "valid_samples": 1200,
+      "valid_samples": 1557,
       "periph_mtu_reqs": 1
     },
     {
       "id": "P4-SHT1-NOISE",
       "title": "正例：SHT1 内部短接底噪 < 5 µV 且 STOP 后 D4(PWDN) 立即归零断电",
       "pass": true,
-      "valid_samples": 949
+      "valid_samples": 848
     },
     {
       "id": "NC-4a",

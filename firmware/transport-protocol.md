@@ -65,7 +65,7 @@ OpenEMG C08B 采用**模拟采集板（下板）与数字主控板（上板）�
 |---|---|---|---|---|
 | `01` | `SERVICE` | Primary Service | — | OpenEMG V12 / C08B 统一采集服务 |
 | `02` | `DATA` | Notify | `232 B` | 实时肌电原始帧（F01 `v1` 8CH/2CH 或 `v4` 16CH 无损双片包） |
-| `03` | `META` | Read | `440 B` | UTF-8 JSON 元数据（拓扑、协议号、采样率、构建 ID、在线寄存器回读摘要） |
+| `03` | `META` | Read | `512 B` | UTF-8 JSON 元数据（拓扑、协议号、实际采样率、分通道增益 `channel_gains`、构建 ID、寄存器回读） |
 | `04` | `STATUS` | Read | `64 B` | 二进制四段健康与阻塞计数器（小端，对齐 `host/v12_status.py` v1） |
 | `05` | `CONTROL` | Write (With Response) | `8 B` | 模式启停、采样率切换、子板探测、**在线寄存器读写（`RREG`/`WREG`/`CLRO`）** |
 | `06` | `IMU_DATA` | Notify | `36 B` | `104 Hz` 6 轴陀螺+加速度包（同源 `L432_DWT_1MHz` 64 位微秒时间戳） |
@@ -114,6 +114,7 @@ OpenEMG C08B 采用**模拟采集板（下板）与数字主控板（上板）�
   - 禁置 `RLD_MEAS(0x10)`（v0.01 采集板 Pin 62 `RLDIN` 接 `+2.5 V`，置 1 会把电源轨灌入内部总线）；
   - 禁置 `RLDREF_INT(0x08)`（Pin 60 `RLDREF` 硬连 `AGND`，置 1 会令片内缓冲与地短路顶牛）；
   - 副片 `U2` 严禁开 `PD_RLD(0x04)` 或写非零 `RLD_SENSP/N(0x0D/0x0E)`。
+- **保护采样率与双片同步（`CONFIG1 = 0x01`）**：禁置 `CLK_EN(0x20)`（防止与采集板 `2.048 MHz` 外部有源晶振 `X1` 顶牛），速率限制在 `500 / 1000 / 2000 SPS`；16CH 双片模式下改 `CONFIG1` 强制 `chip_sel = BOTH` 双片同写（禁单改 `U1` 或 `U2` 造成速率/群延迟失步），并自动同步会话 `fs_Hz` 与 `META.fs_Hz`（若启动命令显式传入与之冲突的 `fs_hz` 则直接报 `FAULT_ARG`）。在线改 `CHnSET` 增益后，`META` 自动输出 `"channel_gains":[...]` 供上位机逐通道精确折算微伏幅值。
 - **保护通道与引脚**：`CH1SET..CH8SET(0x05..0x0C)` 严禁设 `MUX = 0x02 (RLD_MEASURE)` 或未定义 `GAIN = 111`；`GPIO(0x14)` 低 4 位强制 `0x0F`（板上 `GPIO1/2/4` 接地，设推挽输出即短路）；`PACE=0x00`、`RESP=0x20`、`WCT1/2=0x00`、`SINGLE_SHOT=0`。
 - **回读闭环与防陈旧序号**：每次 `WREG` 均经完整两步 `150 ms` 基准/RLD 预热状态机写入并当场按可写位掩码回读 SPI1，不一致立即断电并报 `C08B_FAULT_READBACK(5)`、绝不污染会话覆盖表。结果附带单调命令纪元低 16 位 `seq` 通过 `META` JSON 返回（上位机核对 `last_reg.seq != prev_seq`，彻底消除同地址连续 `RREG` 时读到 SoftDevice 栈缓存旧值的竞态）：
   ```json
@@ -128,7 +129,7 @@ OpenEMG C08B 采用**模拟采集板（下板）与数字主控板（上板）�
 
 - **`L432 → nRF` 上行帧 `c08b_link_tx_t`（固定 `280 B`，CRC16-CCITT `0x1021`）**：
   - 头字段含 `magic=0xC853`、`afe_mode`、`state_flags`、`fault`、`sample_count(0..4)`、`f01_flags`、`seq_first`、`timestamp_us(u64)`、`produced`、`dropped`、`bad_status`、`drdy_desync`、`min_interval_us_sat`、`ack_epoch_lo`、`imu_timestamp_us(u64)`、`imu_raw[6]`；
-  - `samples[4][54]` 承载最多 4 个 16CH 样本槽；当 `sample_count < 4`（待机心跳或 2 kHz 双帧批）时，`samples[3][46..53]` 捎带 8 字节在线寄存器回读摘要（`seq_lo | seq_hi | 0x52 | valid | addr | val_a | val_b | ovr_count`），保持 `280 B` 固定帧长零膨胀。
+  - `samples[4][54]` 承载最多 4 个 16CH 样本槽；当 `sample_count < 4`（待机心跳、每次会话首包 `sample_count=2` 或 2 kHz 双帧批）时，`samples[3][27..45]` 捎带实际生效采样率与 16 路增益（`0x47 | eff_fs_le16 | ch_gains[16]`），`samples[3][46..53]` 捎带 8 字节在线寄存器回读摘要（`seq_lo | seq_hi | 0x52 | valid | addr | val_a | val_b | ovr_count`），保持 `280 B` 固定帧长零膨胀。
 - **`nRF → L432` 下行帧 `c08b_link_rx_t`（固定 `16 B`，CRC16-CCITT）**：
   `magic(0x53C8) | version(1) | req_mode | nrf_flags | synth_channels_or_chip_sel | fs_hz(u16) | cmd_epoch(u32) | reg_addr(u8) | reg_val(u8) | crc(u16)`。
 

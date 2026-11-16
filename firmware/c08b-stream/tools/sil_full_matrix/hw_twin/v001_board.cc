@@ -1015,6 +1015,9 @@ uint32_t sim_l432_spi_sr_read(int spi_idx, volatile uint32_t *dr_mem, uint32_t c
             miso = (B.spis_latched_tx && B.spis_xfer_idx < B.spis_latched_tx_max)
                        ? B.spis_latched_tx[B.spis_xfer_idx]
                        : (uint8_t)g_sim_nrf_spis1.ORC;
+            if (B.cfg.corrupt_spi3_crc && B.spis_xfer_idx == 2u) {
+                miso ^= 0x01u;
+            }
             if (B.spis_latched_rx && B.spis_xfer_idx < B.spis_latched_rx_max) {
                 B.spis_latched_rx[B.spis_xfer_idx] = wire_mosi;
             }
@@ -1535,6 +1538,10 @@ void sim_set_button(bool pressed) {
 
 void sim_set_readback_fault(bool enable) {
     B.cfg.reg_readback_fault = enable;
+}
+
+void sim_set_corrupt_spi3_crc(bool enable) {
+    B.cfg.corrupt_spi3_crc = enable;
 }
 
 void sim_get_telemetry(SimTelemetry *out) {
