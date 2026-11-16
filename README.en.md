@@ -1,6 +1,6 @@
 # OpenEMG
 
-[简体中文](README.md) · **English**
+[简体中文](README.md) · **English** · **[Website (openemg.org)](https://openemg.org/)**
 
 OpenEMG is an open-source **16-channel surface EMG wristband**. Our goal is to recognize hand gestures from muscle activity measured at the wrist. The desktop app displays waveforms, records labeled movements, and trains gesture models.
 
@@ -143,6 +143,6 @@ Our immediate priority is fabricating and bench-testing the **human-reviewed 16-
 
 ## Getting started
 
-[Desktop app](app/) · [Development environment](firmware/software.md) · [Transport protocol](firmware/transport-protocol.md) · [Hardware index](hardware/README.md) · [Safety notes](SAFETY.md)
+[Website (openemg.org)](https://openemg.org/) · [Desktop app](app/) · [Development environment](firmware/software.md) · [Transport protocol](firmware/transport-protocol.md) · [Hardware index](hardware/README.md) · [Safety notes](SAFETY.md)
 
 [Software license (MIT)](LICENSE) · [Hardware license (CERN-OHL-S-2.0)](LICENSE-HARDWARE) · [Third-party notices](THIRD_PARTY_NOTICES.md)

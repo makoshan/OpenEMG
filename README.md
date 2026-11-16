@@ -1,6 +1,6 @@
 # OpenEMG
 
-**简体中文** · [English](README.en.md)
+**简体中文** · [English](README.en.md) · **[官网 openemg.org](https://openemg.org/)**
 
 OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的表面肌电信号识别手势。桌面软件可以查看各通道波形、录制动作和训练模型。
 
@@ -143,6 +143,6 @@ OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文�
 
 ## 开始使用
 
-[桌面工作台](app/) · [软件与开发环境](firmware/software.md) · [板间与传输协议](firmware/transport-protocol.md) · [硬件与制造文件索引](hardware/README.md) · [通电与佩戴安全须知](SAFETY.md)
+[官网 openemg.org](https://openemg.org/) · [桌面工作台](app/) · [软件与开发环境](firmware/software.md) · [板间与传输协议](firmware/transport-protocol.md) · [硬件与制造文件索引](hardware/README.md) · [通电与佩戴安全须知](SAFETY.md)
 
 [软件许可 MIT](LICENSE) · [硬件许可 CERN-OHL-S-2.0](LICENSE-HARDWARE) · [第三方声明](THIRD_PARTY_NOTICES.md)
