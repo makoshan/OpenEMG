@@ -110,8 +110,18 @@ for (const n of [2, 8, 16]) {
   assert.ok(wearSteps('left', 'ble', n).some((s) => s.d.includes(n === 8 ? '8 根金属棒' : `${n} 路电极触点`)));
 }
 
-// 6. 首板脚位与上电自检解码 Studio 路由白名单校验（含 97B 内存详报 report16）
+// 6. 首板脚位、采样率热切、在线安全寄存器与上电自检解码 Studio 路由白名单校验（含 97B 内存详报 report16）
 assert.deepEqual(studioRoute('devicePinout', { deviceId: 'c08b-16ch' }), ['GET', '/api/device/pinout?device_id=c08b-16ch']);
+assert.deepEqual(studioRoute('deviceConfigPut', { fsHz: 2000 }), ['PUT', '/api/device/config', { fs_Hz: 2000 }]);
+assert.throws(() => studioRoute('deviceConfigPut', { fsHz: 1500 }), /500、1000 或 2000/);
+assert.deepEqual(studioRoute('c08bReg', { op: 'state' }), ['POST', '/api/device/c08b_reg', { op: 'state' }]);
+assert.deepEqual(studioRoute('c08bReg', { op: 'rreg', chip: 'both', addr: 'CH1SET' }), ['POST', '/api/device/c08b_reg', { op: 'rreg', chip: 'both', addr: 'CH1SET' }]);
+assert.deepEqual(studioRoute('c08bReg', { op: 'wreg', chip: 'u1', addr: 0x05, val: '0x60' }), ['POST', '/api/device/c08b_reg', { op: 'wreg', chip: 'u1', addr: 5, val: 0x60 }]);
+assert.deepEqual(studioRoute('c08bReg', { op: 'clro' }), ['POST', '/api/device/c08b_reg', { op: 'clro' }]);
+assert.throws(() => studioRoute('c08bReg', { op: 'eval' }), /未知寄存器操作/);
+assert.throws(() => studioRoute('c08bReg', { op: 'wreg', chip: 'u3', addr: 5, val: 0 }), /芯片选择/);
+assert.throws(() => studioRoute('c08bReg', { op: 'wreg', chip: 'u1', addr: 0x20, val: 0 }), /寄存器地址/);
+assert.throws(() => studioRoute('c08bReg', { op: 'wreg', chip: 'u1', addr: 5, val: '0x1FF' }), /寄存器写入值/);
 assert.deepEqual(studioRoute('bringupDecode', { sample: '16ch' }), ['POST', '/api/device/bringup_decode', { sample: '16ch' }]);
 assert.deepEqual(studioRoute('bringupDecode', { sample: 'report16' }), ['POST', '/api/device/bringup_decode', { sample: 'report16' }]);
 assert.deepEqual(studioRoute('bringupDecode', { hex: 'FFFF01FF03000003C60292D2' }), ['POST', '/api/device/bringup_decode', { hex: 'FFFF01FF03000003C60292D2' }]);

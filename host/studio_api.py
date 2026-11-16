@@ -173,20 +173,42 @@ class Studio:
         return self.desc.to_json()
 
     def device_config_put(self, q, body):
-        if 'fs_Hz' in body:
-            if body['fs_Hz'] not in self.desc.fs_options:
+        if 'fs_Hz' in body and body['fs_Hz'] is not None:
+            fs = int(body['fs_Hz'])
+            if fs not in self.desc.fs_options:
                 raise ValueError(f'fs_Hz 只能是 {self.desc.fs_options}')
-            if body['fs_Hz'] != self.desc.fs_Hz:
-                raise RuntimeError('运行中改采样率属于 B5；重启时改描述文件')
+            if fs != self.desc.fs_Hz:
+                if self.take:
+                    raise RuntimeError('录制进行中禁止切换采样率，请先停止当前段')
+                if not hasattr(self.session.rig, 'set_fs_hz'):
+                    raise RuntimeError('运行中改采样率属于 B5；重启时改描述文件')
+                self.session.rig.set_fs_hz(fs)
+                self.desc.fs_Hz = fs
+                self.acq.desc.fs_Hz = fs
+                self.blackbox = gesture_pipe.Blackbox(fs, self.desc.n_channels)
+                self.ring = np.zeros((0, self.desc.n_channels), np.float32)
         for ch in body.get('channels', []):
             i = int(ch['index'])
             if not 0 <= i < self.desc.n_channels:
                 raise ValueError(f'通道 {i} 越界')
-            if 'label' in ch:
+            if 'label' in ch and ch['label'] is not None:
                 self.desc.channels[i]['label'] = str(ch['label'])[:24]
-            if 'enabled' in ch:
+            if 'enabled' in ch and ch['enabled'] is not None:
                 self.desc.channels[i]['enabled'] = bool(ch['enabled'])
         return self.desc.to_json()
+
+    def device_c08b_reg(self, q, body):
+        if not hasattr(self.session.rig, 'reg_action'):
+            raise RuntimeError(f'当前设备 {self.desc.id} 不支持 C08B 在线安全寄存器协议')
+        op = str(body.get('op') or 'state').strip().lower()
+        if op in ('wreg', 'clro') and self.take:
+            raise RuntimeError('录制进行中禁止修改或清空寄存器覆盖，请先停止录制')
+        return self.session.rig.reg_action(
+            op=op,
+            chip=body.get('chip', 'both'),
+            addr=body.get('addr', 0),
+            val=body.get('val', 0),
+        )
 
     def device_state(self, q, body):
         st = self.acq.status()
@@ -426,6 +448,7 @@ ROUTES = {
     ('GET', '/api/device/state'): Studio.device_state,
     ('GET', '/api/device/pinout'): Studio.device_pinout,
     ('POST', '/api/device/bringup_decode'): Studio.device_bringup_decode,
+    ('POST', '/api/device/c08b_reg'): Studio.device_c08b_reg,
     ('POST', '/api/session/start'): Studio.session_start,
     ('POST', '/api/session/stop'): Studio.session_stop,
     ('POST', '/api/take/start'): Studio.take_start,
