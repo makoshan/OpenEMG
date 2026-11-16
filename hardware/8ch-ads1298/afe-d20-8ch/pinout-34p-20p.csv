@@ -1,49 +1,49 @@
 interface,pin,skin_contact,anatomical_zone,strap_series_resistor,connector_net,esd_diode,series_element_or_rpack,diff_cap,chip_pin,firmware_slot,desktop_channel,notes
 V4_FPC1_34P,"1,2,3,4",AGND,西端4针包地屏蔽,直连 AGND,AGND,-,-,-,AGND (U1.20/23/31/33),-,GND,西侧起头4针连续模拟地屏蔽
-V4_FPC1_34P,5,E1P (CH1+),"盒底北排·右(+8.0,+7.5)",R1 (100kΩ 0603),V4_EL_A1P,D927 (ESD401),V4_U6:1→8 (15kΩ),V4_C72 (22pF:1),V4_U1.16 (IN1P),slot[0],CH1+,盒底北排右大触点正端，总串阻115kΩ
-V4_FPC1_34P,6,E1N (CH1-),"盒底北排·左(-8.0,+7.5)",R2 (100kΩ 0603),V4_EL_A1N,D926 (ESD401),V4_U6:2→7 (15kΩ),V4_C72 (22pF:2),V4_U1.15 (IN1N),slot[0],CH1-,盒底北排左大触点负端，总串阻115kΩ
+V4_FPC1_34P,5,E1P (CH1+),"盒底北排·右(+8.0,+7.5)",R1 (100kΩ 0402),V4_EL_A1P,D927 (ESD401),V4_U6:1→8 (15kΩ),V4_C72 (22pF:1),V4_U1.16 (IN1P),slot[0],CH1+,盒底北排右大触点正端，总串阻115kΩ
+V4_FPC1_34P,6,E1N (CH1-),"盒底北排·左(-8.0,+7.5)",R2 (100kΩ 0402),V4_EL_A1N,D926 (ESD401),V4_U6:2→7 (15kΩ),V4_C72 (22pF:2),V4_U1.15 (IN1N),slot[0],CH1-,盒底北排左大触点负端，总串阻115kΩ
 V4_FPC1_34P,"7,8",AGND,CH1/CH2对间双地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,盒底CH1与CH2差分对之间双针模拟地隔离
-V4_FPC1_34P,9,E2P (CH2+),"盒底南排·右(+8.0,-7.5)",R3 (100kΩ 0603),V4_EL_A2P,D925 (ESD401),V4_U6:3→6 (15kΩ),V4_C73 (22pF:1),V4_U1.14 (IN2P),slot[1],CH2+,盒底南排右大触点正端，总串阻115kΩ
-V4_FPC1_34P,10,E2N (CH2-),"盒底南排·左(-8.0,-7.5)",R4 (100kΩ 0603),V4_EL_A2N,D924 (ESD401),V4_U6:4→5 (15kΩ),V4_C73 (22pF:2),V4_U1.13 (IN2N),slot[1],CH2-,盒底南排左大触点负端，总串阻115kΩ
+V4_FPC1_34P,9,E2P (CH2+),"盒底南排·右(+8.0,-7.5)",R3 (100kΩ 0402),V4_EL_A2P,D925 (ESD401),V4_U6:3→6 (15kΩ),V4_C73 (22pF:1),V4_U1.14 (IN2P),slot[1],CH2+,盒底南排右大触点正端，总串阻115kΩ
+V4_FPC1_34P,10,E2N (CH2-),"盒底南排·左(-8.0,-7.5)",R4 (100kΩ 0402),V4_EL_A2N,D924 (ESD401),V4_U6:4→5 (15kΩ),V4_C73 (22pF:2),V4_U1.13 (IN2N),slot[1],CH2-,盒底南排左大触点负端，总串阻115kΩ
 V4_FPC1_34P,11,AGND,对间模拟地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,盒底与北短带通道间模拟地隔离
-V4_FPC1_34P,12,E3P (CH3+),北侧短带第1节·右,R5 (100kΩ 0603),V4_EL_A3P,D923 (ESD401),V4_U5:1→8 (15kΩ),V4_C74 (22pF:1),V4_U1.12 (IN3P),slot[2],CH3+,北短带第1对正端，总串阻115kΩ
-V4_FPC1_34P,13,E3N (CH3-),北侧短带第1节·左,R6 (100kΩ 0603),V4_EL_A3N,D922 (ESD401),V4_U5:2→7 (15kΩ),V4_C74 (22pF:2),V4_U1.11 (IN3N),slot[2],CH3-,北短带第1对负端，总串阻115kΩ
+V4_FPC1_34P,12,E3P (CH3+),北侧短带第1节·右,R5 (100kΩ 0402),V4_EL_A3P,D923 (ESD401),V4_U5:1→8 (15kΩ),V4_C74 (22pF:1),V4_U1.12 (IN3P),slot[2],CH3+,北短带第1对正端，总串阻115kΩ
+V4_FPC1_34P,13,E3N (CH3-),北侧短带第1节·左,R6 (100kΩ 0402),V4_EL_A3N,D922 (ESD401),V4_U5:2→7 (15kΩ),V4_C74 (22pF:2),V4_U1.11 (IN3N),slot[2],CH3-,北短带第1对负端，总串阻115kΩ
 V4_FPC1_34P,14,AGND,对间模拟地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,北短带CH3与CH4对间模拟地隔离
-V4_FPC1_34P,15,E4P (CH4+),北侧短带第2节·右,R7 (100kΩ 0603),V4_EL_A4P,D921 (ESD401),V4_U5:3→6 (15kΩ),V4_C75 (22pF:1),V4_U1.10 (IN4P),slot[3],CH4+,北短带第2对正端，总串阻115kΩ
-V4_FPC1_34P,16,E4N (CH4-),北侧短带第2节·左,R8 (100kΩ 0603),V4_EL_A4N,D920 (ESD401),V4_U5:4→5 (15kΩ),V4_C75 (22pF:2),V4_U1.9 (IN4N),slot[3],CH4-,北短带第2对负端，总串阻115kΩ
+V4_FPC1_34P,15,E4P (CH4+),北侧短带第2节·右,R7 (100kΩ 0402),V4_EL_A4P,D921 (ESD401),V4_U5:3→6 (15kΩ),V4_C75 (22pF:1),V4_U1.10 (IN4P),slot[3],CH4+,北短带第2对正端，总串阻115kΩ
+V4_FPC1_34P,16,E4N (CH4-),北侧短带第2节·左,R8 (100kΩ 0402),V4_EL_A4N,D920 (ESD401),V4_U5:4→5 (15kΩ),V4_C75 (22pF:2),V4_U1.9 (IN4N),slot[3],CH4-,北短带第2对负端，总串阻115kΩ
 V4_FPC1_34P,"17,18",AGND,南北表带分界双地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,北短带与南长带之间双针模拟地隔离
-V4_FPC1_34P,19,E5P (CH5+),南侧长带第1节·右,R9 (100kΩ 0603),V4_EL_A5P,D919 (ESD401),V4_U4:1→8 (15kΩ),V4_C76 (22pF:1),V4_U1.8 (IN5P),slot[4],CH5+,南长带第1对正端，总串阻115kΩ
-V4_FPC1_34P,20,E5N (CH5-),南侧长带第1节·左,R10 (100kΩ 0603),V4_EL_A5N,D918 (ESD401),V4_U4:2→7 (15kΩ),V4_C76 (22pF:2),V4_U1.7 (IN5N),slot[4],CH5-,南长带第1对负端，总串阻115kΩ
+V4_FPC1_34P,19,E5P (CH5+),南侧长带第1节·右,R9 (100kΩ 0402),V4_EL_A5P,D919 (ESD401),V4_U4:1→8 (15kΩ),V4_C76 (22pF:1),V4_U1.8 (IN5P),slot[4],CH5+,南长带第1对正端，总串阻115kΩ
+V4_FPC1_34P,20,E5N (CH5-),南侧长带第1节·左,R10 (100kΩ 0402),V4_EL_A5N,D918 (ESD401),V4_U4:2→7 (15kΩ),V4_C76 (22pF:2),V4_U1.7 (IN5N),slot[4],CH5-,南长带第1对负端，总串阻115kΩ
 V4_FPC1_34P,21,AGND,对间模拟地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,南长带CH5与CH6对间模拟地隔离
-V4_FPC1_34P,22,E6P (CH6+),南侧长带第2节·右,R11 (100kΩ 0603),V4_EL_A6P,D917 (ESD401),V4_U4:3→6 (15kΩ),V4_C77 (22pF:1),V4_U1.6 (IN6P),slot[5],CH6+,南长带第2对正端，总串阻115kΩ
-V4_FPC1_34P,23,E6N (CH6-),南侧长带第2节·左,R12 (100kΩ 0603),V4_EL_A6N,D916 (ESD401),V4_U4:4→5 (15kΩ),V4_C77 (22pF:2),V4_U1.5 (IN6N),slot[5],CH6-,南长带第2对负端，总串阻115kΩ
+V4_FPC1_34P,22,E6P (CH6+),南侧长带第2节·右,R11 (100kΩ 0402),V4_EL_A6P,D917 (ESD401),V4_U4:3→6 (15kΩ),V4_C77 (22pF:1),V4_U1.6 (IN6P),slot[5],CH6+,南长带第2对正端，总串阻115kΩ
+V4_FPC1_34P,23,E6N (CH6-),南侧长带第2节·左,R12 (100kΩ 0402),V4_EL_A6N,D916 (ESD401),V4_U4:4→5 (15kΩ),V4_C77 (22pF:2),V4_U1.5 (IN6N),slot[5],CH6-,南长带第2对负端，总串阻115kΩ
 V4_FPC1_34P,24,AGND,对间模拟地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,南长带CH6与CH7对间模拟地隔离
-V4_FPC1_34P,25,E7P (CH7+),南侧长带第3节·右,R13 (100kΩ 0603),V4_EL_A7P,D915 (ESD401),V4_U3:1→8 (15kΩ),V4_C78 (22pF:1),V4_U1.4 (IN7P),slot[6],CH7+,南长带第3对正端，总串阻115kΩ
-V4_FPC1_34P,26,E7N (CH7-),南侧长带第3节·左,R14 (100kΩ 0603),V4_EL_A7N,D914 (ESD401),V4_U3:2→7 (15kΩ),V4_C78 (22pF:2),V4_U1.3 (IN7N),slot[6],CH7-,南长带第3对负端，总串阻115kΩ
+V4_FPC1_34P,25,E7P (CH7+),南侧长带第3节·右,R13 (100kΩ 0402),V4_EL_A7P,D915 (ESD401),V4_U3:1→8 (15kΩ),V4_C78 (22pF:1),V4_U1.4 (IN7P),slot[6],CH7+,南长带第3对正端，总串阻115kΩ
+V4_FPC1_34P,26,E7N (CH7-),南侧长带第3节·左,R14 (100kΩ 0402),V4_EL_A7N,D914 (ESD401),V4_U3:2→7 (15kΩ),V4_C78 (22pF:2),V4_U1.3 (IN7N),slot[6],CH7-,南长带第3对负端，总串阻115kΩ
 V4_FPC1_34P,27,AGND,对间模拟地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,南长带CH7与CH8对间模拟地隔离
-V4_FPC1_34P,28,E8P (CH8+),南侧长带第4节·右,R15 (100kΩ 0603),V4_EL_A8P,D913 (ESD401),V4_U3:3→6 (15kΩ),V4_C79 (22pF:1),V4_U1.2 (IN8P),slot[7],CH8+,南长带第4对正端，总串阻115kΩ
-V4_FPC1_34P,29,E8N (CH8-),南侧长带第4节·左,R16 (100kΩ 0603),V4_EL_A8N,D912 (ESD401),V4_U3:4→5 (15kΩ),V4_C79 (22pF:2),V4_U1.1 (IN8N),slot[7],CH8-,南长带第4对负端，总串阻115kΩ
+V4_FPC1_34P,28,E8P (CH8+),南侧长带第4节·右,R15 (100kΩ 0402),V4_EL_A8P,D913 (ESD401),V4_U3:3→6 (15kΩ),V4_C79 (22pF:1),V4_U1.2 (IN8P),slot[7],CH8+,南长带第4对正端，总串阻115kΩ
+V4_FPC1_34P,29,E8N (CH8-),南侧长带第4节·左,R16 (100kΩ 0402),V4_EL_A8N,D912 (ESD401),V4_U3:4→5 (15kΩ),V4_C79 (22pF:2),V4_U1.1 (IN8N),slot[7],CH8-,南长带第4对负端，总串阻115kΩ
 V4_FPC1_34P,"30,31",AGND,采样与偏置间双地屏蔽,直连 AGND,AGND,-,-,-,AGND,-,GND,CH8与WCT/BIAS偏置脚之间双针模拟地隔离
 V4_FPC1_34P,32,NC (WCT预留),软板未引出,-,V4_WCT,D911 (ESD401),V4_R35 (10kΩ) + V4_C123 (100pF),-,V4_U1.64 (WCT),-,WCT (NC),威尔逊中心端输出预留，D2-8CH软板悬空
-V4_FPC1_34P,33,EB1+EB2 (双辅偏置),"盒底南排中EB1(0,-7.5)+北排中EB2(0,+7.5)",R33(200kΩ) ∥ R34(200kΩ),V4_BIAS_DRV1,D910 (ESD401),V4_R34 (392kΩ) + R24(392k)∥C47(10nF),-,"V4_U1.63 (RLDOUT, 60/62脚接AGND)",-,RLD_BIAS,软板双200kΩ独立串阻汇入脚33，再串V4_R34 392kΩ
+V4_FPC1_34P,33,EB1+EB2 (双辅偏置),"盒底南排中EB1(0,-7.5)+北排中EB2(0,+7.5)",R33(200kΩ 0603) ∥ R34(200kΩ 0603),V4_BIAS_DRV1,D910 (ESD401),V4_R34 (392kΩ) + R24(392k)∥C47(10nF),-,"V4_U1.63 (RLDOUT, 60/62脚接AGND)",-,RLD_BIAS,软板双200kΩ独立串阻汇入脚33，再串V4_R34 392kΩ
 V4_FPC1_34P,"34,MP1,MP2",AGND,东端尾脚与两侧固定焊耳,直连 AGND,AGND,-,-,-,AGND,-,GND,第34脚与FH34SRJ-34S两侧固定焊片接地（共17地脚）
 J_AFE_20P,AFE:1 ↔ MB:20,-,板间U形排线,-,GND ↔ GND,-,-,-,AGND(经V4_R18 0R) ↔ MB GND,-,GND,数字地
 J_AFE_20P,AFE:2 ↔ MB:19,-,板间U形排线,-,NC ↔ NC,-,-,-,两板均悬空打叉,-,NC,预留空脚
-J_AFE_20P,AFE:3 ↔ MB:18,-,板间U形排线,-,NC ↔ ADS_DRDY_B,-,MB:U3.3/R701(100k下拉),-,D20-8CH无U2悬空 ↔ L432 PA4(脚10),-,NC(8ch),8通道版无从片U2，采集板脚3悬空
-J_AFE_20P,AFE:4 ↔ MB:17,-,板间U形排线,-,NC ↔ AFE_CS_B,-,MB:R815/R821(47k上拉),-,D20-8CH无U2悬空 ↔ L432 PA8(脚18),-,NC(8ch),8通道版无从片U2，采集板脚4悬空
-J_AFE_20P,AFE:5 ↔ MB:16,-,板间U形排线,-,DIN_B ↔ AFE_DIN,-,AFE:R807(10k下拉) / MB:R814(33Ω)+R826(47k下拉),-,V4_U1.34 (DIN) ← L432 PA7 (脚13 SPI1_MOSI),-,SPI_MOSI,经U2 SN74AXC8T245电平转换驱动
-J_AFE_20P,AFE:6 ↔ MB:15,-,板间U形排线,-,ADS_PWDN ↔ AFE_PWDN,-,AFE:R804(10k下拉) / MB:R811(33Ω)+R822(47k下拉),-,V4_U1.35 (PWDN) ← L432 PA1 (脚7),-,PWDN,主控R811出线同时驱动脚14与脚15
-J_AFE_20P,AFE:7 ↔ MB:14,-,板间U形排线,-,ADS_RESET ↔ AFE_RESET,-,AFE:R803(10k下拉) / MB:R811(33Ω)+R822(47k下拉),-,V4_U1.36 (RESET) ← L432 PA1 (脚7),-,RESET,与PWDN共驱，上电置高后发脉冲复位
+J_AFE_20P,AFE:3 ↔ MB:18,-,板间U形排线,-,NC ↔ AFE_DRDY_B,-,MB:直连TP703与U18.10 (无U3),-,D20-8CH无U2悬空 ↔ L432 PA4(脚10),-,NC(8ch),8通道版无从片U2，采集板脚3悬空
+J_AFE_20P,AFE:4 ↔ MB:17,-,板间U形排线,-,NC ↔ AFE_CS_B,-,MB:R813(33Ω)+R821(47k上拉3V3_AFE)+U2(18←6),-,D20-8CH无U2悬空 ↔ L432 PB1(脚15),-,NC(8ch),8通道版无从片U2，采集板脚4悬空
+J_AFE_20P,AFE:5 ↔ MB:16,-,板间U形排线,-,DIN_B ↔ AFE_DIN,-,AFE:R807(10k下拉) / MB:R812(33Ω)+R826(47k下拉)+U2(19←5),-,V4_U1.34 (DIN) ← L432 PA7 (脚13 SPI1_MOSI),-,SPI_MOSI,经U2 SN74AXC8T245电平转换驱动
+J_AFE_20P,AFE:6 ↔ MB:15,-,板间U形排线,-,ADS_PWDN ↔ AFE_PWDN,-,AFE:R804(10k下拉) / MB:R815(33Ω)+R823(47k下拉)+U2(14←10),-,V4_U1.35 (PWDN) ← L432 PA1 (脚7),-,PWDN,独立于RESET，经U2与R815驱动
+J_AFE_20P,AFE:7 ↔ MB:14,-,板间U形排线,-,ADS_RESET ↔ AFE_RESET,-,AFE:R803(10k下拉) / MB:R814(33Ω)+R822(47k下拉)+U2(15←9),-,V4_U1.36 (RESET) ← L432 PA8 (脚18),-,RESET,独立于PWDN，经U2与R814驱动
 J_AFE_20P,AFE:8 ↔ MB:13,-,板间U形排线,-,AFE_CLK_IN ↔ NC,-,AFE:V4_X1(2.048MHz有源晶振),-,V4_U1.37 (CLK) ← V4_X1.3 (主控脚13悬空),-,CLK_2M048,采集板本地有源晶振直供U1.37
-J_AFE_20P,AFE:9 ↔ MB:12,-,板间U形排线,-,ADS_START ↔ AFE_START,-,AFE:R805(10k下拉) / MB:R812(33Ω)+R824(47k下拉),-,V4_U1.38 (START) ← L432 PA3 (脚9),-,START,同步启动转换控制线
-J_AFE_20P,AFE:10 ↔ MB:11,-,板间U形排线,-,ADS_CS_A ↔ AFE_CS_A,-,AFE:R801(10k上拉3V3) / MB:R810(33Ω)+R820(47k上拉),-,V4_U1.39 (CS) ← L432 PB0 (脚14),-,CS_A,主片片选，默认上拉3V3释放
-J_AFE_20P,AFE:11 ↔ MB:10,-,板间U形排线,-,SCLK_B ↔ AFE_SCLK,-,AFE:R806(10k下拉) / MB:R813(33Ω)+R825(47k下拉),-,V4_U1.40 (SCLK) ← L432 PA5 (脚11 SPI1_SCK),-,SPI_SCLK,"CPOL=0, CPHA=1 (SPI Mode 1)"
+J_AFE_20P,AFE:9 ↔ MB:12,-,板间U形排线,-,ADS_START ↔ AFE_START,-,"AFE:R805(10k下拉) / MB:R824(47k下拉, 直连U18.9无U2)",-,V4_U1.38 (START) ← L432 PA3 (脚9),-,START,主控PA3直连驱动同步启动转换
+J_AFE_20P,AFE:10 ↔ MB:11,-,板间U形排线,-,ADS_CS_A ↔ AFE_CS_A,-,AFE:R801(10k上拉3V3) / MB:R810(33Ω)+R820(47k上拉)+U2(17←7),-,V4_U1.39 (CS) ← L432 PB0 (脚14),-,CS_A,主片片选，默认上拉3V3释放
+J_AFE_20P,AFE:11 ↔ MB:10,-,板间U形排线,-,SCLK_B ↔ AFE_SCLK,-,AFE:R806(10k下拉) / MB:R811(33Ω)+R825(47k下拉)+U2(20←4),-,V4_U1.40 (SCLK) ← L432 PA5 (脚11 SPI1_SCK),-,SPI_SCLK,"CPOL=0, CPHA=1 (SPI Mode 1)"
 J_AFE_20P,AFE:12 ↔ MB:9,-,板间U形排线,-,GND ↔ GND,-,-,-,GND ↔ GND,-,GND,SCLK与数据线间包地
 J_AFE_20P,AFE:13 ↔ MB:8,-,板间U形排线,-,NC ↔ NC,-,-,-,两板均悬空打叉（V4_U1.41 DAISY_IN直接接地）,-,NC,8通道版无菊花链
 J_AFE_20P,AFE:14 ↔ MB:7,-,板间U形排线,-,GND ↔ GND,-,-,-,GND ↔ GND,-,GND,DOUT侧包地
-J_AFE_20P,AFE:15 ↔ MB:6,-,板间U形排线,-,DOUT_B ↔ DOUT_B,-,MB:U3.5→8 (SN74AXC2T245) + R701(100k下拉),-,V4_U1.43 (DOUT) → L432 PA6 (脚12 SPI1_MISO),slot[0..7],SPI_MISO,8通道版主片DOUT经此脚送回主控
-J_AFE_20P,AFE:16 ↔ MB:5,-,板间U形排线,-,AFE_GPIO3 ↔ AFE_GPIO3,-,AFE:R808(10k下拉) / MB:R815(33Ω)+R827(47k下拉),-,V4_U1.45 (GPIO3) ↔ L432 PB1 (脚15),-,GPIO3,预留GPIO
-J_AFE_20P,AFE:17 ↔ MB:4,-,板间U形排线,-,ADS_DRDY_A ↔ ADS_DRDY_A,-,MB:U3.4→9 (SN74AXC2T245) + R701(100k下拉),-,V4_U1.47 (DRDY) → L432 PA2 (脚8 EXTI),-,DRDY_A,500/1000Hz下降沿触发DMA/SPI读帧
+J_AFE_20P,AFE:15 ↔ MB:6,-,板间U形排线,-,DOUT_B ↔ DOUT_B,-,MB:R827(100k下拉)+U3(5→8)+R702(100k下拉),-,V4_U1.43 (DOUT) → L432 PA6 (脚12 SPI1_MISO),slot[0..7],SPI_MISO,8通道版主片DOUT经此脚送回主控
+J_AFE_20P,AFE:16 ↔ MB:5,-,板间U形排线,-,AFE_GPIO3 ↔ AFE_GPIO3,-,AFE:R808(10k下拉) / MB:直连U18.6 (无串阻/无U2),-,V4_U1.45 (GPIO3) ↔ L432 PA0 (脚6),-,GPIO3,预留GPIO，直连L432 PA0
+J_AFE_20P,AFE:17 ↔ MB:4,-,板间U形排线,-,ADS_DRDY_A ↔ ADS_DRDY_A,-,"MB:U3(4→9, SN74AXC2T245) + R701(100k下拉)",-,V4_U1.47 (DRDY) → L432 PA2 (脚8 EXTI2),-,DRDY_A,500/1000Hz下降沿触发DMA/SPI读帧
 J_AFE_20P,AFE:18 ↔ MB:3,-,板间U形排线,-,ADS_CLKSEL ↔ NC,-,AFE:V4_R17 (10kΩ下拉GND),-,V4_U1.52 (CLKSEL=0) ↔ 主控脚3悬空,-,CLKSEL,固定下拉选外部2.048MHz晶振
-J_AFE_20P,"AFE:19,20 ↔ MB:2,1",-,板间U形排线,-,3V3 ↔ 3V3_AFE,-,MB:R801 (0.47Ω限流采样电阻),-,V4_U1.48/50 & LM27762.3 ← MB U15 TLV75533,-,3V3_PWR,双脚并联供入采集板3V3主干
+J_AFE_20P,"AFE:19,20 ↔ MB:2,1",-,板间U形排线,-,3V3 ↔ 3V3_AFE,-,MB:R801 (0.47Ω限流采样电阻),-,V4_U1.48/50 & V4_LM27762 ← MB U15 TLV75533,-,3V3_PWR,双脚并联供入采集板3V3主干
 J_AFE_20P,"AFE:21,22 ↔ MB:21,22",-,座子两侧固定焊耳,-,GND ↔ GND,-,-,-,GND ↔ GND,-,GND,FH34SRJ-20S机械屏蔽焊片接地
