@@ -125,6 +125,40 @@ export type BringupDecodeResult = {
   items: BringupItem[];
   channels?: { ch: number; sig_pp_uv: number; noise_rms_nv: number }[];
 };
+export type C08bRegCatalogItem = {
+  addr: number;
+  addr_hex: string;
+  name: string;
+  default_hex: string;
+  read_only: boolean;
+  hint: string;
+};
+export type C08bLastReg = {
+  seq: number;
+  chip: 'u1' | 'u2' | 'both';
+  addr: number;
+  addr_hex: string;
+  addr_name: string;
+  u1: number;
+  u1_hex: string;
+  u2: number;
+  u2_hex: string;
+  cmd_hex: string;
+  verify_mask_hex?: string;
+};
+export type C08bRegState = {
+  op: 'state' | 'rreg' | 'wreg' | 'clro';
+  afe: 'ADS1298_DUAL' | 'ADS1298_SINGLE' | 'ADS1292';
+  n_channels: number;
+  fs_Hz: number;
+  shadow_mode: boolean;
+  hardware_locked: boolean;
+  reg_overrides: number;
+  overrides: Record<string, string>;
+  last_reg: C08bLastReg | null;
+  catalog: C08bRegCatalogItem[];
+  note: string;
+};
 export type StudioSession = { session: string; device_id: string; subject: string; donning: number; hand: string; placement: string; started: string; ended: string | null; n_takes: number };
 export type StudioTake = { file: string; label: string; seconds: number; gate: Gate; session: string; device_id: string; donning: number; legacy?: string };
 export type StudioFile = { header: { 'sampling rate': number; label: string[] }; from: number; decim: number; n: number; uv: number[][]; events: [number, string, string][] };
@@ -145,8 +179,9 @@ export type StudioEvent = { type?: 'gate' | 'take' | 'train' | 'rule' | 'lsl'; t
 export type StudioOps = {
   deviceState: [undefined, StudioDevice];
   deviceConfig: [undefined, StudioConfig];
-  deviceConfigPut: [{ channels: { index: number; label?: string; enabled?: boolean }[] }, StudioConfig];
+  deviceConfigPut: [{ fsHz?: 500 | 1000 | 2000; channels?: { index: number; label?: string; enabled?: boolean }[] }, StudioConfig];
   devicePinout: [{ deviceId?: string } | undefined, DevicePinout];
+  c08bReg: [{ op: 'state' | 'rreg' | 'wreg' | 'clro'; chip?: 'u1' | 'u2' | 'both'; addr?: number | string; val?: number | string } | undefined, C08bRegState];
   bringupDecode: [{ hex?: string; sample?: '16ch' | '8ch' | '2ch' | 'report16' }, BringupDecodeResult];
   sessionStart: [{ subject: string; donning: number; hand: Hand; placement: string; notes?: string }, { session: StudioSession }];
   sessionStop: [undefined, { session: string; takes: unknown[] }];

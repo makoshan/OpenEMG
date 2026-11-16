@@ -4,14 +4,14 @@
 // → 训练（按会话分三集的数据集、LDA / CNN、冻结）→ 规则（识别概率 → 事件、LSL 输出）。旧采集页的录制照旧，同时写 .h5。
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Result } from '../desktop-bridge';
-import type { BringupDecodeResult, ChannelStats, DevicePinout, EmgAnalysis, Emg8Bridge, FeatureMode, Hand, Rule, StudioConfig, StudioDataset, StudioDevice, StudioEvent, StudioFile, StudioOp, StudioOps, StudioRun, StudioSession, StudioTake, TrainJob } from './contract';
+import type { BringupDecodeResult, C08bRegState, ChannelStats, DevicePinout, EmgAnalysis, Emg8Bridge, FeatureMode, Hand, Rule, StudioConfig, StudioDataset, StudioDevice, StudioEvent, StudioFile, StudioOp, StudioOps, StudioRun, StudioSession, StudioTake, TrainJob } from './contract';
 import { CH_COLORS, pct } from './contract';
 import { dataReadout } from './readout';
 import { grayTitle } from './gray-title';
 
 export type WorkbenchSub = 'device' | 'record' | 'data' | 'train' | 'rules';
 const SUBS: [WorkbenchSub, string][] = [['device', '设备'], ['record', '录制'], ['data', '数据'], ['train', '训练'], ['rules', '规则']];
-const WRITES = new Set<StudioOp>(['sessionStart', 'sessionStop', 'takeStart', 'takeStop', 'datasetSave', 'trainStart', 'trainFreeze', 'gestureGate', 'gestureFewshot', 'gestureDump']);
+const WRITES = new Set<StudioOp>(['deviceConfigPut', 'c08bReg', 'sessionStart', 'sessionStop', 'takeStart', 'takeStop', 'datasetSave', 'trainStart', 'trainFreeze', 'gestureGate', 'gestureFewshot', 'gestureDump']);
 type Call = <K extends StudioOp>(op: K, a?: StudioOps[K][0]) => Promise<StudioOps[K][1] | null>;
 
 export function Workbench({ projectId, bridge, hand, donning, placement, initialSub = 'record', onSubChange }: {
@@ -68,6 +68,155 @@ function ReadoutCard({ fsHz }: { fsHz: number | undefined }) {
   if (!fsHz) return null;
   return <section className="emg8-card emg8-span-2"><header><h4>这份数据怎么读</h4></header>
     <ol className="emg8-gates">{dataReadout(fsHz).map((line) => <li key={line}>{line}</li>)}</ol></section>;
+}
+
+const FS_OPTIONS: (500 | 1000 | 2000)[] = [500, 1000, 2000];
+
+function C08bTuneCard({ call, dev }: { call: Call; dev: StudioDevice }) {
+  const [regSt, setRegSt] = useState<C08bRegState | null>(null);
+  const [chip, setChip] = useState<'u1' | 'u2' | 'both'>(dev.n_channels === 16 ? 'both' : 'u1');
+  const [addr, setAddr] = useState<number>(dev.n_channels === 2 ? 0x04 : 0x05);
+  const [valHex, setValHex] = useState('0x00');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    const defChip = dev.n_channels === 16 ? 'both' : 'u1';
+    const defAddr = dev.n_channels === 2 ? 0x04 : 0x05;
+    setChip(defChip);
+    setAddr(defAddr);
+    void call('c08bReg', { op: 'state' }).then((s) => { if (s) setRegSt(s); });
+  }, [call, dev.device_id, dev.n_channels, dev.fs_Hz]);
+
+  const switchFs = async (fs: 500 | 1000 | 2000) => {
+    if (fs === dev.fs_Hz || busy) return;
+    setBusy(true);
+    try {
+      await call('deviceConfigPut', { fsHz: fs });
+      const s = await call('c08bReg', { op: 'state' });
+      if (s) setRegSt(s);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const doReg = async (op: 'rreg' | 'wreg' | 'clro', overrideVal?: string) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const v = overrideVal ?? valHex;
+      if (overrideVal) setValHex(overrideVal);
+      const res = await call('c08bReg', op === 'clro' ? { op } : op === 'rreg' ? { op, chip, addr } : { op, chip, addr, val: v });
+      if (res) setRegSt(res);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const curItem = regSt?.catalog.find((x) => x.addr === addr);
+  const isChReg = regSt?.afe === 'ADS1292' ? (addr === 0x04 || addr === 0x05) : (addr >= 0x05 && addr <= 0x0C);
+  const lr = regSt?.last_reg;
+
+  return <section className="emg8-card emg8-span-2" aria-label="C08B 采样率与安全寄存器调参">
+    <header>
+      <div>
+        <h4>采样率切换与安全寄存器调参 · c08b-stream</h4>
+        <small>{regSt ? `${regSt.afe} · 已生效覆盖 ${regSt.reg_overrides} 项 · ${regSt.shadow_mode ? '合成影子演练（双硬件锁关闭）' : '离体台架模式'}` : '读取寄存器目录…'}</small>
+      </div>
+      <div className="emg8-row tight" role="group" aria-label="C08B 采样率档位">
+        <span className="emg8-fine" style={{ margin: 0 }}>采样率：</span>
+        {FS_OPTIONS.map((fs) => (
+          <button
+            key={fs}
+            type="button"
+            className={dev.fs_Hz === fs ? 'emg8-primary' : undefined}
+            aria-pressed={dev.fs_Hz === fs}
+            disabled={busy || !!dev.recording}
+            title={grayTitle(!!dev.recording && '录制进行中不能切换采样率')}
+            onClick={() => { void switchFs(fs); }}
+          >
+            {fs} Hz
+          </button>
+        ))}
+      </div>
+    </header>
+
+    <div className="emg8-row tight" style={{ flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+      <label className="emg8-inline">芯片{' '}
+        <select value={chip} disabled={dev.n_channels !== 16} onChange={(e) => setChip(e.target.value as 'u1' | 'u2' | 'both')}>
+          {dev.n_channels === 16 && <option value="both">双片 U1+U2</option>}
+          <option value="u1">主片 U1</option>
+          {dev.n_channels === 16 && <option value="u2">副片 U2</option>}
+        </select>
+      </label>
+      <label className="emg8-inline">寄存器{' '}
+        <select value={addr} onChange={(e) => {
+          const nextA = Number(e.target.value);
+          setAddr(nextA);
+          const found = regSt?.catalog.find((c) => c.addr === nextA);
+          if (found) setValHex(found.default_hex);
+        }}>
+          {(regSt?.catalog ?? []).map((it) => (
+            <option key={it.addr} value={it.addr}>
+              {it.addr_hex} {it.name}{it.read_only ? ' [只读]' : ` (默认 ${it.default_hex})`}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="emg8-inline">写入值{' '}
+        <input
+          value={valHex}
+          maxLength={6}
+          style={{ width: 82 }}
+          aria-label="寄存器十六进制值"
+          disabled={!!curItem?.read_only}
+          onChange={(e) => setValHex(e.target.value)}
+        />
+      </label>
+      <button type="button" disabled={busy} onClick={() => { void doReg('rreg'); }}>读 (RREG)</button>
+      <button
+        type="button"
+        className="emg8-primary"
+        disabled={busy || !!dev.recording || !!curItem?.read_only}
+        title={grayTitle(!!dev.recording && '录制进行中禁止写寄存器', !!curItem?.read_only && '该地址为只读寄存器')}
+        onClick={() => { void doReg('wreg'); }}
+      >
+        安全写核 (WREG)
+      </button>
+      <button
+        type="button"
+        disabled={busy || !!dev.recording || !regSt?.reg_overrides}
+        title={grayTitle(!regSt?.reg_overrides && '当前无寄存器覆盖项')}
+        onClick={() => { void doReg('clro'); }}
+      >
+        清空覆盖 (CLRO)
+      </button>
+    </div>
+
+    {isChReg && <div className="emg8-row tight" style={{ flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+      <span className="emg8-fine" style={{ margin: 0 }}>通道快捷安全预设：</span>
+      <button type="button" disabled={busy || !!dev.recording} onClick={() => { void doReg('wreg', '0x00'); }}>PGA=6 正常输入 (0x00)</button>
+      <button type="button" disabled={busy || !!dev.recording} onClick={() => { void doReg('wreg', '0x01'); }}>输入内部短接测底噪 (0x01)</button>
+      <button type="button" disabled={busy || !!dev.recording} onClick={() => { void doReg('wreg', '0x60'); }}>PGA=12 高增益 (0x60)</button>
+    </div>}
+
+    {curItem?.hint && <p className="emg8-fine" style={{ marginTop: 6 }}>规则提示：{curItem.hint}</p>}
+
+    {lr && <div className="emg8-report97-meta" style={{ marginTop: 6 }} aria-label="最近一次寄存器读写回执">
+      <span>序号 <b>#{lr.seq}</b></span>
+      <span>目标 <b>{lr.chip.toUpperCase()} · {lr.addr_name} ({lr.addr_hex})</b></span>
+      <span>U1 读回 <b>{lr.u1_hex}</b></span>
+      {dev.n_channels === 16 && <span>U2 读回 <b>{lr.u2_hex}</b></span>}
+      {lr.verify_mask_hex && <span>校验掩码 <b>{lr.verify_mask_hex}</b></span>}
+      <span>下行帧 <code>{lr.cmd_hex}</code></span>
+    </div>}
+
+    {regSt && Object.keys(regSt.overrides).length > 0 && (
+      <p className="emg8-fine" style={{ marginTop: 4 }}>
+        当前覆盖项：{Object.entries(regSt.overrides).map(([k, v]) => `${k}=${v}`).join(' · ')}
+      </p>
+    )}
+    {regSt?.note && <p className="emg8-fine" style={{ marginTop: 4 }}>{regSt.note}</p>}
+  </section>;
 }
 
 function DevicePage({ call, dev }: { call: Call; dev: StudioDevice | null }) {
@@ -156,6 +305,8 @@ function DevicePage({ call, dev }: { call: Call; dev: StudioDevice | null }) {
         </div>}
       </> : <p className="emg8-fine">首板不焊串口也能对表：贴入手机 nRF Connect 扫到的 0xFFFF 广播串或 SWD 读出的 97B `g_report` 即可离线判读 10 项指标。</p>}
     </section>
+
+    {dev?.device_id?.startsWith('c08b-') && <C08bTuneCard call={call} dev={dev} />}
 
     {pinout && <section className="emg8-card emg8-span-2"><header>
       <div><h4>硬件通道与座子脚位对线表</h4><small>{pinout.board} · {pinout.interlock}</small></div>

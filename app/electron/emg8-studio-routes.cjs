@@ -30,8 +30,42 @@ const kOf = (v) => {
 const STUDIO = {
   deviceState: () => ['GET', '/api/device/state'],
   deviceConfig: () => ['GET', '/api/device/config'],
-  deviceConfigPut: (a) => ['PUT', '/api/device/config', { channels: (Array.isArray(a?.channels) ? a.channels : []).slice(0, 64).map((c) => ({ index: int(c?.index, 0, 63, -1), label: str(c?.label, 24), enabled: typeof c?.enabled === 'boolean' ? c.enabled : undefined })) }],
+  deviceConfigPut: (a) => {
+    const body = {};
+    if (a?.fsHz !== undefined) {
+      if (!Number.isInteger(a.fsHz) || ![500, 1000, 2000].includes(a.fsHz)) fail('采样率只能是 500、1000 或 2000 Hz', 'bad-fs');
+      body.fs_Hz = a.fsHz;
+    }
+    if (Array.isArray(a?.channels)) {
+      body.channels = a.channels.slice(0, 64).map((c) => ({ index: int(c?.index, 0, 63, -1), label: str(c?.label, 24), enabled: typeof c?.enabled === 'boolean' ? c.enabled : undefined }));
+    }
+    return ['PUT', '/api/device/config', body];
+  },
   devicePinout: (a) => ['GET', `/api/device/pinout${a?.deviceId ? `?${q({ device_id: name(a.deviceId) })}` : ''}`],
+  c08bReg: (a) => {
+    const op = typeof a?.op === 'string' ? a.op.trim().toLowerCase() : 'state';
+    if (!['state', 'rreg', 'wreg', 'clro'].includes(op)) fail('未知寄存器操作（仅限 state / rreg / wreg / clro）', 'bad-reg-op');
+    if (op === 'state' || op === 'clro') return ['POST', '/api/device/c08b_reg', { op }];
+    const chip = typeof a?.chip === 'string' ? a.chip.trim().toLowerCase() : 'both';
+    if (!['u1', 'u2', 'both'].includes(chip)) fail('芯片选择只能是 u1、u2 或 both', 'bad-chip');
+    let addr = a?.addr;
+    if (typeof addr === 'string') {
+      const s = addr.trim();
+      if (!/^(0x[0-9a-fA-F]{1,2}|\d{1,2}|[A-Za-z0-9_]{2,16})$/.test(s)) fail('寄存器地址格式无效', 'bad-addr');
+      addr = s;
+    } else if (!Number.isInteger(addr) || addr < 0 || addr > 0x19) {
+      fail('寄存器地址必须在 0x00 到 0x19 之间', 'bad-addr');
+    }
+    if (op === 'rreg') return ['POST', '/api/device/c08b_reg', { op, chip, addr }];
+    let val = a?.val;
+    if (typeof val === 'string') {
+      const vs = val.trim();
+      if (!/^(0x[0-9a-fA-F]{1,2}|\d{1,3})$/.test(vs)) fail('寄存器写入值必须是 0x00..0xFF 十六进制或 0..255 整数', 'bad-val');
+      val = Number.parseInt(vs, vs.toLowerCase().startsWith('0x') ? 16 : 10);
+    }
+    if (!Number.isInteger(val) || val < 0 || val > 0xFF) fail('寄存器写入值超出 0x00..0xFF', 'bad-val');
+    return ['POST', '/api/device/c08b_reg', { op, chip, addr, val }];
+  },
   bringupDecode: (a) => {
     const sample = a?.sample == null || a.sample === '' ? undefined : name(a.sample);
     const hex = a?.hex == null ? '' : str(a.hex, 512).trim();

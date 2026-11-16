@@ -70,6 +70,127 @@ ADS1298_REG_ADDR_BY_NAME = dict(
     PACE=0x15, RESP=0x16, CONFIG4=0x17, WCT1=0x18, WCT2=0x19,
 )
 
+ADS1292_REG_ADDR_BY_NAME = dict(
+    ID=0x00, CONFIG1=0x01, CONFIG2=0x02, LOFF=0x03,
+    CH1SET=0x04, CH2SET=0x05, RLD_SENS=0x06, LOFF_SENS=0x07,
+    LOFF_STAT=0x08, RESP1=0x09, RESP2=0x0A, GPIO=0x0B,
+)
+
+
+def default_c08b_shadow_regs(afe, fs_Hz=1000):
+    """生成与 firmware/c08b-stream/common/stream_proto.h 上电 EXR1 稳态一致的寄存器初值表（u1, u2）。"""
+    if afe in ('ADS1298_DUAL', 'ADS1298_SINGLE'):
+        dr = {500: 0x86, 1000: 0x85, 2000: 0x84}.get(fs_Hz, 0x85)
+        u1 = [0x00] * 0x1A
+        u1[0x00] = 0x92
+        u1[0x01] = dr
+        u1[0x02] = 0x00
+        u1[0x03] = 0xC4  # Step 2 稳态：PD_REFBUF=1, PD_RLD=1, VREF_4V=0, RLD_MEAS=0, RLDREF_INT=0
+        u1[0x0D] = 0xFF
+        u1[0x0E] = 0xFF
+        u1[0x14] = 0x0F  # GPIO1..4 全输入（板上硬连 GND）
+        u1[0x16] = 0x20  # RESP bit5=1
+        u2 = list(u1)
+        if afe == 'ADS1298_DUAL':
+            u2[0x03] = 0xC0  # 副片 U2 不开 RLD 运放
+            u2[0x0D] = 0x00
+            u2[0x0E] = 0x00
+        else:
+            u2 = [0x00] * 0x1A
+        return u1, u2
+    if afe == 'ADS1292':
+        dr = {500: 0x02, 1000: 0x03, 2000: 0x04}.get(fs_Hz, 0x03)
+        u1 = [0x00] * 0x0C
+        u1[0x00] = 0x53
+        u1[0x01] = dr
+        u1[0x02] = 0xA0
+        u1[0x03] = 0x10
+        u1[0x06] = 0x23
+        u1[0x09] = 0x02
+        u1[0x0A] = 0x07
+        u1[0x0B] = 0x0C
+        return u1, [0x00] * 0x0C
+    raise ValueError(f'未知 C08B AFE 类型：{afe!r}')
+
+
+def c08b_reg_catalog(afe, fs_Hz=1000):
+    """返回供桌面工作台展示的寄存器目录（地址、名称、默认十六进制值、只读标记与硬件安全提示）。"""
+    u1_def, _ = default_c08b_shadow_regs(afe, fs_Hz=fs_Hz)
+    if afe in ('ADS1298_DUAL', 'ADS1298_SINGLE'):
+        ro = {0x00, 0x12, 0x13}
+        hints = {
+            0x00: '只读芯片 ID（ADS1298=0x92）',
+            0x01: '采样率：0x86=500Hz / 0x85=1kHz / 0x84=2kHz（禁改保留位）',
+            0x02: '内部测试源：0x00=关闭 / 0x10=1Hz 方波',
+            0x03: '基准与右腿：仅许 U1 0xC0/0xC4（禁置 VREF_4V / RLD_MEAS[Pin62=+2.5V] / RLDREF_INT[Pin60=AGND]）',
+            0x05: '通道配置（0x05..0x0C）：0x00=PGA6正常 / 0x01=短接测底噪 / 0x60=PGA12（禁设 MUX=0x02）',
+            0x0D: 'RLD 正输入选通（仅主片 U1 可开，副片 U2 锁定 0x00）',
+            0x0E: 'RLD 负输入选通（仅主片 U1 可开，副片 U2 锁定 0x00）',
+            0x14: 'GPIO 方向：低 4 位锁死 0x0F 全输入（板上接地防推挽短路）',
+        }
+        names = {v: k for k, v in ADS1298_REG_ADDR_BY_NAME.items()}
+        return [
+            dict(
+                addr=a,
+                addr_hex=f'0x{a:02X}',
+                name=names.get(a, f'REG_{a:02X}'),
+                default_hex=f'0x{u1_def[a]:02X}',
+                read_only=(a in ro),
+                hint=hints.get(a, '受 3×2×27×256 硬件安全掩码保护'),
+            )
+            for a in range(0x1A)
+        ]
+    ro2 = {0x00, 0x08}
+    hints2 = {
+        0x00: '只读芯片 ID（ADS1292=0x53）',
+        0x01: '采样率：0x02=500Hz / 0x03=1kHz / 0x04=2kHz',
+        0x02: '基准与测试源：0xA0=正常2.42V / 0xA3=1Hz方波',
+        0x04: 'CH1 配置：0x00=PGA6正常 / 0x01=输入短接 / 0x60=PGA12',
+        0x05: 'CH2 配置：0x00=PGA6正常 / 0x01=输入短接 / 0x60=PGA12',
+        0x0B: 'GPIO 方向：锁死 0x0C 全输入',
+    }
+    names2 = {v: k for k, v in ADS1292_REG_ADDR_BY_NAME.items()}
+    return [
+        dict(
+            addr=a,
+            addr_hex=f'0x{a:02X}',
+            name=names2.get(a, f'REG_{a:02X}'),
+            default_hex=f'0x{u1_def[a]:02X}',
+            read_only=(a in ro2),
+            hint=hints2.get(a, '受 ADS1292 硬件安全掩码保护'),
+        )
+        for a in range(0x0C)
+    ]
+
+
+def explain_c08b_reg_reject(afe, chip_idx, addr, val):
+    """对被 validate_c08b_reg_write_host 拦截的寄存器写入给出精确硬件原因说明。"""
+    if afe in ('ADS1298_DUAL', 'ADS1298_SINGLE'):
+        if addr in (0x00, 0x12, 0x13):
+            return f'地址 0x{addr:02X} 为只读状态/ID 寄存器，禁止写入'
+        if addr == 0x03:
+            if (val & 0x20) != 0:
+                return '安全掩码拦截：±2.5V 双电源下严禁置 VREF_4V=1 (bit5)'
+            if (val & 0x10) != 0:
+                return '安全掩码拦截：v0.01 AFE-30P 的 Pin62(RLDIN) 接 +2.5V，严禁置 RLD_MEAS=1 (bit4)'
+            if (val & 0x08) != 0:
+                return '安全掩码拦截：Pin60(RLDREF) 硬连 AGND，严禁置 RLDREF_INT=1 (bit3) 防基准顶牛短路'
+            if chip_idx != 0 and (val & 0x04) != 0:
+                return '安全掩码拦截：副片 U2 严禁开启 PD_RLD (bit2)，仅主片 U1 负责右腿驱动'
+            return '安全掩码拦截：CONFIG3 高两位必须保持 0xC0 (PD_REFBUF=1)'
+        if 0x05 <= addr <= 0x0C and (val & 0x07) == 0x02:
+            return '安全掩码拦截：严禁将通道 MUX 设为 0x02 (RLD_MEASURE)，防 +2.5V 灌入 PGA 总线'
+        if addr in (0x0D, 0x0E) and chip_idx != 0 and val != 0x00:
+            return '安全掩码拦截：副片 U2 的 RLD_SENSP/N 必须保持 0x00'
+        if addr == 0x14 and (val & 0x0F) != 0x0F:
+            return '安全掩码拦截：GPIO1..4 在板上接地，低 4 位必须保持 0x0F 全输入防短路'
+    if afe == 'ADS1292':
+        if addr in (0x00, 0x08):
+            return f'ADS1292 地址 0x{addr:02X} 为只读寄存器，禁止写入'
+        if addr == 0x0B and (val & 0x0C) != 0x0C:
+            return '安全掩码拦截：ADS1292 GPIO 必须保持 0x0C 全输入'
+    return f'主机硬件安全掩码拦截危险写入（afe={afe}, chip=u{chip_idx + 1}, addr=0x{addr:02X}, val=0x{val:02X}）'
+
 
 def _parse_reg_addr_token(token):
     t = str(token).strip().upper()
@@ -1100,7 +1221,148 @@ class C08BRig:
         self.link_since = None
         self.last_frame_at = None
         self.replay = 'C08B' if not allow_real else None
+        self._allow_real = bool(allow_real)
+        self._fs_epoch = 0
+        self._stream_lock = threading.RLock()
+        self._reg_lock = threading.Lock()
+        self._afe_name = 'ADS1298_DUAL' if n_channels == 16 else ('ADS1298_SINGLE' if n_channels == 8 else 'ADS1292')
+        self._shadow_u1, self._shadow_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=self.fs_Hz)
+        self._reg_overrides = {}
+        self._reg_seq = 0
+        self._last_reg = None
         self.banner = f'C08B {n_channels}ch 协议 v{self.profile.transport_protocol}（候选）'
+
+    def _parse_afe_addr(self, token):
+        if type(token) is int:
+            max_a = 0x0B if self._afe_name == 'ADS1292' else 0x19
+            if not 0 <= token <= max_a:
+                raise ValueError(f'{self._afe_name} 寄存器地址超出 0x00..0x{max_a:02X}：0x{token:02X}')
+            return token
+        t = str(token).strip().upper()
+        table = ADS1292_REG_ADDR_BY_NAME if self._afe_name == 'ADS1292' else ADS1298_REG_ADDR_BY_NAME
+        if t in table:
+            return table[t]
+        val = int(t, 0)
+        max_a = 0x0B if self._afe_name == 'ADS1292' else 0x19
+        if not 0 <= val <= max_a:
+            raise ValueError(f'{self._afe_name} 寄存器地址超出 0x00..0x{max_a:02X}：{token!r}')
+        return val
+
+    def _addr_name(self, addr):
+        table = ADS1292_REG_ADDR_BY_NAME if self._afe_name == 'ADS1292' else ADS1298_REG_ADDR_BY_NAME
+        inv = {v: k for k, v in table.items()}
+        return inv.get(addr, f'REG_{addr:02X}')
+
+    def set_fs_hz(self, fs_hz):
+        if type(fs_hz) is not int or fs_hz not in (500, 1000, 2000):
+            raise ValueError(f'C08B 采样率仅支持 500 / 1000 / 2000 Hz，收到 {fs_hz!r}')
+        with self._stream_lock:
+            with self._reg_lock:
+                if fs_hz == self.fs_Hz:
+                    return self.fs_Hz
+                self.profile = C08BAdcProfile.for_n_channels(self.n_channels, fs_Hz=fs_hz)
+                self.fs_Hz = fs_hz
+                self._fs_epoch += 1
+                def_u1, def_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=fs_hz)
+                if ('u1', 0x01) not in self._reg_overrides:
+                    self._shadow_u1[0x01] = def_u1[0x01]
+                if self._afe_name == 'ADS1298_DUAL' and ('u2', 0x01) not in self._reg_overrides:
+                    self._shadow_u2[0x01] = def_u2[0x01]
+            self.rx.disconnect()
+            self.imu_rx.disconnect()
+            boundary = dict(reason='reconfigure_fs', fs_Hz=fs_hz)
+        for cb in list(self.boundary_subscribers):
+            cb(boundary)
+        return self.fs_Hz
+
+    def reg_action(self, op='state', chip='both', addr=0, val=0):
+        op_s = str(op or 'state').strip().lower()
+        if op_s not in ('state', 'rreg', 'wreg', 'clro'):
+            raise ValueError(f'未知寄存器操作 {op!r}；仅限 state / rreg / wreg / clro')
+        with self._reg_lock:
+            if op_s == 'state':
+                pass
+            elif op_s == 'clro':
+                self._shadow_u1, self._shadow_u2 = default_c08b_shadow_regs(self._afe_name, fs_Hz=self.fs_Hz)
+                self._reg_overrides.clear()
+                self._last_reg = None
+            else:
+                chip_s = str(chip or ('both' if self._afe_name == 'ADS1298_DUAL' else 'u1')).strip().lower()
+                if chip_s not in CHIP_SELECT:
+                    raise ValueError(f'未知芯片选择 {chip!r}（仅限 u1 / u2 / both）')
+                if self._afe_name != 'ADS1298_DUAL' and chip_s == 'u2':
+                    raise ValueError(f'{self._afe_name} 为单芯片采集板，不支持访问副片 U2')
+                addr_i = self._parse_afe_addr(addr)
+                if op_s == 'rreg':
+                    cmd = encode_rreg_cmd(chip_s, addr_i)
+                    self._reg_seq = (self._reg_seq + 1) & 0xFF
+                    u1_v = self._shadow_u1[addr_i]
+                    u2_v = self._shadow_u2[addr_i] if self._afe_name == 'ADS1298_DUAL' else 0
+                    self._last_reg = dict(
+                        seq=self._reg_seq,
+                        chip=chip_s,
+                        addr=addr_i,
+                        addr_hex=f'0x{addr_i:02X}',
+                        addr_name=self._addr_name(addr_i),
+                        u1=u1_v,
+                        u1_hex=f'0x{u1_v:02X}',
+                        u2=u2_v,
+                        u2_hex=f'0x{u2_v:02X}',
+                        cmd_hex=cmd.hex().upper(),
+                    )
+                else:
+                    val_i = int(str(val).strip(), 0) if not isinstance(val, int) or isinstance(val, bool) else val
+                    if not 0 <= val_i <= 0xFF:
+                        raise ValueError(f'寄存器写入值超出 0x00..0xFF：{val!r}')
+                    targets = [1] if chip_s == 'u2' else ([0] if (chip_s == 'u1' or self._afe_name != 'ADS1298_DUAL') else [0, 1])
+                    vm_used = 0xFF
+                    for c_idx in targets:
+                        ok, vm = validate_c08b_reg_write_host(self._afe_name, c_idx, addr_i, val_i)
+                        if not ok:
+                            raise ValueError(explain_c08b_reg_reject(self._afe_name, c_idx, addr_i, val_i))
+                        vm_used = vm
+                    cmd = encode_wreg_cmd(chip_s, addr_i, val_i)
+                    for c_idx in targets:
+                        target_arr = self._shadow_u1 if c_idx == 0 else self._shadow_u2
+                        target_arr[addr_i] = (target_arr[addr_i] & (~vm_used & 0xFF)) | (val_i & vm_used)
+                        self._reg_overrides[('u1' if c_idx == 0 else 'u2', addr_i)] = target_arr[addr_i]
+                    self._reg_seq = (self._reg_seq + 1) & 0xFF
+                    u1_v = self._shadow_u1[addr_i]
+                    u2_v = self._shadow_u2[addr_i] if self._afe_name == 'ADS1298_DUAL' else 0
+                    self._last_reg = dict(
+                        seq=self._reg_seq,
+                        chip=chip_s,
+                        addr=addr_i,
+                        addr_hex=f'0x{addr_i:02X}',
+                        addr_name=self._addr_name(addr_i),
+                        u1=u1_v,
+                        u1_hex=f'0x{u1_v:02X}',
+                        u2=u2_v,
+                        u2_hex=f'0x{u2_v:02X}',
+                        cmd_hex=cmd.hex().upper(),
+                        verify_mask_hex=f'0x{vm_used:02X}',
+                    )
+            ov_out = {
+                f'{ck.upper()}:{self._addr_name(ad)}(0x{ad:02X})': f'0x{vv:02X}'
+                for (ck, ad), vv in sorted(self._reg_overrides.items())
+            }
+            return dict(
+                op=op_s,
+                afe=self._afe_name,
+                n_channels=self.n_channels,
+                fs_Hz=self.fs_Hz,
+                shadow_mode=(not self._allow_real),
+                hardware_locked=(not self._allow_real),
+                reg_overrides=len(self._reg_overrides),
+                overrides=ov_out,
+                last_reg=dict(self._last_reg) if self._last_reg else None,
+                catalog=c08b_reg_catalog(self._afe_name, fs_Hz=self.fs_Hz),
+                note=(
+                    '默认双硬件锁关闭：当前为与固件 C11 同源的 3×2×27×256 安全写掩码影子演练态；真机离体台架解锁后经 BLE / XIAO 接收器原子写核回读。'
+                    if not self._allow_real
+                    else '离体台架硬件模式已启用：请停流后经 CLI 或台架会话执行物理寄存器核验。'
+                ),
+            )
 
     def open(self):
         self.streaming = True
@@ -1235,53 +1497,68 @@ class SynthC08BRig(C08BRig):
         if self.streaming:
             return
         self.streaming = True
-        threading.Thread(target=self._play, daemon=True).start()
+        self._play_thread = threading.Thread(target=self._play, daemon=True)
+        self._play_thread.start()
 
     def _play(self):
-        block = max(8, self.fs_Hz // 50)  # 约 20 ms 一批
+        cur_epoch = -1
+        fs = self.fs_Hz
+        block = max(8, fs // 50)  # 约 20 ms 一批
         n = 0
         imu_seq = 0
         t0 = time.monotonic()
         ch_idx = np.arange(self.n_channels, dtype=np.float64)
         base_sigma = 6.5 + 2.5 * np.sin(ch_idx * 1.1)
         while self.streaming:
-            t_sec = (n + np.arange(block, dtype=np.float64)) / self.fs_Hz
-            # 每 2.4 秒做一次平滑前臂局部肌群激活（0.9 s 收缩包络 + 1.5 s 放松底噪），模拟环腕电极空间分布差异
-            phase = np.mod(t_sec, 2.4)
-            env = np.where(phase < 0.9, np.sin(np.pi * np.clip(phase / 0.9, 0.0, 1.0)) ** 1.6, 0.0)
-            cycle = int(n // int(2.4 * self.fs_Hz))
-            center = (cycle * 0.37 * self.n_channels) % max(1, self.n_channels)
-            dist = np.minimum(np.abs(ch_idx - center), self.n_channels - np.abs(ch_idx - center))
-            width = max(0.75, self.n_channels * 0.18)
-            spatial = np.exp(-0.5 * (dist / width) ** 2)
-            sigma_mat = base_sigma[None, :] + (88.0 * env[:, None]) * spatial[None, :]
-            carrier = 0.65 * self.rng.normal(0.0, 1.0, (block, self.n_channels)) + 0.35 * np.sin(
-                2.0 * math.pi * (95.0 * t_sec[:, None] + ch_idx[None, :] * 0.43)
-            ) * self.rng.normal(0.8, 0.35, (block, self.n_channels))
-            uv = carrier * sigma_mat
-            for pkt in synth_c08b_packets(uv, profile=self.profile, seq0=n, t0_us=1000, codec=self.codec):
+            with self._stream_lock:
                 if not self.streaming:
                     return
-                self.feed_packet(pkt)
-            n += block
+                if self._fs_epoch != cur_epoch:
+                    cur_epoch = self._fs_epoch
+                    fs = self.fs_Hz
+                    block = max(8, fs // 50)
+                    n = 0
+                    imu_seq = 0
+                    t0 = time.monotonic()
+                prof = self.profile
+                t_sec = (n + np.arange(block, dtype=np.float64)) / fs
+                # 每 2.4 秒做一次平滑前臂局部肌群激活（0.9 s 收缩包络 + 1.5 s 放松底噪），模拟环腕电极空间分布差异
+                phase = np.mod(t_sec, 2.4)
+                env = np.where(phase < 0.9, np.sin(np.pi * np.clip(phase / 0.9, 0.0, 1.0)) ** 1.6, 0.0)
+                cycle = int(n // int(2.4 * fs))
+                center = (cycle * 0.37 * self.n_channels) % max(1, self.n_channels)
+                dist = np.minimum(np.abs(ch_idx - center), self.n_channels - np.abs(ch_idx - center))
+                width = max(0.75, self.n_channels * 0.18)
+                spatial = np.exp(-0.5 * (dist / width) ** 2)
+                sigma_mat = base_sigma[None, :] + (88.0 * env[:, None]) * spatial[None, :]
+                carrier = 0.65 * self.rng.normal(0.0, 1.0, (block, self.n_channels)) + 0.35 * np.sin(
+                    2.0 * math.pi * (95.0 * t_sec[:, None] + ch_idx[None, :] * 0.43)
+                ) * self.rng.normal(0.8, 0.35, (block, self.n_channels))
+                uv = carrier * sigma_mat
+                for pkt in synth_c08b_packets(uv, profile=prof, seq0=n, t0_us=1000, codec=self.codec):
+                    if not self.streaming:
+                        return
+                    self.feed_packet(pkt)
+                n += block
 
-            if self.with_imu:
-                target_imu = (n * 104) // self.fs_Hz
-                while imu_seq < target_imu and self.streaming:
-                    ts_us = 1000 + (imu_seq * 1_000_000) // 104
-                    flags = SYNTHETIC | (SESSION_START if imu_seq == 0 else 0)
-                    raw6 = (
-                        int(30 * math.sin(imu_seq * 0.1)),
-                        int(20 * math.cos(imu_seq * 0.1)),
-                        -10,
-                        0,
-                        0,
-                        4096,
-                    )
-                    self.feed_imu_packet(pack_c08b_imu_packet(imu_seq, ts_us, raw6, flags=flags))
-                    imu_seq += 1
+                if self.with_imu:
+                    target_imu = (n * 104) // fs
+                    while imu_seq < target_imu and self.streaming:
+                        ts_us = 1000 + (imu_seq * 1_000_000) // 104
+                        flags = SYNTHETIC | (SESSION_START if imu_seq == 0 else 0)
+                        raw6 = (
+                            int(30 * math.sin(imu_seq * 0.1)),
+                            int(20 * math.cos(imu_seq * 0.1)),
+                            -10,
+                            0,
+                            0,
+                            4096,
+                        )
+                        self.feed_imu_packet(pack_c08b_imu_packet(imu_seq, ts_us, raw6, flags=flags))
+                        imu_seq += 1
+                next_wake = t0 + n / fs
 
-            time.sleep(max(0.0, t0 + n / self.fs_Hz - time.monotonic()))
+            time.sleep(max(0.0, next_wake - time.monotonic()))
 
 
 async def run_dongle_c08b(
@@ -1514,7 +1791,58 @@ def _self_check():
     assert not validate_c08b_reg_write_host('ADS1298_DUAL', 0, 0x03, 0xD4)[0]
     assert not validate_c08b_reg_write_host('ADS1298_DUAL', 1, 0x03, 0xC4)[0]
     assert not validate_c08b_reg_write_host('ADS1298_DUAL', 0, 0x05, 0x02)[0]
-    print('c08b_stream --check: 2ch / 8ch / 16ch 编解码与寄存器安全掩码冒烟通过')
+    # 工作台 set_fs_hz 热切与 reg_action 影子演练正反例核查
+    rig16 = SynthC08BRig(n_channels=16, fs_Hz=1000)
+    boundaries = []
+    rig16.boundary_subscribers.append(boundaries.append)
+    assert rig16.set_fs_hz(2000) == 2000 and rig16.fs_Hz == 2000 and len(boundaries) == 1
+    assert rig16.reg_action('rreg', 'both', 'CONFIG1')['last_reg']['u1_hex'] == '0x84'
+    w_ok = rig16.reg_action('wreg', 'both', 'CH1SET', '0x60')
+    assert w_ok['reg_overrides'] == 2 and w_ok['last_reg']['u1_hex'] == '0x60' and w_ok['last_reg']['u2_hex'] == '0x60'
+    for bad_args in (
+        ('wreg', 'u1', 0x00, 0x92),       # ID 只读
+        ('wreg', 'u1', 'CONFIG3', 0xE4),  # VREF_4V=1
+        ('wreg', 'u1', 'CONFIG3', 0xD4),  # RLD_MEAS=1 (Pin62=+2.5V)
+        ('wreg', 'u1', 'CONFIG3', 0xCC),  # RLDREF_INT=1 (Pin60=AGND)
+        ('wreg', 'u2', 'CONFIG3', 0xC4),  # 副片 U2 禁开 PD_RLD
+        ('wreg', 'both', 'CH1SET', 0x02), # 禁设 MUX=0x02
+        ('wreg', 'u1', 'GPIO', 0x00),     # 接地 GPIO 禁改输出
+    ):
+        try:
+            rig16.reg_action(*bad_args)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f'危险寄存器写入未被拦截：{bad_args}')
+    c_rst = rig16.reg_action('clro')
+    assert c_rst['reg_overrides'] == 0 and c_rst['last_reg'] is None
+    # 真开流运行态并发连续热切 1000 -> 2000 -> 500 -> 1000 Hz 线程存活与持续出帧测试
+    rig_live = SynthC08BRig(n_channels=16, fs_Hz=1000)
+    live_chunks = []
+    rig_live.chunk_subscribers.append(lambda emg, imu, seq, kinds, ns: live_chunks.append(len(emg)))
+    rig_live.open()
+    try:
+        time.sleep(0.06)
+        assert rig_live._play_thread.is_alive() and sum(live_chunks) > 0
+        for next_fs in (2000, 500, 1000):
+            before_n = sum(live_chunks)
+            rig_live.set_fs_hz(next_fs)
+            time.sleep(0.06)
+            assert rig_live._play_thread.is_alive(), f'切采样率 {next_fs} Hz 后 _play 线程意外退出'
+            assert sum(live_chunks) > before_n, f'切采样率 {next_fs} Hz 后未继续出帧'
+    finally:
+        rig_live.streaming = False
+        rig_live._play_thread.join(timeout=0.5)
+    rig2 = SynthC08BRig(n_channels=2, fs_Hz=1000)
+    assert rig2.reg_action('rreg', 'u1', 'ID')['last_reg']['u1_hex'] == '0x53'
+    assert rig2.reg_action('wreg', 'u1', 'CH1SET', '0x60')['last_reg']['u1_hex'] == '0x60'
+    try:
+        rig2.reg_action('rreg', 'u2', 0x00)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('2CH 单芯片不应允许读 U2')
+    print('c08b_stream --check: 2ch / 8ch / 16ch 编解码、采样率热切与寄存器安全掩码冒烟通过')
 
 
 def main():
