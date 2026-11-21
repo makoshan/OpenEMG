@@ -39,3 +39,8 @@
 ### 双面贴片方向
 
 [顶面贴片极性图](assembly-top.png) · [底面贴片极性图](assembly-bottom.png)。红点标出第 1 脚，角度对应同版 CPL。底面图按翻到板背后的方向显示。
+
+### 配套表带软板（A5＋B1）与 25 mm R3 外壳套件（已下单 · 待实物试装）
+
+- **[双层表带柔性电极软板 `strap-fpc-a5b1/`](strap-fpc-a5b1/)**：适配本目录双 30 针采集板（`FPC1`、`FPC3`），采用盒底 **A 板 5 根 + B 板 `U10`（`BIAS_2`）折回补第 6 根**方案，含嘉立创 EDA 专业版源工程 [`OpenEMG_v0.01_Strap_FPC_A5B1.epro2`](strap-fpc-a5b1/OpenEMG_v0.01_Strap_FPC_A5B1.epro2)、平铺 Gerber（含 `.GBSL`/`.GTSL` `0.20 mm` PI 补强层）与顶面 17 颗 `0402` 限流电阻 BOM/CPL。
+- **[25 mm 表带与 R3 外壳结构套件 `enclosure-25mm-r3/`](enclosure-25mm-r3/)**：含替换了 **`15.90 × 15.00 mm` 修订六孔底盖**的 78 实体整机模型 [`assembly.step`](enclosure-25mm-r3/assembly.step)、4 件树脂外壳（`cap` / `tray` / `cover` / `side_button`）、2 件 `TPU` 保护表带（`north_backing` / `south_backing`）的独立 `.step` 与 `.stl`，以及 `0.8 mm` 片材电极内衬裁切图 [`liner-0.8mm-cut.dxf`](enclosure-25mm-r3/liner-0.8mm-cut.dxf)。

@@ -62,7 +62,7 @@
 
 | 档位与用途 | 工程文件路径 | 说明 |
 |---|---|---|
-| **16ch `v0.01` 双板合并工程 + 广濑 `1.0 mm` `1 nF` 台架采集板（人工审核 · 准备下单）** | `16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2`<br>`16ch-afe-hirose-1mm-1nf/kicad/`<br>`16ch-afe-xunpu-2mm-1nf/AFE-30P.epro2` | **2026-11-15 人工工程师逐脚审核定版、准备下单的双板工程**，采集板 D101–D132 共 32 颗 ESD401、146 个贴片位号（`01 主控板` + `02 采集板` 四角 `R1.80` 圆角、现货 `0603 R4=104kΩ C861070`、广濑 `1.0 mm` 双 30P + `1 nF` 差分网络，含同步单板 Gerber/BOM/CPL 及 1:1 导出的 KiCad 8 原生双板与九页原理图 `kicad/`）；附 AI 派生讯普 `2.0 mm` 对照版（未下单） |
+| **16ch `v0.01` 双板合并工程 + 广濑 `1.0 mm` `1 nF` 台架采集板 + 配套表带软板（A5＋B1）** | `16ch-afe-hirose-1mm-1nf/OpenEMG_v0.01_DualBoard.epro2`<br>`16ch-afe-hirose-1mm-1nf/kicad/`<br>`16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/OpenEMG_v0.01_Strap_FPC_A5B1.epro2`<br>`16ch-afe-xunpu-2mm-1nf/AFE-30P.epro2` | **2026-11-15 人工工程师逐脚审核定版双板工程**，采集板 D101–D132 共 32 颗 ESD401、146 个贴片位号（`01 主控板` + `02 采集板` 四角 `R1.80` 圆角、现货 `0603 R4=104kΩ C861070`、广濑 `1.0 mm` 双 30P + `1 nF` 差分网络，含同步单板 Gerber/BOM/CPL 及 1:1 导出的 KiCad 8 原生双板与九页原理图 `kicad/`）；配套 `strap-fpc-a5b1/` 双层 30P 表带软板（盒底 A5＋B1 六柱，已投单待实物试装）；附 AI 派生讯普 `2.0 mm` 对照版（未下单） |
 | **16ch 6 层圆角主控 `Rev0.01` + 超薄双 30P `22 pF` 穿戴派生版（AI 生成 · 未下单）** | `16ch-u9-dual30/OpenEMG-C08B-Mainboard-Rev0.01.epro2`<br>`16ch-u9-dual30/AFE-30P.epro2` | AI 结构与叠板派生参考：6 层 `OpenEMG-C08B-Mainboard-Rev0.01` + 4 层 `0.80 mm` 圆角 `R1.80` 超薄双 30P（`C324727`）`AFE-30P`（`22 pF` 差分网络，含 `fab-mcu-u9/`、`fab-afe-30p/` 与 KiCad 四层软板 `strap-fpc-30p/`，尚未人工审核、尚未下单） |
 | **16ch 圆孔全套汇总（配 `R12` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6-采集D20.epro2` | 同时包含 `R4U6` 主控板、双面 `D20` 采集板与双软板原理图 + 四层 PCB |
 | **16ch 缺口全套汇总（配 `R13` 壳）** | `16ch-c08b-round/jlc-eda/C08B-全套汇总-主控R4U6N-采集D20N.epro2` | 同时包含四角缺口主控 `R4U6N`、双面缺口采集板 `D20N` 与双软板原理图 + 四层 PCB |
@@ -108,6 +108,7 @@
 
 | 结构套件 | 目录 | 交付格式与内容 |
 |---|---|---|
+| **16ch `v0.01` 配套 25 mm R3 外壳与 TPU 表带（含六孔修订底盖，已投单待试装）** | `16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/` | 78 实体整机 `assembly.step`（与 `tray`/`south_backing` `0.000 mm³` 零干涉）+ 4 件树脂外壳（`cap` 六孔 `15.90×15.00 mm` 对齐 A5＋B1、`tray`、`cover` 圆角薄台、`side_button`）+ 2 件 `TPU` 表带背板（`north_backing`、`south_backing`）`.step`/`.stl` + `0.8 mm` 片材内衬裁切 `liner-0.8mm-cut.dxf` |
 | **16ch 旗舰圆润无外露螺丝手表壳 `U9-Watch`** | `16ch-u9-dual30/enclosure-u9-watch/` | `build.py` / `fit_3d_check.py`（全量 23 对三维布尔 `0.000 mm³` 零干涉 + 9 处三维壁厚探针 `≥ 0.85 mm` + 6 组正反例）+ 单件 `tray` / `cover` / `side_button` / `cap_bottom` (`.step`/`.stl`) + 满载双板/电池/双软板 `assembly` / `exploded` (`.step`/`.glb`)，主体净高 **`46.80×40.00×9.60 mm`** |
 | **8/16ch 四角螺丝柱透明壳 `R12`** | `enclosure-46x40/c08b-shell-r12/` | `build.py` / `check.py` + 单件 `tray` / `cover` / `switch_plunger` / `standoff` (`.step`/`.stl`) + `assembly`/`exploded` (`.step`/`.glb`) + 外扣六孔底盖 `capsule-cap-d2/` (`.step`/`.stl`/`.3mf`) + 一体表带切片 `slice-tpu-x2d-20261109/` (`.3mf`) |
 | **8/16ch 无螺丝缺口抱柱壳 `R13`** | `enclosure-46x40/c08b-shell-r13-notch/` | `build.py` / `check.py` + **Fusion 360 原生源档 `.f3d`** + 单件 `tray` / `cover`（带定位销）/ `switch_plunger`（带导向脚）/ `lug_test_22mm` / 军绿表带 (`.step`/`.stl`) + 总装/爆炸 (`.step`/`.glb`) |

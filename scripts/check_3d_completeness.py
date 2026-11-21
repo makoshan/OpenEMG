@@ -130,6 +130,24 @@ REQUIRED_3D_ASSETS: tuple[str, ...] = (
     "hardware/16ch-u9-dual30/enclosure-u9-watch/assembly.glb",
     "hardware/16ch-u9-dual30/enclosure-u9-watch/exploded.step",
     "hardware/16ch-u9-dual30/enclosure-u9-watch/exploded.glb",
+    # v0.01 配套 25 mm 表带与 R3 外壳（含 15.90×15.00 mm 修订六孔底盖）
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/assembly.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cap.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cap.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/tray.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/tray.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cover.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cover.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/side_button.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/side_button.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/north_backing.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/north_backing.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/south_backing.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/south_backing.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/north_liner.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/north_liner.stl",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/south_liner.step",
+    "hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/south_liner.stl",
 )
 
 STALE_LEGACY_DIRS_RE = re.compile(

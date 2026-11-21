@@ -1,6 +1,6 @@
 # OpenEMG 共用主控家族（2 / 8 / 16 通道）嘉立创制造包与联调总表
 
-本文档提供全系 18 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
+本文档提供全系 20 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
 
 > [!IMPORTANT]
 > **人工审核准备下单 vs AI 生成未下单**
@@ -32,7 +32,7 @@
 
 ---
 
-## B · 嘉立创直接上传制造包清单（全家族 18 套，按 SHA-256 前 8 位核对）
+## B · 嘉立创直接上传制造包清单（全家族 20 套，按 SHA-256 前 8 位核对）
 
 | 编号 | 板件与版本 | 关键板厂工艺与贴片面 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
 |---|---|---|---|---|
@@ -54,6 +54,8 @@
 | `16` | **11 月 15 日 ESD32 定版 · v0.01 广濑 `1.0 mm` `1 nF` 离体台架采集板** | 4 层 FR-4（台架 `1.6 mm` / 装壳 `0.8 mm`，`43.10×36.50 mm` 四角 `R1.80` 圆角，安装孔已去顶层丝印，勾选代拼工艺边），沉金，**树脂塞孔+电镀盖帽（15 处过孔与贴片焊盘重叠）**，`LM1` 顶面双窗钢网已裁好，**双面贴**（24 种 / 146 颗：Top 80 + Bottom 66，CPL 保持默认「AD 等其他」） | `hardware/16ch-afe-hirose-1mm-1nf/Gerber_AFE-30P.zip`<br>`hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_bom.csv`<br>`hardware/16ch-afe-hirose-1mm-1nf/jlc_smt_cpl.csv` | `76a889ab`<br>`831f6010`<br>`596cb6d0` |
 | `17` | **讯普 `2.0 mm` `1 nF` 离体台架采集板** | 4 层 FR-4（`43.10×36.67 mm` 直角，勾选代拼工艺边），沉金，**树脂塞孔+电镀盖帽**，**双面贴**（23 种 / 114 颗：Top 64 + Bottom 50，CPL 保持默认「AD 等其他」） | `hardware/16ch-afe-xunpu-2mm-1nf/Gerber_AFE-30P.zip`<br>`hardware/16ch-afe-xunpu-2mm-1nf/jlc_smt_bom.csv`<br>`hardware/16ch-afe-xunpu-2mm-1nf/jlc_smt_cpl.csv` | `f4628471`<br>`d7b21e5b`<br>`e5591b8d` |
 | `18` | **11 月 15 日人工评审定版 · v0.01 6 层主控单板 `C08B-U9`** | 6 层 FR-4（`0.8 mm`，`43.10×36.50 mm` 四角 `R1.80` 圆角，安装孔已去顶层丝印，勾选代拼工艺边），沉金，**树脂塞孔+电镀盖帽**，**双面贴**（45 种 / 110 颗：Top 42 + Bottom 68，已排除测试点、`J401` 与禁贴 `JP701/R7/R213`） | `hardware/16ch-afe-hirose-1mm-1nf/Gerber_C08B-U9_v0.01.zip`<br>`hardware/16ch-afe-hirose-1mm-1nf/mainboard_bom.csv`<br>`hardware/16ch-afe-hirose-1mm-1nf/mainboard_cpl.csv` | `f46e7063`<br>`0a533ad3`<br>`0b23a339` |
+| `19` | **v0.01 双层表带软板 `Strap FPC A`（盒底 A5＋B1 短带侧，已投单待试装）** | 2 层 FPC（`0.11 mm`，`105.00×26.00 mm`，嘉立创帮拼 `1×1` 补工艺边至 `15.80×7.90 cm`），沉金 `1u"`，金手指背面单处 `0.20 mm` PI 补强（`.GBSL`，总厚 `0.30 mm`），`先贴补强,后SMT`，**纯顶面单面贴**（2 种 / 17 颗：`C25741`×16 + `C25764`×1） | `hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/OpenEMG-FPC-A-A5B1-Gerber.zip`<br>`hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/A-SMT-BOM.csv`<br>`hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/A-SMT-CPL.csv` | `e75423bd`<br>`27c8ed4e`<br>`43827808` |
+| `20` | **v0.01 双层表带软板 `Strap FPC B`（盒底 A5＋B1 长带折回补孔侧，已投单待试装）** | 2 层 FPC（`0.11 mm`，`149.10×21.20 mm`，嘉立创帮拼 `1×1` 补工艺边至 `20.69×7.90 cm`），沉金 `1u"`，金手指背面单处 `0.20 mm` PI 补强（`.GTSL`，总厚 `0.30 mm`），`先贴补强,后SMT`，**纯顶面单面贴**（2 种 / 17 颗：`C25741`×16 + `C25764`×1） | `hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/OpenEMG-FPC-B-A5B1-Gerber.zip`<br>`hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/B-SMT-BOM.csv`<br>`hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/B-SMT-CPL.csv` | `2ffaea26`<br>`27c8ed4e`<br>`7d9630dc` |
 
 ### 下单填表与贴片预览核对要点
 
@@ -69,6 +71,7 @@
 
 | 适用版本 | 零件 / 纸样 | 规格与打印工艺 | 仓内精确路径（相对仓库根） | SHA-256 前 8 位 |
 |---|---|---|---|---|
+| **16ch `v0.01` 专属（配 `strap-fpc-a5b1`，已投单待试装）** | `25 mm R3` 外壳 4 件 + `TPU` 表带 2 件 + `0.8 mm` 内衬裁切图 | 3D 打印光敏树脂 `9600`（`cap` 六孔 `15.90×15.00 mm`、`tray`、`cover`、`side_button`）+ `TPU`（`north_backing`、`south_backing`）；`0.8 mm` 薄壁内衬按 `DXF` 裁切不走 SLA | `hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cap.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/tray.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/cover.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/side_button.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/north_backing.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/south_backing.step`<br>`hardware/16ch-afe-hirose-1mm-1nf/enclosure-25mm-r3/liner-0.8mm-cut.dxf` | `2f11de95`<br>`5dcbad0e`<br>`a75fb5e7`<br>`caa1d469`<br>`2164f953`<br>`009c3adb`<br>`ba651c04` |
 | **16ch 旗舰双 30P 专属** | 超薄圆润无外露螺丝手表壳 `enclosure-u9-watch`（另附台架壳 `case-30p`） | 3D 打印光敏树脂（`tray` / `cover` / `side_button`）+ `TPU 95A`（`cap_bottom`），主体净高 **`46.80×40.00×9.60 mm`**（全壳最小壁厚 `0.85 mm ≥ 0.80 mm`），内柱盲孔 **`4 × M1.4`** 锁紧 + 底盖遮蔽，23 对三维布尔 `0.000 mm³` 零干涉 | `hardware/16ch-u9-dual30/enclosure-u9-watch/tray.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/cover.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/side_button.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/cap_bottom.step`<br>`hardware/16ch-u9-dual30/enclosure-u9-watch/assembly.step` | `044dde45`<br>`f0401545`<br>`55221bcf`<br>`72f08525`<br>`c5d438d1` |
 | **8ch + 16ch 共用** | 胶囊电极底盖切片包 `cap_d2` | Bambu X2D `TPU 95A HF` 一盘两件（4 圆孔 `Φ6.5` + 2 方孔 `3.5×3.5`） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/cap_d2_x2-X2D-TPU95A.3mf` | `b49b121d` |
 | **8ch + 16ch 共用** | 胶囊底壳外发 STEP `tray_d2` | 3D 打印树脂外发件（8ch 靠胶囊背 6 窗 `0.20 mm` PI 垫片零改模复用） | `hardware/enclosure-46x40/c08b-shell-r12/capsule-cap-d2/tray_d2.step` | `b76c2a66` |

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""OpenEMG 全家族 18 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 6 项必失败反例）。
+"""OpenEMG 全家族 20 套嘉立创直接上传制造包完整性与一致性门禁（纯 Python 3.12 标准库，含 --selftest 6 项必失败反例）。
 
 核验范围：
-1. 全家族 18 套直接上传制造包（01..17 及 v0.01 主控板：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
+1. 全家族 20 套直接上传制造包（01..20，含 v0.01 主控板与 A5+B1 双层表带软板：主控 R4U6/R4U6N、8ch D20-8CH/D20N-8CH、8ch 软板 D2-8CH、
    16ch D20/D20N、16ch 软板 D2 A/B、2ch ADS1292-R9、转接板 P44e、新版 6 层圆角主控 MCU-U9、
    新版超薄双 30P 穿戴采集板 AFE-30P、新版双 30P 四层软板 strap-30p A/B、
-   v0.01 广濑 1.0mm 1nF 台架采集板、讯普 2.0mm 1nF 台架采集板）
+   v0.01 广濑 1.0mm 1nF 台架采集板、讯普 2.0mm 1nF 台架采集板、v0.01 6 层主控板、v0.01 盒底 A5+B1 双层表带软板 A/B）
    全部在仓内自包含存在，零外部下载目录依赖。
 2. 逐包校验 Gerber.zip、BOM.csv、CPL.csv 与软板 .d356 的 SHA-256 指纹前缀锁定。
 3. 穿透每个 Gerber.zip，核验铜层数（6 层、4 层或 P44e 2 层）、板框层、镀铜钻孔层非空，
@@ -292,6 +292,34 @@ PACK_SPECS: tuple[FabPackSpec, ...] = (
         top_count=64,
         bot_count=50,
     ),
+    FabPackSpec(
+        pack_id="19-v001-strap-fpc-a5b1-a",
+        gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/OpenEMG-FPC-A-A5B1-Gerber.zip",
+        gerber_sha_prefix="e75423bd06bf4f75",
+        cu_layers=2,
+        is_fpc=True,
+        bom_csv="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/A-SMT-BOM.csv",
+        bom_sha_prefix="27c8ed4ec9388f3c",
+        cpl_csv="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/A-SMT-CPL.csv",
+        cpl_sha_prefix="43827808e1a2d747",
+        bom_rows=2,
+        top_count=17,
+        bot_count=0,
+    ),
+    FabPackSpec(
+        pack_id="20-v001-strap-fpc-a5b1-b",
+        gerber_zip="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/OpenEMG-FPC-B-A5B1-Gerber.zip",
+        gerber_sha_prefix="2ffaea26ad6a7ec3",
+        cu_layers=2,
+        is_fpc=True,
+        bom_csv="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/B-SMT-BOM.csv",
+        bom_sha_prefix="27c8ed4ec9388f3c",
+        cpl_csv="hardware/16ch-afe-hirose-1mm-1nf/strap-fpc-a5b1/fab/B-SMT-CPL.csv",
+        cpl_sha_prefix="7d9630dcdf202fa5",
+        bom_rows=2,
+        top_count=17,
+        bot_count=0,
+    ),
 )
 
 LCSC_PART_RE = re.compile(r"^C[1-9]\d{2,}$")
@@ -339,10 +367,15 @@ def _check_gerber_zip(zip_path: Path, spec: FabPackSpec) -> list[str]:
         errs.append(f"{spec.pack_id}: 缺少镀铜钻孔文件 (*PTH*.drl)")
 
     if spec.is_fpc:
-        has_stiff_010 = any(n.endswith("bot_stiff_0p10mm_pi.gbr") for n in lower_names)
-        has_stiff_020 = any(n.endswith("bot_stiff_0p20mm_pi.gbr") for n in lower_names)
-        if not (has_stiff_010 and has_stiff_020):
-            errs.append(f"{spec.pack_id}: 四层软板缺少 0.10mm 或 0.20mm 实心 PI 补强 Gerber 层")
+        if spec.cu_layers == 4:
+            has_stiff_010 = any(n.endswith("bot_stiff_0p10mm_pi.gbr") for n in lower_names)
+            has_stiff_020 = any(n.endswith("bot_stiff_0p20mm_pi.gbr") for n in lower_names)
+            if not (has_stiff_010 and has_stiff_020):
+                errs.append(f"{spec.pack_id}: 四层软板缺少 0.10mm 或 0.20mm 实心 PI 补强 Gerber 层")
+        else:
+            has_jlc_pi_020 = any(n.endswith(("pib_0.2.gbsl", "pit_0.2.gtsl")) for n in lower_names)
+            if not has_jlc_pi_020:
+                errs.append(f"{spec.pack_id}: 双层软板缺少 0.20mm PI 补强 Gerber 层 (.GBSL/.GTSL)")
 
     return errs
 
@@ -394,9 +427,9 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
         if not (COORD_RE.match(mx) and COORD_RE.match(my)):
             errs.append(f"{spec.pack_id}: CPL 第 {idx} 行 ({ref}) 坐标格式非法 ({mx}, {my})")
         layer = (row.get("Layer") or "").strip().lower()
-        if layer in ("top", "toplayer"):
+        if layer in ("top", "toplayer", "t"):
             top_cnt += 1
-        elif layer in ("bottom", "bottomlayer"):
+        elif layer in ("bottom", "bottomlayer", "b"):
             bot_cnt += 1
         else:
             errs.append(f"{spec.pack_id}: CPL 第 {idx} 行 ({ref}) 贴片层名非法 '{row.get('Layer')}'")
@@ -420,8 +453,8 @@ def _check_bom_cpl(bom_path: Path, cpl_path: Path, spec: FabPackSpec) -> list[st
 
 def verify_repo(repo_root: Path, check_hashes: bool = True) -> list[str]:
     errs: list[str] = []
-    if len(PACK_SPECS) != 18:
-        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 18")
+    if len(PACK_SPECS) != 20:
+        errs.append(f"制造包规格数量 {len(PACK_SPECS)} != 20")
 
     for spec in PACK_SPECS:
         gz = repo_root / spec.gerber_zip
@@ -564,7 +597,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}", file=sys.stderr)
         return 1
-    print(f"嘉立创制造包门禁通过：{target}（全家族 18 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
+    print(f"嘉立创制造包门禁通过：{target}（全家族 {len(PACK_SPECS)} 套 Gerber/BOM/CPL/D356 指纹与结构 0 违规）")
     return 0
 
 
