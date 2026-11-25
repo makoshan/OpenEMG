@@ -8,6 +8,8 @@ OpenEMG 是一个 **16 通道开源肌电手环**项目。我们想用腕部的�
 
 OpenEMG 由人和 AI 共同研发。项目还在早期，电路、代码和文档里难免有错。如果你发现问题，欢迎[提 issue](https://github.com/makoshan/OpenEMG/issues)。如果你改好了代码、电路，或测出了不同的结果，也欢迎[提交 PR](https://github.com/makoshan/OpenEMG/pulls)，让其他人能复用你的工作。
 
+**本次下单的最终主板为 OpenEMG MAIN V1.0B（2026-11-24）。** 首件已下单，实物待验。下载主板 PCB、五页原理图、Gerber 和实际贴片 BOM，见[主板定版资料](hardware/main-v1.0b/)。
+
 [当前状态与进展计划](#当前状态与进展计划) · [Gallery](#gallery) · [工作原理与调研](#工作原理) · [桌面工作台](#桌面工作台)
 
 | 正面 · U9 外壳与双板 | 贴肤面 · 金属电极触点 |
