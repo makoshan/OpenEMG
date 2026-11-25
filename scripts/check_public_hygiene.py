@@ -48,7 +48,7 @@ GENERIC_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("连字符转义用户路径", re.compile(r"-(?:Users|home)-[A-Za-z0-9._-]+-")),
     ("个人年份工作区路径", re.compile(r"(?:~|\$HOME|Path\.home\(\)\s*/\s*['\"]?)/?go/202\d/")),
     ("PEM 私钥块", re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY[-]----")),
-    ("打样批次订单号", re.compile(r"\b(?:SMT26\d+|Y2[3-9]|Y3[0-9])\b")),
+    ("打样批次订单号", re.compile(r"\b(?:SMT26\d+|Y2[3-9]|Y3[0-9]|Y5[34])\b")),
     ("内网私有网段IP", re.compile(r"\b192\.168\.\d+\.\d+\b")),
     ("商业应用动图旧注", re.compile(r"Meta (?:Neural Band )?官方(?:细线|示范)动图")),
     ("闭源声明残留", re.compile(r"内部项目代码[，,]不公开发布")),
@@ -237,8 +237,10 @@ def run_selftest() -> int:
         errs: list[str] = []
         _scan_text_blob(pad.encode(), "test.epcb2", errs)
         assert not errs
-        _scan_text_blob((pad + '\n订单 ' + sample_pin).encode(), "test.epcb2", errs)
-        assert any("打样批次订单号" in err for err in errs)
+        for number in ("23", "53", "54"):
+            errs = []
+            _scan_text_blob((pad + '\n订单 Y' + number).encode(), "test.epcb2", errs)
+            assert any("打样批次订单号" in err for err in errs)
 
         canary = "-".join(("openemg", "hygiene", "canary", "fail"))
         u_path = "/" + "Users" + "/alice/workspace/file.py"
