@@ -1,5 +1,7 @@
 # OpenEMG 共用主控家族（2 / 8 / 16 通道）嘉立创制造包与联调总表
 
+**2026-11-24 定版主板**　[OpenEMG MAIN V1.0B](main-v1.0b/) 的送审 Gerber、实际贴片 BOM、坐标和 SHA-256 请用该版本目录中的文件。
+
 本文档提供全系 20 套嘉立创（JLCPCB）直接上传生产包（Gerber `.zip`、SMT `BOM.csv`、贴片坐标 `CPL.csv` 与飞针网表 `.d356`）的精确路径、工艺参数与 SHA-256 指纹核对表，并由 [`scripts/check_fab_packs.py`](../scripts/check_fab_packs.py) 在 CI 中逐字节锁定核验。
 
 > [!IMPORTANT]

@@ -1,0 +1,4 @@
+{"type":"DOCHEAD"}||{"docType":"SCH","client":"","uuid":"e95b3bbaf24f35aa","updateTime":1795531236507,"version":"1795531236507","editVersion":"4.1.93","user":{}}|
+{"type":"META","ticket":20575,"id":"META"}||{"title":"OPEN-EMG-MAIN-V1.0","source":"","board":"76bf39873648e8f1","zIndex":null}|
+{"type":"RULE","ticket":534177,"id":"[\"RULE\",\"TRACK\",\"copperThickness1oz\"]"}||{"ruleState":"DEFAULT","ruleContext":{"unit":"mm","track":{"isOpen":true,"content":[{"layerId":1,"stroDef":0.254,"stroMax":2.54,"stroMin":0.127}]}}}|
+{"type":"RULE","ticket":534178,"id":"[\"RULE\",\"TRACK\",\"copperThickness2oz\"]"}||{"ruleState":"NORMAL","ruleContext":{"unit":"mm","track":{"isOpen":true,"content":[{"layerId":1,"stroDef":0.254,"stroMax":2.54,"stroMin":0.203}]}}}

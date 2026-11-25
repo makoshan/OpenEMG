@@ -48,7 +48,7 @@ GENERIC_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("连字符转义用户路径", re.compile(r"-(?:Users|home)-[A-Za-z0-9._-]+-")),
     ("个人年份工作区路径", re.compile(r"(?:~|\$HOME|Path\.home\(\)\s*/\s*['\"]?)/?go/202\d/")),
     ("PEM 私钥块", re.compile(r"-----BEGIN (?:[A-Z0-9 ]+ )?PRIVATE KEY[-]----")),
-    ("打样批次订单号", re.compile(r"\b(?:SMT26\d+|Y2[3-9]|Y3[0-9])\b")),
+    ("打样批次订单号", re.compile(r"\b(?:SMT26\d+|Y2[3-9]|Y3[0-9]|Y5[34])\b")),
     ("内网私有网段IP", re.compile(r"\b192\.168\.\d+\.\d+\b")),
     ("商业应用动图旧注", re.compile(r"Meta (?:Neural Band )?官方(?:细线|示范)动图")),
     ("闭源声明残留", re.compile(r"内部项目代码[，,]不公开发布")),
@@ -64,14 +64,33 @@ BINARY_SKIP_TEXT = {
 }
 
 
+def _eda_pin_reference(text: str, match: re.Match[str]) -> bool:
+    """只识别 EDA 原生记录里封装焊盘、符号脚号及其网络索引。"""
+    if not re.fullmatch(r"Y[0-9]+", match.group()):
+        return False
+    start = text.rfind("\n", 0, match.start()) + 1
+    prefix = text[start:match.start()]
+    suffix = text[match.end():match.end()+3]
+    if prefix.startswith('{"type":"PAD",'):
+        return prefix.endswith('"num":"') and suffix.startswith('"')
+    if prefix.startswith('{"type":"ATTR",'):
+        return prefix.endswith('"key":"Pin Number","value":"') and suffix.startswith('"')
+    if prefix.startswith('{"type":"PAD_NET",'):
+        return bool(re.search(r'"id":"\[\\"PAD_NET\\",\\"[^"\\]+\\",\\"$', prefix)) and suffix.startswith(r'\"')
+    return False
+
+
 def _scan_text_blob(data: bytes, label_path: str, errors: list[str]) -> None:
     if b"\x00" in data[:4096]:
         return
     text = data.decode("utf-8", errors="replace")
     for label, pat in GENERIC_PATTERNS:
-        m = pat.search(text)
-        if m:
+        for m in pat.finditer(text):
+            if (label == "打样批次订单号" and label_path.endswith((".epcb2", ".esch2"))
+                    and _eda_pin_reference(text, m)):
+                continue
             errors.append(f"{label} 命中 ({m.group(0)!r}): {label_path}")
+            break
     candidates: set[str] = set()
     for tok in TOKEN_RE.findall(text):
         low = tok.lower().strip(".-_")
@@ -211,6 +230,17 @@ def run_selftest() -> int:
         root = Path(td)
         (root / "README.md").write_text("# Clean Repo\n", encoding="utf-8")
         assert scan_repo(root) == [], "干净最小仓不应报错"
+
+        # 同一个编号既可能是封装坐标，也可能是订单号，不能整份文件豁免。
+        sample_pin = "Y" + "23"
+        pad = '{"type":"PAD","id":"e1"}||{"num":"' + sample_pin + '"}|'
+        errs: list[str] = []
+        _scan_text_blob(pad.encode(), "test.epcb2", errs)
+        assert not errs
+        for number in ("23", "53", "54"):
+            errs = []
+            _scan_text_blob((pad + '\n订单 Y' + number).encode(), "test.epcb2", errs)
+            assert any("打样批次订单号" in err for err in errs)
 
         canary = "-".join(("openemg", "hygiene", "canary", "fail"))
         u_path = "/" + "Users" + "/alice/workspace/file.py"

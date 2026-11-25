@@ -8,6 +8,8 @@ We want to do for EMG what DeepSeek did for AI: share the circuit, mechanical de
 
 We develop OpenEMG together with AI. It’s still early, and the circuits, code, and documentation will have mistakes. If you spot one, please [open an issue](https://github.com/makoshan/OpenEMG/issues). If you have a code fix, a circuit change, or measurements that tell a different story, [send a pull request](https://github.com/makoshan/OpenEMG/pulls) so others can build on your work.
 
+**OpenEMG MAIN V1.0B (2026-11-24) is the final mainboard revision for this prototype order.** The boards have been ordered and bench testing is pending. The [mainboard release](hardware/main-v1.0b/) includes editable PCB and schematic files, Gerbers, placement coordinates, and the assembly BOM.
+
 [Status and roadmap](#status-and-roadmap) · [Gallery](#gallery) · [How it works](#how-it-works) · [Desktop app](#desktop-app)
 
 | Front · U9 case and PCBs | Skin side · metal contacts |
