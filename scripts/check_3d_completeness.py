@@ -28,6 +28,7 @@ REQUIRED_3D_ASSETS: tuple[str, ...] = (
     "hardware/common-mainboard/mainboard-r4u6n/c08b-mainboard-r4u6n-3d.step",
     "hardware/common-mainboard/adapter-p44e-xiao/p44e-3d.step",
     "hardware/2ch-ads1292/board/ads1292-2ch-3d.step",
+    "hardware/2ch-shoulder-s1/shoulder-s1.step",
     "hardware/8ch-ads1298/afe-d20-8ch/afe-d20-8ch-3d.step",
     "hardware/8ch-ads1298/afe-d20n-8ch/afe-d20n-8ch-3d.step",
     "hardware/8ch-ads1298/stacked-d20-8ch/c08b-afe-d20-8ch-single-3d.step",

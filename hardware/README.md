@@ -75,6 +75,7 @@
 | **8ch 单片 4 层表带软板 `D2-8CH`** | `8ch-ads1298/strap-fpc-d2-8ch/jlc-eda/C08B-表带软板-D2-8CH单片.epro2` | 单片 4 层 34P 软板（胶囊底双辅助 `200k` 串阻 + 6 窗 `0.20 mm` PI 垫片复用现成底盖） |
 | **共用主控 `R4U6` / `R4U6N` 源板** | `common-mainboard/mainboard-r4u6/C08B-main-R4U6.epcb2`<br>`common-mainboard/mainboard-r4u6n/C08B-main-R4U6N.epcb2` | 主控板定稿四层 `0.6 mm` PCB 源文件（圆孔版与四角缺口版） |
 | **入门上层 `P44e` XIAO 转接板** | `common-mainboard/adapter-p44e-xiao/jlc-eda/P44e-XIAO转接板-0.8mm-PCB+3D.epro2` | `17.78 × 21.00 mm` 双层（2 层）`0.8 mm` XIAO 转接主控工程 |
+| **双肩肌电 S1** | [KiCad 工程与台架方案](2ch-shoulder-s1/) · [整板 STEP](2ch-shoulder-s1/shoulder-s1.step) | 两只三针插座分别连接左右肩电极。已核对图板与装配模型，未打样、未贴肤。 |
 | **入门 2ch `ADS1292` 六触点载板** | `2ch-ads1292/jlc-eda/ADS1292-2ch-R9-原理图+PCB+3D.epro2`<br>[3 页原理图 PDF](2ch-ads1292/views/schematic.pdf) · [六触点极性核对表](2ch-ads1292/PINOUT-AND-REVIEW.md) | **3 页原理图 R9（含 P1 整机框图、P2 电源树与 8 测点表、P3 详图）** + 四层 `0.8 mm` 底面六触点 PCB + 47 颗贴片 3D |
 | **8ch 柔性电极软板 `F04`** | `8ch-ads1298/jlc-eda/F04-八通道软板-原理图+PCB.epro2` | 八通道双层（2 层）FPC 柔性电极软板嘉立创工程参考 |
 

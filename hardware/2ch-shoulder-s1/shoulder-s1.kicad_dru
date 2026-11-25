@@ -1,0 +1,4 @@
+(version 1)
+(rule external_input_clearance
+ (condition "(A.NetName == 'E1_CH1P' || A.NetName == 'E2_CH1N' || A.NetName == 'E3_RLD' || A.NetName == 'E4_CH2P' || A.NetName == 'E5_CH2N' || A.NetName == 'E6_RLD') && B.NetName != 'E1_CH1P' && B.NetName != 'E2_CH1N' && B.NetName != 'E3_RLD' && B.NetName != 'E4_CH2P' && B.NetName != 'E5_CH2N' && B.NetName != 'E6_RLD' && B.NetName != 'GND' && B.NetName != 'NRLD' && B.NetName != 'N1P' && B.NetName != 'N1N' && B.NetName != 'N2P' && B.NetName != 'N2N' && B.NetName != ''")
+ (constraint clearance (min 0.45mm)))
