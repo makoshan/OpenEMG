@@ -7,6 +7,7 @@
 - `OpenEMG-MAIN-V1.0B/` 为嘉立创 EDA 专业版文件夹工程，含主板 PCB 和 5 页主板原理图，打开同名 .eprj3。
 - `fabrication/` 保留本次提交给工厂的 Gerber 压缩包、原始 BOM 和贴片坐标 CPL。制板取该 Gerber。
 - `assembly/BOM.csv` 对应工厂实际选料，贴片时与 `fabrication/CPL.csv` 配套使用。每板 127 个贴片位号。
+- [主板 STEP 模型与尺寸](mechanical/README.md)提供裸板和首件带器件模型，可用于设计外壳和核对插口。
 - `SHA256SUMS` 可在此目录用 `shasum -a 256 -c SHA256SUMS` 校验文件。
 
 ## 首件装配
