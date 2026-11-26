@@ -1,7 +1,7 @@
 # /// script
 # dependencies = ["build123d==0.13.0"]
 # ///
-"""生成 WB v0.1 表带打印件。尺寸单位为 mm，Z=0 为软板一侧。"""
+"""生成 WB v0.1.1 表带打印件。尺寸单位为 mm，Z=0 为软板一侧。"""
 import argparse
 from pathlib import Path
 
@@ -13,7 +13,7 @@ def hole(diameter, start_z, end_z, y):
 
 
 def wristband():
-    thickness = 2.30
+    thickness = 2.10
     block = b.extrude(b.RectangleRounded(7, 26, 1.75), amount=thickness)
     for y in (-10, 0, 10):
         block = block.cut(hole(2.20, -.01, thickness + .01, y),
