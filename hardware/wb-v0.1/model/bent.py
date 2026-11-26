@@ -11,12 +11,12 @@ import build123d as b
 from scipy.optimize import brentq
 
 PITCH, WIDTH, GAP = 10., 7., 3.
-NEUTRAL, TOP, CAP = .20, 2.30, 2.70
+NEUTRAL = .20
 
 
-def turn(radius):
+def turn(radius, cap_height):
     # 钉顶切圆。每节含一段直板与一段长度不变的圆弧，解节间转角。
-    mid_radius = radius + CAP - NEUTRAL
+    mid_radius = radius + cap_height - NEUTRAL
     return brentq(lambda a: GAP/a + WIDTH/2/math.tan(a/2) - mid_radius, .01, 2.)
 
 
@@ -44,20 +44,22 @@ def run(source, out):
     fpc = next(c for c in assembly.children if c.label.startswith('WB_FPC'))
     metal = [c for c in assembly.children if c.label.startswith(('Pin_', 'Pad_'))]
     assert len(metal)==48
+    top = strap.bounding_box().max.Z
+    cap_height = max(c.bounding_box().max.Z for c in metal)
     blocks = [section(strap,i*PITCH-WIDTH/2,i*PITCH+WIDTH/2) for i in range(8)]
     out.mkdir(parents=True,exist_ok=True)
     with (out/'七道缝净距.csv').open('w',newline='',encoding='utf-8-sig') as fp:
         rows = csv.writer(fp)
         rows.writerow(['腕面假设半径_mm','相邻块转角_deg',*[f'缝{i}_mm' for i in range(1,8)]])
         for radius in (15,20,25,30,35):
-            a = turn(radius)
+            a = turn(radius, cap_height)
             shapes = [pose(i,a)*piece for i,piece in enumerate(blocks)]
             gaps = [shapes[i].distance_to(shapes[i+1]) for i in range(7)]
-            predicted = 2*(GAP/a - (TOP-NEUTRAL))*math.sin(a/2)
+            predicted = 2*(GAP/a - (top-NEUTRAL))*math.sin(a/2)
             assert min(gaps)>0 and max(abs(g-predicted) for g in gaps)<1e-5
             rows.writerow([radius,round(math.degrees(a),3),*[round(g,4) for g in gaps]])
     # 保存 R25 含软板、所有铜钉和焊盘的姿态；外伸排线沿末节切面平伸。
-    a=turn(25)
+    a=turn(25, cap_height)
     components=[]
     for flat, ymin, ymax, zmin, zmax in [(strap,-13.,13.,0.,.4),(fpc,-15.,fpc.bounding_box().max.Y,-.11,0.)]:
         sides=flat.bounding_box()
@@ -78,7 +80,7 @@ def run(source, out):
         moved=pose(idx,a)*item
         moved.label,moved.color=item.label,item.color
         components.append(moved)
-    result=b.Compound(children=components,label='WB_v01_R25_bend_study')
+    result=b.Compound(children=components,label='WB_v011_R25_bend_study')
     assert result.is_valid and len(result.solids())==50
     path=out/'assembly-r25.step'
     b.export_step(result,path)
